@@ -17,6 +17,8 @@
 
 package org.giste.roadbooknavigator.features.roadbook.domain
 
+import kotlin.math.roundToLong
+
 /**
  * Value object representing a physical distance.
  *
@@ -40,7 +42,7 @@ value class Distance(val meters: Long) : Comparable<Distance> {
     }
 
     companion object {
-        fun fromKilometers(km: Double) = Distance((km * 1000).toLong())
+        fun fromKilometers(km: Double) = Distance((km * 1000).roundToLong())
         val ZERO = Distance(0)
     }
 }

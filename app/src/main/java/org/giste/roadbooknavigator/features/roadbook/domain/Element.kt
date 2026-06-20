@@ -17,6 +17,10 @@
 
 package org.giste.roadbooknavigator.features.roadbook.domain
 
+/**
+ * Base class for all graphical or structural elements in a roadbook page.
+ * Elements can be tracks, roads, icons, or text annotations.
+ */
 sealed class Element {
     abstract val elementType: ElementType
 

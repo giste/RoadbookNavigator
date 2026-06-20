@@ -17,6 +17,18 @@
 
 package org.giste.roadbooknavigator.features.roadbook.domain
 
+/**
+ * Represents a specific point of interest or instruction in a rally roadbook.
+ * This is the primary entity for the navigation logic.
+ *
+ * @property number The sequential index of the waypoint in the roadbook.
+ * @property coordinates The GPS position and altitude of the waypoint.
+ * @property distance The total distance from the start of the route.
+ * @property distanceFromPrevious The partial distance since the last waypoint.
+ * @property reset If true, the odometer should be reset to zero at this point.
+ * @property tulipElements Graphical components used to draw the "tulip" direction diagram.
+ * @property notesElements Graphical or text components for the "notes" column.
+ */
 data class Waypoint (
     val number: Int,
     val coordinates: Coordinates,

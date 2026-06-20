@@ -17,6 +17,10 @@
 
 package org.giste.roadbooknavigator.features.roadbook.domain
 
+/**
+ * A complex road structure usually representing an intersection.
+ * It combines an incoming road and an outgoing road to show the main path.
+ */
 data class Track(
     val roadIn: Road,
     val roadOut: Road,
@@ -24,6 +28,13 @@ data class Track(
     override val elementType: ElementType = ElementType.Track
 }
 
+/**
+ * A single road line or curve in a tulip diagram.
+ *
+ * @property start Starting point on the canvas.
+ * @property end Ending point on the canvas.
+ * @property handles Bezier control points for drawing curves.
+ */
 data class Road(
     val start: Point?,
     val end: Point?,

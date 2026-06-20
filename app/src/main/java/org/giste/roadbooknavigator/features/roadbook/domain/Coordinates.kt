@@ -17,6 +17,14 @@
 
 package org.giste.roadbooknavigator.features.roadbook.domain
 
+/**
+ * Represents geographic coordinates on Earth using the WGS84 system.
+ * This is a Value Object in DDD.
+ *
+ * @property latitude Degrees north or south of the equator (-90 to 90).
+ * @property longitude Degrees east or west of the prime meridian (-180 to 180).
+ * @property elevation Meters above sea level.
+ */
 data class Coordinates(
     val latitude: Double,
     val longitude: Double,

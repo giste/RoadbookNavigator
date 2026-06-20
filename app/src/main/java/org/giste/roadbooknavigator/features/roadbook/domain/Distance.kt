@@ -18,8 +18,12 @@
 package org.giste.roadbooknavigator.features.roadbook.domain
 
 /**
- * Value object representing a distance.
- * Internally stored in meters to avoid floating point precision issues.
+ * Value object representing a physical distance.
+ *
+ * Internally stored as [meters] in a [Long] to prevent floating-point arithmetic errors
+ * during cumulative odometer calculations.
+ *
+ * @property meters The absolute distance in meters. Must be non-negative.
  */
 @JvmInline
 value class Distance(val meters: Long) : Comparable<Distance> {

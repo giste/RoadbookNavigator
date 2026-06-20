@@ -17,6 +17,14 @@
 
 package org.giste.roadbooknavigator.features.roadbook.domain
 
+/**
+ * A graphical icon element in the roadbook (e.g., Danger, Fuel, Tunnel).
+ *
+ * @property type The specific kind of icon.
+ * @property angle Rotation angle in degrees.
+ * @property scaleX Horizontal scaling factor for drawing.
+ * @property originalId The raw ID from the source file, used for debugging or unknown icons.
+ */
 data class Icon(
     val type: IconType,
     val width: Int,

@@ -1,0 +1,46 @@
+# Gradle files
+.gradle/
+build/
+
+# Kotlin/Java
+*.class
+*.log
+*.ctxt
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Android Studio / IntelliJ
+.idea/
+*.iml
+*.iws
+*.ipr
+local.properties
+captures/
+.externalNativeBuild/
+.cxx/
+cmake-build-*/
+.navigation/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Project specific
+/app/build/
+*.apk
+*.aar
+*.ap_
+*.dex
+
+# Secrets
+google-services.json
+*secret.xml

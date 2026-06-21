@@ -13,6 +13,7 @@ hilt = "2.59.2"
 timber = "5.0.1"
 mockk = "1.13.17"
 kotlinxCoroutinesTest = "1.10.1"
+datastore = "1.1.1"
 composeBom = "2026.06.00"
 
 [libraries]
@@ -36,6 +37,7 @@ hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", v
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
+androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

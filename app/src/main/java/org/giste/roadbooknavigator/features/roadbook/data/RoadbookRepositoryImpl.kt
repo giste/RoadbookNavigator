@@ -17,26 +17,69 @@
 
 package org.giste.roadbooknavigator.features.roadbook.data
 
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
+import org.giste.roadbooknavigator.core.di.IoDispatcher
+import org.giste.roadbooknavigator.features.roadbook.data.dto.persistence.PersistentRoute
 import org.giste.roadbooknavigator.features.roadbook.domain.RoadbookRepository
 import org.giste.roadbooknavigator.features.roadbook.domain.Route
+import java.io.File
 import java.io.InputStream
 import javax.inject.Inject
-import kotlinx.coroutines.withContext
-import org.giste.roadbooknavigator.core.di.IoDispatcher
 
 /**
- * Implementation of [RoadbookRepository] that handles .rn2 files.
+ * Implementation of [RoadbookRepository] that handles .rn2 files and internal caching.
  */
 class RoadbookRepositoryImpl @Inject constructor(
     private val mapper: Rn2Mapper,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
+    private val persistenceMapper: PersistenceMapper,
+    @param:IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+    @param:ApplicationContext private val context: Context
 ) : RoadbookRepository {
 
-    override suspend fun loadRoadbook(inputStream: InputStream): Result<Route> = withContext(ioDispatcher) {
+    private val _activeRoadbook = MutableStateFlow<Route?>(null)
+    override val activeRoadbook: Flow<Route?> = _activeRoadbook.asStateFlow()
+
+    private val cacheFile: File by lazy {
+        File(context.filesDir, "active_roadbook.json")
+    }
+
+    private val json = Json {
+        ignoreUnknownKeys = true
+        prettyPrint = false
+    }
+
+    override suspend fun loadActiveRoadbook(): Result<Route?> = withContext(ioDispatcher) {
+        runCatching {
+            if (!cacheFile.exists()) return@runCatching null
+
+            val jsonString = cacheFile.readText()
+            val persistentRoute = json.decodeFromString<PersistentRoute>(jsonString)
+            val route = persistenceMapper.toDomain(persistentRoute)
+            _activeRoadbook.value = route
+            route
+        }
+    }
+
+    override suspend fun processNewRoadbook(inputStream: InputStream): Result<Route> = withContext(ioDispatcher) {
         runCatching {
             val jsonString = inputStream.bufferedReader().use { it.readText() }
-            mapper.mapToDomain(jsonString)
+            val route = mapper.mapToDomain(jsonString)
+            
+            // Save to internal storage
+            val persistentRoute = persistenceMapper.toPersistent(route)
+            val cachedJson = json.encodeToString(persistentRoute)
+            cacheFile.writeText(cachedJson)
+            
+            // Emit new state
+            _activeRoadbook.value = route
+            route
         }
     }
 }

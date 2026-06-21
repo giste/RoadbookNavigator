@@ -17,6 +17,7 @@
 
 package org.giste.roadbooknavigator.features.roadbook.domain
 
+import kotlinx.coroutines.flow.Flow
 import java.io.InputStream
 
 /**
@@ -24,11 +25,27 @@ import java.io.InputStream
  * Following Clean Architecture, this sits in the Domain layer.
  */
 interface RoadbookRepository {
+
     /**
-     * Loads and parses a roadbook from the provided input stream.
+     * A stream of the currently active roadbook.
+     * Emits null if no roadbook is loaded.
+     */
+    val activeRoadbook: Flow<Route?>
+
+    /**
+     * Loads the roadbook previously saved in internal storage.
+     * Usually called once when the app starts.
+     *
+     * @return A [Result] containing the loaded [Route] or null if none exists.
+     */
+    suspend fun loadActiveRoadbook(): Result<Route?>
+
+    /**
+     * Parses a raw rn2 stream, saves the processed model to internal storage,
+     * and emits it through [activeRoadbook].
      *
      * @param inputStream The source stream (e.g., from an .rn2 file).
-     * @return A [Result] containing the parsed [Route] or an exception.
+     * @return A [Result] containing the parsed and processed [Route].
      */
-    suspend fun loadRoadbook(inputStream: InputStream): Result<Route>
+    suspend fun processNewRoadbook(inputStream: InputStream): Result<Route>
 }

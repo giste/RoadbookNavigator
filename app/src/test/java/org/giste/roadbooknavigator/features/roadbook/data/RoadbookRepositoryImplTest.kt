@@ -24,7 +24,6 @@ package org.giste.roadbooknavigator.features.roadbook.data
 import android.content.Context
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -129,5 +128,18 @@ class RoadbookRepositoryImplTest {
         assertTrue(result.isSuccess)
         assertEquals(route, result.getOrNull())
         assertEquals(route, repository.activeRoadbook.first())
+    }
+
+    @Test
+    fun `loadActiveRoadbook should return failure if cache is corrupted`() = runTest {
+        // Given
+        val cacheFile = File(tempFolder.root, "active_roadbook.json")
+        cacheFile.writeText("invalid json { content")
+
+        // When
+        val result = repository.loadActiveRoadbook()
+
+        // Then
+        assertTrue(result.isFailure)
     }
 }

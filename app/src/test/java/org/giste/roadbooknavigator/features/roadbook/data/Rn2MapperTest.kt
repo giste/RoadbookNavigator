@@ -308,6 +308,48 @@ class Rn2MapperTest {
     }
 
     @Test
+    fun `mapToDomain should map unknown icon ID to Unknown Icon type`() {
+        // Given
+        val unknownId = "unknown-uuid-12345"
+        val jsonString = """
+            {
+                "route": {
+                    "version": 4,
+                    "name": "Unknown Icon Test",
+                    "waypoints": [
+                        {
+                            "t_uuid": "uuid",
+                            "waypointid": 0,
+                            "lat": 40.0,
+                            "lon": -3.0,
+                            "show": true,
+                            "tulip": {
+                                "elements": [
+                                    {
+                                        "id": "$unknownId",
+                                        "type": "Icon",
+                                        "x": 10.0,
+                                        "y": 20.0
+                                    }
+                                ]
+                            },
+                            "notes": {"elements": []}
+                        }
+                    ]
+                }
+            }
+        """.trimIndent()
+
+        // When
+        val route = mapper.mapToDomain(jsonString)
+
+        // Then
+        val icon = route.waypoints[0].tulipElements[0] as org.giste.roadbooknavigator.features.roadbook.domain.Icon
+        assertEquals(org.giste.roadbooknavigator.features.roadbook.domain.Icon.IconType.Unknown, icon.type)
+        assertEquals(unknownId, icon.originalId)
+    }
+
+    @Test
     fun `mapToDomain should parse real rn2 file correctly`() {
         // Given
         val jsonString = this.javaClass.classLoader?.getResourceAsStream("route_example.rn2")?.bufferedReader()?.use { it.readText() }

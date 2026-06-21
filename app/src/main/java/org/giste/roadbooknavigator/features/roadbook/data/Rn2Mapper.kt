@@ -19,8 +19,8 @@
 package org.giste.roadbooknavigator.features.roadbook.data
 
 import org.giste.roadbooknavigator.core.util.Logger
-import org.giste.roadbooknavigator.features.roadbook.data.dto.JsonRouteData
-import org.giste.roadbooknavigator.features.roadbook.data.dto.JsonRouteResponse
+import org.giste.roadbooknavigator.features.roadbook.data.dto.rn2.Rn2RouteData
+import org.giste.roadbooknavigator.features.roadbook.data.dto.rn2.Rn2RouteResponse
 import org.giste.roadbooknavigator.features.roadbook.domain.Route
 import javax.inject.Inject
 
@@ -41,18 +41,18 @@ class Rn2Mapper @Inject constructor(
      */
     fun mapToDomain(jsonString: String, threshold: Double? = null): Route {
         Logger.d("Starting mapping from JSON string, length: ${jsonString.length}")
-        val jsonResponse = JsonRouteResponse.fromJson(jsonString)
+        val jsonResponse = Rn2RouteResponse.fromJson(jsonString)
         return mapToDomain(jsonResponse.route, threshold)
     }
 
-    private fun mapToDomain(jsonRouteData: JsonRouteData, threshold: Double? = null): Route {
-        Logger.i("Mapping route: ${jsonRouteData.name} with ${jsonRouteData.waypoints.size} waypoints")
+    private fun mapToDomain(rn2RouteData: Rn2RouteData, threshold: Double? = null): Route {
+        Logger.i("Mapping route: ${rn2RouteData.name} with ${rn2RouteData.waypoints.size} waypoints")
         return Route(
-            name = jsonRouteData.name,
-            description = jsonRouteData.description,
-            startLocation = jsonRouteData.startLocation,
-            endLocation = jsonRouteData.endLocation,
-            waypoints = waypointProcessor.processWaypoints(jsonRouteData.waypoints, threshold),
+            name = rn2RouteData.name,
+            description = rn2RouteData.description,
+            startLocation = rn2RouteData.startLocation,
+            endLocation = rn2RouteData.endLocation,
+            waypoints = waypointProcessor.processWaypoints(rn2RouteData.waypoints, threshold),
         )
     }
 }

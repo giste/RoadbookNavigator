@@ -18,7 +18,7 @@
 package org.giste.roadbooknavigator.features.roadbook.data
 
 import org.giste.roadbooknavigator.core.util.Logger
-import org.giste.roadbooknavigator.features.roadbook.data.dto.JsonWaypoint
+import org.giste.roadbooknavigator.features.roadbook.data.dto.rn2.Rn2Waypoint
 import org.giste.roadbooknavigator.features.roadbook.domain.Point
 import javax.inject.Inject
 import kotlin.math.atan2
@@ -35,7 +35,7 @@ class RoadbookGeometryCalculator @Inject constructor() {
     /**
      * Calculates the Haversine distance between two waypoints in meters.
      */
-    fun calculateDistance(waypoint1: JsonWaypoint, waypoint2: JsonWaypoint): Double {
+    fun calculateDistance(waypoint1: Rn2Waypoint, waypoint2: Rn2Waypoint): Double {
         val earthRadius = 6371000.0
         val lat1 = Math.toRadians(waypoint1.lat)
         val lon1 = Math.toRadians(waypoint1.lon)
@@ -55,9 +55,9 @@ class RoadbookGeometryCalculator @Inject constructor() {
      * Calculates the relative exit point for a tulip diagram based on the bearing difference.
      */
     fun calculateExitPoint(
-        prev: JsonWaypoint?,
-        current: JsonWaypoint,
-        next: JsonWaypoint
+        prev: Rn2Waypoint?,
+        current: Rn2Waypoint,
+        next: Rn2Waypoint
     ): Point {
         val bearingOut = calculateBearing(current, next)
         val bearingIn = if (prev != null) calculateBearing(prev, current) else bearingOut
@@ -93,7 +93,7 @@ class RoadbookGeometryCalculator @Inject constructor() {
         return exitPoint
     }
 
-    private fun calculateBearing(from: JsonWaypoint, to: JsonWaypoint): Double {
+    private fun calculateBearing(from: Rn2Waypoint, to: Rn2Waypoint): Double {
         val lat1 = Math.toRadians(from.lat)
         val lon1 = Math.toRadians(from.lon)
         val lat2 = Math.toRadians(to.lat)

@@ -18,7 +18,12 @@
 package org.giste.roadbooknavigator.features.roadbook.data
 
 import org.giste.roadbooknavigator.core.util.Logger
-import org.giste.roadbooknavigator.features.roadbook.data.dto.*
+import org.giste.roadbooknavigator.features.roadbook.data.dto.rn2.Rn2Element
+import org.giste.roadbooknavigator.features.roadbook.data.dto.rn2.Rn2Icon
+import org.giste.roadbooknavigator.features.roadbook.data.dto.rn2.Rn2Road
+import org.giste.roadbooknavigator.features.roadbook.data.dto.rn2.Rn2Text
+import org.giste.roadbooknavigator.features.roadbook.data.dto.rn2.Rn2Track
+import org.giste.roadbooknavigator.features.roadbook.data.dto.rn2.Rn2Waypoint
 import org.giste.roadbooknavigator.features.roadbook.domain.*
 import javax.inject.Inject
 
@@ -34,34 +39,34 @@ class ElementMapper @Inject constructor(
      * Maps a list of JSON elements into Domain elements.
      */
     fun mapElements(
-        jsonElements: List<JsonElement>,
-        prevWaypoint: JsonWaypoint? = null,
-        currentWaypoint: JsonWaypoint,
-        nextWaypoint: JsonWaypoint? = null
+        rn2Elements: List<Rn2Element>,
+        prevWaypoint: Rn2Waypoint? = null,
+        currentWaypoint: Rn2Waypoint,
+        nextWaypoint: Rn2Waypoint? = null
     ): List<Element> {
-        return jsonElements.map { mapJsonElementToDomain(it, prevWaypoint, currentWaypoint, nextWaypoint) }
+        return rn2Elements.map { mapJsonElementToDomain(it, prevWaypoint, currentWaypoint, nextWaypoint) }
     }
 
     private fun mapJsonElementToDomain(
-        jsonElement: JsonElement,
-        prevWaypoint: JsonWaypoint?,
-        currentWaypoint: JsonWaypoint,
-        nextWaypoint: JsonWaypoint?
+        rn2Element: Rn2Element,
+        prevWaypoint: Rn2Waypoint?,
+        currentWaypoint: Rn2Waypoint,
+        nextWaypoint: Rn2Waypoint?
     ): Element {
-        return when (jsonElement) {
-            is JsonIcon -> mapJsonIconToDomain(jsonElement)
-            is JsonRoad -> {
+        return when (rn2Element) {
+            is Rn2Icon -> mapJsonIconToDomain(rn2Element)
+            is Rn2Road -> {
                 Road(
-                    start = jsonElement.start?.let { Point(it.x, it.y) },
-                    end = jsonElement.end?.let { Point(it.x, it.y) },
-                    handles = jsonElement.handles.map { Point(it.x, it.y) },
-                    roadType = mapToRoadType(jsonElement.typeId)
+                    start = rn2Element.start?.let { Point(it.x, it.y) },
+                    end = rn2Element.end?.let { Point(it.x, it.y) },
+                    handles = rn2Element.handles.map { Point(it.x, it.y) },
+                    roadType = mapToRoadType(rn2Element.typeId)
                 )
             }
 
-            is JsonTrack -> {
-                val roadOutEnd = if (jsonElement.roadOut.end != null) {
-                    Point(jsonElement.roadOut.end.x, jsonElement.roadOut.end.y)
+            is Rn2Track -> {
+                val roadOutEnd = if (rn2Element.roadOut.end != null) {
+                    Point(rn2Element.roadOut.end.x, rn2Element.roadOut.end.y)
                 } else if (nextWaypoint != null) {
                     geometryCalculator.calculateExitPoint(prevWaypoint, currentWaypoint, nextWaypoint)
                 } else {
@@ -71,36 +76,36 @@ class ElementMapper @Inject constructor(
 
                 Track(
                     roadIn = Road(
-                        start = jsonElement.roadIn.start?.let { Point(it.x, it.y) },
-                        end = jsonElement.roadIn.end?.let { Point(it.x, it.y) } ?: Point(0.0, 35.0),
-                        roadType = mapToRoadType(jsonElement.roadIn.typeId),
-                        handles = jsonElement.roadIn.handles.map { Point(it.x, it.y) },
+                        start = rn2Element.roadIn.start?.let { Point(it.x, it.y) },
+                        end = rn2Element.roadIn.end?.let { Point(it.x, it.y) } ?: Point(0.0, 35.0),
+                        roadType = mapToRoadType(rn2Element.roadIn.typeId),
+                        handles = rn2Element.roadIn.handles.map { Point(it.x, it.y) },
                     ),
                     roadOut = Road(
-                        start = jsonElement.roadOut.start?.let { Point(it.x, it.y) } ?: Point(0.0, 0.0),
+                        start = rn2Element.roadOut.start?.let { Point(it.x, it.y) } ?: Point(0.0, 0.0),
                         end = roadOutEnd,
-                        roadType = mapToRoadType(jsonElement.roadOut.typeId),
-                        handles = jsonElement.roadOut.handles.map { Point(it.x, it.y) },
+                        roadType = mapToRoadType(rn2Element.roadOut.typeId),
+                        handles = rn2Element.roadOut.handles.map { Point(it.x, it.y) },
                     ),
                 )
             }
 
-            is JsonText -> {
+            is Rn2Text -> {
                 Text(
-                    text = jsonElement.text,
-                    fontSize = jsonElement.fontSize,
-                    lineHeight = jsonElement.lineHeight ?: 1.0,
-                    width = jsonElement.width,
-                    height = jsonElement.height,
-                    maxWidth = jsonElement.maxWidth ?: 180.0,
-                    maxHeight = jsonElement.maxHeight ?: 100.0,
-                    center = Point(jsonElement.x, jsonElement.y),
+                    text = rn2Element.text,
+                    fontSize = rn2Element.fontSize,
+                    lineHeight = rn2Element.lineHeight ?: 1.0,
+                    width = rn2Element.width,
+                    height = rn2Element.height,
+                    maxWidth = rn2Element.maxWidth ?: 180.0,
+                    maxHeight = rn2Element.maxHeight ?: 100.0,
+                    center = Point(rn2Element.x, rn2Element.y),
                 )
             }
         }
     }
 
-    private fun mapJsonIconToDomain(jsonIcon: JsonIcon): Icon {
+    private fun mapJsonIconToDomain(jsonIcon: Rn2Icon): Icon {
         val baseWidth = jsonIcon.width ?: 50.0
         val baseHeight = jsonIcon.height ?: 50.0
         val scaleX = jsonIcon.scaleX ?: 1.0
@@ -111,22 +116,22 @@ class ElementMapper @Inject constructor(
         val angle = jsonIcon.angle?.toInt() ?: 0
 
         val type = when (jsonIcon) {
-            is JsonIcon.Danger1 -> Icon.IconType.Danger1
-            is JsonIcon.Danger2 -> Icon.IconType.Danger2
-            is JsonIcon.Danger3 -> Icon.IconType.Danger3
-            is JsonIcon.FuelZone -> Icon.IconType.FuelZone
-            is JsonIcon.ResetDistance -> Icon.IconType.ResetDistance
-            is JsonIcon.AboveBridge -> Icon.IconType.AboveBridge
-            is JsonIcon.FortCastle -> Icon.IconType.FortCastle
-            is JsonIcon.House -> Icon.IconType.House
-            is JsonIcon.TrafficLight -> Icon.IconType.TrafficLight
-            is JsonIcon.Tunnel -> Icon.IconType.Tunnel
-            is JsonIcon.UnderBridge -> Icon.IconType.UnderBridge
-            is JsonIcon.Alert -> Icon.IconType.Alert
-            is JsonIcon.Roundabout -> Icon.IconType.Roundabout
-            is JsonIcon.Stop -> Icon.IconType.Stop
-            is JsonIcon.RiverWater -> Icon.IconType.RiverWater
-            is JsonIcon.Unknown -> Icon.IconType.Unknown
+            is Rn2Icon.Danger1 -> Icon.IconType.Danger1
+            is Rn2Icon.Danger2 -> Icon.IconType.Danger2
+            is Rn2Icon.Danger3 -> Icon.IconType.Danger3
+            is Rn2Icon.FuelZone -> Icon.IconType.FuelZone
+            is Rn2Icon.ResetDistance -> Icon.IconType.ResetDistance
+            is Rn2Icon.AboveBridge -> Icon.IconType.AboveBridge
+            is Rn2Icon.FortCastle -> Icon.IconType.FortCastle
+            is Rn2Icon.House -> Icon.IconType.House
+            is Rn2Icon.TrafficLight -> Icon.IconType.TrafficLight
+            is Rn2Icon.Tunnel -> Icon.IconType.Tunnel
+            is Rn2Icon.UnderBridge -> Icon.IconType.UnderBridge
+            is Rn2Icon.Alert -> Icon.IconType.Alert
+            is Rn2Icon.Roundabout -> Icon.IconType.Roundabout
+            is Rn2Icon.Stop -> Icon.IconType.Stop
+            is Rn2Icon.RiverWater -> Icon.IconType.RiverWater
+            is Rn2Icon.Unknown -> Icon.IconType.Unknown
         }
 
         return Icon(

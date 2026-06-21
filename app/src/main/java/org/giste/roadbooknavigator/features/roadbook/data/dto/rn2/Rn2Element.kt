@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.roadbook.data.dto
+package org.giste.roadbooknavigator.features.roadbook.data.dto.rn2
 
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.Serializable
@@ -25,17 +25,17 @@ import kotlinx.serialization.json.JsonElement as KJsonElement
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 
-@Serializable(with = JsonElementSerializer::class)
-sealed class JsonElement
+@Serializable(with = Rn2ElementSerializer::class)
+sealed class Rn2Element
 
-object JsonElementSerializer : JsonContentPolymorphicSerializer<JsonElement>(JsonElement::class) {
-    override fun selectDeserializer(element: KJsonElement): DeserializationStrategy<JsonElement> {
+object Rn2ElementSerializer : JsonContentPolymorphicSerializer<Rn2Element>(Rn2Element::class) {
+    override fun selectDeserializer(element: KJsonElement): DeserializationStrategy<Rn2Element> {
         val jsonObject = element.jsonObject
         return when (val type = jsonObject["type"]!!.jsonPrimitive.content) {
-            "Road" -> JsonRoad.serializer()
-            "Track" -> JsonTrack.serializer()
-            "Text" -> JsonText.serializer()
-            "Icon" -> JsonIconSerializer
+            "Road" -> Rn2Road.serializer()
+            "Track" -> Rn2Track.serializer()
+            "Text" -> Rn2Text.serializer()
+            "Icon" -> Rn2IconSerializer
             else -> throw SerializationException("Unknown JsonElement type: $type")
         }
     }

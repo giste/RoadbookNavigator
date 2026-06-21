@@ -15,29 +15,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.roadbook.data.dto
+package org.giste.roadbooknavigator.features.roadbook.data.dto.persistence
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+/**
+ * Persistent DTO for geographic coordinates.
+ */
 @Serializable
-data class JsonWaypoint(
-    @SerialName("t_uuid") val tUuid: String,
-    @SerialName("waypointid") val waypointId: Int,
-    val lat: Double,
-    val lon: Double,
-    val ele: Double = 0.0,
-    val show: Boolean,
-    val tulip: JsonTulip,
-    val notes: JsonNotes,
-)
-
-@Serializable
-data class JsonTulip(
-    val elements: List<JsonElement> = emptyList()
-)
-
-@Serializable
-data class JsonNotes(
-    val elements: List<JsonElement> = emptyList()
+data class PersistentCoordinates(
+    val latitude: Double,
+    val longitude: Double,
+    val elevation: Double = 0.0,
 )

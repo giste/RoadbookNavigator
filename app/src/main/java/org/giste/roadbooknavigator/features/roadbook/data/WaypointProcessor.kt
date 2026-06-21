@@ -26,8 +26,8 @@
 package org.giste.roadbooknavigator.features.roadbook.data
 
 import org.giste.roadbooknavigator.core.util.Logger
-import org.giste.roadbooknavigator.features.roadbook.data.dto.JsonIcon
-import org.giste.roadbooknavigator.features.roadbook.data.dto.JsonWaypoint
+import org.giste.roadbooknavigator.features.roadbook.data.dto.rn2.Rn2Icon
+import org.giste.roadbooknavigator.features.roadbook.data.dto.rn2.Rn2Waypoint
 import org.giste.roadbooknavigator.features.roadbook.domain.Coordinates
 import org.giste.roadbooknavigator.features.roadbook.domain.Distance
 import org.giste.roadbooknavigator.features.roadbook.domain.Waypoint
@@ -49,7 +49,7 @@ class WaypointProcessor @Inject constructor(
     }
 
     private data class WaypointProcessingState(
-        val waypoint: JsonWaypoint,
+        val waypoint: Rn2Waypoint,
         val accumulatedDist: Double,
         val lastVisibleDist: Double,
         val resetFromPrevious: Boolean,
@@ -58,7 +58,7 @@ class WaypointProcessor @Inject constructor(
     /**
      * Processes a raw list of JSON waypoints into a list of Domain Waypoints.
      */
-    fun processWaypoints(waypoints: List<JsonWaypoint>, threshold: Double? = null): List<Waypoint> {
+    fun processWaypoints(waypoints: List<Rn2Waypoint>, threshold: Double? = null): List<Waypoint> {
         if (waypoints.isEmpty()) {
             Logger.w("Waypoint list is empty")
             return emptyList()
@@ -67,7 +67,7 @@ class WaypointProcessor @Inject constructor(
         val states = mutableListOf<WaypointProcessingState>()
         var currentAccDist = 0.0
         var currentLastVisibleDist = 0.0
-        var previousWaypoint: JsonWaypoint? = null
+        var previousWaypoint: Rn2Waypoint? = null
         var previousWasReset = false
 
         for (waypoint in waypoints) {
@@ -124,16 +124,16 @@ class WaypointProcessor @Inject constructor(
         }
     }
 
-    private fun hasReset(waypoint: JsonWaypoint): Boolean {
-        return waypoint.notes.elements.any { it is JsonIcon.ResetDistance }
+    private fun hasReset(waypoint: Rn2Waypoint): Boolean {
+        return waypoint.notes.elements.any { it is Rn2Icon.ResetDistance }
     }
 
-    private fun mapToDangerLevel(waypoint: JsonWaypoint): DangerLevel {
-        waypoint.notes.elements.filterIsInstance<JsonIcon>().forEach {
+    private fun mapToDangerLevel(waypoint: Rn2Waypoint): DangerLevel {
+        waypoint.notes.elements.filterIsInstance<Rn2Icon>().forEach {
             when (it) {
-                is JsonIcon.Danger1 -> return DangerLevel.LOW
-                is JsonIcon.Danger2 -> return DangerLevel.MEDIUM
-                is JsonIcon.Danger3 -> return DangerLevel.HIGH
+                is Rn2Icon.Danger1 -> return DangerLevel.LOW
+                is Rn2Icon.Danger2 -> return DangerLevel.MEDIUM
+                is Rn2Icon.Danger3 -> return DangerLevel.HIGH
                 else -> {}
             }
         }

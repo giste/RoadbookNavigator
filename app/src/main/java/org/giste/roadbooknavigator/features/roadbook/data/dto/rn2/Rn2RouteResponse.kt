@@ -15,15 +15,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.roadbook.data.dto
+package org.giste.roadbooknavigator.features.roadbook.data.dto.rn2
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
 @Serializable
-data class JsonRouteResponse(
-    val route: JsonRouteData
+data class Rn2RouteResponse(
+    val route: Rn2RouteData
 ) {
     companion object {
         private val json = Json {
@@ -34,20 +34,20 @@ data class JsonRouteResponse(
         /**
          * Factory method to create a JsonRouteResponse from a JSON string
          */
-        fun fromJson(jsonString: String): JsonRouteResponse {
-            return json.decodeFromString<JsonRouteResponse>(jsonString)
+        fun fromJson(jsonString: String): Rn2RouteResponse {
+            return json.decodeFromString<Rn2RouteResponse>(jsonString)
         }
     }
 }
 
 @Serializable
-data class JsonRouteData(
+data class Rn2RouteData(
     val version: Int,
     val name: String = "",
     val description: String = "",
     @SerialName("startlocation") val startLocation: String = "",
     @SerialName("endlocation") val endLocation: String = "",
     @SerialName("current_style") val currentStyle: String = "",
-    val waypoints: List<JsonWaypoint> = emptyList(),
-    val settings: JsonRouteSettings? = null
+    val waypoints: List<Rn2Waypoint> = emptyList(),
+    val settings: Rn2RouteSettings? = null
 )

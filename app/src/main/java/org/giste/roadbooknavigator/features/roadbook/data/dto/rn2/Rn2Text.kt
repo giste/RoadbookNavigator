@@ -15,14 +15,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.roadbook.data.dto
+package org.giste.roadbooknavigator.features.roadbook.data.dto.rn2
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class JsonRouteSettings(
-    val units: String = "metric",
-    @SerialName("coordFormat") val coordFormat: Int = 1,
-    val showHighlight: Boolean = true
-)
+data class Rn2Text(
+    val id: String? = null,
+    val text: String,
+    val fontSize: Int,
+    val lineHeight: Double? = null,
+    val width: Double,
+    val height: Double,
+    val maxWidth: Double? = null,
+    val maxHeight: Double? = null,
+    val x: Double,
+    val y: Double,
+) : Rn2Element()

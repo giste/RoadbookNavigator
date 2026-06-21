@@ -15,32 +15,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.roadbook.data.dto
+package org.giste.roadbooknavigator.features.roadbook.data.dto.persistence
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class JsonRoad(
-    val start: JsonPoint? = null,
-    val end: JsonPoint? = null,
-    val typeId: Int? = null,
-    val handles: List<JsonHandle> = emptyList(),
-) : JsonElement()
-
-@Serializable
-data class JsonTrack(
-    val roadIn: JsonRoad,
-    val roadOut: JsonRoad,
-) : JsonElement()
-
-@Serializable
-data class JsonPoint(
-    val x: Double,
-    val y: Double
-)
-
-@Serializable
-data class JsonHandle(
-    val x: Double,
-    val y: Double
+data class PersistentRoute(
+    val name: String,
+    val description: String,
+    val startLocation: String,
+    val endLocation: String,
+    val waypoints: List<PersistentWaypoint>,
 )

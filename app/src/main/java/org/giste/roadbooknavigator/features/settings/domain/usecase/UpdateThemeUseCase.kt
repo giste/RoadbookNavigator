@@ -15,16 +15,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.settings.domain
+package org.giste.roadbooknavigator.features.settings.domain.usecase
+
+import org.giste.roadbooknavigator.features.settings.domain.AppTheme
+import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
+import javax.inject.Inject
 
 /**
- * Defines the screen orientation behavior of the application.
+ * Use case to update the application visual theme.
  */
-enum class AppOrientation {
-    /** Forced vertical (Portrait) mode. */
-    VERTICAL,
-    /** Forced horizontal (Landscape) mode. */
-    HORIZONTAL,
-    /** Follows the device sensor/system orientation setting. */
-    FOLLOW_SYSTEM
+class UpdateThemeUseCase @Inject constructor(
+    private val repository: SettingsRepository
+) {
+    suspend operator fun invoke(theme: AppTheme): Result<Unit> = runCatching {
+        repository.setTheme(theme)
+    }
 }

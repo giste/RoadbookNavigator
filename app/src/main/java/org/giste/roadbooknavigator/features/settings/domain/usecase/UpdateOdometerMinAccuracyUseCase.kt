@@ -15,16 +15,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.settings.domain
+package org.giste.roadbooknavigator.features.settings.domain.usecase
+
+import org.giste.roadbooknavigator.features.settings.domain.AccuracyThreshold
+import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
+import javax.inject.Inject
 
 /**
- * Defines the screen orientation behavior of the application.
+ * Use case to update the minimum odometer (horizontal) accuracy.
+ * Uses [AccuracyThreshold] to ensure domain validity.
  */
-enum class AppOrientation {
-    /** Forced vertical (Portrait) mode. */
-    VERTICAL,
-    /** Forced horizontal (Landscape) mode. */
-    HORIZONTAL,
-    /** Follows the device sensor/system orientation setting. */
-    FOLLOW_SYSTEM
+class UpdateOdometerMinAccuracyUseCase @Inject constructor(
+    private val repository: SettingsRepository
+) {
+    suspend operator fun invoke(accuracy: Float): Result<Unit> = runCatching {
+        val validAccuracy = AccuracyThreshold(accuracy)
+        repository.setOdometerMinAccuracy(validAccuracy.meters)
+    }
 }

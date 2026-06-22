@@ -1,4 +1,5 @@
 /*
+ * Rn2 Viewer
  * Copyright (C) 2026  Giste
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,16 +16,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.settings.domain
+package org.giste.roadbooknavigator.features.settings.domain.usecase
 
-/**
- * Defines the screen orientation behavior of the application.
- */
-enum class AppOrientation {
-    /** Forced vertical (Portrait) mode. */
-    VERTICAL,
-    /** Forced horizontal (Landscape) mode. */
-    HORIZONTAL,
-    /** Follows the device sensor/system orientation setting. */
-    FOLLOW_SYSTEM
+import kotlinx.coroutines.flow.Flow
+import org.giste.roadbooknavigator.features.settings.domain.AppSettings
+import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
+import javax.inject.Inject
+
+class GetSettingsUseCase @Inject constructor(
+    private val repository: SettingsRepository
+) {
+    operator fun invoke(): Flow<AppSettings> = repository.getSettings()
 }

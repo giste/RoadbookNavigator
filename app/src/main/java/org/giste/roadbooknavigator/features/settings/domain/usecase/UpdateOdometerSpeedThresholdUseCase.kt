@@ -15,16 +15,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.settings.domain
+package org.giste.roadbooknavigator.features.settings.domain.usecase
+
+import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
+import org.giste.roadbooknavigator.features.settings.domain.SpeedThreshold
+import javax.inject.Inject
 
 /**
- * Defines the screen orientation behavior of the application.
+ * Use case to update the odometer speed threshold.
+ * Uses [SpeedThreshold] to ensure domain validity.
  */
-enum class AppOrientation {
-    /** Forced vertical (Portrait) mode. */
-    VERTICAL,
-    /** Forced horizontal (Landscape) mode. */
-    HORIZONTAL,
-    /** Follows the device sensor/system orientation setting. */
-    FOLLOW_SYSTEM
+class UpdateOdometerSpeedThresholdUseCase @Inject constructor(
+    private val repository: SettingsRepository
+) {
+    suspend operator fun invoke(threshold: Float): Result<Unit> = runCatching {
+        val validThreshold = SpeedThreshold(threshold)
+        repository.setOdometerSpeedThreshold(validThreshold.metersPerSecond)
+    }
 }

@@ -38,7 +38,7 @@ data class PersistentTrack(
 
 @Serializable
 data class PersistentIcon(
-    val type: String,
+    val iconType: String,
     val width: Int,
     val height: Int,
     val center: PersistentPoint,

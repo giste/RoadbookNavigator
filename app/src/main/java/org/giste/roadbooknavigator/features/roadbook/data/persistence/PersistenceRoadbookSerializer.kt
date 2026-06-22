@@ -21,7 +21,15 @@ import androidx.datastore.core.Serializer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.polymorphic
+import kotlinx.serialization.modules.subclass
+import org.giste.roadbooknavigator.features.roadbook.data.persistence.dto.PersistentElement
+import org.giste.roadbooknavigator.features.roadbook.data.persistence.dto.PersistentIcon
+import org.giste.roadbooknavigator.features.roadbook.data.persistence.dto.PersistentRoad
 import org.giste.roadbooknavigator.features.roadbook.data.persistence.dto.PersistentRoute
+import org.giste.roadbooknavigator.features.roadbook.data.persistence.dto.PersistentText
+import org.giste.roadbooknavigator.features.roadbook.data.persistence.dto.PersistentTrack
 import java.io.InputStream
 import java.io.OutputStream
 import javax.inject.Inject
@@ -31,11 +39,26 @@ import javax.inject.Inject
  */
 class PersistenceRoadbookSerializer @Inject constructor() : Serializer<PersistentRoute> {
 
+    private val json = Json {
+        encodeDefaults = true
+        ignoreUnknownKeys = true
+        isLenient = true
+        classDiscriminator = "#type"
+        serializersModule = SerializersModule {
+            polymorphic(PersistentElement::class) {
+                subclass(PersistentTrack::class)
+                subclass(PersistentRoad::class)
+                subclass(PersistentIcon::class)
+                subclass(PersistentText::class)
+            }
+        }
+    }
+
     override val defaultValue: PersistentRoute = PersistentRoute.empty
 
     override suspend fun readFrom(input: InputStream): PersistentRoute {
         return try {
-            Json.decodeFromString(
+            json.decodeFromString(
                 deserializer = PersistentRoute.serializer(),
                 string = input.readBytes().decodeToString()
             )
@@ -47,7 +70,7 @@ class PersistenceRoadbookSerializer @Inject constructor() : Serializer<Persisten
     override suspend fun writeTo(t: PersistentRoute, output: OutputStream) {
         withContext(Dispatchers.IO) {
             output.write(
-                Json.encodeToString(
+                json.encodeToString(
                     serializer = PersistentRoute.serializer(),
                     value = t
                 ).encodeToByteArray()

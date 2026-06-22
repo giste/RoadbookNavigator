@@ -113,7 +113,7 @@ class PersistenceMapper @Inject constructor() {
                 roadOut = toPersistent(element.roadOut) as PersistentRoad
             )
             is Icon -> PersistentIcon(
-                type = element.type.name,
+                iconType = element.type.name,
                 width = element.width,
                 height = element.height,
                 center = PersistentPoint(element.center.x, element.center.y),
@@ -148,7 +148,7 @@ class PersistenceMapper @Inject constructor() {
                 roadOut = toDomain(pe.roadOut) as Road
             )
             is PersistentIcon -> Icon(
-                type = Icon.IconType.valueOf(pe.type),
+                type = Icon.IconType.valueOf(pe.iconType),
                 width = pe.width,
                 height = pe.height,
                 center = Point(pe.center.x, pe.center.y),

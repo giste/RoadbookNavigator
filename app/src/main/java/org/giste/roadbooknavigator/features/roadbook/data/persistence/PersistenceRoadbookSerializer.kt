@@ -15,13 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.roadbook.data
+package org.giste.roadbooknavigator.features.roadbook.data.persistence
 
 import androidx.datastore.core.Serializer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
-import org.giste.roadbooknavigator.features.roadbook.data.dto.persistence.PersistentRoute
+import org.giste.roadbooknavigator.features.roadbook.data.persistence.dto.PersistentRoute
 import java.io.InputStream
 import java.io.OutputStream
 import javax.inject.Inject
@@ -29,7 +29,7 @@ import javax.inject.Inject
 /**
  * Serializer for [PersistentRoute] using kotlinx.serialization JSON.
  */
-class RoadbookSerializer @Inject constructor() : Serializer<PersistentRoute> {
+class PersistenceRoadbookSerializer @Inject constructor() : Serializer<PersistentRoute> {
 
     override val defaultValue: PersistentRoute = PersistentRoute.empty
 

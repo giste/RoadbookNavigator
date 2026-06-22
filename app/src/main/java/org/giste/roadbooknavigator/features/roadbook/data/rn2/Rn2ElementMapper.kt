@@ -15,15 +15,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.roadbook.data
+package org.giste.roadbooknavigator.features.roadbook.data.rn2
 
 import org.giste.roadbooknavigator.core.util.Logger
-import org.giste.roadbooknavigator.features.roadbook.data.dto.rn2.Rn2Element
-import org.giste.roadbooknavigator.features.roadbook.data.dto.rn2.Rn2Icon
-import org.giste.roadbooknavigator.features.roadbook.data.dto.rn2.Rn2Road
-import org.giste.roadbooknavigator.features.roadbook.data.dto.rn2.Rn2Text
-import org.giste.roadbooknavigator.features.roadbook.data.dto.rn2.Rn2Track
-import org.giste.roadbooknavigator.features.roadbook.data.dto.rn2.Rn2Waypoint
+import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2Element
+import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2Icon
+import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2Road
+import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2Text
+import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2Track
+import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2Waypoint
 import org.giste.roadbooknavigator.features.roadbook.domain.*
 import javax.inject.Inject
 
@@ -31,7 +31,7 @@ import javax.inject.Inject
  * Mapper class responsible for converting individual JSON elements (Icons, Roads, etc.)
  * into their corresponding Domain models.
  */
-class ElementMapper @Inject constructor(
+class Rn2ElementMapper @Inject constructor(
     private val geometryCalculator: RoadbookGeometryCalculator
 ) {
 

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.roadbook.data.dto.rn2
+package org.giste.roadbooknavigator.features.roadbook.data.rn2.dto
 
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.Serializable
@@ -73,7 +73,7 @@ sealed class Rn2Icon : Rn2Element() {
 
 object Rn2IconSerializer : JsonContentPolymorphicSerializer<Rn2Icon>(Rn2Icon::class) {
     override fun selectDeserializer(element: KJsonElement): DeserializationStrategy<Rn2Icon> {
-        val id = element.jsonObject["id"]!!.jsonPrimitive.content
+        val id = element.jsonObject["id"]?.jsonPrimitive?.content
         return when (id) {
             Rn2Icon.CROSS_DANGER_1_ID -> Rn2Icon.Danger1.serializer()
             Rn2Icon.CROSS_DANGER_2_ID -> Rn2Icon.Danger2.serializer()

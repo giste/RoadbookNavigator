@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.roadbook.data.dto.persistence
+package org.giste.roadbooknavigator.features.roadbook.data.persistence.dto
 
 import kotlinx.serialization.Serializable
 

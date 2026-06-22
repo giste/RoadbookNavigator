@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.roadbook.data.dto.rn2
+package org.giste.roadbooknavigator.features.roadbook.data.rn2.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -50,4 +50,33 @@ data class Rn2RouteData(
     @SerialName("current_style") val currentStyle: String = "",
     val waypoints: List<Rn2Waypoint> = emptyList(),
     val settings: Rn2RouteSettings? = null
+)
+
+@Serializable
+data class Rn2Waypoint(
+    @SerialName("t_uuid") val tUuid: String,
+    @SerialName("waypointid") val waypointId: Int,
+    val lat: Double,
+    val lon: Double,
+    val ele: Double = 0.0,
+    val show: Boolean,
+    val tulip: Rn2Tulip,
+    val notes: Rn2Notes,
+)
+
+@Serializable
+data class Rn2Tulip(
+    val elements: List<Rn2Element> = emptyList()
+)
+
+@Serializable
+data class Rn2Notes(
+    val elements: List<Rn2Element> = emptyList()
+)
+
+@Serializable
+data class Rn2RouteSettings(
+    val units: String = "metric",
+    @SerialName("coordFormat") val coordFormat: Int = 1,
+    val showHighlight: Boolean = true
 )

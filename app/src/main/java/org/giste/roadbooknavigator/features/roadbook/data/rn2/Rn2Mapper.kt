@@ -1,5 +1,4 @@
 /*
- * Rn2 Viewer
  * Copyright (C) 2026  Giste
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,11 +15,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.roadbook.data
+package org.giste.roadbooknavigator.features.roadbook.data.rn2
 
 import org.giste.roadbooknavigator.core.util.Logger
-import org.giste.roadbooknavigator.features.roadbook.data.dto.rn2.Rn2RouteData
-import org.giste.roadbooknavigator.features.roadbook.data.dto.rn2.Rn2RouteResponse
+import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2RouteData
+import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2RouteResponse
 import org.giste.roadbooknavigator.features.roadbook.domain.Route
 import javax.inject.Inject
 

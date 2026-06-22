@@ -12,26 +12,17 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.roadbook.data
+package org.giste.roadbooknavigator.features.roadbook.data.rn2
 
 import org.giste.roadbooknavigator.core.util.Logger
-import org.giste.roadbooknavigator.features.roadbook.data.dto.rn2.Rn2Icon
-import org.giste.roadbooknavigator.features.roadbook.data.dto.rn2.Rn2Waypoint
+import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2Icon
+import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2Waypoint
 import org.giste.roadbooknavigator.features.roadbook.domain.Coordinates
 import org.giste.roadbooknavigator.features.roadbook.domain.Distance
 import org.giste.roadbooknavigator.features.roadbook.domain.Waypoint
-import org.giste.roadbooknavigator.features.roadbook.domain.Waypoint.DangerLevel
 import javax.inject.Inject
 import kotlin.math.roundToLong
 
@@ -41,7 +32,7 @@ import kotlin.math.roundToLong
  */
 class WaypointProcessor @Inject constructor(
     private val geometryCalculator: RoadbookGeometryCalculator,
-    private val elementMapper: ElementMapper
+    private val rn2ElementMapper: Rn2ElementMapper
 ) {
 
     companion object {
@@ -88,7 +79,7 @@ class WaypointProcessor @Inject constructor(
             if (waypoint.show) {
                 currentLastVisibleDist = currentAccDist
             }
-            
+
             previousWaypoint = waypoint
             previousWasReset = hasReset(waypoint)
         }
@@ -112,11 +103,22 @@ class WaypointProcessor @Inject constructor(
                 ),
                 distance = Distance(state.accumulatedDist.roundToLong()),
                 distanceFromPrevious = Distance(distFromPrev.roundToLong()),
-                shortDistance = distFromPrev > 0 && distFromPrev < (threshold ?: SHORT_DISTANCE_THRESHOLD),
+                shortDistance = distFromPrev > 0 && distFromPrev < (threshold
+                    ?: SHORT_DISTANCE_THRESHOLD),
                 reset = hasReset(state.waypoint),
                 dangerLevel = mapToDangerLevel(state.waypoint),
-                tulipElements = elementMapper.mapElements(state.waypoint.tulip.elements, prevWaypoint, state.waypoint, nextWaypoint),
-                notesElements = elementMapper.mapElements(state.waypoint.notes.elements, null, state.waypoint, null),
+                tulipElements = rn2ElementMapper.mapElements(
+                    state.waypoint.tulip.elements,
+                    prevWaypoint,
+                    state.waypoint,
+                    nextWaypoint
+                ),
+                notesElements = rn2ElementMapper.mapElements(
+                    state.waypoint.notes.elements,
+                    null,
+                    state.waypoint,
+                    null
+                ),
             )
             Logger.v("Processed waypoint ${state.waypoint.waypointId}: $domainWaypoint")
 
@@ -128,15 +130,15 @@ class WaypointProcessor @Inject constructor(
         return waypoint.notes.elements.any { it is Rn2Icon.ResetDistance }
     }
 
-    private fun mapToDangerLevel(waypoint: Rn2Waypoint): DangerLevel {
+    private fun mapToDangerLevel(waypoint: Rn2Waypoint): Waypoint.DangerLevel {
         waypoint.notes.elements.filterIsInstance<Rn2Icon>().forEach {
             when (it) {
-                is Rn2Icon.Danger1 -> return DangerLevel.LOW
-                is Rn2Icon.Danger2 -> return DangerLevel.MEDIUM
-                is Rn2Icon.Danger3 -> return DangerLevel.HIGH
+                is Rn2Icon.Danger1 -> return Waypoint.DangerLevel.LOW
+                is Rn2Icon.Danger2 -> return Waypoint.DangerLevel.MEDIUM
+                is Rn2Icon.Danger3 -> return Waypoint.DangerLevel.HIGH
                 else -> {}
             }
         }
-        return DangerLevel.NONE
+        return Waypoint.DangerLevel.NONE
     }
 }

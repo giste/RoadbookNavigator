@@ -15,17 +15,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.roadbook.data
+package org.giste.roadbooknavigator.features.roadbook.data.persistence
 
-import org.giste.roadbooknavigator.features.roadbook.data.dto.persistence.PersistentCoordinates
-import org.giste.roadbooknavigator.features.roadbook.data.dto.persistence.PersistentElement
-import org.giste.roadbooknavigator.features.roadbook.data.dto.persistence.PersistentIcon
-import org.giste.roadbooknavigator.features.roadbook.data.dto.persistence.PersistentPoint
-import org.giste.roadbooknavigator.features.roadbook.data.dto.persistence.PersistentRoad
-import org.giste.roadbooknavigator.features.roadbook.data.dto.persistence.PersistentRoute
-import org.giste.roadbooknavigator.features.roadbook.data.dto.persistence.PersistentText
-import org.giste.roadbooknavigator.features.roadbook.data.dto.persistence.PersistentTrack
-import org.giste.roadbooknavigator.features.roadbook.data.dto.persistence.PersistentWaypoint
+import org.giste.roadbooknavigator.features.roadbook.data.persistence.dto.PersistentCoordinates
+import org.giste.roadbooknavigator.features.roadbook.data.persistence.dto.PersistentElement
+import org.giste.roadbooknavigator.features.roadbook.data.persistence.dto.PersistentIcon
+import org.giste.roadbooknavigator.features.roadbook.data.persistence.dto.PersistentPoint
+import org.giste.roadbooknavigator.features.roadbook.data.persistence.dto.PersistentRoad
+import org.giste.roadbooknavigator.features.roadbook.data.persistence.dto.PersistentRoute
+import org.giste.roadbooknavigator.features.roadbook.data.persistence.dto.PersistentText
+import org.giste.roadbooknavigator.features.roadbook.data.persistence.dto.PersistentTrack
+import org.giste.roadbooknavigator.features.roadbook.data.persistence.dto.PersistentWaypoint
 import org.giste.roadbooknavigator.features.roadbook.domain.Coordinates
 import org.giste.roadbooknavigator.features.roadbook.domain.Distance
 import org.giste.roadbooknavigator.features.roadbook.domain.Element

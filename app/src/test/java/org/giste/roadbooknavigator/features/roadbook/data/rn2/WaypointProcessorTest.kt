@@ -15,12 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.roadbook.data
+package org.giste.roadbooknavigator.features.roadbook.data.rn2
 
 import io.mockk.mockk
-import org.giste.roadbooknavigator.features.roadbook.data.dto.rn2.Rn2Notes
-import org.giste.roadbooknavigator.features.roadbook.data.dto.rn2.Rn2Tulip
-import org.giste.roadbooknavigator.features.roadbook.data.dto.rn2.Rn2Waypoint
+import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2Notes
+import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2Tulip
+import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2Waypoint
+import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2Element
+import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2Icon
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -31,11 +33,11 @@ class WaypointProcessorTest {
 
     private lateinit var processor: WaypointProcessor
     private val geometryCalculator = RoadbookGeometryCalculator()
-    private val elementMapper: ElementMapper = mockk(relaxed = true)
+    private val rn2ElementMapper: Rn2ElementMapper = mockk(relaxed = true)
 
     @Before
     fun setup() {
-        processor = WaypointProcessor(geometryCalculator, elementMapper)
+        processor = WaypointProcessor(geometryCalculator, rn2ElementMapper)
     }
 
     @Test
@@ -74,7 +76,7 @@ class WaypointProcessorTest {
         // WaypointProcessor defines reset based on Rn2Icon.ResetDistance in notes
         // Our mock helper doesn't add icons yet, so we need to craft them.
         
-        val resetIcon = org.giste.roadbooknavigator.features.roadbook.data.dto.rn2.Rn2Icon.ResetDistance(
+        val resetIcon = Rn2Icon.ResetDistance(
             id = "308c7365-bc3f-451b-9e98-531e9015024f"
         )
         
@@ -111,7 +113,7 @@ class WaypointProcessorTest {
         lat: Double, 
         lon: Double, 
         show: Boolean,
-        notesElements: List<org.giste.roadbooknavigator.features.roadbook.data.dto.rn2.Rn2Element> = emptyList()
+        notesElements: List<Rn2Element> = emptyList()
     ): Rn2Waypoint {
         return Rn2Waypoint(
             tUuid = "uuid-$id",

@@ -1,5 +1,4 @@
 /*
- * Rn2 Viewer
  * Copyright (C) 2026  Giste
  *
  * This program is free software: you can redistribute it and/or modify
@@ -13,15 +12,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.roadbook.data
+package org.giste.roadbooknavigator.features.roadbook.data.rn2
 
+import org.giste.roadbooknavigator.features.roadbook.domain.Icon
 import org.giste.roadbooknavigator.features.roadbook.domain.Road
 import org.giste.roadbooknavigator.features.roadbook.domain.Track
 import org.junit.Assert
@@ -38,8 +34,8 @@ class Rn2MapperTest {
     @Before
     fun setup() {
         val geometryCalculator = RoadbookGeometryCalculator()
-        val elementMapper = ElementMapper(geometryCalculator)
-        val waypointProcessor = WaypointProcessor(geometryCalculator, elementMapper)
+        val rn2ElementMapper = Rn2ElementMapper(geometryCalculator)
+        val waypointProcessor = WaypointProcessor(geometryCalculator, rn2ElementMapper)
         mapper = Rn2Mapper(waypointProcessor)
     }
 
@@ -344,8 +340,8 @@ class Rn2MapperTest {
         val route = mapper.mapToDomain(jsonString)
 
         // Then
-        val icon = route.waypoints[0].tulipElements[0] as org.giste.roadbooknavigator.features.roadbook.domain.Icon
-        assertEquals(org.giste.roadbooknavigator.features.roadbook.domain.Icon.IconType.Unknown, icon.type)
+        val icon = route.waypoints[0].tulipElements[0] as Icon
+        assertEquals(Icon.IconType.Unknown, icon.type)
         assertEquals(unknownId, icon.originalId)
     }
 

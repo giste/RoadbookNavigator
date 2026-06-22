@@ -15,9 +15,35 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.roadbook.data.dto.persistence
+package org.giste.roadbooknavigator.features.roadbook.data.persistence.dto
 
 import kotlinx.serialization.Serializable
+
+@Serializable
+data class PersistentRoute(
+    val name: String = "",
+    val description: String = "",
+    val startLocation: String = "",
+    val endLocation: String = "",
+    val waypoints: List<PersistentWaypoint> = emptyList(),
+) {
+    companion object {
+        val empty = PersistentRoute()
+    }
+}
+
+@Serializable
+data class PersistentWaypoint(
+    val number: Int,
+    val coordinates: PersistentCoordinates,
+    val distanceMeters: Long,
+    val distFromPrevMeters: Long,
+    val shortDistance: Boolean,
+    val reset: Boolean,
+    val dangerLevel: String,
+    val tulipElements: List<PersistentElement>,
+    val notesElements: List<PersistentElement>,
+)
 
 /**
  * Persistent DTO for geographic coordinates.
@@ -27,4 +53,13 @@ data class PersistentCoordinates(
     val latitude: Double,
     val longitude: Double,
     val elevation: Double = 0.0,
+)
+
+/**
+ * Persistent DTO for a 2D point in the drawing canvas.
+ */
+@Serializable
+data class PersistentPoint(
+    val x: Double,
+    val y: Double,
 )

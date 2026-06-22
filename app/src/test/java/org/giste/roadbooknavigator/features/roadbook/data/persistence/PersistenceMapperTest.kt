@@ -15,10 +15,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.roadbook.data
+package org.giste.roadbooknavigator.features.roadbook.data.persistence
 
-import org.giste.roadbooknavigator.features.roadbook.domain.*
-import org.junit.Assert.assertEquals
+import org.giste.roadbooknavigator.features.roadbook.domain.Coordinates
+import org.giste.roadbooknavigator.features.roadbook.domain.Distance
+import org.giste.roadbooknavigator.features.roadbook.domain.Icon
+import org.giste.roadbooknavigator.features.roadbook.domain.Point
+import org.giste.roadbooknavigator.features.roadbook.domain.Road
+import org.giste.roadbooknavigator.features.roadbook.domain.Route
+import org.giste.roadbooknavigator.features.roadbook.domain.Text
+import org.giste.roadbooknavigator.features.roadbook.domain.Track
+import org.giste.roadbooknavigator.features.roadbook.domain.Waypoint
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 
@@ -50,7 +58,11 @@ class PersistenceMapperTest {
                     dangerLevel = Waypoint.DangerLevel.LOW,
                     tulipElements = listOf(
                         Track(
-                            roadIn = Road(Point(0.0, 50.0), Point(0.0, 0.0), Road.RoadType.TarmacRoad),
+                            roadIn = Road(
+                                Point(0.0, 50.0),
+                                Point(0.0, 0.0),
+                                Road.RoadType.TarmacRoad
+                            ),
                             roadOut = Road(Point(0.0, 0.0), Point(50.0, 0.0), Road.RoadType.Track)
                         )
                     ),
@@ -69,7 +81,16 @@ class PersistenceMapperTest {
                     dangerLevel = Waypoint.DangerLevel.HIGH,
                     tulipElements = emptyList(),
                     notesElements = listOf(
-                        Icon(Icon.IconType.Danger3, 60, 60, Point(0.0, 0.0), 45, 1.5, 1.5, "danger_id")
+                        Icon(
+                            Icon.IconType.Danger3,
+                            60,
+                            60,
+                            Point(0.0, 0.0),
+                            45,
+                            1.5,
+                            1.5,
+                            "danger_id"
+                        )
                     )
                 )
             )
@@ -80,29 +101,29 @@ class PersistenceMapperTest {
         val result = mapper.toDomain(persistent)
 
         // Then
-        assertEquals(route.name, result.name)
-        assertEquals(route.description, result.description)
-        assertEquals(route.startLocation, result.startLocation)
-        assertEquals(route.endLocation, result.endLocation)
-        assertEquals(route.waypoints.size, result.waypoints.size)
+        Assert.assertEquals(route.name, result.name)
+        Assert.assertEquals(route.description, result.description)
+        Assert.assertEquals(route.startLocation, result.startLocation)
+        Assert.assertEquals(route.endLocation, result.endLocation)
+        Assert.assertEquals(route.waypoints.size, result.waypoints.size)
 
         for (i in route.waypoints.indices) {
             val expectedWp = route.waypoints[i]
             val actualWp = result.waypoints[i]
 
-            assertEquals(expectedWp.number, actualWp.number)
-            assertEquals(expectedWp.coordinates, actualWp.coordinates)
-            assertEquals(expectedWp.distance, actualWp.distance)
-            assertEquals(expectedWp.distanceFromPrevious, actualWp.distanceFromPrevious)
-            assertEquals(expectedWp.shortDistance, actualWp.shortDistance)
-            assertEquals(expectedWp.reset, actualWp.reset)
-            assertEquals(expectedWp.dangerLevel, actualWp.dangerLevel)
-            
-            assertEquals(expectedWp.tulipElements, actualWp.tulipElements)
-            assertEquals(expectedWp.notesElements, actualWp.notesElements)
+            Assert.assertEquals(expectedWp.number, actualWp.number)
+            Assert.assertEquals(expectedWp.coordinates, actualWp.coordinates)
+            Assert.assertEquals(expectedWp.distance, actualWp.distance)
+            Assert.assertEquals(expectedWp.distanceFromPrevious, actualWp.distanceFromPrevious)
+            Assert.assertEquals(expectedWp.shortDistance, actualWp.shortDistance)
+            Assert.assertEquals(expectedWp.reset, actualWp.reset)
+            Assert.assertEquals(expectedWp.dangerLevel, actualWp.dangerLevel)
+
+            Assert.assertEquals(expectedWp.tulipElements, actualWp.tulipElements)
+            Assert.assertEquals(expectedWp.notesElements, actualWp.notesElements)
         }
-        
+
         // Full object equality check (requires all domain models to be data classes)
-        assertEquals(route, result)
+        Assert.assertEquals(route, result)
     }
 }

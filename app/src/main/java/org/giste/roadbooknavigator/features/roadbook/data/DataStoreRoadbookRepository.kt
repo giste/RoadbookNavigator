@@ -24,7 +24,9 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import org.giste.roadbooknavigator.core.di.IoDispatcher
 import org.giste.roadbooknavigator.features.roadbook.data.di.RoadbookDataStoreQualifier
-import org.giste.roadbooknavigator.features.roadbook.data.dto.persistence.PersistentRoute
+import org.giste.roadbooknavigator.features.roadbook.data.persistence.dto.PersistentRoute
+import org.giste.roadbooknavigator.features.roadbook.data.persistence.PersistenceMapper
+import org.giste.roadbooknavigator.features.roadbook.data.rn2.Rn2Mapper
 import org.giste.roadbooknavigator.features.roadbook.domain.RoadbookRepository
 import org.giste.roadbooknavigator.features.roadbook.domain.Route
 import java.io.InputStream
@@ -34,7 +36,7 @@ import javax.inject.Inject
  * Implementation of [RoadbookRepository] that handles .rn2 files and internal caching
  * using Jetpack DataStore.
  */
-class RoadbookRepositoryImpl @Inject constructor(
+class DataStoreRoadbookRepository @Inject constructor(
     private val mapper: Rn2Mapper,
     private val persistenceMapper: PersistenceMapper,
     @param:RoadbookDataStoreQualifier private val dataStore: DataStore<PersistentRoute>,

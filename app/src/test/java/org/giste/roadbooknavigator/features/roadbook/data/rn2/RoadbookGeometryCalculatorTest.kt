@@ -15,9 +15,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.roadbook.data
+package org.giste.roadbooknavigator.features.roadbook.data.rn2
 
-import org.giste.roadbooknavigator.features.roadbook.data.dto.rn2.Rn2Waypoint
+import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2Waypoint
+import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2Notes
+import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2Tulip
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -104,8 +106,8 @@ class RoadbookGeometryCalculatorTest {
             lon = lon,
             ele = 0.0,
             show = true,
-            tulip = org.giste.roadbooknavigator.features.roadbook.data.dto.rn2.Rn2Tulip(emptyList()),
-            notes = org.giste.roadbooknavigator.features.roadbook.data.dto.rn2.Rn2Notes(emptyList())
+            tulip = Rn2Tulip(emptyList()),
+            notes = Rn2Notes(emptyList())
         )
     }
 }

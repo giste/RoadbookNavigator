@@ -27,7 +27,10 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import org.giste.roadbooknavigator.features.roadbook.data.dto.persistence.PersistentRoute
+import org.giste.roadbooknavigator.features.roadbook.data.persistence.dto.PersistentRoute
+import org.giste.roadbooknavigator.features.roadbook.data.persistence.PersistenceMapper
+import org.giste.roadbooknavigator.features.roadbook.data.persistence.PersistenceRoadbookSerializer
+import org.giste.roadbooknavigator.features.roadbook.data.rn2.Rn2Mapper
 import org.giste.roadbooknavigator.features.roadbook.domain.Route
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -40,12 +43,12 @@ import java.io.ByteArrayInputStream
 import java.io.File
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class RoadbookRepositoryImplTest {
+class DataStoreRoadbookRepositoryTest {
 
     @get:Rule
     val tempFolder = TemporaryFolder()
 
-    private lateinit var repository: RoadbookRepositoryImpl
+    private lateinit var repository: DataStoreRoadbookRepository
     private val mapper: Rn2Mapper = mockk()
     private val persistenceMapper: PersistenceMapper = mockk()
     private val testDispatcher = UnconfinedTestDispatcher()
@@ -56,11 +59,11 @@ class RoadbookRepositoryImplTest {
     @Before
     fun setup() {
         dataStore = DataStoreFactory.create(
-            serializer = RoadbookSerializer(),
+            serializer = PersistenceRoadbookSerializer(),
             scope = testScope,
             produceFile = { File(tempFolder.root, "active_roadbook.json") }
         )
-        repository = RoadbookRepositoryImpl(mapper, persistenceMapper, dataStore, testDispatcher)
+        repository = DataStoreRoadbookRepository(mapper, persistenceMapper, dataStore, testDispatcher)
     }
 
     @Test

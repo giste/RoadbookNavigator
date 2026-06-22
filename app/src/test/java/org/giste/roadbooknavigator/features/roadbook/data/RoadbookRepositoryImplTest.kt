@@ -37,6 +37,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import java.io.ByteArrayInputStream
+import java.io.File
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class RoadbookRepositoryImplTest {
@@ -57,7 +58,7 @@ class RoadbookRepositoryImplTest {
         dataStore = DataStoreFactory.create(
             serializer = RoadbookSerializer(),
             scope = testScope,
-            produceFile = { tempFolder.newFile("active_roadbook.json") }
+            produceFile = { File(tempFolder.root, "active_roadbook.json") }
         )
         repository = RoadbookRepositoryImpl(mapper, persistenceMapper, dataStore, testDispatcher)
     }
@@ -118,5 +119,34 @@ class RoadbookRepositoryImplTest {
 
         // Then
         assertEquals(route, result)
+    }
+
+    @Test
+    fun `processNewRoadbook should return failure when mapper throws exception`() = runTest {
+        // Given
+        val jsonContent = "invalid"
+        val inputStream = ByteArrayInputStream(jsonContent.toByteArray())
+        
+        every { mapper.mapToDomain(jsonContent) } throws IllegalArgumentException("Invalid JSON")
+
+        // When
+        val result = repository.processNewRoadbook(inputStream)
+
+        // Then
+        assertTrue(result.isFailure)
+        assertTrue(result.exceptionOrNull() is IllegalArgumentException)
+    }
+
+    @Test
+    fun `activeRoadbook should emit null when DataStore contains corrupted data`() = runTest {
+        // Given
+        val file = File(tempFolder.root, "active_roadbook.json")
+        file.writeText("corrupted { content")
+
+        // When
+        val result = repository.activeRoadbook.first()
+
+        // Then
+        assertNull(result)
     }
 }

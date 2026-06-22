@@ -15,20 +15,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.roadbook.data.dto.persistence
+package org.giste.roadbooknavigator.ui.roadbook
 
-import kotlinx.serialization.Serializable
+import org.giste.roadbooknavigator.features.roadbook.domain.Route
 
-@Serializable
-data class PersistentRoad(
-    val start: PersistentPoint?,
-    val end: PersistentPoint?,
-    val roadType: String,
-    val handles: List<PersistentPoint> = emptyList(),
-) : PersistentElement()
+/**
+ * Represent the different states of the Roadbook screen.
+ */
+sealed class RoadbookUiState {
+    /**
+     * The screen is waiting for the initial load from disk.
+     */
+    data object Loading : RoadbookUiState()
 
-@Serializable
-data class PersistentTrack(
-    val roadIn: PersistentRoad,
-    val roadOut: PersistentRoad,
-) : PersistentElement()
+    /**
+     * A roadbook has been successfully loaded (or is null if none exists).
+     */
+    data class Success(val route: Route?) : RoadbookUiState()
+
+    /**
+     * An error occurred while loading or processing the roadbook.
+     */
+    data class Error(val message: String) : RoadbookUiState()
+}

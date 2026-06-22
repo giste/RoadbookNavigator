@@ -17,13 +17,30 @@
 
 package org.giste.roadbooknavigator.features.roadbook.data.di
 
+import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.core.DataStoreFactory
+import androidx.datastore.dataStoreFile
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import org.giste.roadbooknavigator.core.di.IoDispatcher
 import org.giste.roadbooknavigator.features.roadbook.data.RoadbookRepositoryImpl
+import org.giste.roadbooknavigator.features.roadbook.data.RoadbookSerializer
+import org.giste.roadbooknavigator.features.roadbook.data.dto.persistence.PersistentRoute
 import org.giste.roadbooknavigator.features.roadbook.domain.RoadbookRepository
+import javax.inject.Qualifier
 import javax.inject.Singleton
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class RoadbookDataStoreQualifier
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -34,4 +51,19 @@ abstract class RoadbookDataModule {
     abstract fun bindRoadbookRepository(
         roadbookRepositoryImpl: RoadbookRepositoryImpl
     ): RoadbookRepository
+
+    companion object {
+        @Provides
+        @Singleton
+        @RoadbookDataStoreQualifier
+        fun provideRoadbookDataStore(
+            @ApplicationContext context: Context,
+            @IoDispatcher ioDispatcher: CoroutineDispatcher,
+            serializer: RoadbookSerializer
+        ): DataStore<PersistentRoute> = DataStoreFactory.create(
+            serializer = serializer,
+            scope = CoroutineScope(ioDispatcher + SupervisorJob()),
+            produceFile = { context.dataStoreFile("active_roadbook.json") }
+        )
+    }
 }

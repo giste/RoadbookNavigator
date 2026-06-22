@@ -17,53 +17,35 @@
 
 package org.giste.roadbooknavigator.features.roadbook.data
 
-import android.content.Context
-import dagger.hilt.android.qualifiers.ApplicationContext
+import androidx.datastore.core.DataStore
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.json.Json
 import org.giste.roadbooknavigator.core.di.IoDispatcher
+import org.giste.roadbooknavigator.features.roadbook.data.di.RoadbookDataStoreQualifier
 import org.giste.roadbooknavigator.features.roadbook.data.dto.persistence.PersistentRoute
 import org.giste.roadbooknavigator.features.roadbook.domain.RoadbookRepository
 import org.giste.roadbooknavigator.features.roadbook.domain.Route
-import java.io.File
 import java.io.InputStream
 import javax.inject.Inject
 
 /**
- * Implementation of [RoadbookRepository] that handles .rn2 files and internal caching.
+ * Implementation of [RoadbookRepository] that handles .rn2 files and internal caching
+ * using Jetpack DataStore.
  */
 class RoadbookRepositoryImpl @Inject constructor(
     private val mapper: Rn2Mapper,
     private val persistenceMapper: PersistenceMapper,
+    @param:RoadbookDataStoreQualifier private val dataStore: DataStore<PersistentRoute>,
     @param:IoDispatcher private val ioDispatcher: CoroutineDispatcher,
-    @param:ApplicationContext private val context: Context
 ) : RoadbookRepository {
 
-    private val _activeRoadbook = MutableStateFlow<Route?>(null)
-    override val activeRoadbook: Flow<Route?> = _activeRoadbook.asStateFlow()
-
-    private val cacheFile: File by lazy {
-        File(context.filesDir, "active_roadbook.json")
-    }
-
-    private val json = Json {
-        ignoreUnknownKeys = true
-        prettyPrint = false
-    }
-
-    override suspend fun loadActiveRoadbook(): Result<Route?> = withContext(ioDispatcher) {
-        runCatching {
-            if (!cacheFile.exists()) return@runCatching null
-
-            val jsonString = cacheFile.readText()
-            val persistentRoute = json.decodeFromString<PersistentRoute>(jsonString)
-            val route = persistenceMapper.toDomain(persistentRoute)
-            _activeRoadbook.value = route
-            route
+    override val activeRoadbook: Flow<Route?> = dataStore.data.map { persistentRoute ->
+        if (persistentRoute.name.isEmpty() && persistentRoute.waypoints.isEmpty()) {
+            null
+        } else {
+            persistenceMapper.toDomain(persistentRoute)
         }
     }
 
@@ -72,13 +54,9 @@ class RoadbookRepositoryImpl @Inject constructor(
             val jsonString = inputStream.bufferedReader().use { it.readText() }
             val route = mapper.mapToDomain(jsonString)
             
-            // Save to internal storage
             val persistentRoute = persistenceMapper.toPersistent(route)
-            val cachedJson = json.encodeToString(persistentRoute)
-            cacheFile.writeText(cachedJson)
+            dataStore.updateData { persistentRoute }
             
-            // Emit new state
-            _activeRoadbook.value = route
             route
         }
     }

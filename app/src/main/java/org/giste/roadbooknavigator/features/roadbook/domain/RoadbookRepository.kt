@@ -33,14 +33,6 @@ interface RoadbookRepository {
     val activeRoadbook: Flow<Route?>
 
     /**
-     * Loads the roadbook previously saved in internal storage.
-     * Usually called once when the app starts.
-     *
-     * @return A [Result] containing the loaded [Route] or null if none exists.
-     */
-    suspend fun loadActiveRoadbook(): Result<Route?>
-
-    /**
      * Parses a raw rn2 stream, saves the processed model to internal storage,
      * and emits it through [activeRoadbook].
      *

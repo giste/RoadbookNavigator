@@ -12,22 +12,22 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package org.giste.roadbooknavigator.features.roadbook.data
 
-import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.core.DataStoreFactory
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
+import org.giste.roadbooknavigator.features.roadbook.data.dto.persistence.PersistentRoute
 import org.giste.roadbooknavigator.features.roadbook.domain.Route
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -37,7 +37,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import java.io.ByteArrayInputStream
-import java.io.File
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class RoadbookRepositoryImplTest {
@@ -48,22 +47,28 @@ class RoadbookRepositoryImplTest {
     private lateinit var repository: RoadbookRepositoryImpl
     private val mapper: Rn2Mapper = mockk()
     private val persistenceMapper: PersistenceMapper = mockk()
-    private val context: Context = mockk()
     private val testDispatcher = UnconfinedTestDispatcher()
+    private val testScope = CoroutineScope(testDispatcher + Job())
+    
+    private lateinit var dataStore: DataStore<PersistentRoute>
 
     @Before
     fun setup() {
-        every { context.filesDir } returns tempFolder.root
-        repository = RoadbookRepositoryImpl(mapper, persistenceMapper, testDispatcher, context)
+        dataStore = DataStoreFactory.create(
+            serializer = RoadbookSerializer(),
+            scope = testScope,
+            produceFile = { tempFolder.newFile("active_roadbook.json") }
+        )
+        repository = RoadbookRepositoryImpl(mapper, persistenceMapper, dataStore, testDispatcher)
     }
 
     @Test
-    fun `processNewRoadbook should parse, save to disk, and emit new route`() = runTest {
+    fun `processNewRoadbook should parse, save to DataStore, and emit new route`() = runTest {
         // Given
         val jsonContent = "{\"test\": \"json\"}"
         val inputStream = ByteArrayInputStream(jsonContent.toByteArray())
         val route = mockk<Route>(relaxed = true)
-        val persistentRoute = org.giste.roadbooknavigator.features.roadbook.data.dto.persistence.PersistentRoute(
+        val persistentRoute = PersistentRoute(
             name = "Test",
             description = "",
             startLocation = "",
@@ -73,73 +78,45 @@ class RoadbookRepositoryImplTest {
         
         every { mapper.mapToDomain(jsonContent) } returns route
         every { persistenceMapper.toPersistent(route) } returns persistentRoute
+        every { persistenceMapper.toDomain(persistentRoute) } returns route
 
         // When
         val result = repository.processNewRoadbook(inputStream)
 
         // Then
-        if (result.isFailure) {
-            println("Test failed with: ${result.exceptionOrNull()}")
-        }
         assertTrue(result.isSuccess)
         assertEquals(route, result.getOrNull())
         assertEquals(route, repository.activeRoadbook.first())
-        
-        // Verify file was created
-        val cacheFile = File(tempFolder.root, "active_roadbook.json")
-        assertTrue(cacheFile.exists())
     }
 
     @Test
-    fun `loadActiveRoadbook should return null if no cache exists`() = runTest {
+    fun `activeRoadbook should emit null if DataStore is empty`() = runTest {
         // When
-        val result = repository.loadActiveRoadbook()
+        val result = repository.activeRoadbook.first()
 
         // Then
-        assertTrue(result.isSuccess)
-        assertNull(result.getOrNull())
+        assertNull(result)
     }
 
     @Test
-    fun `loadActiveRoadbook should load from disk and emit if cache exists`() = runTest {
+    fun `activeRoadbook should emit route if DataStore contains data`() = runTest {
         // Given
-        val cacheFile = File(tempFolder.root, "active_roadbook.json")
-        val validPersistentJson = """
-            {
-                "name": "Cached Route",
-                "description": "",
-                "startLocation": "",
-                "endLocation": "",
-                "waypoints": []
-            }
-        """.trimIndent()
-        cacheFile.writeText(validPersistentJson)
+        val persistentRoute = PersistentRoute(
+            name = "Cached Route",
+            description = "",
+            startLocation = "",
+            endLocation = "",
+            waypoints = emptyList()
+        )
         val route = mockk<Route>(relaxed = true)
         
-        every { persistenceMapper.toDomain(any()) } returns route
+        dataStore.updateData { persistentRoute }
+        every { persistenceMapper.toDomain(persistentRoute) } returns route
 
         // When
-        val result = repository.loadActiveRoadbook()
+        val result = repository.activeRoadbook.first()
 
         // Then
-        if (result.isFailure) {
-            println("Test failed with: ${result.exceptionOrNull()}")
-        }
-        assertTrue(result.isSuccess)
-        assertEquals(route, result.getOrNull())
-        assertEquals(route, repository.activeRoadbook.first())
-    }
-
-    @Test
-    fun `loadActiveRoadbook should return failure if cache is corrupted`() = runTest {
-        // Given
-        val cacheFile = File(tempFolder.root, "active_roadbook.json")
-        cacheFile.writeText("invalid json { content")
-
-        // When
-        val result = repository.loadActiveRoadbook()
-
-        // Then
-        assertTrue(result.isFailure)
+        assertEquals(route, result)
     }
 }

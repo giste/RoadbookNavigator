@@ -19,8 +19,43 @@ package org.giste.roadbooknavigator.features.roadbook.data.dto.persistence
 
 import kotlinx.serialization.Serializable
 
-/**
- * Base class for all persistent graphical elements.
- */
 @Serializable
 sealed class PersistentElement
+
+@Serializable
+data class PersistentRoad(
+    val start: PersistentPoint?,
+    val end: PersistentPoint?,
+    val roadType: String,
+    val handles: List<PersistentPoint> = emptyList(),
+) : PersistentElement()
+
+@Serializable
+data class PersistentTrack(
+    val roadIn: PersistentRoad,
+    val roadOut: PersistentRoad,
+) : PersistentElement()
+
+@Serializable
+data class PersistentIcon(
+    val type: String,
+    val width: Int,
+    val height: Int,
+    val center: PersistentPoint,
+    val angle: Int = 0,
+    val scaleX: Double = 1.0,
+    val scaleY: Double = 1.0,
+    val originalId: String? = null,
+) : PersistentElement()
+
+@Serializable
+data class PersistentText(
+    val text: String,
+    val fontSize: Int,
+    val lineHeight: Double,
+    val width: Double,
+    val height: Double,
+    val maxWidth: Double,
+    val maxHeight: Double,
+    val center: PersistentPoint,
+) : PersistentElement()

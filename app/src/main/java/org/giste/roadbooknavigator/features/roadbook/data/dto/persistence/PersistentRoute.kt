@@ -21,9 +21,13 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class PersistentRoute(
-    val name: String,
-    val description: String,
-    val startLocation: String,
-    val endLocation: String,
-    val waypoints: List<PersistentWaypoint>,
-)
+    val name: String = "",
+    val description: String = "",
+    val startLocation: String = "",
+    val endLocation: String = "",
+    val waypoints: List<PersistentWaypoint> = emptyList(),
+) {
+    companion object {
+        val empty = PersistentRoute()
+    }
+}

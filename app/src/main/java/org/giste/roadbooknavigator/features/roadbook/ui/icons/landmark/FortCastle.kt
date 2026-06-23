@@ -24,51 +24,42 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 import org.giste.roadbooknavigator.features.roadbook.ui.icons.RoadbookIcons
 
-@get:Suppress("UnusedReceiverParameter")
-val RoadbookIcons.Landmark.FortCastle: ImageVector
-    get() {
-        if (_FortCastle != null) {
-            return _FortCastle!!
+@Suppress("UnusedReceiverParameter")
+fun RoadbookIcons.Landmark.fortCastle(onSurface: Color): ImageVector {
+    return ImageVector.Builder(
+        name = "Landmark.FortCastle",
+        defaultWidth = 48.dp,
+        defaultHeight = 48.dp,
+        viewportWidth = 48f,
+        viewportHeight = 48f
+    ).apply {
+        path(
+            fill = SolidColor(Color(0xFF757575)),
+            stroke = SolidColor(onSurface),
+            strokeLineWidth = 2f
+        ) {
+            moveTo(11f, 8f)
+            horizontalLineTo(1f)
+            verticalLineTo(18f)
+            horizontalLineTo(6f)
+            verticalLineTo(30f)
+            horizontalLineTo(1f)
+            verticalLineTo(40f)
+            horizontalLineTo(11f)
+            verticalLineTo(35f)
+            horizontalLineTo(36f)
+            verticalLineTo(40f)
+            horizontalLineTo(47f)
+            verticalLineTo(30f)
+            horizontalLineTo(42f)
+            verticalLineTo(18f)
+            horizontalLineTo(47f)
+            verticalLineTo(8f)
+            horizontalLineTo(37f)
+            verticalLineTo(13f)
+            horizontalLineTo(11f)
+            verticalLineTo(8f)
+            close()
         }
-        _FortCastle = ImageVector.Builder(
-            name = "Landmark.FortCastle",
-            defaultWidth = 48.dp,
-            defaultHeight = 48.dp,
-            viewportWidth = 48f,
-            viewportHeight = 48f
-        ).apply {
-            path(
-                fill = SolidColor(Color(0xFF757575)),
-                stroke = SolidColor(Color(0xFFE6E0E9)),
-                strokeLineWidth = 2f
-            ) {
-                moveTo(11f, 8f)
-                horizontalLineTo(1f)
-                verticalLineTo(18f)
-                horizontalLineTo(6f)
-                verticalLineTo(30f)
-                horizontalLineTo(1f)
-                verticalLineTo(40f)
-                horizontalLineTo(11f)
-                verticalLineTo(35f)
-                horizontalLineTo(36f)
-                verticalLineTo(40f)
-                horizontalLineTo(47f)
-                verticalLineTo(30f)
-                horizontalLineTo(42f)
-                verticalLineTo(18f)
-                horizontalLineTo(47f)
-                verticalLineTo(8f)
-                horizontalLineTo(37f)
-                verticalLineTo(13f)
-                horizontalLineTo(11f)
-                verticalLineTo(8f)
-                close()
-            }
-        }.build()
-
-        return _FortCastle!!
-    }
-
-@Suppress("ObjectPropertyName")
-private var _FortCastle: ImageVector? = null
+    }.build()
+}

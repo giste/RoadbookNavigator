@@ -265,6 +265,7 @@ private enum class RoadTermination {
 @Composable
 private fun TulipSection(waypoint: Waypoint, modifier: Modifier = Modifier) {
     val onSurfaceColor = MaterialTheme.colorScheme.onSurface
+    val surfaceColor = MaterialTheme.colorScheme.surface
     val trackColor = MaterialTheme.colorScheme.primary
     val secondaryTrackColor = MaterialTheme.colorScheme.secondary
     val errorColor = MaterialTheme.colorScheme.error
@@ -274,7 +275,7 @@ private fun TulipSection(waypoint: Waypoint, modifier: Modifier = Modifier) {
     // Preload painters for icons to use them inside Canvas
     val iconPainters = mutableMapOf<Icon, Painter>()
     waypoint.tulipElements.filterIsInstance<Icon>().forEach { icon ->
-        IconMapper.getIcon(icon.type, onSurfaceColor)?.let { vector ->
+        IconMapper.getIcon(icon.type, onSurfaceColor, surfaceColor)?.let { vector ->
             iconPainters[icon] = rememberVectorPainter(vector)
         }
     }
@@ -644,13 +645,14 @@ private fun DrawScope.drawPerpendicularEnd(angle: Float, end: Offset, color: Col
 @Composable
 private fun NotesSection(waypoint: Waypoint, modifier: Modifier = Modifier) {
     val onSurfaceColor = MaterialTheme.colorScheme.onSurface
+    val surfaceColor = MaterialTheme.colorScheme.surface
     val errorColor = MaterialTheme.colorScheme.error
     val textMeasurer = rememberTextMeasurer()
 
     // Preload painters for icons in notes to use them inside Canvas
     val iconPainters = mutableMapOf<Icon, Painter>()
     waypoint.notesElements.filterIsInstance<Icon>().forEach { icon ->
-        IconMapper.getIcon(icon.type, onSurfaceColor)?.let { vector ->
+        IconMapper.getIcon(icon.type, onSurfaceColor, surfaceColor)?.let { vector ->
             iconPainters[icon] = rememberVectorPainter(vector)
         }
     }

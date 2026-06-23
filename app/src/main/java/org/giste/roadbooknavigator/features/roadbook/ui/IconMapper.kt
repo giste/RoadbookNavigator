@@ -1,0 +1,60 @@
+/*
+ * Copyright (C) 2026  Giste
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package org.giste.roadbooknavigator.features.roadbook.ui
+
+import androidx.compose.ui.graphics.vector.ImageVector
+import org.giste.roadbooknavigator.features.roadbook.domain.Icon
+import org.giste.roadbooknavigator.features.roadbook.ui.icons.RoadbookIcons
+import org.giste.roadbooknavigator.features.roadbook.ui.icons.cross.DangerLevel1
+import org.giste.roadbooknavigator.features.roadbook.ui.icons.cross.DangerLevel2
+import org.giste.roadbooknavigator.features.roadbook.ui.icons.cross.DangerLevel3
+import org.giste.roadbooknavigator.features.roadbook.ui.icons.cross.FuelZone
+import org.giste.roadbooknavigator.features.roadbook.ui.icons.cross.ResetDistance
+import org.giste.roadbooknavigator.features.roadbook.ui.icons.landmark.AboveBridge
+import org.giste.roadbooknavigator.features.roadbook.ui.icons.landmark.FortCastle
+import org.giste.roadbooknavigator.features.roadbook.ui.icons.landmark.House
+import org.giste.roadbooknavigator.features.roadbook.ui.icons.landmark.TrafficLight
+import org.giste.roadbooknavigator.features.roadbook.ui.icons.landmark.Tunnel
+import org.giste.roadbooknavigator.features.roadbook.ui.icons.landmark.UnderBridge
+import org.giste.roadbooknavigator.features.roadbook.ui.icons.signs.Alert
+import org.giste.roadbooknavigator.features.roadbook.ui.icons.signs.Roundabout
+import org.giste.roadbooknavigator.features.roadbook.ui.icons.signs.Stop
+import org.giste.roadbooknavigator.features.roadbook.ui.icons.terrain.River
+
+object IconMapper {
+    fun getIcon(type: Icon.IconType): ImageVector? {
+        return when (type) {
+            Icon.IconType.Danger1 -> RoadbookIcons.Cross.DangerLevel1
+            Icon.IconType.Danger2 -> RoadbookIcons.Cross.DangerLevel2
+            Icon.IconType.Danger3 -> RoadbookIcons.Cross.DangerLevel3
+            Icon.IconType.FuelZone -> RoadbookIcons.Cross.FuelZone
+            Icon.IconType.ResetDistance -> RoadbookIcons.Cross.ResetDistance
+            Icon.IconType.AboveBridge -> RoadbookIcons.Landmark.AboveBridge
+            Icon.IconType.FortCastle -> RoadbookIcons.Landmark.FortCastle
+            Icon.IconType.House -> RoadbookIcons.Landmark.House
+            Icon.IconType.TrafficLight -> RoadbookIcons.Landmark.TrafficLight
+            Icon.IconType.Tunnel -> RoadbookIcons.Landmark.Tunnel
+            Icon.IconType.UnderBridge -> RoadbookIcons.Landmark.UnderBridge
+            Icon.IconType.Alert -> RoadbookIcons.Signs.Alert
+            Icon.IconType.Roundabout -> RoadbookIcons.Signs.Roundabout
+            Icon.IconType.Stop -> RoadbookIcons.Signs.Stop
+            Icon.IconType.RiverWater -> RoadbookIcons.Terrain.River
+            Icon.IconType.Unknown -> null
+        }
+    }
+}

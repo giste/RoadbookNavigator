@@ -24,12 +24,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.giste.roadbooknavigator.features.roadbook.domain.Route
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.GetActiveRoadbookUseCase
+import org.giste.roadbooknavigator.features.roadbook.domain.usecase.GetRoadbookPositionUseCase
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.ImportRoadbookUseCase
+import org.giste.roadbooknavigator.features.roadbook.domain.usecase.SaveRoadbookPositionUseCase
 import java.io.InputStream
 import javax.inject.Inject
 
@@ -39,7 +40,11 @@ import javax.inject.Inject
 sealed interface RoadbookUiState {
     data object Loading : RoadbookUiState
     data object Empty : RoadbookUiState
-    data class Success(val route: Route) : RoadbookUiState
+    data class Success(
+        val route: Route,
+        val initialIndex: Int = 0,
+        val initialOffset: Int = 0
+    ) : RoadbookUiState
     data class Error(val message: String) : RoadbookUiState
 }
 
@@ -49,16 +54,27 @@ sealed interface RoadbookUiState {
 @HiltViewModel
 class RoadbookViewModel @Inject constructor(
     getActiveRoadbookUseCase: GetActiveRoadbookUseCase,
-    private val importRoadbookUseCase: ImportRoadbookUseCase
+    private val importRoadbookUseCase: ImportRoadbookUseCase,
+    private val getRoadbookPositionUseCase: GetRoadbookPositionUseCase,
+    private val saveRoadbookPositionUseCase: SaveRoadbookPositionUseCase
 ) : ViewModel() {
 
     private val _transientState = MutableStateFlow<RoadbookUiState?>(null)
 
-    val uiState: StateFlow<RoadbookUiState> = getActiveRoadbookUseCase()
-        .map { route ->
-            if (route != null) RoadbookUiState.Success(route)
-            else RoadbookUiState.Empty
+    val uiState: StateFlow<RoadbookUiState> = combine(
+        getActiveRoadbookUseCase(),
+        getRoadbookPositionUseCase()
+    ) { route, position ->
+        if (route != null) {
+            RoadbookUiState.Success(
+                route = route,
+                initialIndex = position.first,
+                initialOffset = position.second
+            )
+        } else {
+            RoadbookUiState.Empty
         }
+    }
         .combine(_transientState) { repositoryState, transient ->
             transient ?: repositoryState
         }
@@ -81,6 +97,15 @@ class RoadbookViewModel @Inject constructor(
                 .onFailure { error ->
                     _transientState.value = RoadbookUiState.Error(error.message ?: "Failed to process file")
                 }
+        }
+    }
+
+    /**
+     * Persists the current scroll position of the roadbook.
+     */
+    fun onWaypointVisible(index: Int, offset: Int) {
+        viewModelScope.launch {
+            saveRoadbookPositionUseCase(index, offset)
         }
     }
 }

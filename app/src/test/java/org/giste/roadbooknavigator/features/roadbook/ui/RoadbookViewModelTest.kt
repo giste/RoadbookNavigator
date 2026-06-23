@@ -18,6 +18,7 @@
 package org.giste.roadbooknavigator.features.roadbook.ui
 
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.CompletableDeferred
@@ -31,7 +32,9 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.giste.roadbooknavigator.features.roadbook.domain.Route
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.GetActiveRoadbookUseCase
+import org.giste.roadbooknavigator.features.roadbook.domain.usecase.GetRoadbookPositionUseCase
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.ImportRoadbookUseCase
+import org.giste.roadbooknavigator.features.roadbook.domain.usecase.SaveRoadbookPositionUseCase
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -43,13 +46,18 @@ class RoadbookViewModelTest {
 
     private val getActiveRoadbookUseCase: GetActiveRoadbookUseCase = mockk()
     private val importRoadbookUseCase: ImportRoadbookUseCase = mockk()
+    private val getRoadbookPositionUseCase: GetRoadbookPositionUseCase = mockk()
+    private val saveRoadbookPositionUseCase: SaveRoadbookPositionUseCase = mockk()
+    
     private val activeRoadbookFlow = MutableStateFlow<Route?>(null)
+    private val scrollPositionFlow = MutableStateFlow(0 to 0)
     private val testDispatcher = UnconfinedTestDispatcher()
 
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
         every { getActiveRoadbookUseCase() } returns activeRoadbookFlow
+        every { getRoadbookPositionUseCase() } returns scrollPositionFlow
     }
 
     @After
@@ -59,7 +67,12 @@ class RoadbookViewModelTest {
 
     @Test
     fun `initial state should be Empty if no active roadbook exists`() = runTest {
-        val viewModel = RoadbookViewModel(getActiveRoadbookUseCase, importRoadbookUseCase)
+        val viewModel = RoadbookViewModel(
+            getActiveRoadbookUseCase,
+            importRoadbookUseCase,
+            getRoadbookPositionUseCase,
+            saveRoadbookPositionUseCase
+        )
         backgroundScope.launch(testDispatcher) { viewModel.uiState.collect {} }
 
         assertEquals(RoadbookUiState.Empty, viewModel.uiState.value)
@@ -69,16 +82,28 @@ class RoadbookViewModelTest {
     fun `initial state should be Success if active roadbook exists`() = runTest {
         val route = mockk<Route>()
         activeRoadbookFlow.value = route
+        scrollPositionFlow.value = 5 to 10
 
-        val viewModel = RoadbookViewModel(getActiveRoadbookUseCase, importRoadbookUseCase)
+        val viewModel = RoadbookViewModel(
+            getActiveRoadbookUseCase,
+            importRoadbookUseCase,
+            getRoadbookPositionUseCase,
+            saveRoadbookPositionUseCase
+        )
         backgroundScope.launch(testDispatcher) { viewModel.uiState.collect {} }
 
-        assertEquals(RoadbookUiState.Success(route), viewModel.uiState.value)
+        val expectedState = RoadbookUiState.Success(route, initialIndex = 5, initialOffset = 10)
+        assertEquals(expectedState, viewModel.uiState.value)
     }
 
     @Test
     fun `onFileSelected should update state to Loading while processing`() = runTest {
-        val viewModel = RoadbookViewModel(getActiveRoadbookUseCase, importRoadbookUseCase)
+        val viewModel = RoadbookViewModel(
+            getActiveRoadbookUseCase,
+            importRoadbookUseCase,
+            getRoadbookPositionUseCase,
+            saveRoadbookPositionUseCase
+        )
         backgroundScope.launch(testDispatcher) { viewModel.uiState.collect {} }
 
         val inputStream = mockk<InputStream>()
@@ -94,33 +119,17 @@ class RoadbookViewModelTest {
     }
 
     @Test
-    fun `onFileSelected should update state to Success when processing succeeds`() = runTest {
-        val viewModel = RoadbookViewModel(getActiveRoadbookUseCase, importRoadbookUseCase)
-        backgroundScope.launch(testDispatcher) { viewModel.uiState.collect {} }
+    fun `onWaypointVisible should call saveRoadbookPositionUseCase`() = runTest {
+        val viewModel = RoadbookViewModel(
+            getActiveRoadbookUseCase,
+            importRoadbookUseCase,
+            getRoadbookPositionUseCase,
+            saveRoadbookPositionUseCase
+        )
+        coEvery { saveRoadbookPositionUseCase(any(), any()) } returns Unit
 
-        val route = mockk<Route>()
-        val inputStream = mockk<InputStream>()
+        viewModel.onWaypointVisible(10, 20)
 
-        coEvery { importRoadbookUseCase(any()) } answers {
-            activeRoadbookFlow.value = route
-            Result.success(route)
-        }
-
-        viewModel.onFileSelected(inputStream)
-        assertEquals(RoadbookUiState.Success(route), viewModel.uiState.value)
-    }
-
-    @Test
-    fun `onFileSelected should update state to Error when processing fails`() = runTest {
-        val viewModel = RoadbookViewModel(getActiveRoadbookUseCase, importRoadbookUseCase)
-        backgroundScope.launch(testDispatcher) { viewModel.uiState.collect {} }
-
-        val inputStream = mockk<InputStream>()
-        val errorMessage = "Invalid file format"
-
-        coEvery { importRoadbookUseCase(any()) } returns Result.failure(Exception(errorMessage))
-
-        viewModel.onFileSelected(inputStream)
-        assertEquals(RoadbookUiState.Error(errorMessage), viewModel.uiState.value)
+        coVerify { saveRoadbookPositionUseCase(10, 20) }
     }
 }

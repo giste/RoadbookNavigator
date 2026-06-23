@@ -32,9 +32,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import org.giste.roadbooknavigator.core.di.IoDispatcher
 import org.giste.roadbooknavigator.features.roadbook.data.DataStoreRoadbookRepository
+import org.giste.roadbooknavigator.features.roadbook.data.DataStoreRoadbookSessionRepository
 import org.giste.roadbooknavigator.features.roadbook.data.persistence.PersistenceRoadbookSerializer
 import org.giste.roadbooknavigator.features.roadbook.data.persistence.dto.PersistentRoute
 import org.giste.roadbooknavigator.features.roadbook.domain.RoadbookRepository
+import org.giste.roadbooknavigator.features.roadbook.domain.RoadbookSessionRepository
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
@@ -51,6 +53,12 @@ abstract class RoadbookDataModule {
     abstract fun bindRoadbookRepository(
         dataStoreRoadbookRepository: DataStoreRoadbookRepository
     ): RoadbookRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindRoadbookSessionRepository(
+        dataStoreRoadbookSessionRepository: DataStoreRoadbookSessionRepository
+    ): RoadbookSessionRepository
 
     companion object {
         @Provides

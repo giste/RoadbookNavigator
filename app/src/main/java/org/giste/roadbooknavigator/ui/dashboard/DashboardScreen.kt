@@ -25,9 +25,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import org.giste.roadbooknavigator.features.roadbook.ui.RoadbookSection
+import org.giste.roadbooknavigator.features.roadbook.ui.RoadbookUiState
 import org.giste.roadbooknavigator.features.roadbook.ui.RoadbookViewModel
 
 @Composable
@@ -37,7 +39,17 @@ fun DashboardScreen(
     roadbookViewModel: RoadbookViewModel = hiltViewModel(),
 ) {
     val roadbookState by roadbookViewModel.uiState.collectAsState()
-    val roadbookListState = rememberLazyListState()
+    
+    // We use the route name as a key to reset the scroll state when a new roadbook is loaded
+    val routeKey = (roadbookState as? RoadbookUiState.Success)?.route?.name ?: ""
+    
+    val roadbookListState = key(routeKey) {
+        val successState = roadbookState as? RoadbookUiState.Success
+        rememberLazyListState(
+            initialFirstVisibleItemIndex = successState?.initialIndex ?: 0,
+            initialFirstVisibleItemScrollOffset = successState?.initialOffset ?: 0
+        )
+    }
 
     Scaffold(
         modifier = modifier.fillMaxSize()
@@ -56,7 +68,7 @@ fun DashboardScreen(
                 },
                 onSetPartialClick = { /* TODO: Implement odometer logic */ },
                 onWaypointVisible = { index, offset ->
-                    // TODO: Persist scroll position
+                    roadbookViewModel.onWaypointVisible(index, offset)
                 },
                 modifier = Modifier.weight(1f)
             )

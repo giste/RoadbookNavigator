@@ -10,6 +10,7 @@
 Organize logic by feature, but UI by screen to ensure synchronization:
 - `features.<name>.domain`: Business logic, Entities, Value Objects, Use Cases, Repository interfaces.
 - `features.<name>.data`: Repository implementations, local/remote data sources, parsers.
+- `features.<name>.ui`: Composables specific to the feature.
 - `ui.<screen>`: ViewModels and Composables for specific screens (e.g., `dashboard`, `settings`).
 - `core`: Common utilities, theme, and shared base classes.
 

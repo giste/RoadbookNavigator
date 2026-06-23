@@ -285,8 +285,9 @@ private fun TulipSection(waypoint: Waypoint, modifier: Modifier = Modifier) {
             .aspectRatio(TULIP_LOGICAL_WIDTH / TULIP_LOGICAL_HEIGHT)
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {
+            val scale = size.width / TULIP_LOGICAL_WIDTH
             clipRect {
-                val scale = size.width / TULIP_LOGICAL_WIDTH
+                // 1. Draw scaled elements (Roads)
                 withTransform({
                     scale(scale, scale, pivot = Offset.Zero)
                 }) {
@@ -298,23 +299,30 @@ private fun TulipSection(waypoint: Waypoint, modifier: Modifier = Modifier) {
                                 drawRoad(element.roadIn, trackColor, secondaryTrackColor, RoadTermination.NONE)
                                 drawRoad(element.roadOut, trackColor, secondaryTrackColor, RoadTermination.ARROW)
                             }
+                            else -> {}
+                        }
+                    }
+                }
 
-                            is Icon -> {
-                                iconPainters[element]?.let { painter ->
-                                    val tint = when (element.type) {
-                                        Icon.IconType.Danger1,
-                                        Icon.IconType.Danger2,
-                                        Icon.IconType.Danger3 -> errorColor
-                                        else -> null
-                                    }
-                                    drawTulipIcon(element, painter, tint)
+                // 2. Draw pixel-perfect elements (Icons and Text)
+                waypoint.tulipElements.forEach { element ->
+                    when (element) {
+                        is Icon -> {
+                            iconPainters[element]?.let { painter ->
+                                val tint = when (element.type) {
+                                    Icon.IconType.Danger1,
+                                    Icon.IconType.Danger2,
+                                    Icon.IconType.Danger3 -> errorColor
+                                    else -> null
                                 }
-                            }
-
-                            is TulipText -> {
-                                drawTulipText(element, textMeasurer, onSurfaceColor)
+                                drawTulipIcon(element, painter, tint, scale)
                             }
                         }
+
+                        is TulipText -> {
+                            drawTulipText(element, textMeasurer, onSurfaceColor, scale)
+                        }
+                        else -> {}
                     }
                 }
             }
@@ -346,21 +354,19 @@ private fun DrawScope.drawWaypointStart(color: Color) {
 private fun DrawScope.drawTulipText(
     textElement: TulipText,
     textMeasurer: TextMeasurer,
-    color: Color
+    color: Color,
+    scale: Float
 ) {
-    val center = Offset(textElement.center.x.toFloat(), textElement.center.y.toFloat())
-    val maxWidth = textElement.maxWidth.toFloat()
-    val maxHeight = textElement.maxHeight.toFloat()
+    val center = Offset(
+        textElement.center.x.toFloat() * scale,
+        textElement.center.y.toFloat() * scale
+    )
+    val maxWidth = textElement.maxWidth.toFloat() * scale
+    val maxHeight = textElement.maxHeight.toFloat() * scale
 
-    // fontSize from RN2 is the height of the font relative to the tulip height (135 logical units).
-    // We want the text height to be exactly textElement.fontSize in logical units.
-    // To achieve this regardless of system font settings, we divide by density and fontScale.
-    val logicalFontSize = textElement.fontSize.toFloat()
-    val fontSize = if (logicalFontSize > 0) {
-        (logicalFontSize / (density * fontScale)).sp
-    } else {
-        12.sp // Fallback
-    }
+    // To ensure sharpness, we calculate the font size in pixels and then convert to Sp
+    val pixelFontSize = textElement.fontSize.toFloat() * scale
+    val fontSize = (pixelFontSize / density).sp
 
     val style = TextStyle(
         color = color,
@@ -400,10 +406,18 @@ private fun DrawScope.drawTulipText(
     }
 }
 
-private fun DrawScope.drawTulipIcon(icon: Icon, painter: Painter, tint: Color? = null) {
-    val width = icon.width.toFloat()
-    val height = icon.height.toFloat()
-    val center = Offset(icon.center.x.toFloat(), icon.center.y.toFloat())
+private fun DrawScope.drawTulipIcon(
+    icon: Icon,
+    painter: Painter,
+    tint: Color? = null,
+    scale: Float
+) {
+    val width = icon.width.toFloat() * scale
+    val height = icon.height.toFloat() * scale
+    val center = Offset(
+        icon.center.x.toFloat() * scale,
+        icon.center.y.toFloat() * scale
+    )
 
     val drawSize = Size(width, height)
 
@@ -498,6 +512,7 @@ private fun DrawScope.drawRoad(
                 strokeWidth = 6f
                 strokeCap = Paint.Cap.BUTT
                 strokeJoin = Paint.Join.MITER
+                isAntiAlias = true
             }
             outlinePaint.getFillPath(nativePath, outlinePath)
 
@@ -522,6 +537,7 @@ private fun DrawScope.drawRoad(
                 strokeWidth = 8f
                 strokeCap = Paint.Cap.BUTT
                 strokeJoin = Paint.Join.MITER
+                isAntiAlias = true
             }
             outlinePaint.getFillPath(nativePath, outlinePath)
 
@@ -662,31 +678,27 @@ private fun NotesSection(waypoint: Waypoint, modifier: Modifier = Modifier) {
             .aspectRatio(TULIP_LOGICAL_WIDTH / TULIP_LOGICAL_HEIGHT)
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {
+            val scale = size.width / TULIP_LOGICAL_WIDTH
             clipRect {
-                val scale = size.width / TULIP_LOGICAL_WIDTH
-                withTransform({
-                    scale(scale, scale, pivot = Offset.Zero)
-                }) {
-                    waypoint.notesElements.forEach { element ->
-                        when (element) {
-                            is Icon -> {
-                                iconPainters[element]?.let { painter ->
-                                    val tint = when (element.type) {
-                                        Icon.IconType.Danger1,
-                                        Icon.IconType.Danger2,
-                                        Icon.IconType.Danger3 -> errorColor
-                                        else -> null
-                                    }
-                                    drawTulipIcon(element, painter, tint)
+                waypoint.notesElements.forEach { element ->
+                    when (element) {
+                        is Icon -> {
+                            iconPainters[element]?.let { painter ->
+                                val tint = when (element.type) {
+                                    Icon.IconType.Danger1,
+                                    Icon.IconType.Danger2,
+                                    Icon.IconType.Danger3 -> errorColor
+                                    else -> null
                                 }
+                                drawTulipIcon(element, painter, tint, scale)
                             }
-
-                            is TulipText -> {
-                                drawTulipText(element, textMeasurer, onSurfaceColor)
-                            }
-
-                            else -> {}
                         }
+
+                        is TulipText -> {
+                            drawTulipText(element, textMeasurer, onSurfaceColor, scale)
+                        }
+
+                        else -> {}
                     }
                 }
             }

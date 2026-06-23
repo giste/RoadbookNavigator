@@ -17,85 +17,14 @@
 
 package org.giste.roadbooknavigator.ui.dashboard
 
-import io.mockk.coEvery
-import io.mockk.every
-import io.mockk.mockk
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
-import org.giste.roadbooknavigator.features.roadbook.domain.RoadbookRepository
-import org.giste.roadbooknavigator.features.roadbook.domain.Route
-import org.junit.After
 import org.junit.Assert.assertEquals
-import org.junit.Before
 import org.junit.Test
-import java.io.InputStream
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class DashboardViewModelTest {
 
-    private val repository: RoadbookRepository = mockk()
-    private val activeRoadbookFlow = MutableStateFlow<Route?>(null)
-    private val testDispatcher = UnconfinedTestDispatcher()
-
-    @Before
-    fun setup() {
-        Dispatchers.setMain(testDispatcher)
-        every { repository.activeRoadbook } returns activeRoadbookFlow
-        coEvery { repository.loadActiveRoadbook() } returns Result.success(null)
-    }
-
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
-    }
-
     @Test
-    fun `initial state should be Empty if no cache exists`() = runTest {
-        val viewModel = DashboardViewModel(repository)
-        assertEquals(DashboardUiState.Empty, viewModel.uiState.value)
-    }
-
-    @Test
-    fun `initial state should be Success if cache exists`() = runTest {
-        val route = mockk<Route>()
-        coEvery { repository.loadActiveRoadbook() } answers {
-            activeRoadbookFlow.value = route
-            Result.success(route)
-        }
-
-        val viewModel = DashboardViewModel(repository)
-        assertEquals(DashboardUiState.Success(route), viewModel.uiState.value)
-    }
-
-    @Test
-    fun `onFileSelected should update state to Success when processing succeeds`() = runTest {
-        val viewModel = DashboardViewModel(repository)
-        val route = mockk<Route>()
-        val inputStream = mockk<InputStream>()
-
-        coEvery { repository.processNewRoadbook(any()) } answers {
-            activeRoadbookFlow.value = route
-            Result.success(route)
-        }
-
-        viewModel.onFileSelected(inputStream)
-        assertEquals(DashboardUiState.Success(route), viewModel.uiState.value)
-    }
-
-    @Test
-    fun `onFileSelected should update state to Error when processing fails`() = runTest {
-        val viewModel = DashboardViewModel(repository)
-        val inputStream = mockk<InputStream>()
-        val errorMessage = "Invalid file format"
-
-        coEvery { repository.processNewRoadbook(any()) } returns Result.failure(Exception(errorMessage))
-
-        viewModel.onFileSelected(inputStream)
-        assertEquals(DashboardUiState.Error(errorMessage), viewModel.uiState.value)
+    fun `initial state should be Ready`() {
+        val viewModel = DashboardViewModel()
+        assertEquals(DashboardUiState.Ready, viewModel.uiState.value)
     }
 }

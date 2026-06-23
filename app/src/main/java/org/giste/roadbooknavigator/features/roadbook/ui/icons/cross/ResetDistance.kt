@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 import org.giste.roadbooknavigator.features.roadbook.ui.icons.RoadbookIcons
 
+@get:Suppress("UnusedReceiverParameter")
 val RoadbookIcons.Cross.ResetDistance: ImageVector
     get() {
         if (_ResetDistance != null) {

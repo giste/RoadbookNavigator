@@ -46,6 +46,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
@@ -266,6 +267,7 @@ private fun TulipSection(waypoint: Waypoint, modifier: Modifier = Modifier) {
     val onSurfaceColor = MaterialTheme.colorScheme.onSurface
     val trackColor = MaterialTheme.colorScheme.primary
     val secondaryTrackColor = MaterialTheme.colorScheme.secondary
+    val errorColor = MaterialTheme.colorScheme.error
     val disabledOnSurface = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
     val textMeasurer = rememberTextMeasurer()
 
@@ -298,7 +300,13 @@ private fun TulipSection(waypoint: Waypoint, modifier: Modifier = Modifier) {
 
                             is Icon -> {
                                 iconPainters[element]?.let { painter ->
-                                    drawTulipIcon(element, painter)
+                                    val tint = when (element.type) {
+                                        Icon.IconType.Danger1,
+                                        Icon.IconType.Danger2,
+                                        Icon.IconType.Danger3 -> errorColor
+                                        else -> null
+                                    }
+                                    drawTulipIcon(element, painter, tint)
                                 }
                             }
 
@@ -391,7 +399,7 @@ private fun DrawScope.drawTulipText(
     }
 }
 
-private fun DrawScope.drawTulipIcon(icon: Icon, painter: Painter) {
+private fun DrawScope.drawTulipIcon(icon: Icon, painter: Painter, tint: Color? = null) {
     val width = icon.width.toFloat()
     val height = icon.height.toFloat()
     val center = Offset(icon.center.x.toFloat(), icon.center.y.toFloat())
@@ -407,7 +415,7 @@ private fun DrawScope.drawTulipIcon(icon: Icon, painter: Painter) {
             draw(
                 size = drawSize,
                 alpha = 1f,
-                colorFilter = null
+                colorFilter = tint?.let { ColorFilter.tint(it) }
             )
         }
     }
@@ -636,6 +644,7 @@ private fun DrawScope.drawPerpendicularEnd(angle: Float, end: Offset, color: Col
 @Composable
 private fun NotesSection(waypoint: Waypoint, modifier: Modifier = Modifier) {
     val onSurfaceColor = MaterialTheme.colorScheme.onSurface
+    val errorColor = MaterialTheme.colorScheme.error
     val textMeasurer = rememberTextMeasurer()
 
     // Preload painters for icons in notes to use them inside Canvas
@@ -660,7 +669,13 @@ private fun NotesSection(waypoint: Waypoint, modifier: Modifier = Modifier) {
                         when (element) {
                             is Icon -> {
                                 iconPainters[element]?.let { painter ->
-                                    drawTulipIcon(element, painter)
+                                    val tint = when (element.type) {
+                                        Icon.IconType.Danger1,
+                                        Icon.IconType.Danger2,
+                                        Icon.IconType.Danger3 -> errorColor
+                                        else -> null
+                                    }
+                                    drawTulipIcon(element, painter, tint)
                                 }
                             }
 

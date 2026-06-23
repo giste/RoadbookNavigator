@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 import org.giste.roadbooknavigator.features.roadbook.ui.icons.RoadbookIcons
 
+@get:Suppress("UnusedReceiverParameter")
 val RoadbookIcons.Cross.DangerLevel3: ImageVector
     get() {
         if (_DangerLevel3 != null) {

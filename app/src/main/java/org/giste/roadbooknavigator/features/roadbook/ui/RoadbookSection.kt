@@ -17,6 +17,7 @@
 
 package org.giste.roadbooknavigator.features.roadbook.ui
 
+import android.content.res.Configuration
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -28,6 +29,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
@@ -35,7 +37,10 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -47,9 +52,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import org.giste.roadbooknavigator.R
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
+import org.giste.roadbooknavigator.features.roadbook.domain.Coordinates
+import org.giste.roadbooknavigator.features.roadbook.domain.Distance
+import org.giste.roadbooknavigator.features.roadbook.domain.Point
+import org.giste.roadbooknavigator.features.roadbook.domain.Road
+import org.giste.roadbooknavigator.features.roadbook.domain.Route
+import org.giste.roadbooknavigator.features.roadbook.domain.Track
 import org.giste.roadbooknavigator.features.roadbook.domain.Waypoint
 import java.io.InputStream
 
@@ -177,6 +190,85 @@ fun RoadbookList(
             WaypointItem(
                 waypoint = waypoint,
                 onSetPartialClick = onSetPartialClick
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+@Preview(
+    name = "Empty State",
+    device = "spec:width=1920px,height=1200px,dpi=280,orientation=portrait",
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
+    showBackground = true,
+)
+@Composable
+fun RoadbookSectionEmptyPreview() {
+    RoadbookNavigatorTheme(
+        windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(1200.dp, 1920.dp)),
+    ) {
+        Surface {
+            RoadbookSection(
+                state = RoadbookUiState.Empty,
+                listState = rememberLazyListState(),
+                onFileSelected = {},
+                onSetPartialClick = {},
+                onWaypointVisible = { _, _ -> }
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+@Preview(
+    name = "Success State",
+    device = "spec:width=1920px,height=1200px,dpi=280,orientation=portrait",
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
+    showBackground = true,
+)
+@Composable
+fun RoadbookSectionSuccessPreview() {
+    val sampleRoute = Route(
+        name = "Sample Route",
+        waypoints = listOf(
+            Waypoint(
+                number = 1,
+                coordinates = Coordinates(40.0, -3.0),
+                distance = Distance(1200),
+                distanceFromPrevious = Distance(1200),
+                tulipElements = listOf(
+                    Track(
+                        roadIn = Road(null, Point(0.0, 35.0)),
+                        roadOut = Road(null, Point(0.0, -55.0))
+                    )
+                )
+            ),
+            Waypoint(
+                number = 2,
+                coordinates = Coordinates(40.1, -3.1),
+                distance = Distance(2500),
+                distanceFromPrevious = Distance(1300),
+                dangerLevel = Waypoint.DangerLevel.MEDIUM,
+                tulipElements = listOf(
+                    Track(
+                        roadIn = Road(null, Point(0.0, 35.0)),
+                        roadOut = Road(null, Point(50.0, 0.0))
+                    )
+                )
+            )
+        )
+    )
+
+    RoadbookNavigatorTheme(
+        windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(1200.dp, 1920.dp)),
+    ) {
+        Surface {
+            RoadbookSection(
+                state = RoadbookUiState.Success(sampleRoute),
+                listState = rememberLazyListState(),
+                onFileSelected = {},
+                onSetPartialClick = {},
+                onWaypointVisible = { _, _ -> }
             )
         }
     }

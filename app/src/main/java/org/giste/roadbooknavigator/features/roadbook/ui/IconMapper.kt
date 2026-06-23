@@ -17,6 +17,7 @@
 
 package org.giste.roadbooknavigator.features.roadbook.ui
 
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import org.giste.roadbooknavigator.features.roadbook.domain.Icon
 import org.giste.roadbooknavigator.features.roadbook.ui.icons.RoadbookIcons
@@ -32,12 +33,12 @@ import org.giste.roadbooknavigator.features.roadbook.ui.icons.landmark.TrafficLi
 import org.giste.roadbooknavigator.features.roadbook.ui.icons.landmark.Tunnel
 import org.giste.roadbooknavigator.features.roadbook.ui.icons.landmark.UnderBridge
 import org.giste.roadbooknavigator.features.roadbook.ui.icons.signs.Alert
-import org.giste.roadbooknavigator.features.roadbook.ui.icons.signs.Roundabout
+import org.giste.roadbooknavigator.features.roadbook.ui.icons.signs.roundabout
 import org.giste.roadbooknavigator.features.roadbook.ui.icons.signs.Stop
 import org.giste.roadbooknavigator.features.roadbook.ui.icons.terrain.River
 
 object IconMapper {
-    fun getIcon(type: Icon.IconType): ImageVector? {
+    fun getIcon(type: Icon.IconType, onSurface: Color): ImageVector? {
         return when (type) {
             Icon.IconType.Danger1 -> RoadbookIcons.Cross.DangerLevel1
             Icon.IconType.Danger2 -> RoadbookIcons.Cross.DangerLevel2
@@ -51,7 +52,7 @@ object IconMapper {
             Icon.IconType.Tunnel -> RoadbookIcons.Landmark.Tunnel
             Icon.IconType.UnderBridge -> RoadbookIcons.Landmark.UnderBridge
             Icon.IconType.Alert -> RoadbookIcons.Signs.Alert
-            Icon.IconType.Roundabout -> RoadbookIcons.Signs.Roundabout
+            Icon.IconType.Roundabout -> RoadbookIcons.Signs.roundabout(onSurface)
             Icon.IconType.Stop -> RoadbookIcons.Signs.Stop
             Icon.IconType.RiverWater -> RoadbookIcons.Terrain.River
             Icon.IconType.Unknown -> null

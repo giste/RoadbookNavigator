@@ -274,7 +274,7 @@ private fun TulipSection(waypoint: Waypoint, modifier: Modifier = Modifier) {
     // Preload painters for icons to use them inside Canvas
     val iconPainters = mutableMapOf<Icon, Painter>()
     waypoint.tulipElements.filterIsInstance<Icon>().forEach { icon ->
-        IconMapper.getIcon(icon.type)?.let { vector ->
+        IconMapper.getIcon(icon.type, onSurfaceColor)?.let { vector ->
             iconPainters[icon] = rememberVectorPainter(vector)
         }
     }
@@ -650,7 +650,7 @@ private fun NotesSection(waypoint: Waypoint, modifier: Modifier = Modifier) {
     // Preload painters for icons in notes to use them inside Canvas
     val iconPainters = mutableMapOf<Icon, Painter>()
     waypoint.notesElements.filterIsInstance<Icon>().forEach { icon ->
-        IconMapper.getIcon(icon.type)?.let { vector ->
+        IconMapper.getIcon(icon.type, onSurfaceColor)?.let { vector ->
             iconPainters[icon] = rememberVectorPainter(vector)
         }
     }

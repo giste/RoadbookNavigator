@@ -2,7 +2,7 @@
 
 ## 1. General Principles
 - **Language**: Use English for all code, comments, and documentation.
-- **Architecture**: Clean Architecture (Data, Domain, UI layers).
+- **Architecture**: Clean Architecture (Data, Domain, UI layers). **ViewModels must only depend on Use Cases.** Direct Repository dependencies are prohibited.
 - **Design**: Domain-Driven Design (Entities, Value Objects, Use Cases).
 - **Standards**: Follow official Android and Kotlin best practices.
 

@@ -1,3 +1,20 @@
+<!--
+  - Copyright (C) 2026  Giste
+  -
+  - This program is free software: you can redistribute it and/or modify
+  - it under the terms of the GNU General Public License as published by
+  - the Free Software Foundation, either version 3 of the License, or
+  - (at your option) any later version.
+  -
+  - This program is distributed in the hope that it will be useful,
+  - but WITHOUT ANY WARRANTY; without even the implied warranty of
+  - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  - GNU General Public License for more details.
+  -
+  - You should have received a copy of the GNU General Public License
+  - along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
 <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M21.125 24L1.71875 28.1328C1.71875 24.7188 3.15625 22.4667 4.41406 21.125C7.10938 18.25 9.625 18.4297 9.625 18.4297L16.9922 17.3516L21.125 24Z" fill="#757575" stroke="black" stroke-width="2"/>
 <path d="M22.0234 34.4219C22.0234 25.9806 15.4113 17.5394 10.7099 18.249L39.0938 13.9375C42.8672 13.9375 46.2813 18.25 46.2813 22.5625L22.0234 34.4219Z" fill="#757575"/>

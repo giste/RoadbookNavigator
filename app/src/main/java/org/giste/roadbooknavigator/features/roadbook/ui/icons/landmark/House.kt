@@ -26,13 +26,9 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 import org.giste.roadbooknavigator.features.roadbook.ui.icons.RoadbookIcons
 
-@get:Suppress("UnusedReceiverParameter")
-val RoadbookIcons.Landmark.House: ImageVector
-    get() {
-        if (_House != null) {
-            return _House!!
-        }
-        _House = ImageVector.Builder(
+@Suppress("UnusedReceiverParameter")
+fun RoadbookIcons.Landmark.house(onSurface: Color, surface: Color): ImageVector {
+    return ImageVector.Builder(
             name = "Landmark.House",
             defaultWidth = 48.dp,
             defaultHeight = 48.dp,
@@ -50,7 +46,7 @@ val RoadbookIcons.Landmark.House: ImageVector
             ) {
                 path(
                     fill = SolidColor(Color(0xFF757575)),
-                    stroke = SolidColor(Color(0xFFE6E0E9)),
+                    stroke = SolidColor(onSurface),
                     strokeLineWidth = 2f
                 ) {
                     moveTo(35f, 10f)
@@ -60,8 +56,8 @@ val RoadbookIcons.Landmark.House: ImageVector
                     close()
                 }
                 path(
-                    fill = SolidColor(Color(0xFF141218)),
-                    stroke = SolidColor(Color(0xFFE6E0E9)),
+                    fill = SolidColor(surface),
+                    stroke = SolidColor(onSurface),
                     strokeLineWidth = 2f
                 ) {
                     moveTo(5f, 25f)
@@ -72,7 +68,7 @@ val RoadbookIcons.Landmark.House: ImageVector
                 }
                 path(
                     fill = SolidColor(Color(0xFF757575)),
-                    stroke = SolidColor(Color(0xFFE6E0E9)),
+                    stroke = SolidColor(onSurface),
                     strokeLineWidth = 2f
                 ) {
                     moveTo(2.5f, 25f)
@@ -82,8 +78,8 @@ val RoadbookIcons.Landmark.House: ImageVector
                     close()
                 }
                 path(
-                    fill = SolidColor(Color(0xFF141218)),
-                    stroke = SolidColor(Color(0xFFE6E0E9)),
+                    fill = SolidColor(surface),
+                    stroke = SolidColor(onSurface),
                     strokeLineWidth = 2f
                 ) {
                     moveTo(19f, 33f)
@@ -94,9 +90,4 @@ val RoadbookIcons.Landmark.House: ImageVector
                 }
             }
         }.build()
-
-        return _House!!
     }
-
-@Suppress("ObjectPropertyName")
-private var _House: ImageVector? = null

@@ -24,20 +24,16 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 import org.giste.roadbooknavigator.features.roadbook.ui.icons.RoadbookIcons
 
-@get:Suppress("UnusedReceiverParameter")
-val RoadbookIcons.Landmark.TrafficLight: ImageVector
-    get() {
-        if (_TrafficLight != null) {
-            return _TrafficLight!!
-        }
-        _TrafficLight = ImageVector.Builder(
+@Suppress("UnusedReceiverParameter")
+fun RoadbookIcons.Landmark.trafficLight(onSurface: Color, surface: Color): ImageVector {
+    return ImageVector.Builder(
             name = "Landmark.TrafficLight",
             defaultWidth = 48.dp,
             defaultHeight = 48.dp,
             viewportWidth = 48f,
             viewportHeight = 48f
         ).apply {
-            path(fill = SolidColor(Color(0xFFE6E0E9))) {
+            path(fill = SolidColor(onSurface)) {
                 moveTo(23f, 0f)
                 lineTo(23f, 0f)
                 arcTo(5f, 5f, 0f, isMoreThanHalf = false, isPositiveArc = true, 28f, 5f)
@@ -49,26 +45,26 @@ val RoadbookIcons.Landmark.TrafficLight: ImageVector
                 arcTo(5f, 5f, 0f, isMoreThanHalf = false, isPositiveArc = true, 23f, 0f)
                 close()
             }
-            path(fill = SolidColor(Color(0xFF141218))) {
+            path(fill = SolidColor(surface)) {
                 moveTo(23f, 5f)
                 moveToRelative(-4f, 0f)
                 arcToRelative(4f, 4f, 0f, isMoreThanHalf = true, isPositiveArc = true, 8f, 0f)
                 arcToRelative(4f, 4f, 0f, isMoreThanHalf = true, isPositiveArc = true, -8f, 0f)
             }
-            path(fill = SolidColor(Color(0xFF141218))) {
+            path(fill = SolidColor(surface)) {
                 moveTo(23f, 14f)
                 moveToRelative(-4f, 0f)
                 arcToRelative(4f, 4f, 0f, isMoreThanHalf = true, isPositiveArc = true, 8f, 0f)
                 arcToRelative(4f, 4f, 0f, isMoreThanHalf = true, isPositiveArc = true, -8f, 0f)
             }
-            path(fill = SolidColor(Color(0xFF141218))) {
+            path(fill = SolidColor(surface)) {
                 moveTo(23f, 23f)
                 moveToRelative(-4f, 0f)
                 arcToRelative(4f, 4f, 0f, isMoreThanHalf = true, isPositiveArc = true, 8f, 0f)
                 arcToRelative(4f, 4f, 0f, isMoreThanHalf = true, isPositiveArc = true, -8f, 0f)
             }
             path(
-                stroke = SolidColor(Color(0xFFE6E0E9)),
+                stroke = SolidColor(onSurface),
                 strokeLineWidth = 2f
             ) {
                 moveTo(23f, 27f)
@@ -77,9 +73,4 @@ val RoadbookIcons.Landmark.TrafficLight: ImageVector
                 horizontalLineTo(30f)
             }
         }.build()
-
-        return _TrafficLight!!
     }
-
-@Suppress("ObjectPropertyName")
-private var _TrafficLight: ImageVector? = null

@@ -24,20 +24,16 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 import org.giste.roadbooknavigator.features.roadbook.ui.icons.RoadbookIcons
 
-@get:Suppress("UnusedReceiverParameter")
-val RoadbookIcons.Landmark.AboveBridge: ImageVector
-    get() {
-        if (_AboveBridge != null) {
-            return _AboveBridge!!
-        }
-        _AboveBridge = ImageVector.Builder(
+@Suppress("UnusedReceiverParameter")
+fun RoadbookIcons.Landmark.aboveBridge(onSurface: Color, surface: Color): ImageVector {
+    return ImageVector.Builder(
             name = "Landmark.AboveBridge",
             defaultWidth = 48.dp,
             defaultHeight = 48.dp,
             viewportWidth = 48f,
             viewportHeight = 48f
         ).apply {
-            path(fill = SolidColor(Color(0xFF141218))) {
+            path(fill = SolidColor(surface)) {
                 moveTo(13f, 6.5f)
                 horizontalLineToRelative(24f)
                 verticalLineToRelative(35f)
@@ -45,7 +41,7 @@ val RoadbookIcons.Landmark.AboveBridge: ImageVector
                 close()
             }
             path(
-                stroke = SolidColor(Color(0xFFE6E0E9)),
+                stroke = SolidColor(onSurface),
                 strokeLineWidth = 2f
             ) {
                 moveTo(44f, 1f)
@@ -54,7 +50,7 @@ val RoadbookIcons.Landmark.AboveBridge: ImageVector
                 lineTo(44f, 47f)
             }
             path(
-                stroke = SolidColor(Color(0xFFE6E0E9)),
+                stroke = SolidColor(onSurface),
                 strokeLineWidth = 2f
             ) {
                 moveTo(6f, 1f)
@@ -63,9 +59,4 @@ val RoadbookIcons.Landmark.AboveBridge: ImageVector
                 lineTo(6f, 47f)
             }
         }.build()
-
-        return _AboveBridge!!
     }
-
-@Suppress("ObjectPropertyName")
-private var _AboveBridge: ImageVector? = null

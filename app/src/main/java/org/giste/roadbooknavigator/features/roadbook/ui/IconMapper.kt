@@ -26,15 +26,15 @@ import org.giste.roadbooknavigator.features.roadbook.ui.icons.cross.DangerLevel2
 import org.giste.roadbooknavigator.features.roadbook.ui.icons.cross.DangerLevel3
 import org.giste.roadbooknavigator.features.roadbook.ui.icons.cross.fuelZone
 import org.giste.roadbooknavigator.features.roadbook.ui.icons.cross.resetDistance
-import org.giste.roadbooknavigator.features.roadbook.ui.icons.landmark.AboveBridge
+import org.giste.roadbooknavigator.features.roadbook.ui.icons.landmark.underBridge
+import org.giste.roadbooknavigator.features.roadbook.ui.icons.landmark.aboveBridge
 import org.giste.roadbooknavigator.features.roadbook.ui.icons.landmark.fortCastle
-import org.giste.roadbooknavigator.features.roadbook.ui.icons.landmark.House
-import org.giste.roadbooknavigator.features.roadbook.ui.icons.landmark.TrafficLight
+import org.giste.roadbooknavigator.features.roadbook.ui.icons.landmark.house
+import org.giste.roadbooknavigator.features.roadbook.ui.icons.landmark.trafficLight
 import org.giste.roadbooknavigator.features.roadbook.ui.icons.landmark.tunnel
-import org.giste.roadbooknavigator.features.roadbook.ui.icons.landmark.UnderBridge
 import org.giste.roadbooknavigator.features.roadbook.ui.icons.signs.Alert
-import org.giste.roadbooknavigator.features.roadbook.ui.icons.signs.roundabout
 import org.giste.roadbooknavigator.features.roadbook.ui.icons.signs.Stop
+import org.giste.roadbooknavigator.features.roadbook.ui.icons.signs.roundabout
 import org.giste.roadbooknavigator.features.roadbook.ui.icons.terrain.river
 
 object IconMapper {
@@ -45,12 +45,12 @@ object IconMapper {
             Icon.IconType.Danger3 -> RoadbookIcons.Cross.DangerLevel3
             Icon.IconType.FuelZone -> RoadbookIcons.Cross.fuelZone(onSurface)
             Icon.IconType.ResetDistance -> RoadbookIcons.Cross.resetDistance(onSurface, surface)
-            Icon.IconType.AboveBridge -> RoadbookIcons.Landmark.AboveBridge
+            Icon.IconType.AboveBridge -> RoadbookIcons.Landmark.aboveBridge(onSurface, surface)
             Icon.IconType.FortCastle -> RoadbookIcons.Landmark.fortCastle(onSurface)
-            Icon.IconType.House -> RoadbookIcons.Landmark.House
-            Icon.IconType.TrafficLight -> RoadbookIcons.Landmark.TrafficLight
+            Icon.IconType.House -> RoadbookIcons.Landmark.house(onSurface, surface)
+            Icon.IconType.TrafficLight -> RoadbookIcons.Landmark.trafficLight(onSurface, surface)
             Icon.IconType.Tunnel -> RoadbookIcons.Landmark.tunnel(onSurface)
-            Icon.IconType.UnderBridge -> RoadbookIcons.Landmark.UnderBridge
+            Icon.IconType.UnderBridge -> RoadbookIcons.Landmark.underBridge(onSurface, surface)
             Icon.IconType.Alert -> RoadbookIcons.Signs.Alert
             Icon.IconType.Roundabout -> RoadbookIcons.Signs.roundabout(onSurface)
             Icon.IconType.Stop -> RoadbookIcons.Signs.Stop

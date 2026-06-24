@@ -25,12 +25,12 @@ import kotlinx.coroutines.flow.Flow
 interface RoadbookSessionRepository {
 
     /**
-     * Stream of the last saved scroll position (index and offset).
+     * Stream of the last saved scroll position.
      */
-    val scrollPosition: Flow<Pair<Int, Int>>
+    val scrollPosition: Flow<RoadbookPosition>
 
     /**
      * Saves the current scroll position.
      */
-    suspend fun saveScrollPosition(index: Int, offset: Int)
+    suspend fun saveScrollPosition(position: RoadbookPosition)
 }

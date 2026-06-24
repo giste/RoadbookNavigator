@@ -18,6 +18,7 @@
 package org.giste.roadbooknavigator.features.roadbook.domain.usecase
 
 import kotlinx.coroutines.flow.Flow
+import org.giste.roadbooknavigator.features.roadbook.domain.RoadbookPosition
 import org.giste.roadbooknavigator.features.roadbook.domain.RoadbookSessionRepository
 import javax.inject.Inject
 
@@ -27,5 +28,5 @@ import javax.inject.Inject
 class GetRoadbookPositionUseCase @Inject constructor(
     private val repository: RoadbookSessionRepository
 ) {
-    operator fun invoke(): Flow<Pair<Int, Int>> = repository.scrollPosition
+    operator fun invoke(): Flow<RoadbookPosition> = repository.scrollPosition
 }

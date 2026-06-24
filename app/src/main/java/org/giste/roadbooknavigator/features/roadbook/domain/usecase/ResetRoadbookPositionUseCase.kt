@@ -17,20 +17,17 @@
 
 package org.giste.roadbooknavigator.features.roadbook.domain.usecase
 
-import org.giste.roadbooknavigator.features.roadbook.domain.RoadbookRepository
-import org.giste.roadbooknavigator.features.roadbook.domain.Route
-import java.io.InputStream
+import org.giste.roadbooknavigator.features.roadbook.domain.RoadbookPosition
+import org.giste.roadbooknavigator.features.roadbook.domain.RoadbookSessionRepository
 import javax.inject.Inject
 
 /**
- * Use case to import and process a new roadbook from a stream.
+ * Use case to reset the roadbook scroll position to the beginning.
  */
-class ImportRoadbookUseCase @Inject constructor(
-    private val repository: RoadbookRepository,
-    private val resetRoadbookPositionUseCase: ResetRoadbookPositionUseCase
+class ResetRoadbookPositionUseCase @Inject constructor(
+    private val repository: RoadbookSessionRepository
 ) {
-    suspend operator fun invoke(inputStream: InputStream): Result<Route> =
-        repository.processNewRoadbook(inputStream).onSuccess {
-            resetRoadbookPositionUseCase()
-        }
+    suspend operator fun invoke() {
+        repository.saveScrollPosition(RoadbookPosition(0, 0))
+    }
 }

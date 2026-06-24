@@ -18,6 +18,7 @@
 package org.giste.roadbooknavigator.features.roadbook.domain.usecase
 
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.giste.roadbooknavigator.features.roadbook.domain.RoadbookRepository
@@ -30,14 +31,16 @@ import java.io.InputStream
 class ImportRoadbookUseCaseTest {
 
     private val repository: RoadbookRepository = mockk()
-    private val useCase = ImportRoadbookUseCase(repository)
+    private val resetRoadbookPositionUseCase: ResetRoadbookPositionUseCase = mockk()
+    private val useCase = ImportRoadbookUseCase(repository, resetRoadbookPositionUseCase)
 
     @Test
-    fun `invoke should call processNewRoadbook on repository`() = runTest {
+    fun `invoke should call processNewRoadbook and reset position on success`() = runTest {
         // Given
         val inputStream: InputStream = mockk()
         val route = mockk<Route>()
         coEvery { repository.processNewRoadbook(inputStream) } returns Result.success(route)
+        coEvery { resetRoadbookPositionUseCase() } returns Unit
 
         // When
         val result = useCase(inputStream)
@@ -45,5 +48,21 @@ class ImportRoadbookUseCaseTest {
         // Then
         assertTrue(result.isSuccess)
         assertEquals(route, result.getOrNull())
+        coVerify { resetRoadbookPositionUseCase() }
+    }
+
+    @Test
+    fun `invoke should NOT reset position on failure`() = runTest {
+        // Given
+        val inputStream: InputStream = mockk()
+        val error = RuntimeException("Failed")
+        coEvery { repository.processNewRoadbook(inputStream) } returns Result.failure(error)
+
+        // When
+        val result = useCase(inputStream)
+
+        // Then
+        assertTrue(result.isFailure)
+        coVerify(exactly = 0) { resetRoadbookPositionUseCase() }
     }
 }

@@ -24,6 +24,7 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.giste.roadbooknavigator.core.di.SessionDataStoreQualifier
+import org.giste.roadbooknavigator.features.roadbook.domain.RoadbookPosition
 import org.giste.roadbooknavigator.features.roadbook.domain.RoadbookSessionRepository
 import javax.inject.Inject
 
@@ -31,7 +32,7 @@ import javax.inject.Inject
  * Implementation of [RoadbookSessionRepository] using Preferences DataStore.
  */
 class DataStoreRoadbookSessionRepository @Inject constructor(
-    @SessionDataStoreQualifier private val dataStore: DataStore<Preferences>
+    @param:SessionDataStoreQualifier private val dataStore: DataStore<Preferences>
 ) : RoadbookSessionRepository {
 
     private object Keys {
@@ -39,16 +40,16 @@ class DataStoreRoadbookSessionRepository @Inject constructor(
         val SCROLL_OFFSET = intPreferencesKey("roadbook_scroll_offset")
     }
 
-    override val scrollPosition: Flow<Pair<Int, Int>> = dataStore.data.map { preferences ->
+    override val scrollPosition: Flow<RoadbookPosition> = dataStore.data.map { preferences ->
         val index = preferences[Keys.SCROLL_INDEX] ?: 0
         val offset = preferences[Keys.SCROLL_OFFSET] ?: 0
-        index to offset
+        RoadbookPosition(index, offset)
     }
 
-    override suspend fun saveScrollPosition(index: Int, offset: Int) {
+    override suspend fun saveScrollPosition(position: RoadbookPosition) {
         dataStore.edit { preferences ->
-            preferences[Keys.SCROLL_INDEX] = index
-            preferences[Keys.SCROLL_OFFSET] = offset
+            preferences[Keys.SCROLL_INDEX] = position.index
+            preferences[Keys.SCROLL_OFFSET] = position.offset
         }
     }
 }

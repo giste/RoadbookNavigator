@@ -17,16 +17,26 @@
 
 package org.giste.roadbooknavigator.features.roadbook.domain.usecase
 
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
 import org.giste.roadbooknavigator.features.roadbook.domain.RoadbookPosition
 import org.giste.roadbooknavigator.features.roadbook.domain.RoadbookSessionRepository
-import javax.inject.Inject
+import org.junit.Test
 
-/**
- * Use case to save the current roadbook scroll position.
- */
-class SaveRoadbookPositionUseCase @Inject constructor(
-    private val repository: RoadbookSessionRepository
-) {
-    suspend operator fun invoke(index: Int, offset: Int) =
-        repository.saveScrollPosition(RoadbookPosition(index, offset))
+class ResetRoadbookPositionUseCaseTest {
+
+    private val repository: RoadbookSessionRepository = mockk()
+    private val useCase = ResetRoadbookPositionUseCase(repository)
+
+    @Test
+    fun `invoke should call repository to save position 0,0`() = runTest {
+        val expectedPosition = RoadbookPosition(0, 0)
+        coEvery { repository.saveScrollPosition(expectedPosition) } returns Unit
+
+        useCase()
+
+        coVerify { repository.saveScrollPosition(expectedPosition) }
+    }
 }

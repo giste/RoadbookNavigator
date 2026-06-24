@@ -30,6 +30,7 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import org.giste.roadbooknavigator.features.roadbook.domain.RoadbookPosition
 import org.giste.roadbooknavigator.features.roadbook.domain.Route
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.GetActiveRoadbookUseCase
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.GetRoadbookPositionUseCase
@@ -50,7 +51,7 @@ class RoadbookViewModelTest {
     private val saveRoadbookPositionUseCase: SaveRoadbookPositionUseCase = mockk()
     
     private val activeRoadbookFlow = MutableStateFlow<Route?>(null)
-    private val scrollPositionFlow = MutableStateFlow(0 to 0)
+    private val scrollPositionFlow = MutableStateFlow(RoadbookPosition(0, 0))
     private val testDispatcher = UnconfinedTestDispatcher()
 
     @Before
@@ -82,7 +83,7 @@ class RoadbookViewModelTest {
     fun `initial state should be Success if active roadbook exists`() = runTest {
         val route = mockk<Route>()
         activeRoadbookFlow.value = route
-        scrollPositionFlow.value = 5 to 10
+        scrollPositionFlow.value = RoadbookPosition(5, 10)
 
         val viewModel = RoadbookViewModel(
             getActiveRoadbookUseCase,

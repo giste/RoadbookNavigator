@@ -68,8 +68,8 @@ class RoadbookViewModel @Inject constructor(
         if (route != null) {
             RoadbookUiState.Success(
                 route = route,
-                initialIndex = position.first,
-                initialOffset = position.second
+                initialIndex = position.index,
+                initialOffset = position.offset
             )
         } else {
             RoadbookUiState.Empty

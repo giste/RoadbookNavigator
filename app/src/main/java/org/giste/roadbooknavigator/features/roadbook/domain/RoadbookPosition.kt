@@ -15,22 +15,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.roadbook.domain.usecase
-
-import org.giste.roadbooknavigator.features.roadbook.domain.RoadbookRepository
-import org.giste.roadbooknavigator.features.roadbook.domain.Route
-import java.io.InputStream
-import javax.inject.Inject
+package org.giste.roadbooknavigator.features.roadbook.domain
 
 /**
- * Use case to import and process a new roadbook from a stream.
+ * Value object representing the scroll position in a roadbook list.
+ *
+ * @property index The index of the first visible waypoint.
+ * @property offset The pixel offset of the first visible waypoint.
  */
-class ImportRoadbookUseCase @Inject constructor(
-    private val repository: RoadbookRepository,
-    private val resetRoadbookPositionUseCase: ResetRoadbookPositionUseCase
+data class RoadbookPosition(
+    val index: Int = 0,
+    val offset: Int = 0
 ) {
-    suspend operator fun invoke(inputStream: InputStream): Result<Route> =
-        repository.processNewRoadbook(inputStream).onSuccess {
-            resetRoadbookPositionUseCase()
-        }
+    init {
+        require(index >= 0) { "Index must be non-negative" }
+        require(offset >= 0) { "Offset must be non-negative" }
+    }
 }

@@ -49,6 +49,8 @@ class DataStoreSettingsRepository @Inject constructor(
         val ODOMETER_SPEED_THRESHOLD = floatPreferencesKey("odometer_speed_threshold")
         val ODOMETER_MIN_ACCURACY = floatPreferencesKey("odometer_min_accuracy")
         val ODOMETER_MIN_VERTICAL_ACCURACY = floatPreferencesKey("odometer_min_vertical_accuracy")
+        val ODOMETER_POLLING_INTERVAL = longPreferencesKey("odometer_polling_interval")
+        val ODOMETER_MIN_DISTANCE = floatPreferencesKey("odometer_min_distance")
     }
 
     override fun getSettings(): Flow<AppSettings> = dataStore.data.map { preferences ->
@@ -63,7 +65,11 @@ class DataStoreSettingsRepository @Inject constructor(
             odometerMinAccuracy = preferences[Keys.ODOMETER_MIN_ACCURACY]
                 ?: AppSettings.DEFAULT_ODOMETER_MIN_ACCURACY,
             odometerMinVerticalAccuracy = preferences[Keys.ODOMETER_MIN_VERTICAL_ACCURACY]
-                ?: AppSettings.DEFAULT_ODOMETER_MIN_VERTICAL_ACCURACY
+                ?: AppSettings.DEFAULT_ODOMETER_MIN_VERTICAL_ACCURACY,
+            odometerPollingInterval = preferences[Keys.ODOMETER_POLLING_INTERVAL]
+                ?: AppSettings.DEFAULT_ODOMETER_POLLING_INTERVAL,
+            odometerMinDistance = preferences[Keys.ODOMETER_MIN_DISTANCE]
+                ?: AppSettings.DEFAULT_ODOMETER_MIN_DISTANCE
         )
     }
 
@@ -103,11 +109,25 @@ class DataStoreSettingsRepository @Inject constructor(
         }
     }
 
+    override suspend fun setOdometerPollingInterval(interval: Long) {
+        dataStore.edit { preferences ->
+            preferences[Keys.ODOMETER_POLLING_INTERVAL] = interval
+        }
+    }
+
+    override suspend fun setOdometerMinDistance(distance: Float) {
+        dataStore.edit { preferences ->
+            preferences[Keys.ODOMETER_MIN_DISTANCE] = distance
+        }
+    }
+
     override suspend fun restoreOdometerDefaults() {
         dataStore.edit { preferences ->
             preferences.remove(Keys.ODOMETER_SPEED_THRESHOLD)
             preferences.remove(Keys.ODOMETER_MIN_ACCURACY)
             preferences.remove(Keys.ODOMETER_MIN_VERTICAL_ACCURACY)
+            preferences.remove(Keys.ODOMETER_POLLING_INTERVAL)
+            preferences.remove(Keys.ODOMETER_MIN_DISTANCE)
         }
     }
 

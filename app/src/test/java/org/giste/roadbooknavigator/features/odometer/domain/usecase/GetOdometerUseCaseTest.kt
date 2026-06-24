@@ -51,7 +51,7 @@ class GetOdometerUseCaseTest {
 
     @Before
     fun setup() {
-        every { locationRepository.getLocations() } returns gpsFlow
+        every { locationRepository.getLocations(any(), any()) } returns gpsFlow
         every { getSettingsUseCase() } returns settingsFlow
         every { odometerRepository.odometer } returns flowOf(Odometer(0.0, 0.0))
         coEvery { odometerRepository.updateDistance(any()) } returns Unit

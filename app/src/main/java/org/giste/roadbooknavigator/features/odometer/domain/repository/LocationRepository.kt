@@ -26,6 +26,12 @@ import org.giste.roadbooknavigator.features.odometer.domain.model.UserLocation
 interface LocationRepository {
     /**
      * Emits the current location as it changes.
+     *
+     * @param pollingInterval Minimum time interval between updates in ms.
+     * @param minDistance Minimum distance between updates in meters.
      */
-    fun getLocations(): Flow<UserLocation>
+    fun getLocations(
+        pollingInterval: Long,
+        minDistance: Float
+    ): Flow<UserLocation>
 }

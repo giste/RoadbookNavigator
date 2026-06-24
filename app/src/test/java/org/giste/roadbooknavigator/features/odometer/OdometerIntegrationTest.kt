@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.giste.roadbooknavigator.features.odometer.data.repository.DataStoreOdometerRepository
 import org.giste.roadbooknavigator.features.odometer.domain.model.Odometer
@@ -71,7 +72,7 @@ class OdometerIntegrationTest {
         )
         odometerRepository = DataStoreOdometerRepository(dataStore)
         
-        every { locationRepository.getLocations() } returns gpsFlow
+        every { locationRepository.getLocations(any(), any()) } returns gpsFlow
         every { getSettingsUseCase() } returns settingsFlow
         
         getOdometerUseCase = GetOdometerUseCase(odometerRepository, locationRepository, getSettingsUseCase)
@@ -113,7 +114,7 @@ class OdometerIntegrationTest {
 
     @Test
     fun `odometer should survive settings changes and keep tracking from last valid point`() = runTest(testDispatcher) {
-        val results = mutableListOf<org.giste.roadbooknavigator.features.odometer.domain.model.Odometer>()
+        val results = mutableListOf<Odometer>()
         val job = backgroundScope.launch {
             getOdometerUseCase().collect { results.add(it) }
         }
@@ -145,7 +146,7 @@ class OdometerIntegrationTest {
         // Valid fix 4 -> Should calculate distance from loc2 (last valid point) to loc4
         val loc4 = createLocation(40.003, -3.0)
         gpsFlow.emit(loc4)
-        
+
         // Total distance = distance(loc1, loc2) + distance(loc2, loc4)
         // 111.194 + 222.388 = 333.582
         assertEquals(333.582, results.last().total, 0.01)

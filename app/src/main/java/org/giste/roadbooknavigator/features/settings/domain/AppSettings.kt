@@ -26,6 +26,8 @@ package org.giste.roadbooknavigator.features.settings.domain
  * @property odometerSpeedThreshold Minimum speed in m/s below which the odometer might ignore updates to prevent "jitter".
  * @property odometerMinAccuracy Maximum allowed horizontal GPS accuracy in meters.
  * @property odometerMinVerticalAccuracy Maximum allowed vertical GPS accuracy in meters.
+ * @property odometerPollingInterval Minimum time interval between location updates, in milliseconds.
+ * @property odometerMinDistance Minimum distance between location updates, in meters.
  */
 data class AppSettings(
     val theme: AppTheme = AppTheme.FOLLOW_SYSTEM,
@@ -33,12 +35,16 @@ data class AppSettings(
     val shortDistanceThreshold: Long = DEFAULT_SHORT_DISTANCE_THRESHOLD,
     val odometerSpeedThreshold: Float = DEFAULT_ODOMETER_SPEED_THRESHOLD,
     val odometerMinAccuracy: Float = DEFAULT_ODOMETER_MIN_ACCURACY,
-    val odometerMinVerticalAccuracy: Float = DEFAULT_ODOMETER_MIN_VERTICAL_ACCURACY
+    val odometerMinVerticalAccuracy: Float = DEFAULT_ODOMETER_MIN_VERTICAL_ACCURACY,
+    val odometerPollingInterval: Long = DEFAULT_ODOMETER_POLLING_INTERVAL,
+    val odometerMinDistance: Float = DEFAULT_ODOMETER_MIN_DISTANCE
 ) {
     companion object {
         const val DEFAULT_SHORT_DISTANCE_THRESHOLD = 300L
         const val DEFAULT_ODOMETER_SPEED_THRESHOLD = 0.5f // m/s
         const val DEFAULT_ODOMETER_MIN_ACCURACY = 20.0f // m
         const val DEFAULT_ODOMETER_MIN_VERTICAL_ACCURACY = 10.0f // m
+        const val DEFAULT_ODOMETER_POLLING_INTERVAL = 500L // ms
+        const val DEFAULT_ODOMETER_MIN_DISTANCE = 1.0f // m
     }
 }

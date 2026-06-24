@@ -21,6 +21,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.scan
 import org.giste.roadbooknavigator.features.odometer.domain.DistanceUtils
@@ -48,10 +49,22 @@ class GetOdometerUseCase @Inject constructor(
 ) {
     @OptIn(ExperimentalCoroutinesApi::class)
     operator fun invoke(): Flow<Odometer> {
+        val locationFlow = getSettingsUseCase()
+            .distinctUntilChanged { old, new ->
+                old.odometerPollingInterval == new.odometerPollingInterval &&
+                        old.odometerMinDistance == new.odometerMinDistance
+            }
+            .flatMapLatest { settings ->
+                locationRepository.getLocations(
+                    pollingInterval = settings.odometerPollingInterval,
+                    minDistance = settings.odometerMinDistance
+                )
+            }
+            .onStart { emit(UserLocation(0.0, 0.0, 0.0, 999f, null, 0f, 0f, 0L)) }
+
         val processedLocations = combine(
             getSettingsUseCase(),
-            locationRepository.getLocations()
-                .onStart { emit(UserLocation(0.0, 0.0, 0.0, 999f, null, 0f, 0f, 0L)) }
+            locationFlow
         ) { settings, location ->
             settings to location
         }

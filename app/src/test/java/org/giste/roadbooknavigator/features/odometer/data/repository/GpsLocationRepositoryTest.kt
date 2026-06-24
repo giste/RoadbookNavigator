@@ -60,14 +60,14 @@ class GpsLocationRepositoryTest {
         every { locationManager.removeUpdates(any<LocationListener>()) } returns Unit
 
         val job = launch(UnconfinedTestDispatcher()) {
-            gpsLocationRepository.getLocations().collect {}
+            gpsLocationRepository.getLocations(1000L, 2f).collect {}
         }
 
         verify { 
             locationManager.requestLocationUpdates(
                 LocationManager.GPS_PROVIDER, 
-                500L, 
-                1f, 
+                1000L, 
+                2f,
                 any<LocationListener>(),
             ) 
         }
@@ -103,7 +103,7 @@ class GpsLocationRepositoryTest {
 
         val collectedLocations = mutableListOf<org.giste.roadbooknavigator.features.odometer.domain.model.UserLocation>()
         val job = launch(UnconfinedTestDispatcher()) {
-            gpsLocationRepository.getLocations().collect { collectedLocations.add(it) }
+            gpsLocationRepository.getLocations(500L, 1f).collect { collectedLocations.add(it) }
         }
 
         listenerSlot.captured.onLocationChanged(androidLocation)

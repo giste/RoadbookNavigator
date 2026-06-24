@@ -43,7 +43,10 @@ class GpsLocationRepository @Inject constructor(
     private val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
     @SuppressLint("MissingPermission")
-    override fun getLocations(): Flow<UserLocation> = callbackFlow {
+    override fun getLocations(
+        pollingInterval: Long,
+        minDistance: Float
+    ): Flow<UserLocation> = callbackFlow {
         val listener = object : LocationListener {
             override fun onLocationChanged(location: Location) {
                 trySend(location.toUserLocation())
@@ -57,8 +60,8 @@ class GpsLocationRepository @Inject constructor(
 
         locationManager.requestLocationUpdates(
             LocationManager.GPS_PROVIDER,
-            500L,
-            1f,
+            pollingInterval,
+            minDistance,
             listener
         )
 

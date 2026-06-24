@@ -111,7 +111,10 @@ fun RoadbookSection(
                         onClick = { filePickerLauncher.launch("*/*") },
                         modifier = Modifier.padding(top = 16.dp)
                     ) {
-                        Text(text = stringResource(R.string.action_import))
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = stringResource(R.string.action_import)
+                        )
                     }
                 }
             }
@@ -130,7 +133,10 @@ fun RoadbookSection(
                         onClick = { filePickerLauncher.launch("*/*") },
                         modifier = Modifier.padding(top = 16.dp)
                     ) {
-                        Text(text = stringResource(R.string.action_import))
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = stringResource(R.string.action_import)
+                        )
                     }
                 }
             }

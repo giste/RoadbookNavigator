@@ -17,7 +17,7 @@
 
 package org.giste.roadbooknavigator.features.odometer.domain
 
-import org.giste.roadbooknavigator.features.odometer.domain.model.UserLocation
+import org.giste.roadbooknavigator.features.location.domain.model.UserLocation
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import kotlin.math.sqrt

@@ -28,12 +28,11 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
+import org.giste.roadbooknavigator.features.location.domain.model.UserLocation
+import org.giste.roadbooknavigator.features.location.domain.usecase.ObserveLocationUseCase
 import org.giste.roadbooknavigator.features.odometer.data.repository.DataStoreOdometerRepository
 import org.giste.roadbooknavigator.features.odometer.domain.model.Odometer
-import org.giste.roadbooknavigator.features.odometer.domain.model.UserLocation
-import org.giste.roadbooknavigator.features.odometer.domain.repository.LocationRepository
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.GetOdometerUseCase
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.usecase.GetSettingsUseCase
@@ -56,7 +55,7 @@ class OdometerIntegrationTest {
     
     private lateinit var dataStore: DataStore<Preferences>
     private lateinit var odometerRepository: DataStoreOdometerRepository
-    private val locationRepository: LocationRepository = mockk()
+    private val observeLocationUseCase: ObserveLocationUseCase = mockk()
     private val getSettingsUseCase: GetSettingsUseCase = mockk()
     
     private val gpsFlow = MutableSharedFlow<UserLocation>()
@@ -72,10 +71,10 @@ class OdometerIntegrationTest {
         )
         odometerRepository = DataStoreOdometerRepository(dataStore)
         
-        every { locationRepository.getLocations(any(), any()) } returns gpsFlow
+        every { observeLocationUseCase() } returns gpsFlow
         every { getSettingsUseCase() } returns settingsFlow
         
-        getOdometerUseCase = GetOdometerUseCase(odometerRepository, locationRepository, getSettingsUseCase)
+        getOdometerUseCase = GetOdometerUseCase(odometerRepository, observeLocationUseCase, getSettingsUseCase)
     }
 
     @Test

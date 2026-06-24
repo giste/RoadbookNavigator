@@ -33,8 +33,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import org.giste.roadbooknavigator.core.di.IoDispatcher
 import org.giste.roadbooknavigator.features.odometer.data.repository.DataStoreOdometerRepository
-import org.giste.roadbooknavigator.features.odometer.data.repository.GpsLocationRepository
-import org.giste.roadbooknavigator.features.odometer.domain.repository.LocationRepository
 import org.giste.roadbooknavigator.features.odometer.domain.repository.OdometerRepository
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -52,12 +50,6 @@ abstract class OdometerModule {
     abstract fun bindOdometerRepository(
         impl: DataStoreOdometerRepository
     ): OdometerRepository
-
-    @Binds
-    @Singleton
-    abstract fun bindLocationRepository(
-        impl: GpsLocationRepository
-    ): LocationRepository
 
     companion object {
         @Provides

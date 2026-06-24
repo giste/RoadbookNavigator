@@ -17,17 +17,15 @@
 
 package org.giste.roadbooknavigator.features.odometer.domain.usecase
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.scan
+import org.giste.roadbooknavigator.features.location.domain.model.UserLocation
+import org.giste.roadbooknavigator.features.location.domain.usecase.ObserveLocationUseCase
 import org.giste.roadbooknavigator.features.odometer.domain.DistanceUtils
 import org.giste.roadbooknavigator.features.odometer.domain.model.Odometer
-import org.giste.roadbooknavigator.features.odometer.domain.model.UserLocation
-import org.giste.roadbooknavigator.features.odometer.domain.repository.LocationRepository
 import org.giste.roadbooknavigator.features.odometer.domain.repository.OdometerRepository
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.usecase.GetSettingsUseCase
@@ -44,22 +42,11 @@ import javax.inject.Inject
  */
 class GetOdometerUseCase @Inject constructor(
     private val odometerRepository: OdometerRepository,
-    private val locationRepository: LocationRepository,
+    private val observeLocationUseCase: ObserveLocationUseCase,
     private val getSettingsUseCase: GetSettingsUseCase
 ) {
-    @OptIn(ExperimentalCoroutinesApi::class)
     operator fun invoke(): Flow<Odometer> {
-        val locationFlow = getSettingsUseCase()
-            .distinctUntilChanged { old, new ->
-                old.odometerPollingInterval == new.odometerPollingInterval &&
-                        old.odometerMinDistance == new.odometerMinDistance
-            }
-            .flatMapLatest { settings ->
-                locationRepository.getLocations(
-                    pollingInterval = settings.odometerPollingInterval,
-                    minDistance = settings.odometerMinDistance
-                )
-            }
+        val locationFlow = observeLocationUseCase()
             .onStart { emit(UserLocation(0.0, 0.0, 0.0, 999f, null, 0f, 0f, 0L)) }
 
         val processedLocations = combine(

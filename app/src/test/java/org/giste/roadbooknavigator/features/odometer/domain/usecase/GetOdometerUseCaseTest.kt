@@ -29,8 +29,8 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.giste.roadbooknavigator.features.odometer.domain.DistanceUtils
 import org.giste.roadbooknavigator.features.odometer.domain.model.Odometer
-import org.giste.roadbooknavigator.features.odometer.domain.model.UserLocation
-import org.giste.roadbooknavigator.features.odometer.domain.repository.LocationRepository
+import org.giste.roadbooknavigator.features.location.domain.model.UserLocation
+import org.giste.roadbooknavigator.features.location.domain.usecase.ObserveLocationUseCase
 import org.giste.roadbooknavigator.features.odometer.domain.repository.OdometerRepository
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.usecase.GetSettingsUseCase
@@ -41,7 +41,7 @@ import org.junit.Test
 class GetOdometerUseCaseTest {
 
     private val odometerRepository: OdometerRepository = mockk()
-    private val locationRepository: LocationRepository = mockk()
+    private val observeLocationUseCase: ObserveLocationUseCase = mockk()
     private val getSettingsUseCase: GetSettingsUseCase = mockk()
     private val gpsFlow = MutableSharedFlow<UserLocation>()
     private val settingsFlow = MutableSharedFlow<AppSettings>()
@@ -51,12 +51,12 @@ class GetOdometerUseCaseTest {
 
     @Before
     fun setup() {
-        every { locationRepository.getLocations(any(), any()) } returns gpsFlow
+        every { observeLocationUseCase() } returns gpsFlow
         every { getSettingsUseCase() } returns settingsFlow
         every { odometerRepository.odometer } returns flowOf(Odometer(0.0, 0.0))
         coEvery { odometerRepository.updateDistance(any()) } returns Unit
         
-        getOdometerUseCase = GetOdometerUseCase(odometerRepository, locationRepository, getSettingsUseCase)
+        getOdometerUseCase = GetOdometerUseCase(odometerRepository, observeLocationUseCase, getSettingsUseCase)
     }
 
     @Test

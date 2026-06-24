@@ -43,7 +43,16 @@ class DataStoreRoadbookSessionRepository @Inject constructor(
     override val scrollPosition: Flow<RoadbookPosition> = dataStore.data.map { preferences ->
         val index = preferences[Keys.SCROLL_INDEX] ?: 0
         val offset = preferences[Keys.SCROLL_OFFSET] ?: 0
-        RoadbookPosition(index, offset)
+        
+        try {
+            RoadbookPosition(
+                index = if (index >= 0) index else 0,
+                offset = if (offset >= 0) offset else 0
+            )
+        } catch (e: IllegalArgumentException) {
+            // Fallback for safety, though the checks above should prevent this
+            RoadbookPosition(0, 0)
+        }
     }
 
     override suspend fun saveScrollPosition(position: RoadbookPosition) {

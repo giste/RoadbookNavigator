@@ -20,9 +20,15 @@ package org.giste.roadbooknavigator.features.roadbook.data
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.joinAll
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.giste.roadbooknavigator.features.roadbook.domain.RoadbookPosition
@@ -42,12 +48,11 @@ class DataStoreRoadbookSessionRepositoryTest {
     private lateinit var dataStore: DataStore<Preferences>
     private lateinit var repository: DataStoreRoadbookSessionRepository
     private val testDispatcher = UnconfinedTestDispatcher()
-    private val testScope = TestScope(testDispatcher)
 
     @Before
     fun setup() {
         dataStore = PreferenceDataStoreFactory.create(
-            scope = testScope,
+            scope = CoroutineScope(testDispatcher + SupervisorJob()),
             produceFile = { File(temporaryFolder.newFolder(), "test_session.preferences_pb") }
         )
         repository = DataStoreRoadbookSessionRepository(dataStore)
@@ -72,5 +77,73 @@ class DataStoreRoadbookSessionRepositoryTest {
         val newRepo = DataStoreRoadbookSessionRepository(dataStore)
         val persistedPosition = newRepo.scrollPosition.first()
         assertEquals(expectedPosition, persistedPosition)
+    }
+
+    @Test
+    fun `scrollPosition should emit updates in real time`() = runTest {
+        val positions = mutableListOf<RoadbookPosition>()
+        // Use backgroundScope so it's automatically cancelled, 
+        // but we still want to verify the items.
+        val job = backgroundScope.launch(testDispatcher) {
+            repository.scrollPosition.toList(positions)
+        }
+
+        // Small delays to avoid DataStore coalescing emissions in some environments
+        repository.saveScrollPosition(RoadbookPosition(1, 10))
+        repository.saveScrollPosition(RoadbookPosition(2, 20))
+
+        // Give it a moment to process the emissions
+        testScheduler.runCurrent()
+
+        assertEquals(
+            listOf(
+                RoadbookPosition(0, 0),
+                RoadbookPosition(1, 10),
+                RoadbookPosition(2, 20)
+            ),
+            positions
+        )
+        job.cancel()
+    }
+
+    @Test
+    fun `should handle partial data in DataStore by falling back to defaults`() = runTest {
+        // Manually inject only the index into DataStore
+        val indexKey = intPreferencesKey("roadbook_scroll_index")
+        dataStore.edit { it[indexKey] = 100 }
+
+        val position = repository.scrollPosition.first()
+        
+        // Offset should be 0 (default)
+        assertEquals(RoadbookPosition(100, 0), position)
+    }
+
+    @Test
+    fun `should handle negative data by falling back to 0`() = runTest {
+        val indexKey = intPreferencesKey("roadbook_scroll_index")
+        val offsetKey = intPreferencesKey("roadbook_scroll_offset")
+        dataStore.edit { 
+            it[indexKey] = -5 
+            it[offsetKey] = -10
+        }
+
+        val position = repository.scrollPosition.first()
+        
+        assertEquals(RoadbookPosition(0, 0), position)
+    }
+
+    @Test
+    fun `concurrent updates should result in the last write winning`() = runTest {
+        val finalPosition = RoadbookPosition(99, 999)
+        
+        // Launch multiple concurrent saves and wait for them
+        val job1 = launch { repository.saveScrollPosition(RoadbookPosition(1, 10)) }
+        val job2 = launch { repository.saveScrollPosition(RoadbookPosition(2, 20)) }
+        val job3 = launch { repository.saveScrollPosition(finalPosition) }
+
+        joinAll(job1, job2, job3)
+
+        val position = repository.scrollPosition.first()
+        assertEquals(finalPosition, position)
     }
 }

@@ -36,6 +36,8 @@ import org.giste.roadbooknavigator.features.roadbook.domain.usecase.GetActiveRoa
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.GetRoadbookPositionUseCase
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.ImportRoadbookUseCase
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.SaveRoadbookPositionUseCase
+import org.giste.roadbooknavigator.features.settings.domain.AppSettings
+import org.giste.roadbooknavigator.features.settings.domain.usecase.GetSettingsUseCase
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -49,9 +51,11 @@ class RoadbookViewModelTest {
     private val importRoadbookUseCase: ImportRoadbookUseCase = mockk()
     private val getRoadbookPositionUseCase: GetRoadbookPositionUseCase = mockk()
     private val saveRoadbookPositionUseCase: SaveRoadbookPositionUseCase = mockk()
+    private val getSettingsUseCase: GetSettingsUseCase = mockk()
     
     private val activeRoadbookFlow = MutableStateFlow<Route?>(null)
     private val scrollPositionFlow = MutableStateFlow(RoadbookPosition(0, 0))
+    private val settingsFlow = MutableStateFlow(AppSettings())
     private val testDispatcher = UnconfinedTestDispatcher()
 
     @Before
@@ -59,6 +63,7 @@ class RoadbookViewModelTest {
         Dispatchers.setMain(testDispatcher)
         every { getActiveRoadbookUseCase() } returns activeRoadbookFlow
         every { getRoadbookPositionUseCase() } returns scrollPositionFlow
+        every { getSettingsUseCase() } returns settingsFlow
     }
 
     @After
@@ -72,7 +77,8 @@ class RoadbookViewModelTest {
             getActiveRoadbookUseCase,
             importRoadbookUseCase,
             getRoadbookPositionUseCase,
-            saveRoadbookPositionUseCase
+            saveRoadbookPositionUseCase,
+            getSettingsUseCase
         )
         backgroundScope.launch(testDispatcher) { viewModel.uiState.collect {} }
 
@@ -84,16 +90,24 @@ class RoadbookViewModelTest {
         val route = mockk<Route>()
         activeRoadbookFlow.value = route
         scrollPositionFlow.value = RoadbookPosition(5, 10)
+        val settings = AppSettings(shortDistanceThreshold = 250L)
+        settingsFlow.value = settings
 
         val viewModel = RoadbookViewModel(
             getActiveRoadbookUseCase,
             importRoadbookUseCase,
             getRoadbookPositionUseCase,
-            saveRoadbookPositionUseCase
+            saveRoadbookPositionUseCase,
+            getSettingsUseCase
         )
         backgroundScope.launch(testDispatcher) { viewModel.uiState.collect {} }
 
-        val expectedState = RoadbookUiState.Success(route, initialIndex = 5, initialOffset = 10)
+        val expectedState = RoadbookUiState.Success(
+            route,
+            shortDistanceThreshold = 250L,
+            initialIndex = 5,
+            initialOffset = 10
+        )
         assertEquals(expectedState, viewModel.uiState.value)
     }
 
@@ -103,7 +117,8 @@ class RoadbookViewModelTest {
             getActiveRoadbookUseCase,
             importRoadbookUseCase,
             getRoadbookPositionUseCase,
-            saveRoadbookPositionUseCase
+            saveRoadbookPositionUseCase,
+            getSettingsUseCase
         )
         backgroundScope.launch(testDispatcher) { viewModel.uiState.collect {} }
 
@@ -125,7 +140,8 @@ class RoadbookViewModelTest {
             getActiveRoadbookUseCase,
             importRoadbookUseCase,
             getRoadbookPositionUseCase,
-            saveRoadbookPositionUseCase
+            saveRoadbookPositionUseCase,
+            getSettingsUseCase
         )
         coEvery { saveRoadbookPositionUseCase(any(), any()) } returns Unit
 

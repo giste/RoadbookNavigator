@@ -35,23 +35,22 @@ class Rn2Mapper @Inject constructor(
      * Maps a JSON string representing an .rn2 file into a Domain [Route].
      *
      * @param jsonString The raw JSON content.
-     * @param threshold Optional distance threshold in meters for "short distance" warnings.
      * @return The fully parsed and processed [Route].
      */
-    fun mapToDomain(jsonString: String, threshold: Double? = null): Route {
+    fun mapToDomain(jsonString: String): Route {
         Logger.d("Starting mapping from JSON string, length: ${jsonString.length}")
         val jsonResponse = Rn2RouteResponse.fromJson(jsonString)
-        return mapToDomain(jsonResponse.route, threshold)
+        return mapToDomain(jsonResponse.route)
     }
 
-    private fun mapToDomain(rn2RouteData: Rn2RouteData, threshold: Double? = null): Route {
+    private fun mapToDomain(rn2RouteData: Rn2RouteData): Route {
         Logger.i("Mapping route: ${rn2RouteData.name} with ${rn2RouteData.waypoints.size} waypoints")
         return Route(
             name = rn2RouteData.name,
             description = rn2RouteData.description,
             startLocation = rn2RouteData.startLocation,
             endLocation = rn2RouteData.endLocation,
-            waypoints = waypointProcessor.processWaypoints(rn2RouteData.waypoints, threshold),
+            waypoints = waypointProcessor.processWaypoints(rn2RouteData.waypoints),
         )
     }
 }

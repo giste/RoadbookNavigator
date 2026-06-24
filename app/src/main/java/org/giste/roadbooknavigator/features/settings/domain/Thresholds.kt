@@ -22,9 +22,9 @@ package org.giste.roadbooknavigator.features.settings.domain
  * will be marked as "short distance".
  */
 @JvmInline
-value class ShortDistanceThreshold(val meters: Double) {
+value class ShortDistanceThreshold(val meters: Long) {
     init {
-        require(meters in MIN..MAX) {
+        require(meters.toDouble() in MIN..MAX) {
             "Short distance threshold must be between $MIN and $MAX meters"
         }
     }

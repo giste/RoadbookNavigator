@@ -44,11 +44,12 @@ import org.giste.roadbooknavigator.features.roadbook.domain.Waypoint
 @Composable
 internal fun DistanceSection(
     waypoint: Waypoint,
+    shortDistanceThreshold: Long,
     onSetPartialClick: (Double) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val locale = LocalConfiguration.current.locales[0]
-    val isShortDistance = waypoint.shortDistance
+    val isShortDistance = waypoint.distanceFromPrevious.meters in 1..<shortDistanceThreshold
     val backgroundColor = if (isShortDistance) MaterialTheme.colorScheme.tertiaryContainer else Color.Unspecified
     val contentColor = if (isShortDistance) {
         MaterialTheme.colorScheme.onTertiaryContainer

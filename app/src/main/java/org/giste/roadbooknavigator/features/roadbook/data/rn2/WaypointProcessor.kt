@@ -35,10 +35,6 @@ class WaypointProcessor @Inject constructor(
     private val rn2ElementMapper: Rn2ElementMapper
 ) {
 
-    companion object {
-        private const val SHORT_DISTANCE_THRESHOLD = 300.0
-    }
-
     private data class WaypointProcessingState(
         val waypoint: Rn2Waypoint,
         val accumulatedDist: Double,
@@ -49,7 +45,7 @@ class WaypointProcessor @Inject constructor(
     /**
      * Processes a raw list of JSON waypoints into a list of Domain Waypoints.
      */
-    fun processWaypoints(waypoints: List<Rn2Waypoint>, threshold: Double? = null): List<Waypoint> {
+    fun processWaypoints(waypoints: List<Rn2Waypoint>): List<Waypoint> {
         if (waypoints.isEmpty()) {
             Logger.w("Waypoint list is empty")
             return emptyList()
@@ -103,8 +99,6 @@ class WaypointProcessor @Inject constructor(
                 ),
                 distance = Distance(state.accumulatedDist.roundToLong()),
                 distanceFromPrevious = Distance(distFromPrev.roundToLong()),
-                shortDistance = distFromPrev > 0 && distFromPrev < (threshold
-                    ?: SHORT_DISTANCE_THRESHOLD),
                 reset = hasReset(state.waypoint),
                 dangerLevel = mapToDangerLevel(state.waypoint),
                 tulipElements = rn2ElementMapper.mapElements(

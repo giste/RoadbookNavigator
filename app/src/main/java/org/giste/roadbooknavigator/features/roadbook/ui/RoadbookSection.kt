@@ -145,6 +145,7 @@ fun RoadbookSection(
                 Box(modifier = Modifier.fillMaxSize()) {
                     RoadbookList(
                         waypoints = state.route.waypoints,
+                        shortDistanceThreshold = state.shortDistanceThreshold,
                         listState = listState,
                         onSetPartialClick = onSetPartialClick,
                         onWaypointVisible = onWaypointVisible
@@ -169,6 +170,7 @@ fun RoadbookSection(
 @Composable
 fun RoadbookList(
     waypoints: List<Waypoint>,
+    shortDistanceThreshold: Long,
     listState: LazyListState,
     onSetPartialClick: (Double) -> Unit,
     onWaypointVisible: (Int, Int) -> Unit
@@ -195,6 +197,7 @@ fun RoadbookList(
         ) { _, waypoint ->
             WaypointItem(
                 waypoint = waypoint,
+                shortDistanceThreshold = shortDistanceThreshold,
                 onSetPartialClick = onSetPartialClick
             )
         }

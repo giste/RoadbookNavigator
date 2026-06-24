@@ -31,6 +31,8 @@ import org.giste.roadbooknavigator.features.roadbook.domain.usecase.GetActiveRoa
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.GetRoadbookPositionUseCase
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.ImportRoadbookUseCase
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.SaveRoadbookPositionUseCase
+import org.giste.roadbooknavigator.features.settings.domain.AppSettings
+import org.giste.roadbooknavigator.features.settings.domain.usecase.GetSettingsUseCase
 import java.io.InputStream
 import javax.inject.Inject
 
@@ -42,6 +44,7 @@ sealed interface RoadbookUiState {
     data object Empty : RoadbookUiState
     data class Success(
         val route: Route,
+        val shortDistanceThreshold: Long = AppSettings.DEFAULT_SHORT_DISTANCE_THRESHOLD,
         val initialIndex: Int = 0,
         val initialOffset: Int = 0
     ) : RoadbookUiState
@@ -56,18 +59,21 @@ class RoadbookViewModel @Inject constructor(
     getActiveRoadbookUseCase: GetActiveRoadbookUseCase,
     private val importRoadbookUseCase: ImportRoadbookUseCase,
     private val getRoadbookPositionUseCase: GetRoadbookPositionUseCase,
-    private val saveRoadbookPositionUseCase: SaveRoadbookPositionUseCase
+    private val saveRoadbookPositionUseCase: SaveRoadbookPositionUseCase,
+    getSettingsUseCase: GetSettingsUseCase
 ) : ViewModel() {
 
     private val _transientState = MutableStateFlow<RoadbookUiState?>(null)
 
     val uiState: StateFlow<RoadbookUiState> = combine(
         getActiveRoadbookUseCase(),
-        getRoadbookPositionUseCase()
-    ) { route, position ->
+        getRoadbookPositionUseCase(),
+        getSettingsUseCase()
+    ) { route, position, settings ->
         if (route != null) {
             RoadbookUiState.Success(
                 route = route,
+                shortDistanceThreshold = settings.shortDistanceThreshold,
                 initialIndex = position.index,
                 initialOffset = position.offset
             )

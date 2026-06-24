@@ -28,7 +28,7 @@ import javax.inject.Inject
 class UpdateShortDistanceThresholdUseCase @Inject constructor(
     private val repository: SettingsRepository
 ) {
-    suspend operator fun invoke(threshold: Double): Result<Unit> = runCatching {
+    suspend operator fun invoke(threshold: Long): Result<Unit> = runCatching {
         val validThreshold = ShortDistanceThreshold(threshold)
         repository.setShortDistanceThreshold(validThreshold.meters)
     }

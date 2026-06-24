@@ -38,7 +38,6 @@ data class PersistentWaypoint(
     val coordinates: PersistentCoordinates,
     val distanceMeters: Long,
     val distFromPrevMeters: Long,
-    val shortDistance: Boolean,
     val reset: Boolean,
     val dangerLevel: String,
     val tulipElements: List<PersistentElement>,

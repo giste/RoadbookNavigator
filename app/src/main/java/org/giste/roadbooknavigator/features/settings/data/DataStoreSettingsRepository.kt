@@ -20,7 +20,7 @@ package org.giste.roadbooknavigator.features.settings.data
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.floatPreferencesKey
-import androidx.datastore.preferences.core.doublePreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
@@ -45,7 +45,7 @@ class DataStoreSettingsRepository @Inject constructor(
     private object Keys {
         val THEME = stringPreferencesKey("app_theme")
         val ORIENTATION = stringPreferencesKey("app_orientation")
-        val SHORT_DISTANCE_THRESHOLD = doublePreferencesKey("short_distance_threshold")
+        val SHORT_DISTANCE_THRESHOLD = longPreferencesKey("short_distance_threshold")
         val ODOMETER_SPEED_THRESHOLD = floatPreferencesKey("odometer_speed_threshold")
         val ODOMETER_MIN_ACCURACY = floatPreferencesKey("odometer_min_accuracy")
         val ODOMETER_MIN_VERTICAL_ACCURACY = floatPreferencesKey("odometer_min_vertical_accuracy")
@@ -79,7 +79,7 @@ class DataStoreSettingsRepository @Inject constructor(
         }
     }
 
-    override suspend fun setShortDistanceThreshold(threshold: Double) {
+    override suspend fun setShortDistanceThreshold(threshold: Long) {
         dataStore.edit { preferences ->
             preferences[Keys.SHORT_DISTANCE_THRESHOLD] = threshold
         }

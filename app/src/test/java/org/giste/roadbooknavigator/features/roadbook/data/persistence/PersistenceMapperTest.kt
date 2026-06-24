@@ -53,7 +53,6 @@ class PersistenceMapperTest {
                     coordinates = Coordinates(25.123, 45.456, 100.0),
                     distance = Distance(10000),
                     distanceFromPrevious = Distance(10000),
-                    shortDistance = false,
                     reset = false,
                     dangerLevel = Waypoint.DangerLevel.LOW,
                     tulipElements = listOf(
@@ -76,7 +75,6 @@ class PersistenceMapperTest {
                     coordinates = Coordinates(25.130, 45.460, 110.0),
                     distance = Distance(12000),
                     distanceFromPrevious = Distance(2000),
-                    shortDistance = true,
                     reset = true,
                     dangerLevel = Waypoint.DangerLevel.HIGH,
                     tulipElements = emptyList(),
@@ -115,7 +113,6 @@ class PersistenceMapperTest {
             Assert.assertEquals(expectedWp.coordinates, actualWp.coordinates)
             Assert.assertEquals(expectedWp.distance, actualWp.distance)
             Assert.assertEquals(expectedWp.distanceFromPrevious, actualWp.distanceFromPrevious)
-            Assert.assertEquals(expectedWp.shortDistance, actualWp.shortDistance)
             Assert.assertEquals(expectedWp.reset, actualWp.reset)
             Assert.assertEquals(expectedWp.dangerLevel, actualWp.dangerLevel)
 

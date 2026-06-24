@@ -44,7 +44,6 @@ data class Waypoint (
     val coordinates: Coordinates,
     val distance: Distance,
     val distanceFromPrevious: Distance,
-    val shortDistance: Boolean = false,
     val reset: Boolean = false,
     val dangerLevel: DangerLevel = DangerLevel.NONE,
     val tulipElements: List<Element> = emptyList(),

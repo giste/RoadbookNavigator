@@ -35,7 +35,7 @@ interface SettingsRepository {
     suspend fun setOrientation(orientation: AppOrientation)
 
     /** Sets the threshold for short distance warnings. */
-    suspend fun setShortDistanceThreshold(threshold: Double)
+    suspend fun setShortDistanceThreshold(threshold: Long)
 
     /** Sets the speed threshold for the GPS odometer. */
     suspend fun setOdometerSpeedThreshold(threshold: Float)

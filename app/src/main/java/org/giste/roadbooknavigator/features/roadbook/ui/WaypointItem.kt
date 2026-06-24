@@ -51,6 +51,7 @@ import org.giste.roadbooknavigator.features.roadbook.domain.Text as TulipText
 @Composable
 fun WaypointItem(
     waypoint: Waypoint,
+    shortDistanceThreshold: Long,
     onSetPartialClick: (Double) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -82,6 +83,7 @@ fun WaypointItem(
             // First part: Distance info and number
             DistanceSection(
                 waypoint = waypoint,
+                shortDistanceThreshold = shortDistanceThreshold,
                 onSetPartialClick = onSetPartialClick,
                 modifier = Modifier
                     .weight(weight = 1f, fill = true)
@@ -254,8 +256,7 @@ fun WaypointItemPreview() {
         number = 6,
         coordinates = Coordinates(40.0, -3.0),
         distance = Distance(9500),
-        distanceFromPrevious = Distance(2000),
-        shortDistance = true,
+        distanceFromPrevious = Distance(200),
         tulipElements = listOf(
             Icon(type = Icon.IconType.Danger1, center = Point(40.0, 40.0), width = 30, height = 30),
             Icon(type = Icon.IconType.Danger2, center = Point(80.0, 40.0), width = 30, height = 30),
@@ -284,10 +285,26 @@ fun WaypointItemPreview() {
             Column(
                 modifier = Modifier.padding(RoadbookNavigatorTheme.dimensions.paddingMinimal),
             ) {
-                WaypointItem(waypoint = waypointWithLowDangerAndRoadTypes, onSetPartialClick = {})
-                WaypointItem(waypoint = waypointWithMediumDangerAndText, onSetPartialClick = {})
-                WaypointItem(waypoint = waypointWithHighDangerAndHandles, onSetPartialClick = {})
-                WaypointItem(waypoint = waypointWithIconsAndShortDistance, onSetPartialClick = {})
+                WaypointItem(
+                    waypoint = waypointWithLowDangerAndRoadTypes,
+                    shortDistanceThreshold = 300L,
+                    onSetPartialClick = {}
+                )
+                WaypointItem(
+                    waypoint = waypointWithMediumDangerAndText,
+                    shortDistanceThreshold = 300L,
+                    onSetPartialClick = {}
+                )
+                WaypointItem(
+                    waypoint = waypointWithHighDangerAndHandles,
+                    shortDistanceThreshold = 300L,
+                    onSetPartialClick = {}
+                )
+                WaypointItem(
+                    waypoint = waypointWithIconsAndShortDistance,
+                    shortDistanceThreshold = 300L,
+                    onSetPartialClick = {}
+                )
             }
         }
     }

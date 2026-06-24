@@ -33,7 +33,7 @@ class UpdateShortDistanceThresholdUseCaseTest {
     @Test
     fun `invoke should call repository when threshold is valid`() = runTest {
         // Given
-        val threshold = 500.0
+        val threshold = 500L
         coEvery { repository.setShortDistanceThreshold(threshold) } returns Unit
 
         // When
@@ -47,7 +47,7 @@ class UpdateShortDistanceThresholdUseCaseTest {
     @Test
     fun `invoke should return failure when threshold is negative`() = runTest {
         // Given
-        val threshold = -1.0
+        val threshold = -1L
 
         // When
         val result = useCase(threshold)
@@ -61,7 +61,7 @@ class UpdateShortDistanceThresholdUseCaseTest {
     @Test
     fun `invoke should return failure when threshold is too large`() = runTest {
         // Given
-        val threshold = 2001.0
+        val threshold = 2001L
 
         // When
         val result = useCase(threshold)

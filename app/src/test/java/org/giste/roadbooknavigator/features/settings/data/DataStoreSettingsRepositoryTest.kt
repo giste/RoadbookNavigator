@@ -90,11 +90,11 @@ class DataStoreSettingsRepositoryTest {
 
     @Test
     fun `setShortDistanceThreshold should persist value`() = runTest {
-        val newThreshold = 500.0
+        val newThreshold = 500L
         repository.setShortDistanceThreshold(newThreshold)
         
         val settings = repository.getSettings().first()
-        assertEquals(newThreshold, settings.shortDistanceThreshold, 0.0)
+        assertEquals(newThreshold, settings.shortDistanceThreshold)
     }
 
     @Test

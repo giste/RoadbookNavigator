@@ -21,6 +21,9 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.dataStoreFile
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStoreFile
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -43,6 +46,10 @@ import javax.inject.Singleton
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class RoadbookDataStoreQualifier
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class RoadbookSessionDataStoreQualifier
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -72,6 +79,17 @@ abstract class RoadbookDataModule {
             serializer = serializer,
             scope = CoroutineScope(ioDispatcher + SupervisorJob()),
             produceFile = { context.dataStoreFile("active_roadbook.json") }
+        )
+
+        @Provides
+        @Singleton
+        @RoadbookSessionDataStoreQualifier
+        fun provideRoadbookSessionDataStore(
+            @ApplicationContext context: Context,
+            @IoDispatcher ioDispatcher: CoroutineDispatcher
+        ): DataStore<Preferences> = PreferenceDataStoreFactory.create(
+            scope = CoroutineScope(ioDispatcher + SupervisorJob()),
+            produceFile = { context.preferencesDataStoreFile("roadbook_session_state") }
         )
     }
 }

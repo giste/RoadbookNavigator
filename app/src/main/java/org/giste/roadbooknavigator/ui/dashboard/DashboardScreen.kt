@@ -36,7 +36,9 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Place
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
@@ -373,29 +375,34 @@ fun LandscapeDistanceSection(
             .fillMaxSize()
             .border(RoadbookNavigatorTheme.dimensions.sectionBorder, MaterialTheme.colorScheme.outline)
     ) {
-        TotalDistance(
-            distance = totalDistance,
-        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .border(RoadbookNavigatorTheme.dimensions.sectionBorder, MaterialTheme.colorScheme.outline),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconButton(
+                onClick = onSettingsClick,
+                modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.actionIconSize)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Settings,
+                    contentDescription = stringResource(R.string.action_settings),
+                    tint = MaterialTheme.colorScheme.onSurface
+                )
+            }
+            TotalDistance(
+                distance = totalDistance,
+            )
+        }
+
         PartialDistance(
             distance = partialDistance,
             onLongClick = onLongClickPartial
         )
 
         // Map Area (Bottom) - Fills ALL remaining space
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.surfaceVariant),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                imageVector = Icons.Default.Place,
-                contentDescription = stringResource(R.string.content_description_map),
-                modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.actionIconSize),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
+        MapSection(modifier = Modifier.weight(1f))
     }
 }
 
@@ -413,6 +420,16 @@ fun PortraitDistanceSection(
             .height(IntrinsicSize.Min)
             .border(RoadbookNavigatorTheme.dimensions.sectionBorder, MaterialTheme.colorScheme.outline)
     ) {
+        IconButton(
+            onClick = onSettingsClick,
+            modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.actionIconSize)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Settings,
+                contentDescription = stringResource(R.string.action_settings),
+                tint = MaterialTheme.colorScheme.onSurface
+            )
+        }
         // Total | Partial side-by-side
         TotalDistance(
             distance = totalDistance, 
@@ -430,6 +447,24 @@ fun PortraitDistanceSection(
     }
 }
 
+@Composable
+fun MapSection(
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.surfaceVariant),
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            imageVector = Icons.Default.Place,
+            contentDescription = stringResource(R.string.content_description_map),
+            modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.actionIconSize),
+            tint = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+}
 
 // --- PREVIEWS ---
 

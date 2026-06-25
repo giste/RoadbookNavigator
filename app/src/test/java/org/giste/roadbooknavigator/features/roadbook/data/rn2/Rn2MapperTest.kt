@@ -17,10 +17,9 @@
 
 package org.giste.roadbooknavigator.features.roadbook.data.rn2
 
-import org.giste.roadbooknavigator.features.roadbook.domain.Icon
-import org.giste.roadbooknavigator.features.roadbook.domain.Road
-import org.giste.roadbooknavigator.features.roadbook.domain.Track
-import org.junit.Assert
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Icon
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Road
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Track
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before

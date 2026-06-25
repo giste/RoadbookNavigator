@@ -30,11 +30,11 @@ import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.text.rememberTextMeasurer
-import org.giste.roadbooknavigator.features.roadbook.domain.Icon
-import org.giste.roadbooknavigator.features.roadbook.domain.Road
-import org.giste.roadbooknavigator.features.roadbook.domain.Track
-import org.giste.roadbooknavigator.features.roadbook.domain.Waypoint
-import org.giste.roadbooknavigator.features.roadbook.domain.Text as TulipText
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Icon
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Road
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Track
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Waypoint
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Text as TulipText
 
 @Composable
 internal fun TulipSection(waypoint: Waypoint, modifier: Modifier = Modifier) {

@@ -30,8 +30,8 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import org.giste.roadbooknavigator.features.roadbook.domain.RoadbookPosition
-import org.giste.roadbooknavigator.features.roadbook.domain.Route
+import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookPosition
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Route
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.GetActiveRoadbookUseCase
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.GetRoadbookPositionUseCase
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.ImportRoadbookUseCase

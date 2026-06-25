@@ -21,8 +21,8 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.giste.roadbooknavigator.features.roadbook.domain.RoadbookPosition
-import org.giste.roadbooknavigator.features.roadbook.domain.RoadbookSessionRepository
+import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookPosition
+import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookSessionRepository
 import org.junit.Test
 
 class SaveRoadbookPositionUseCaseTest {

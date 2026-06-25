@@ -39,7 +39,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
-import org.giste.roadbooknavigator.features.roadbook.domain.Waypoint
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Waypoint
 
 @Composable
 internal fun DistanceSection(

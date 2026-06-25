@@ -31,7 +31,7 @@ import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import org.giste.roadbooknavigator.features.roadbook.domain.RoadbookPosition
+import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookPosition
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule

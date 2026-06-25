@@ -17,15 +17,15 @@
 
 package org.giste.roadbooknavigator.features.roadbook.data.persistence
 
-import org.giste.roadbooknavigator.features.roadbook.domain.Coordinates
-import org.giste.roadbooknavigator.features.roadbook.domain.Distance
-import org.giste.roadbooknavigator.features.roadbook.domain.Icon
-import org.giste.roadbooknavigator.features.roadbook.domain.Point
-import org.giste.roadbooknavigator.features.roadbook.domain.Road
-import org.giste.roadbooknavigator.features.roadbook.domain.Route
-import org.giste.roadbooknavigator.features.roadbook.domain.Text
-import org.giste.roadbooknavigator.features.roadbook.domain.Track
-import org.giste.roadbooknavigator.features.roadbook.domain.Waypoint
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Coordinates
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Distance
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Icon
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Point
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Road
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Route
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Text
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Track
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Waypoint
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test

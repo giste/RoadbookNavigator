@@ -23,12 +23,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import org.giste.roadbooknavigator.core.di.IoDispatcher
-import org.giste.roadbooknavigator.features.roadbook.data.di.RoadbookDataStoreQualifier
 import org.giste.roadbooknavigator.features.roadbook.data.persistence.dto.PersistentRoute
 import org.giste.roadbooknavigator.features.roadbook.data.persistence.PersistenceMapper
 import org.giste.roadbooknavigator.features.roadbook.data.rn2.Rn2Mapper
-import org.giste.roadbooknavigator.features.roadbook.domain.RoadbookRepository
-import org.giste.roadbooknavigator.features.roadbook.domain.Route
+import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookRepository
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Route
 import java.io.InputStream
 import javax.inject.Inject
 

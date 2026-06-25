@@ -23,9 +23,8 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import org.giste.roadbooknavigator.features.roadbook.data.di.RoadbookSessionDataStoreQualifier
-import org.giste.roadbooknavigator.features.roadbook.domain.RoadbookPosition
-import org.giste.roadbooknavigator.features.roadbook.domain.RoadbookSessionRepository
+import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookPosition
+import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookSessionRepository
 import javax.inject.Inject
 
 /**

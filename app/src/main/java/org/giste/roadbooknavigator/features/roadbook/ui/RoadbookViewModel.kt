@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import org.giste.roadbooknavigator.features.roadbook.domain.Route
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Route
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.GetActiveRoadbookUseCase
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.GetRoadbookPositionUseCase
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.ImportRoadbookUseCase

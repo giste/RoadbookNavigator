@@ -31,7 +31,7 @@ import org.giste.roadbooknavigator.features.roadbook.data.persistence.dto.Persis
 import org.giste.roadbooknavigator.features.roadbook.data.persistence.PersistenceMapper
 import org.giste.roadbooknavigator.features.roadbook.data.persistence.PersistenceRoadbookSerializer
 import org.giste.roadbooknavigator.features.roadbook.data.rn2.Rn2Mapper
-import org.giste.roadbooknavigator.features.roadbook.domain.Route
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Route
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
@@ -63,7 +63,8 @@ class DataStoreRoadbookRepositoryTest {
             scope = testScope,
             produceFile = { File(tempFolder.root, "active_roadbook.json") }
         )
-        repository = DataStoreRoadbookRepository(mapper, persistenceMapper, dataStore, testDispatcher)
+        repository =
+            DataStoreRoadbookRepository(mapper, persistenceMapper, dataStore, testDispatcher)
     }
 
     @Test

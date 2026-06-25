@@ -28,9 +28,9 @@ import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.text.rememberTextMeasurer
-import org.giste.roadbooknavigator.features.roadbook.domain.Icon
-import org.giste.roadbooknavigator.features.roadbook.domain.Waypoint
-import org.giste.roadbooknavigator.features.roadbook.domain.Text as TulipText
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Icon
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Waypoint
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Text as TulipText
 
 @Composable
 internal fun NotesSection(waypoint: Waypoint, modifier: Modifier = Modifier) {

@@ -21,7 +21,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.giste.roadbooknavigator.features.odometer.domain.repository.OdometerRepository
+import org.giste.roadbooknavigator.features.odometer.domain.OdometerRepository
 import org.junit.Before
 import org.junit.Test
 

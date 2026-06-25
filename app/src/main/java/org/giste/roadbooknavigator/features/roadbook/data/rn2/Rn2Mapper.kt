@@ -20,7 +20,7 @@ package org.giste.roadbooknavigator.features.roadbook.data.rn2
 import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2RouteData
 import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2RouteResponse
-import org.giste.roadbooknavigator.features.roadbook.domain.Route
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Route
 import javax.inject.Inject
 
 /**

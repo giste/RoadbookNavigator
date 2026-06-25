@@ -19,7 +19,7 @@ package org.giste.roadbooknavigator.features.roadbook.ui
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import org.giste.roadbooknavigator.features.roadbook.domain.Icon
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Icon
 import org.giste.roadbooknavigator.features.roadbook.ui.icons.RoadbookIcons
 import org.giste.roadbooknavigator.features.roadbook.ui.icons.cross.DangerLevel1
 import org.giste.roadbooknavigator.features.roadbook.ui.icons.cross.DangerLevel2

@@ -24,7 +24,12 @@ import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2Road
 import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2Text
 import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2Track
 import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2Waypoint
-import org.giste.roadbooknavigator.features.roadbook.domain.*
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Element
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Icon
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Point
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Road
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Text
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Track
 import javax.inject.Inject
 
 /**
@@ -82,7 +87,10 @@ class Rn2ElementMapper @Inject constructor(
                         handles = rn2Element.roadIn.handles.map { Point(it.x, it.y) },
                     ),
                     roadOut = Road(
-                        start = rn2Element.roadOut.start?.let { Point(it.x, it.y) } ?: Point(0.0, 0.0),
+                        start = rn2Element.roadOut.start?.let { Point(it.x, it.y) } ?: Point(
+                            0.0,
+                            0.0
+                        ),
                         end = roadOutEnd,
                         roadType = mapToRoadType(rn2Element.roadOut.typeId),
                         handles = rn2Element.roadOut.handles.map { Point(it.x, it.y) },

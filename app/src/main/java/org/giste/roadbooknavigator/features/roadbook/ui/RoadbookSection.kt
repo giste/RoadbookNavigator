@@ -57,13 +57,13 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import org.giste.roadbooknavigator.R
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
-import org.giste.roadbooknavigator.features.roadbook.domain.Coordinates
-import org.giste.roadbooknavigator.features.roadbook.domain.Distance
-import org.giste.roadbooknavigator.features.roadbook.domain.Point
-import org.giste.roadbooknavigator.features.roadbook.domain.Road
-import org.giste.roadbooknavigator.features.roadbook.domain.Route
-import org.giste.roadbooknavigator.features.roadbook.domain.Track
-import org.giste.roadbooknavigator.features.roadbook.domain.Waypoint
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Coordinates
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Distance
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Point
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Road
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Route
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Track
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Waypoint
 import java.io.InputStream
 
 @Composable

@@ -19,7 +19,7 @@ package org.giste.roadbooknavigator.features.roadbook.data.rn2
 
 import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2Waypoint
-import org.giste.roadbooknavigator.features.roadbook.domain.Point
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Point
 import javax.inject.Inject
 import kotlin.math.atan2
 import kotlin.math.cos

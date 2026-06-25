@@ -40,12 +40,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.sp
-import org.giste.roadbooknavigator.features.roadbook.domain.Icon
-import org.giste.roadbooknavigator.features.roadbook.domain.Road
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Icon
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Road
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
-import org.giste.roadbooknavigator.features.roadbook.domain.Text as TulipText
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Text as TulipText
 
 internal const val CANVAS_LOGICAL_WIDTH = 200f
 internal const val CANVAS_LOGICAL_HEIGHT = 135f

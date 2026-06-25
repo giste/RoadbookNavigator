@@ -18,7 +18,7 @@
 
 package org.giste.roadbooknavigator.features.odometer.domain.usecase
 
-import org.giste.roadbooknavigator.features.odometer.domain.repository.OdometerRepository
+import org.giste.roadbooknavigator.features.odometer.domain.OdometerRepository
 import javax.inject.Inject
 
 /**

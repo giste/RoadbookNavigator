@@ -20,9 +20,9 @@ package org.giste.roadbooknavigator.features.roadbook.data.rn2
 import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2Icon
 import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2Waypoint
-import org.giste.roadbooknavigator.features.roadbook.domain.Coordinates
-import org.giste.roadbooknavigator.features.roadbook.domain.Distance
-import org.giste.roadbooknavigator.features.roadbook.domain.Waypoint
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Coordinates
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Distance
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Waypoint
 import javax.inject.Inject
 import kotlin.math.roundToLong
 

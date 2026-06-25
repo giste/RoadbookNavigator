@@ -50,7 +50,7 @@ class MainActivity : ComponentActivity() {
                 windowSizeClass = windowSizeClass,
                 appTheme = settings.theme
             ) {
-                DashboardScreen()
+                //DashboardScreen()
             }
         }
     }

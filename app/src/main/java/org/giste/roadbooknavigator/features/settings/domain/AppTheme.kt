@@ -23,12 +23,16 @@ package org.giste.roadbooknavigator.features.settings.domain
 enum class AppTheme {
     /** Light theme. */
     LIGHT,
+
     /** Dark theme. */
     DARK,
+
     /** Follows the Android system theme (Light or Dark). */
     FOLLOW_SYSTEM,
+
     /** Material You dynamic colors based on user wallpaper (Android 12+). */
     DYNAMIC,
+
     /** Specialized theme following FIA (Fédération Internationale de l'Automobile) visual standards. */
     FIA
 }

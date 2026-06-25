@@ -89,7 +89,13 @@ class RoadbookGeometryCalculator @Inject constructor() {
         else if (dy < 0) t = minOf(t, top / dy)
 
         val exitPoint = Point(dx * t, dy * t)
-        Logger.v("Calculated relative exit point for wp ${current.waypointId}: in=${Math.toDegrees(bearingIn)}°, out=${Math.toDegrees(bearingOut)}°")
+        Logger.v(
+            "Calculated relative exit point for wp ${current.waypointId}: in=${
+                Math.toDegrees(
+                    bearingIn
+                )
+            }°, out=${Math.toDegrees(bearingOut)}°"
+        )
         return exitPoint
     }
 

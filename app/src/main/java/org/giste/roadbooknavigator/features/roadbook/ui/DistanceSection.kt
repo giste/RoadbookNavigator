@@ -50,7 +50,8 @@ internal fun DistanceSection(
 ) {
     val locale = LocalConfiguration.current.locales[0]
     val isShortDistance = waypoint.distanceFromPrevious.meters in 1..<shortDistanceThreshold
-    val backgroundColor = if (isShortDistance) MaterialTheme.colorScheme.tertiaryContainer else Color.Unspecified
+    val backgroundColor =
+        if (isShortDistance) MaterialTheme.colorScheme.tertiaryContainer else Color.Unspecified
     val contentColor = if (isShortDistance) {
         MaterialTheme.colorScheme.onTertiaryContainer
     } else {
@@ -112,7 +113,10 @@ internal fun DistanceSection(
                 text = String.format(locale, "%.2f", waypoint.distanceFromPrevious.meters / 1000.0),
                 modifier = Modifier
                     .weight(0.5f)
-                    .border(width = RoadbookNavigatorTheme.dimensions.sectionBorder, color = contentColor)
+                    .border(
+                        width = RoadbookNavigatorTheme.dimensions.sectionBorder,
+                        color = contentColor
+                    )
                     .padding(horizontal = RoadbookNavigatorTheme.dimensions.paddingMinimal),
                 color = contentColor,
                 textAlign = TextAlign.Center,

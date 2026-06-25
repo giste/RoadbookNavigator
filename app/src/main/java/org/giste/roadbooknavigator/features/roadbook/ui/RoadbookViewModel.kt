@@ -48,6 +48,7 @@ sealed interface RoadbookUiState {
         val initialIndex: Int = 0,
         val initialOffset: Int = 0
     ) : RoadbookUiState
+
     data class Error(val message: String) : RoadbookUiState
 }
 
@@ -58,7 +59,7 @@ sealed interface RoadbookUiState {
 class RoadbookViewModel @Inject constructor(
     getActiveRoadbookUseCase: GetActiveRoadbookUseCase,
     private val importRoadbookUseCase: ImportRoadbookUseCase,
-    private val getRoadbookPositionUseCase: GetRoadbookPositionUseCase,
+    getRoadbookPositionUseCase: GetRoadbookPositionUseCase,
     private val saveRoadbookPositionUseCase: SaveRoadbookPositionUseCase,
     getSettingsUseCase: GetSettingsUseCase
 ) : ViewModel() {
@@ -101,7 +102,8 @@ class RoadbookViewModel @Inject constructor(
                     _transientState.value = null
                 }
                 .onFailure { error ->
-                    _transientState.value = RoadbookUiState.Error(error.message ?: "Failed to process file")
+                    _transientState.value =
+                        RoadbookUiState.Error(error.message ?: "Failed to process file")
                 }
         }
     }

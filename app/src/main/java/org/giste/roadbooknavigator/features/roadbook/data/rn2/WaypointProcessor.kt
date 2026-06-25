@@ -85,7 +85,8 @@ class WaypointProcessor @Inject constructor(
             if (!state.waypoint.show) return@mapIndexedNotNull null
 
             visibleCount++
-            val distFromPrev = if (visibleCount == 1) 0.0 else state.accumulatedDist - state.lastVisibleDist
+            val distFromPrev =
+                if (visibleCount == 1) 0.0 else state.accumulatedDist - state.lastVisibleDist
 
             val prevWaypoint = if (index > 0) states[index - 1].waypoint else null
             val nextWaypoint = if (index < states.size - 1) states[index + 1].waypoint else null

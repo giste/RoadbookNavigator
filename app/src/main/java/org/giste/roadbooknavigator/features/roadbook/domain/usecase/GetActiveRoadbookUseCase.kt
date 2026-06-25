@@ -18,8 +18,8 @@
 package org.giste.roadbooknavigator.features.roadbook.domain.usecase
 
 import kotlinx.coroutines.flow.Flow
-import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookRepository
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Route
+import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookRepository
 import javax.inject.Inject
 
 /**

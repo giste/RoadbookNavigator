@@ -87,7 +87,10 @@ fun RoadbookSection(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .border(RoadbookNavigatorTheme.dimensions.sectionBorder, MaterialTheme.colorScheme.outline)
+            .border(
+                RoadbookNavigatorTheme.dimensions.sectionBorder,
+                MaterialTheme.colorScheme.outline
+            )
     ) {
         when (state) {
             is RoadbookUiState.Loading -> {
@@ -183,7 +186,10 @@ fun RoadbookList(
         if (listState.isScrollInProgress) {
             hasStartedScrolling = true
         } else if (hasStartedScrolling) {
-            onWaypointVisible(listState.firstVisibleItemIndex, listState.firstVisibleItemScrollOffset)
+            onWaypointVisible(
+                listState.firstVisibleItemIndex,
+                listState.firstVisibleItemScrollOffset
+            )
         }
     }
 

@@ -23,8 +23,10 @@ package org.giste.roadbooknavigator.features.settings.domain
 enum class AppOrientation {
     /** Forced vertical (Portrait) mode. */
     VERTICAL,
+
     /** Forced horizontal (Landscape) mode. */
     HORIZONTAL,
+
     /** Follows the device sensor/system orientation setting. */
     FOLLOW_SYSTEM
 }

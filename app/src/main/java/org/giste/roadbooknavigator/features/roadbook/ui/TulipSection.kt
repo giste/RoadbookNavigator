@@ -68,11 +68,28 @@ internal fun TulipSection(waypoint: Waypoint, modifier: Modifier = Modifier) {
                     drawWaypointStart(onSurfaceColor)
                     waypoint.tulipElements.forEach { element ->
                         when (element) {
-                            is Road -> drawRoad(element, onSurfaceColor, disabledOnSurface, RoadTermination.PERPENDICULAR)
+                            is Road -> drawRoad(
+                                element,
+                                onSurfaceColor,
+                                disabledOnSurface,
+                                RoadTermination.PERPENDICULAR
+                            )
+
                             is Track -> {
-                                drawRoad(element.roadIn, trackColor, secondaryTrackColor, RoadTermination.NONE)
-                                drawRoad(element.roadOut, trackColor, secondaryTrackColor, RoadTermination.ARROW)
+                                drawRoad(
+                                    element.roadIn,
+                                    trackColor,
+                                    secondaryTrackColor,
+                                    RoadTermination.NONE
+                                )
+                                drawRoad(
+                                    element.roadOut,
+                                    trackColor,
+                                    secondaryTrackColor,
+                                    RoadTermination.ARROW
+                                )
                             }
+
                             else -> {}
                         }
                     }
@@ -87,6 +104,7 @@ internal fun TulipSection(waypoint: Waypoint, modifier: Modifier = Modifier) {
                                     Icon.IconType.Danger1,
                                     Icon.IconType.Danger2,
                                     Icon.IconType.Danger3 -> errorColor
+
                                     else -> null
                                 }
                                 drawTulipIcon(element, painter, tint, scale)
@@ -96,6 +114,7 @@ internal fun TulipSection(waypoint: Waypoint, modifier: Modifier = Modifier) {
                         is TulipText -> {
                             drawTulipText(element, textMeasurer, onSurfaceColor, scale)
                         }
+
                         else -> {}
                     }
                 }

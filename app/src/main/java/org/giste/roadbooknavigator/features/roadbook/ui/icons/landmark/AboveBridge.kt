@@ -27,36 +27,36 @@ import org.giste.roadbooknavigator.features.roadbook.ui.icons.RoadbookIcons
 @Suppress("UnusedReceiverParameter")
 fun RoadbookIcons.Landmark.aboveBridge(onSurface: Color, surface: Color): ImageVector {
     return ImageVector.Builder(
-            name = "Landmark.AboveBridge",
-            defaultWidth = 48.dp,
-            defaultHeight = 48.dp,
-            viewportWidth = 48f,
-            viewportHeight = 48f
-        ).apply {
-            path(fill = SolidColor(surface)) {
-                moveTo(13f, 6.5f)
-                horizontalLineToRelative(24f)
-                verticalLineToRelative(35f)
-                horizontalLineToRelative(-24f)
-                close()
-            }
-            path(
-                stroke = SolidColor(onSurface),
-                strokeLineWidth = 2f
-            ) {
-                moveTo(44f, 1f)
-                lineTo(38f, 7f)
-                verticalLineTo(41f)
-                lineTo(44f, 47f)
-            }
-            path(
-                stroke = SolidColor(onSurface),
-                strokeLineWidth = 2f
-            ) {
-                moveTo(6f, 1f)
-                lineTo(12f, 7f)
-                verticalLineTo(41f)
-                lineTo(6f, 47f)
-            }
-        }.build()
-    }
+        name = "Landmark.AboveBridge",
+        defaultWidth = 48.dp,
+        defaultHeight = 48.dp,
+        viewportWidth = 48f,
+        viewportHeight = 48f
+    ).apply {
+        path(fill = SolidColor(surface)) {
+            moveTo(13f, 6.5f)
+            horizontalLineToRelative(24f)
+            verticalLineToRelative(35f)
+            horizontalLineToRelative(-24f)
+            close()
+        }
+        path(
+            stroke = SolidColor(onSurface),
+            strokeLineWidth = 2f
+        ) {
+            moveTo(44f, 1f)
+            lineTo(38f, 7f)
+            verticalLineTo(41f)
+            lineTo(44f, 47f)
+        }
+        path(
+            stroke = SolidColor(onSurface),
+            strokeLineWidth = 2f
+        ) {
+            moveTo(6f, 1f)
+            lineTo(12f, 7f)
+            verticalLineTo(41f)
+            lineTo(6f, 47f)
+        }
+    }.build()
+}

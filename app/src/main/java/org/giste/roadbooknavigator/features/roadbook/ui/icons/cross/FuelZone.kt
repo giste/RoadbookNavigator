@@ -54,8 +54,24 @@ fun RoadbookIcons.Cross.fuelZone(onSurface: Color): ImageVector {
             ) {
                 moveTo(24f, 24f)
                 moveToRelative(-22.5f, 0f)
-                arcToRelative(22.5f, 22.5f, 0f, isMoreThanHalf = true, isPositiveArc = true, 45f, 0f)
-                arcToRelative(22.5f, 22.5f, 0f, isMoreThanHalf = true, isPositiveArc = true, -45f, 0f)
+                arcToRelative(
+                    22.5f,
+                    22.5f,
+                    0f,
+                    isMoreThanHalf = true,
+                    isPositiveArc = true,
+                    45f,
+                    0f
+                )
+                arcToRelative(
+                    22.5f,
+                    22.5f,
+                    0f,
+                    isMoreThanHalf = true,
+                    isPositiveArc = true,
+                    -45f,
+                    0f
+                )
             }
             path(fill = SolidColor(Color(0xFF000000))) {
                 moveTo(32f, 27f)

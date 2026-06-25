@@ -26,12 +26,12 @@ import org.giste.roadbooknavigator.features.roadbook.ui.icons.cross.DangerLevel2
 import org.giste.roadbooknavigator.features.roadbook.ui.icons.cross.DangerLevel3
 import org.giste.roadbooknavigator.features.roadbook.ui.icons.cross.fuelZone
 import org.giste.roadbooknavigator.features.roadbook.ui.icons.cross.resetDistance
-import org.giste.roadbooknavigator.features.roadbook.ui.icons.landmark.underBridge
 import org.giste.roadbooknavigator.features.roadbook.ui.icons.landmark.aboveBridge
 import org.giste.roadbooknavigator.features.roadbook.ui.icons.landmark.fortCastle
 import org.giste.roadbooknavigator.features.roadbook.ui.icons.landmark.house
 import org.giste.roadbooknavigator.features.roadbook.ui.icons.landmark.trafficLight
 import org.giste.roadbooknavigator.features.roadbook.ui.icons.landmark.tunnel
+import org.giste.roadbooknavigator.features.roadbook.ui.icons.landmark.underBridge
 import org.giste.roadbooknavigator.features.roadbook.ui.icons.signs.Alert
 import org.giste.roadbooknavigator.features.roadbook.ui.icons.signs.Stop
 import org.giste.roadbooknavigator.features.roadbook.ui.icons.signs.roundabout

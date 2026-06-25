@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024  Giste
+ * Copyright (C) 2026  Giste
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@ data class Route(
  * @property tulipElements Graphical components used to draw the "tulip" direction diagram.
  * @property notesElements Graphical or text components for the "notes" column.
  */
-data class Waypoint (
+data class Waypoint(
     val number: Int,
     val coordinates: Coordinates,
     val distance: Distance,
@@ -52,6 +52,7 @@ data class Waypoint (
     init {
         require(number >= 0) { "Waypoint number must be non-negative" }
     }
+
     enum class DangerLevel {
         NONE,
         LOW,

@@ -17,8 +17,8 @@
 
 package org.giste.roadbooknavigator.features.settings.domain.usecase
 
-import org.giste.roadbooknavigator.features.settings.domain.ShortDistanceThreshold
 import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
+import org.giste.roadbooknavigator.features.settings.domain.ShortDistanceThreshold
 import javax.inject.Inject
 
 /**

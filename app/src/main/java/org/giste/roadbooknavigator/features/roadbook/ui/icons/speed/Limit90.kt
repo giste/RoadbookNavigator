@@ -55,8 +55,24 @@ val RoadbookIcons.Speed.Limit90: ImageVector
                 ) {
                     moveTo(24f, 24f)
                     moveToRelative(-22f, 0f)
-                    arcToRelative(22f, 22f, 0f, isMoreThanHalf = true, isPositiveArc = true, 44f, 0f)
-                    arcToRelative(22f, 22f, 0f, isMoreThanHalf = true, isPositiveArc = true, -44f, 0f)
+                    arcToRelative(
+                        22f,
+                        22f,
+                        0f,
+                        isMoreThanHalf = true,
+                        isPositiveArc = true,
+                        44f,
+                        0f
+                    )
+                    arcToRelative(
+                        22f,
+                        22f,
+                        0f,
+                        isMoreThanHalf = true,
+                        isPositiveArc = true,
+                        -44f,
+                        0f
+                    )
                 }
                 path(fill = SolidColor(Color.Black)) {
                     moveTo(16.708f, 15.307f)

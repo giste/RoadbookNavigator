@@ -62,6 +62,7 @@ internal fun NotesSection(waypoint: Waypoint, modifier: Modifier = Modifier) {
                                     Icon.IconType.Danger1,
                                     Icon.IconType.Danger2,
                                     Icon.IconType.Danger3 -> errorColor
+
                                     else -> null
                                 }
                                 drawTulipIcon(element, painter, tint, scale)

@@ -27,36 +27,36 @@ import org.giste.roadbooknavigator.features.roadbook.ui.icons.RoadbookIcons
 @Suppress("UnusedReceiverParameter")
 fun RoadbookIcons.Landmark.underBridge(onSurface: Color, surface: Color): ImageVector {
     return ImageVector.Builder(
-            name = "Landmark.UnderBridge",
-            defaultWidth = 48.dp,
-            defaultHeight = 48.dp,
-            viewportWidth = 48f,
-            viewportHeight = 48f
-        ).apply {
-            path(fill = SolidColor(surface)) {
-                moveTo(41.5f, 12f)
-                lineToRelative(-0f, 24f)
-                lineToRelative(-35f, 0f)
-                lineToRelative(-0f, -24f)
-                close()
-            }
-            path(
-                stroke = SolidColor(onSurface),
-                strokeLineWidth = 2f
-            ) {
-                moveTo(47f, 43f)
-                lineTo(41f, 37f)
-                horizontalLineTo(7f)
-                lineTo(1f, 43f)
-            }
-            path(
-                stroke = SolidColor(onSurface),
-                strokeLineWidth = 2f
-            ) {
-                moveTo(47f, 5f)
-                lineTo(41f, 11f)
-                horizontalLineTo(7f)
-                lineTo(1f, 5f)
-            }
-        }.build()
-    }
+        name = "Landmark.UnderBridge",
+        defaultWidth = 48.dp,
+        defaultHeight = 48.dp,
+        viewportWidth = 48f,
+        viewportHeight = 48f
+    ).apply {
+        path(fill = SolidColor(surface)) {
+            moveTo(41.5f, 12f)
+            lineToRelative(-0f, 24f)
+            lineToRelative(-35f, 0f)
+            lineToRelative(-0f, -24f)
+            close()
+        }
+        path(
+            stroke = SolidColor(onSurface),
+            strokeLineWidth = 2f
+        ) {
+            moveTo(47f, 43f)
+            lineTo(41f, 37f)
+            horizontalLineTo(7f)
+            lineTo(1f, 43f)
+        }
+        path(
+            stroke = SolidColor(onSurface),
+            strokeLineWidth = 2f
+        ) {
+            moveTo(47f, 5f)
+            lineTo(41f, 11f)
+            horizontalLineTo(7f)
+            lineTo(1f, 5f)
+        }
+    }.build()
+}

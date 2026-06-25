@@ -20,9 +20,9 @@ package org.giste.roadbooknavigator.features.roadbook.data.rn2.dto
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonContentPolymorphicSerializer
-import kotlinx.serialization.json.JsonElement as KJsonElement
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.JsonElement as KJsonElement
 
 @Serializable(with = Rn2IconSerializer::class)
 sealed class Rn2Icon : Rn2Element() {
@@ -53,22 +53,197 @@ sealed class Rn2Icon : Rn2Element() {
         const val TERRAIN_RIVER_WATER_ID = "aabe9acd-ab1b-467d-9bbb-877bb0d0da23"
     }
 
-    @Serializable data class Danger1(override val id: String, override val angle: Double? = null, override val width: Double? = null, override val height: Double? = null, override val x: Double? = null, override val y: Double? = null, override val scaleX: Double? = null, override val scaleY: Double? = null) : Rn2Icon()
-    @Serializable data class Danger2(override val id: String, override val angle: Double? = null, override val width: Double? = null, override val height: Double? = null, override val x: Double? = null, override val y: Double? = null, override val scaleX: Double? = null, override val scaleY: Double? = null) : Rn2Icon()
-    @Serializable data class Danger3(override val id: String, override val angle: Double? = null, override val width: Double? = null, override val height: Double? = null, override val x: Double? = null, override val y: Double? = null, override val scaleX: Double? = null, override val scaleY: Double? = null) : Rn2Icon()
-    @Serializable data class FuelZone(override val id: String, override val angle: Double? = null, override val width: Double? = null, override val height: Double? = null, override val x: Double? = null, override val y: Double? = null, override val scaleX: Double? = null, override val scaleY: Double? = null) : Rn2Icon()
-    @Serializable data class ResetDistance(override val id: String, override val angle: Double? = null, override val width: Double? = null, override val height: Double? = null, override val x: Double? = null, override val y: Double? = null, override val scaleX: Double? = null, override val scaleY: Double? = null) : Rn2Icon()
-    @Serializable data class AboveBridge(override val id: String, override val angle: Double? = null, override val width: Double? = null, override val height: Double? = null, override val x: Double? = null, override val y: Double? = null, override val scaleX: Double? = null, override val scaleY: Double? = null) : Rn2Icon()
-    @Serializable data class FortCastle(override val id: String, override val angle: Double? = null, override val width: Double? = null, override val height: Double? = null, override val x: Double? = null, override val y: Double? = null, override val scaleX: Double? = null, override val scaleY: Double? = null) : Rn2Icon()
-    @Serializable data class House(override val id: String, override val angle: Double? = null, override val width: Double? = null, override val height: Double? = null, override val x: Double? = null, override val y: Double? = null, override val scaleX: Double? = null, override val scaleY: Double? = null) : Rn2Icon()
-    @Serializable data class TrafficLight(override val id: String, override val angle: Double? = null, override val width: Double? = null, override val height: Double? = null, override val x: Double? = null, override val y: Double? = null, override val scaleX: Double? = null, override val scaleY: Double? = null) : Rn2Icon()
-    @Serializable data class Tunnel(override val id: String, override val angle: Double? = null, override val width: Double? = null, override val height: Double? = null, override val x: Double? = null, override val y: Double? = null, override val scaleX: Double? = null, override val scaleY: Double? = null) : Rn2Icon()
-    @Serializable data class UnderBridge(override val id: String, override val angle: Double? = null, override val width: Double? = null, override val height: Double? = null, override val x: Double? = null, override val y: Double? = null, override val scaleX: Double? = null, override val scaleY: Double? = null) : Rn2Icon()
-    @Serializable data class Alert(override val id: String, override val angle: Double? = null, override val width: Double? = null, override val height: Double? = null, override val x: Double? = null, override val y: Double? = null, override val scaleX: Double? = null, override val scaleY: Double? = null) : Rn2Icon()
-    @Serializable data class Roundabout(override val id: String, override val angle: Double? = null, override val width: Double? = null, override val height: Double? = null, override val x: Double? = null, override val y: Double? = null, override val scaleX: Double? = null, override val scaleY: Double? = null) : Rn2Icon()
-    @Serializable data class Stop(override val id: String, override val angle: Double? = null, override val width: Double? = null, override val height: Double? = null, override val x: Double? = null, override val y: Double? = null, override val scaleX: Double? = null, override val scaleY: Double? = null) : Rn2Icon()
-    @Serializable data class RiverWater(override val id: String, override val angle: Double? = null, override val width: Double? = null, override val height: Double? = null, override val x: Double? = null, override val y: Double? = null, override val scaleX: Double? = null, override val scaleY: Double? = null) : Rn2Icon()
-    @Serializable data class Unknown(override val id: String, override val angle: Double? = null, override val width: Double? = null, override val height: Double? = null, override val x: Double? = null, override val y: Double? = null, override val scaleX: Double? = null, override val scaleY: Double? = null) : Rn2Icon()
+    @Serializable
+    data class Danger1(
+        override val id: String,
+        override val angle: Double? = null,
+        override val width: Double? = null,
+        override val height: Double? = null,
+        override val x: Double? = null,
+        override val y: Double? = null,
+        override val scaleX: Double? = null,
+        override val scaleY: Double? = null
+    ) : Rn2Icon()
+
+    @Serializable
+    data class Danger2(
+        override val id: String,
+        override val angle: Double? = null,
+        override val width: Double? = null,
+        override val height: Double? = null,
+        override val x: Double? = null,
+        override val y: Double? = null,
+        override val scaleX: Double? = null,
+        override val scaleY: Double? = null
+    ) : Rn2Icon()
+
+    @Serializable
+    data class Danger3(
+        override val id: String,
+        override val angle: Double? = null,
+        override val width: Double? = null,
+        override val height: Double? = null,
+        override val x: Double? = null,
+        override val y: Double? = null,
+        override val scaleX: Double? = null,
+        override val scaleY: Double? = null
+    ) : Rn2Icon()
+
+    @Serializable
+    data class FuelZone(
+        override val id: String,
+        override val angle: Double? = null,
+        override val width: Double? = null,
+        override val height: Double? = null,
+        override val x: Double? = null,
+        override val y: Double? = null,
+        override val scaleX: Double? = null,
+        override val scaleY: Double? = null
+    ) : Rn2Icon()
+
+    @Serializable
+    data class ResetDistance(
+        override val id: String,
+        override val angle: Double? = null,
+        override val width: Double? = null,
+        override val height: Double? = null,
+        override val x: Double? = null,
+        override val y: Double? = null,
+        override val scaleX: Double? = null,
+        override val scaleY: Double? = null
+    ) : Rn2Icon()
+
+    @Serializable
+    data class AboveBridge(
+        override val id: String,
+        override val angle: Double? = null,
+        override val width: Double? = null,
+        override val height: Double? = null,
+        override val x: Double? = null,
+        override val y: Double? = null,
+        override val scaleX: Double? = null,
+        override val scaleY: Double? = null
+    ) : Rn2Icon()
+
+    @Serializable
+    data class FortCastle(
+        override val id: String,
+        override val angle: Double? = null,
+        override val width: Double? = null,
+        override val height: Double? = null,
+        override val x: Double? = null,
+        override val y: Double? = null,
+        override val scaleX: Double? = null,
+        override val scaleY: Double? = null
+    ) : Rn2Icon()
+
+    @Serializable
+    data class House(
+        override val id: String,
+        override val angle: Double? = null,
+        override val width: Double? = null,
+        override val height: Double? = null,
+        override val x: Double? = null,
+        override val y: Double? = null,
+        override val scaleX: Double? = null,
+        override val scaleY: Double? = null
+    ) : Rn2Icon()
+
+    @Serializable
+    data class TrafficLight(
+        override val id: String,
+        override val angle: Double? = null,
+        override val width: Double? = null,
+        override val height: Double? = null,
+        override val x: Double? = null,
+        override val y: Double? = null,
+        override val scaleX: Double? = null,
+        override val scaleY: Double? = null
+    ) : Rn2Icon()
+
+    @Serializable
+    data class Tunnel(
+        override val id: String,
+        override val angle: Double? = null,
+        override val width: Double? = null,
+        override val height: Double? = null,
+        override val x: Double? = null,
+        override val y: Double? = null,
+        override val scaleX: Double? = null,
+        override val scaleY: Double? = null
+    ) : Rn2Icon()
+
+    @Serializable
+    data class UnderBridge(
+        override val id: String,
+        override val angle: Double? = null,
+        override val width: Double? = null,
+        override val height: Double? = null,
+        override val x: Double? = null,
+        override val y: Double? = null,
+        override val scaleX: Double? = null,
+        override val scaleY: Double? = null
+    ) : Rn2Icon()
+
+    @Serializable
+    data class Alert(
+        override val id: String,
+        override val angle: Double? = null,
+        override val width: Double? = null,
+        override val height: Double? = null,
+        override val x: Double? = null,
+        override val y: Double? = null,
+        override val scaleX: Double? = null,
+        override val scaleY: Double? = null
+    ) : Rn2Icon()
+
+    @Serializable
+    data class Roundabout(
+        override val id: String,
+        override val angle: Double? = null,
+        override val width: Double? = null,
+        override val height: Double? = null,
+        override val x: Double? = null,
+        override val y: Double? = null,
+        override val scaleX: Double? = null,
+        override val scaleY: Double? = null
+    ) : Rn2Icon()
+
+    @Serializable
+    data class Stop(
+        override val id: String,
+        override val angle: Double? = null,
+        override val width: Double? = null,
+        override val height: Double? = null,
+        override val x: Double? = null,
+        override val y: Double? = null,
+        override val scaleX: Double? = null,
+        override val scaleY: Double? = null
+    ) : Rn2Icon()
+
+    @Serializable
+    data class RiverWater(
+        override val id: String,
+        override val angle: Double? = null,
+        override val width: Double? = null,
+        override val height: Double? = null,
+        override val x: Double? = null,
+        override val y: Double? = null,
+        override val scaleX: Double? = null,
+        override val scaleY: Double? = null
+    ) : Rn2Icon()
+
+    @Serializable
+    data class Unknown(
+        override val id: String,
+        override val angle: Double? = null,
+        override val width: Double? = null,
+        override val height: Double? = null,
+        override val x: Double? = null,
+        override val y: Double? = null,
+        override val scaleX: Double? = null,
+        override val scaleY: Double? = null
+    ) : Rn2Icon()
 }
 
 object Rn2IconSerializer : JsonContentPolymorphicSerializer<Rn2Icon>(Rn2Icon::class) {

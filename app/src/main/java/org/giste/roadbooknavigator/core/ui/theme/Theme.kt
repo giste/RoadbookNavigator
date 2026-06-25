@@ -132,12 +132,13 @@ fun RoadbookNavigatorTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
+
         else -> if (darkTheme) DarkColorScheme else LightColorScheme
     }
 
     // Determine the scale based on the window size
     val useExpanded = windowSizeClass.widthSizeClass == WindowWidthSizeClass.Expanded &&
-                     windowSizeClass.heightSizeClass != WindowHeightSizeClass.Compact
+            windowSizeClass.heightSizeClass != WindowHeightSizeClass.Compact
 
     val (dimensions, typography) = if (useExpanded) {
         expandedDimensions to expandedTypography

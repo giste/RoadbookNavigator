@@ -56,8 +56,10 @@ fun WaypointItem(
     modifier: Modifier = Modifier
 ) {
     val isHighDanger = waypoint.dangerLevel == Waypoint.DangerLevel.HIGH
-    val borderWidth = if (isHighDanger) RoadbookNavigatorTheme.dimensions.dangerHighThickness else RoadbookNavigatorTheme.dimensions.sectionBorder
-    val borderColor = if (isHighDanger) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
+    val borderWidth =
+        if (isHighDanger) RoadbookNavigatorTheme.dimensions.dangerHighThickness else RoadbookNavigatorTheme.dimensions.sectionBorder
+    val borderColor =
+        if (isHighDanger) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
 
     Box(
         modifier = modifier
@@ -260,21 +262,66 @@ fun WaypointItemPreview() {
         tulipElements = listOf(
             Icon(type = Icon.IconType.Danger1, center = Point(40.0, 40.0), width = 30, height = 30),
             Icon(type = Icon.IconType.Danger2, center = Point(80.0, 40.0), width = 30, height = 30),
-            Icon(type = Icon.IconType.Danger3, center = Point(120.0, 40.0), width = 30, height = 30),
-            Icon(type = Icon.IconType.FuelZone, center = Point(160.0, 40.0), width = 30, height = 30),
-            Icon(type = Icon.IconType.ResetDistance, center = Point(40.0, 80.0), width = 30, height = 30),
-            Icon(type = Icon.IconType.AboveBridge, center = Point(80.0, 80.0), width = 30, height = 30),
-            Icon(type = Icon.IconType.FortCastle, center = Point(120.0, 80.0), width = 30, height = 30),
+            Icon(
+                type = Icon.IconType.Danger3,
+                center = Point(120.0, 40.0),
+                width = 30,
+                height = 30
+            ),
+            Icon(
+                type = Icon.IconType.FuelZone,
+                center = Point(160.0, 40.0),
+                width = 30,
+                height = 30
+            ),
+            Icon(
+                type = Icon.IconType.ResetDistance,
+                center = Point(40.0, 80.0),
+                width = 30,
+                height = 30
+            ),
+            Icon(
+                type = Icon.IconType.AboveBridge,
+                center = Point(80.0, 80.0),
+                width = 30,
+                height = 30
+            ),
+            Icon(
+                type = Icon.IconType.FortCastle,
+                center = Point(120.0, 80.0),
+                width = 30,
+                height = 30
+            ),
             Icon(type = Icon.IconType.House, center = Point(160.0, 80.0), width = 30, height = 30),
         ),
         notesElements = listOf(
-            Icon(type = Icon.IconType.TrafficLight, center = Point(40.0, 40.0), width = 30, height = 30),
+            Icon(
+                type = Icon.IconType.TrafficLight,
+                center = Point(40.0, 40.0),
+                width = 30,
+                height = 30
+            ),
             Icon(type = Icon.IconType.Tunnel, center = Point(80.0, 40.0), width = 30, height = 30),
-            Icon(type = Icon.IconType.UnderBridge, center = Point(120.0, 40.0), width = 30, height = 30),
+            Icon(
+                type = Icon.IconType.UnderBridge,
+                center = Point(120.0, 40.0),
+                width = 30,
+                height = 30
+            ),
             Icon(type = Icon.IconType.Alert, center = Point(160.0, 40.0), width = 30, height = 30),
-            Icon(type = Icon.IconType.Roundabout, center = Point(40.0, 80.0), width = 30, height = 30),
+            Icon(
+                type = Icon.IconType.Roundabout,
+                center = Point(40.0, 80.0),
+                width = 30,
+                height = 30
+            ),
             Icon(type = Icon.IconType.Stop, center = Point(80.0, 80.0), width = 30, height = 30),
-            Icon(type = Icon.IconType.RiverWater, center = Point(120.0, 80.0), width = 30, height = 30),
+            Icon(
+                type = Icon.IconType.RiverWater,
+                center = Point(120.0, 80.0),
+                width = 30,
+                height = 30
+            ),
         ),
     )
 

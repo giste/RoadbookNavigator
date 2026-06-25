@@ -17,8 +17,8 @@
 
 package org.giste.roadbooknavigator.features.roadbook.domain.usecase
 
-import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookRepository
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Route
+import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookRepository
 import java.io.InputStream
 import javax.inject.Inject
 

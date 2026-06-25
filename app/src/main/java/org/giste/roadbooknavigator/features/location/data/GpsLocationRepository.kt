@@ -27,8 +27,8 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import org.giste.roadbooknavigator.features.location.domain.UserLocation
 import org.giste.roadbooknavigator.features.location.domain.LocationRepository
+import org.giste.roadbooknavigator.features.location.domain.UserLocation
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -40,7 +40,8 @@ class GpsLocationRepository @Inject constructor(
     @param:ApplicationContext private val context: Context
 ) : LocationRepository {
 
-    private val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    private val locationManager =
+        context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
     @SuppressLint("MissingPermission")
     override fun getLocations(

@@ -23,11 +23,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import org.giste.roadbooknavigator.core.di.IoDispatcher
-import org.giste.roadbooknavigator.features.roadbook.data.persistence.dto.PersistentRoute
 import org.giste.roadbooknavigator.features.roadbook.data.persistence.PersistenceMapper
+import org.giste.roadbooknavigator.features.roadbook.data.persistence.dto.PersistentRoute
 import org.giste.roadbooknavigator.features.roadbook.data.rn2.Rn2Mapper
-import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookRepository
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Route
+import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookRepository
 import java.io.InputStream
 import javax.inject.Inject
 
@@ -50,15 +50,16 @@ class DataStoreRoadbookRepository @Inject constructor(
         }
     }
 
-    override suspend fun processNewRoadbook(inputStream: InputStream): Result<Route> = withContext(ioDispatcher) {
-        runCatching {
-            val jsonString = inputStream.bufferedReader().use { it.readText() }
-            val route = mapper.mapToDomain(jsonString)
-            
-            val persistentRoute = persistenceMapper.toPersistent(route)
-            dataStore.updateData { persistentRoute }
-            
-            route
+    override suspend fun processNewRoadbook(inputStream: InputStream): Result<Route> =
+        withContext(ioDispatcher) {
+            runCatching {
+                val jsonString = inputStream.bufferedReader().use { it.readText() }
+                val route = mapper.mapToDomain(jsonString)
+
+                val persistentRoute = persistenceMapper.toPersistent(route)
+                dataStore.updateData { persistentRoute }
+
+                route
+            }
         }
-    }
 }

@@ -42,7 +42,7 @@ class DataStoreRoadbookSessionRepository @Inject constructor(
     override val scrollPosition: Flow<RoadbookPosition> = dataStore.data.map { preferences ->
         val index = preferences[Keys.SCROLL_INDEX] ?: 0
         val offset = preferences[Keys.SCROLL_OFFSET] ?: 0
-        
+
         try {
             RoadbookPosition(
                 index = if (index >= 0) index else 0,

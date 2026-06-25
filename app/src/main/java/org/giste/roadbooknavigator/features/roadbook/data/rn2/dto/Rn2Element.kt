@@ -21,9 +21,9 @@ import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.JsonContentPolymorphicSerializer
-import kotlinx.serialization.json.JsonElement as KJsonElement
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.JsonElement as KJsonElement
 
 @Serializable(with = Rn2ElementSerializer::class)
 sealed class Rn2Element
@@ -33,7 +33,7 @@ object Rn2ElementSerializer : JsonContentPolymorphicSerializer<Rn2Element>(Rn2El
         val jsonObject = element.jsonObject
         val type = jsonObject["type"]?.jsonPrimitive?.content
             ?: throw SerializationException("Missing 'type' field in Rn2Element")
-            
+
         return when (type) {
             "Road" -> Rn2Road.serializer()
             "Track" -> Rn2Track.serializer()

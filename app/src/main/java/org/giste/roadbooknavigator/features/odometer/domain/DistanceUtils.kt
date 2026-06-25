@@ -45,7 +45,7 @@ object DistanceUtils {
                 cos(lat1) * cos(lat2) *
                 sin(dLon / 2) * sin(dLon / 2)
         val c = 2 * atan2(sqrt(a), sqrt(1 - a))
-        
+
         return EARTH_RADIUS_METERS * c
     }
 
@@ -55,14 +55,14 @@ object DistanceUtils {
      * otherwise falls back to 2D horizontal distance.
      */
     fun calculateDistance(
-        start: UserLocation, 
-        end: UserLocation, 
+        start: UserLocation,
+        end: UserLocation,
         verticalAccuracyThreshold: Float = 10.0f
     ): Double {
         val horizontalDistance = calculateDistance2D(start, end)
 
         val canUseAltitude = start.verticalAccuracy != null && end.verticalAccuracy != null &&
-                start.verticalAccuracy <= verticalAccuracyThreshold && 
+                start.verticalAccuracy <= verticalAccuracyThreshold &&
                 end.verticalAccuracy <= verticalAccuracyThreshold
 
         return if (canUseAltitude) {

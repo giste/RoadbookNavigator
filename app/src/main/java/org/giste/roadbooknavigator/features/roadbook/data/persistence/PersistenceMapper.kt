@@ -106,10 +106,12 @@ class PersistenceMapper @Inject constructor() {
                 roadType = element.roadType.name,
                 handles = element.handles.map { PersistentPoint(it.x, it.y) }
             )
+
             is Track -> PersistentTrack(
                 roadIn = toPersistent(element.roadIn) as PersistentRoad,
                 roadOut = toPersistent(element.roadOut) as PersistentRoad
             )
+
             is Icon -> PersistentIcon(
                 iconType = element.type.name,
                 width = element.width,
@@ -120,6 +122,7 @@ class PersistenceMapper @Inject constructor() {
                 scaleY = element.scaleY,
                 originalId = element.originalId
             )
+
             is Text -> PersistentText(
                 text = element.text,
                 fontSize = element.fontSize,
@@ -141,10 +144,12 @@ class PersistenceMapper @Inject constructor() {
                 roadType = Road.RoadType.valueOf(pe.roadType),
                 handles = pe.handles.map { Point(it.x, it.y) }
             )
+
             is PersistentTrack -> Track(
                 roadIn = toDomain(pe.roadIn) as Road,
                 roadOut = toDomain(pe.roadOut) as Road
             )
+
             is PersistentIcon -> Icon(
                 type = Icon.IconType.valueOf(pe.iconType),
                 width = pe.width,
@@ -155,6 +160,7 @@ class PersistenceMapper @Inject constructor() {
                 scaleY = pe.scaleY,
                 originalId = pe.originalId
             )
+
             is PersistentText -> Text(
                 text = pe.text,
                 fontSize = pe.fontSize,

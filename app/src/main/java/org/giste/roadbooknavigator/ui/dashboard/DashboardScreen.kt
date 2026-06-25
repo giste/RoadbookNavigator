@@ -39,10 +39,10 @@ fun DashboardScreen(
     roadbookViewModel: RoadbookViewModel = hiltViewModel(),
 ) {
     val roadbookState by roadbookViewModel.uiState.collectAsState()
-    
+
     // We use the route name as a key to reset the scroll state when a new roadbook is loaded
     val routeKey = (roadbookState as? RoadbookUiState.Success)?.route?.name ?: ""
-    
+
     val roadbookListState = key(routeKey) {
         val successState = roadbookState as? RoadbookUiState.Success
         rememberLazyListState(

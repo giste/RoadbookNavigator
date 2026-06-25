@@ -49,7 +49,14 @@ class Rn2ElementMapper @Inject constructor(
         currentWaypoint: Rn2Waypoint,
         nextWaypoint: Rn2Waypoint? = null
     ): List<Element> {
-        return rn2Elements.map { mapJsonElementToDomain(it, prevWaypoint, currentWaypoint, nextWaypoint) }
+        return rn2Elements.map {
+            mapJsonElementToDomain(
+                it,
+                prevWaypoint,
+                currentWaypoint,
+                nextWaypoint
+            )
+        }
     }
 
     private fun mapJsonElementToDomain(
@@ -73,7 +80,11 @@ class Rn2ElementMapper @Inject constructor(
                 val roadOutEnd = if (rn2Element.roadOut.end != null) {
                     Point(rn2Element.roadOut.end.x, rn2Element.roadOut.end.y)
                 } else if (nextWaypoint != null) {
-                    geometryCalculator.calculateExitPoint(prevWaypoint, currentWaypoint, nextWaypoint)
+                    geometryCalculator.calculateExitPoint(
+                        prevWaypoint,
+                        currentWaypoint,
+                        nextWaypoint
+                    )
                 } else {
                     Logger.v("No roadOut end and no next waypoint for waypoint ${currentWaypoint.waypointId}, using default")
                     Point(0.0, -55.0) // Default if no next waypoint

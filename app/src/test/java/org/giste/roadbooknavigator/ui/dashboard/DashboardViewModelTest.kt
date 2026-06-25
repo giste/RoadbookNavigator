@@ -129,8 +129,11 @@ class DashboardViewModelTest {
     }
 
     @Test
-    fun `importRoute should update state to Loading while processing`() = runTest {
+    fun `importRoute should update state to Loading while processing and override success state`() = runTest {
+        // Start with a success state
+        activeRoadbookFlow.value = mockk<Route>()
         backgroundScope.launch(testDispatcher) { viewModel.uiState.collect {} }
+        assertTrue(viewModel.uiState.value.roadbook is RoadbookUiState.Success)
 
         val inputStream = mockk<InputStream>()
         val deferred = CompletableDeferred<Result<Route>>()
@@ -139,10 +142,12 @@ class DashboardViewModelTest {
 
         viewModel.importRoute(inputStream)
 
+        // Loading should override Success
         assertEquals(RoadbookUiState.Loading, viewModel.uiState.value.roadbook)
 
         deferred.complete(Result.success(mockk()))
-        assertEquals(RoadbookUiState.Empty, viewModel.uiState.value.roadbook)
+        // After loading, it should return to repository state (which is still success in this test)
+        assertTrue(viewModel.uiState.value.roadbook is RoadbookUiState.Success)
     }
 
     @Test

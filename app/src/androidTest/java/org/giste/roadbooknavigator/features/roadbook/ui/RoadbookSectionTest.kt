@@ -17,24 +17,45 @@
 
 package org.giste.roadbooknavigator.features.roadbook.ui
 
+import android.app.Activity
+import android.app.Instrumentation
+import android.content.Intent
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.junit4.v2.createComposeRule
+import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.Intents.intending
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
 import androidx.test.platform.app.InstrumentationRegistry
 import org.giste.roadbooknavigator.R
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Route
+import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
 class RoadbookSectionTest {
 
     @get:Rule
-    val composeTestRule = createComposeRule()
+    val composeTestRule = createAndroidComposeRule<ComponentActivity>()
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
+
+    @Before
+    fun setUp() {
+        Intents.init()
+    }
+
+    @After
+    fun tearDown() {
+        Intents.release()
+    }
 
     @Test
     fun loadingState_displaysLoadingIndicator() {
@@ -99,5 +120,28 @@ class RoadbookSectionTest {
         }
 
         composeTestRule.onNodeWithContentDescription(context.getString(R.string.action_import)).assertIsDisplayed()
+    }
+
+    @Test
+    fun clickingImportButton_launchesGetContentIntent() {
+        // Stub the intent so it doesn't actually open the system picker
+        val resultIntent = Intent()
+        val result = Instrumentation.ActivityResult(Activity.RESULT_CANCELED, resultIntent)
+        intending(hasAction(Intent.ACTION_GET_CONTENT)).respondWith(result)
+
+        composeTestRule.setContent {
+            RoadbookSection(
+                state = RoadbookUiState.Empty,
+                listState = rememberLazyListState(),
+                onFileSelected = {},
+                onSetPartialClick = {},
+                onWaypointVisible = { _, _ -> }
+            )
+        }
+
+        composeTestRule.onNodeWithContentDescription(context.getString(R.string.action_import)).performClick()
+
+        // Verify that the intent with ACTION_GET_CONTENT was indeed launched
+        intended(hasAction(Intent.ACTION_GET_CONTENT))
     }
 }

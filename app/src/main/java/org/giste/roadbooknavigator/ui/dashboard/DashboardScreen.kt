@@ -201,14 +201,6 @@ fun MainContent(
     val widthSizeClass = windowSizeClass.widthSizeClass
     val heightSizeClass = windowSizeClass.heightSizeClass
 
-    // Pure Size-Based Logic:
-    // 1. If width is Compact, use Portrait (vertical stacking).
-    // 2. If height is Compact, it's a "wide but short" window (like a phone in landscape).
-    // 3. Otherwise, it's a large window (Tablet/Expanded).
-    
-    val isWide = widthSizeClass > WindowWidthSizeClass.Compact
-    val isShort = heightSizeClass == WindowHeightSizeClass.Compact
-
     Surface(
         modifier = Modifier
             .fillMaxSize()
@@ -218,7 +210,8 @@ fun MainContent(
         val roadbookState = uiState.roadbook
 
         when {
-            isShort && isWide -> {
+            // 1. "Landscape-like" on small/short screens (Phone Landscape)
+            heightSizeClass == WindowHeightSizeClass.Compact -> {
                 CompactLandscapeLayout(
                     roadbookState = roadbookState,
                     listState = listState,
@@ -232,7 +225,8 @@ fun MainContent(
                 )
             }
 
-            isWide -> {
+            // 2. Large Tablet Landscape (Wide and not short)
+            widthSizeClass == WindowWidthSizeClass.Expanded && heightSizeClass != WindowHeightSizeClass.Compact -> {
                 ExpandedLandscapeLayout(
                     roadbookState = roadbookState,
                     listState = listState,
@@ -246,8 +240,24 @@ fun MainContent(
                 )
             }
 
-            else -> {
+            // 3. Tablet Portrait / Medium-width windows (Medium width + Tall)
+            widthSizeClass == WindowWidthSizeClass.Medium -> {
                 PortraitLayout(
+                    roadbookState = roadbookState,
+                    listState = listState,
+                    totalDistance = totalDistanceStr,
+                    partialDistance = partialDistanceStr,
+                    onSetPartialClick = onSetPartialClick,
+                    onLongClickPartial = onLongClickPartial,
+                    onSettingsClick = onSettingsClick,
+                    onWaypointVisible = onWaypointVisible,
+                    onFileSelected = onFileSelected,
+                )
+            }
+
+            // 4. Phone Portrait / Narrow windows (Compact width)
+            else -> {
+                CompactPortraitLayout(
                     roadbookState = roadbookState,
                     listState = listState,
                     totalDistance = totalDistanceStr,
@@ -331,6 +341,43 @@ fun CompactLandscapeLayout(
 
 @Composable
 fun PortraitLayout(
+    roadbookState: RoadbookUiState,
+    listState: LazyListState,
+    totalDistance: String,
+    partialDistance: String,
+    onSetPartialClick: (Double) -> Unit,
+    onLongClickPartial: () -> Unit,
+    onSettingsClick: () -> Unit,
+    onWaypointVisible: (Int, Int) -> Unit,
+    onFileSelected: (InputStream) -> Unit,
+) {
+    Column(modifier = Modifier.fillMaxSize()) {
+        PortraitDistanceSection(
+            totalDistance = totalDistance,
+            partialDistance = partialDistance,
+            onLongClickPartial = onLongClickPartial,
+            onSettingsClick = onSettingsClick,
+            modifier = Modifier.fillMaxWidth()
+        )
+        RoadbookSection(
+            state = roadbookState,
+            listState = listState,
+            modifier = Modifier.weight(3f),
+            onSetPartialClick = onSetPartialClick,
+            onWaypointVisible = onWaypointVisible,
+            onFileSelected = onFileSelected,
+        )
+        MapSection(
+            modifier = Modifier
+                .weight(2f)
+                .fillMaxHeight()
+        )
+
+    }
+}
+
+@Composable
+fun CompactPortraitLayout(
     roadbookState: RoadbookUiState,
     listState: LazyListState,
     totalDistance: String,
@@ -531,9 +578,9 @@ private val sampleUiState = DashboardUiState(
 @Composable
 fun TabletLandPreview() {
     val listState = rememberLazyListState()
-    RoadbookNavigatorTheme(windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(1920.dp, 1200.dp))) {
+    RoadbookNavigatorTheme(windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(1097.dp, 686.dp))) {
         MainContent(
-            windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(1920.dp, 1200.dp)),
+            windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(1097.dp, 686.dp)),
             uiState = sampleUiState,
             listState = listState,
             onSetPartialClick = {},
@@ -560,9 +607,9 @@ fun TabletLandPreview() {
 @Composable
 fun TabletPortPreview() {
     val listState = rememberLazyListState()
-    RoadbookNavigatorTheme(windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(1200.dp, 1920.dp))) {
+    RoadbookNavigatorTheme(windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(686.dp, 1097.dp))) {
         MainContent(
-            windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(1200.dp, 1920.dp)),
+            windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(686.dp, 1097.dp)),
             uiState = sampleUiState,
             listState = listState,
             onSetPartialClick = {},

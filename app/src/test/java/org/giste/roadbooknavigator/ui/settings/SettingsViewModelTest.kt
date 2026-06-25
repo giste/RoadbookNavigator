@@ -110,6 +110,41 @@ class SettingsViewModelTest {
     }
 
     @Test
+    fun `setOdometerSpeedThreshold should call use case`() = runTest {
+        coEvery { updateOdometerSpeedThresholdUseCase(any()) } returns Result.success(Unit)
+        viewModel.setOdometerSpeedThreshold(0.8f)
+        coVerify { updateOdometerSpeedThresholdUseCase(0.8f) }
+    }
+
+    @Test
+    fun `setOdometerMinAccuracy should call use case`() = runTest {
+        coEvery { updateOdometerMinAccuracyUseCase(any()) } returns Result.success(Unit)
+        viewModel.setOdometerMinAccuracy(15.0f)
+        coVerify { updateOdometerMinAccuracyUseCase(15.0f) }
+    }
+
+    @Test
+    fun `setOdometerMinVerticalAccuracy should call use case`() = runTest {
+        coEvery { updateOdometerMinVerticalAccuracyUseCase(any()) } returns Result.success(Unit)
+        viewModel.setOdometerMinVerticalAccuracy(5.0f)
+        coVerify { updateOdometerMinVerticalAccuracyUseCase(5.0f) }
+    }
+
+    @Test
+    fun `setOdometerPollingInterval should call use case`() = runTest {
+        coEvery { updateOdometerPollingIntervalUseCase(any()) } returns Result.success(Unit)
+        viewModel.setOdometerPollingInterval(1000L)
+        coVerify { updateOdometerPollingIntervalUseCase(1000L) }
+    }
+
+    @Test
+    fun `setOdometerMinDistance should call use case`() = runTest {
+        coEvery { updateOdometerMinDistanceUseCase(any()) } returns Result.success(Unit)
+        viewModel.setOdometerMinDistance(2.0f)
+        coVerify { updateOdometerMinDistanceUseCase(2.0f) }
+    }
+
+    @Test
     fun `restoreOdometerDefaults should call use case`() = runTest {
         coEvery { restoreOdometerDefaultsUseCase() } returns Result.success(Unit)
         viewModel.restoreOdometerDefaults()

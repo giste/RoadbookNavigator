@@ -26,7 +26,7 @@ import javax.inject.Inject
 class UpdateOdometerPollingIntervalUseCase @Inject constructor(
     private val settingsRepository: SettingsRepository
 ) {
-    suspend operator fun invoke(interval: Long) {
+    suspend operator fun invoke(interval: Long): Result<Unit> = runCatching {
         settingsRepository.setOdometerPollingInterval(interval)
     }
 }

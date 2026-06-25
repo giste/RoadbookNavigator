@@ -26,7 +26,7 @@ import javax.inject.Inject
 class UpdateOdometerMinDistanceUseCase @Inject constructor(
     private val settingsRepository: SettingsRepository
 ) {
-    suspend operator fun invoke(distance: Float) {
+    suspend operator fun invoke(distance: Float): Result<Unit> = runCatching {
         settingsRepository.setOdometerMinDistance(distance)
     }
 }

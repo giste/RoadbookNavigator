@@ -87,3 +87,37 @@ value class VerticalAccuracyThreshold(val meters: Float) {
         const val MAX = 100.0f
     }
 }
+
+/**
+ * Value Object for GPS polling interval.
+ */
+@JvmInline
+value class PollingIntervalThreshold(val milliseconds: Long) {
+    init {
+        require(milliseconds.toDouble() in MIN..MAX) {
+            "Polling interval must be between $MIN and $MAX ms"
+        }
+    }
+
+    companion object {
+        const val MIN = 100.0
+        const val MAX = 5000.0
+    }
+}
+
+/**
+ * Value Object for GPS minimum distance.
+ */
+@JvmInline
+value class MinDistanceThreshold(val meters: Float) {
+    init {
+        require(meters in MIN..MAX) {
+            "Min distance must be between $MIN and $MAX meters"
+        }
+    }
+
+    companion object {
+        const val MIN = 0.0f
+        const val MAX = 50.0f
+    }
+}

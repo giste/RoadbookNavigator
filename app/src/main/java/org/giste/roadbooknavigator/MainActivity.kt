@@ -25,11 +25,16 @@ import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSiz
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
+import org.giste.roadbooknavigator.ui.Screen
 import org.giste.roadbooknavigator.ui.dashboard.DashboardScreen
+import org.giste.roadbooknavigator.ui.settings.SettingsScreen
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -45,12 +50,28 @@ class MainActivity : ComponentActivity() {
         setContent {
             val settings by settingsRepository.getSettings().collectAsState(initial = AppSettings())
             val windowSizeClass = calculateWindowSizeClass(this)
+            val navController = rememberNavController()
 
             RoadbookNavigatorTheme(
                 windowSizeClass = windowSizeClass,
                 appTheme = settings.theme
             ) {
-                //DashboardScreen()
+                NavHost(
+                    navController = navController,
+                    startDestination = Screen.Dashboard
+                ) {
+                    composable<Screen.Dashboard> {
+                        DashboardScreen(
+                            windowSizeClass = windowSizeClass,
+                            onSettingsClick = { navController.navigate(Screen.Settings) }
+                        )
+                    }
+                    composable<Screen.Settings> {
+                        SettingsScreen(
+                            onBackClick = { navController.popBackStack() }
+                        )
+                    }
+                }
             }
         }
     }

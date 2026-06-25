@@ -1,5 +1,4 @@
 /*
- * Rn2 Viewer
  * Copyright (C) 2026  Giste
  *
  * This program is free software: you can redistribute it and/or modify

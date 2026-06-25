@@ -122,6 +122,10 @@ class DashboardViewModelTest {
         )
         assertEquals(expectedRoadbookState, viewModel.uiState.value.roadbook)
         assertEquals(RoadbookPosition(5, 10), viewModel.uiState.value.initialScrollPosition)
+
+        // Test settings update
+        settingsFlow.value = AppSettings(shortDistanceThreshold = 500L)
+        assertEquals(500L, (viewModel.uiState.value.roadbook as RoadbookUiState.Success).shortDistanceThreshold)
     }
 
     @Test

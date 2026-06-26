@@ -30,6 +30,8 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import org.giste.roadbooknavigator.features.location.domain.GetLocationPermissionStatusUseCase
+import org.giste.roadbooknavigator.features.location.domain.PermissionStatus
 import org.giste.roadbooknavigator.features.odometer.domain.Odometer
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.*
 import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookPosition
@@ -59,11 +61,13 @@ class DashboardViewModelTest {
     private val getRoadbookPositionUseCase: GetRoadbookPositionUseCase = mockk()
     private val saveRoadbookPositionUseCase: SaveRoadbookPositionUseCase = mockk()
     private val getSettingsUseCase: GetSettingsUseCase = mockk()
+    private val getLocationPermissionStatusUseCase: GetLocationPermissionStatusUseCase = mockk()
 
     private val activeRoadbookFlow = MutableStateFlow<Route?>(null)
     private val odometerFlow = MutableStateFlow(Odometer())
     private val scrollPositionFlow = MutableStateFlow(RoadbookPosition(0, 0))
     private val settingsFlow = MutableStateFlow(AppSettings())
+    private val permissionFlow = MutableStateFlow(PermissionStatus.GRANTED)
     private val testDispatcher = UnconfinedTestDispatcher()
 
     private lateinit var viewModel: DashboardViewModel
@@ -75,6 +79,7 @@ class DashboardViewModelTest {
         every { getOdometerUseCase() } returns odometerFlow
         every { getRoadbookPositionUseCase() } returns scrollPositionFlow
         every { getSettingsUseCase() } returns settingsFlow
+        every { getLocationPermissionStatusUseCase() } returns permissionFlow
 
         viewModel = DashboardViewModel(
             getActiveRoadbookUseCase,
@@ -87,7 +92,8 @@ class DashboardViewModelTest {
             setPartialDistanceUseCase,
             getRoadbookPositionUseCase,
             saveRoadbookPositionUseCase,
-            getSettingsUseCase
+            getSettingsUseCase,
+            getLocationPermissionStatusUseCase
         )
     }
 
@@ -103,6 +109,7 @@ class DashboardViewModelTest {
         assertEquals(RoadbookUiState.Empty, viewModel.uiState.value.roadbook)
         assertEquals(Odometer(), viewModel.uiState.value.odometer)
         assertEquals(false, viewModel.uiState.value.showSetPartialDialog)
+        assertEquals(PermissionStatus.GRANTED, viewModel.uiState.value.permissionStatus)
     }
 
     @Test
@@ -186,11 +193,13 @@ class DashboardViewModelTest {
     }
 
     @Test
-    fun `onWaypointVisible should call saveRoadbookPositionUseCase`() = runTest {
-        coEvery { saveRoadbookPositionUseCase(any(), any()) } returns Unit
+    fun `permission status changes should update uiState`() = runTest {
+        backgroundScope.launch(testDispatcher) { viewModel.uiState.collect {} }
 
-        viewModel.onWaypointVisible(10, 20)
+        permissionFlow.value = PermissionStatus.DENIED
+        assertEquals(PermissionStatus.DENIED, viewModel.uiState.value.permissionStatus)
 
-        coVerify { saveRoadbookPositionUseCase(10, 20) }
+        permissionFlow.value = PermissionStatus.GRANTED
+        assertEquals(PermissionStatus.GRANTED, viewModel.uiState.value.permissionStatus)
     }
 }

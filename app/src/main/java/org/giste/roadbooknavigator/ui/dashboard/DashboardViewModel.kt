@@ -27,6 +27,8 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import org.giste.roadbooknavigator.features.location.domain.GetLocationPermissionStatusUseCase
+import org.giste.roadbooknavigator.features.location.domain.PermissionStatus
 import org.giste.roadbooknavigator.features.odometer.domain.Odometer
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.DecrementPartialDistanceUseCase
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.GetOdometerUseCase
@@ -57,6 +59,7 @@ class DashboardViewModel @Inject constructor(
     getRoadbookPositionUseCase: GetRoadbookPositionUseCase,
     private val saveRoadbookPositionUseCase: SaveRoadbookPositionUseCase,
     getSettingsUseCase: GetSettingsUseCase,
+    getLocationPermissionStatusUseCase: GetLocationPermissionStatusUseCase,
 ) : ViewModel() {
 
     private val _showSetPartialDialog = MutableStateFlow(false)
@@ -92,12 +95,14 @@ class DashboardViewModel @Inject constructor(
         getOdometerUseCase().onStart { emit(Odometer()) },
         _showSetPartialDialog,
         getRoadbookPositionUseCase(),
-    ) { roadbook, odometer, showDialog, scrollPosition ->
+        getLocationPermissionStatusUseCase(),
+    ) { roadbook, odometer, showDialog, scrollPosition, permissionStatus ->
         DashboardUiState(
             roadbook = roadbook,
             odometer = odometer,
             showSetPartialDialog = showDialog,
-            initialScrollPosition = scrollPosition
+            initialScrollPosition = scrollPosition,
+            permissionStatus = permissionStatus
         )
     }.stateIn(
         scope = viewModelScope,
@@ -171,5 +176,6 @@ data class DashboardUiState(
     val roadbook: RoadbookUiState = RoadbookUiState.Empty,
     val odometer: Odometer = Odometer(),
     val showSetPartialDialog: Boolean = false,
-    val initialScrollPosition: RoadbookPosition = RoadbookPosition()
+    val initialScrollPosition: RoadbookPosition = RoadbookPosition(),
+    val permissionStatus: PermissionStatus = PermissionStatus.DENIED
 )

@@ -17,28 +17,18 @@
 
 package org.giste.roadbooknavigator.ui.dashboard
 
-import android.Manifest
-import android.content.Context
-import android.content.Intent
 import android.content.res.Configuration
-import android.net.Uri
-import android.provider.Settings
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.focusable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyListState
@@ -46,13 +36,10 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
@@ -73,19 +60,17 @@ import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import kotlinx.coroutines.launch
 import org.giste.roadbooknavigator.R
+import org.giste.roadbooknavigator.core.permissions.ui.LocationPermissionGate
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
-import org.giste.roadbooknavigator.features.location.domain.PermissionStatus
 import org.giste.roadbooknavigator.features.odometer.domain.Odometer
 import org.giste.roadbooknavigator.features.odometer.ui.PartialDistance
 import org.giste.roadbooknavigator.features.odometer.ui.SetPartialDialog
@@ -104,16 +89,24 @@ fun DashboardScreen(
     onSettingsClick: () -> Unit,
     viewModel: DashboardViewModel = hiltViewModel()
 ) {
+    LocationPermissionGate {
+        DashboardContent(
+            windowSizeClass = windowSizeClass,
+            onSettingsClick = onSettingsClick,
+            viewModel = viewModel
+        )
+    }
+}
+
+@Composable
+fun DashboardContent(
+    windowSizeClass: WindowSizeClass,
+    onSettingsClick: () -> Unit,
+    viewModel: DashboardViewModel
+) {
     val uiState by viewModel.uiState.collectAsState()
     val coroutineScope = rememberCoroutineScope()
     val focusRequester = remember { FocusRequester() }
-    val context = LocalContext.current
-
-    val permissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestMultiplePermissions()
-    ) { _ ->
-        // The repository will automatically update the status because it's observing the system state
-    }
 
     // Use a stable key to ensure the scroll state is preserved across re-compositions (like theme changes).
     // The key only changes when a DIFFERENT route is loaded.
@@ -142,7 +135,7 @@ fun DashboardScreen(
             .focusRequester(focusRequester)
             .focusable()
             .onKeyEvent { event ->
-                if (event.type == KeyEventType.KeyDown && uiState.permissionStatus == PermissionStatus.GRANTED) {
+                if (event.type == KeyEventType.KeyDown) {
                     when (event.key) {
                         Key.MediaNext, Key.DirectionUp -> {
                             coroutineScope.launch {
@@ -175,33 +168,16 @@ fun DashboardScreen(
                 }
             }
     ) {
-        if (uiState.permissionStatus == PermissionStatus.GRANTED) {
-            MainContent(
-                windowSizeClass = windowSizeClass,
-                uiState = uiState,
-                listState = listState,
-                onSetPartialClick = { viewModel.setPartialDistance(it) },
-                onLongClickPartial = { viewModel.showSetPartialDialog() },
-                onSettingsClick = onSettingsClick,
-                onWaypointVisible = { index, offset -> viewModel.onWaypointVisible(index, offset) },
-                onFileSelected = { viewModel.importRoute(it) },
-            )
-        } else {
-            PermissionRequestContent(
-                status = uiState.permissionStatus,
-                onRequestPermission = {
-                    permissionLauncher.launch(
-                        arrayOf(
-                            Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.ACCESS_COARSE_LOCATION
-                        )
-                    )
-                },
-                onOpenSettings = {
-                    context.openAppSettings()
-                }
-            )
-        }
+        MainContent(
+            windowSizeClass = windowSizeClass,
+            uiState = uiState,
+            listState = listState,
+            onSetPartialClick = { viewModel.setPartialDistance(it) },
+            onLongClickPartial = { viewModel.showSetPartialDialog() },
+            onSettingsClick = onSettingsClick,
+            onWaypointVisible = { index, offset -> viewModel.onWaypointVisible(index, offset) },
+            onFileSelected = { viewModel.importRoute(it) },
+        )
 
         if (uiState.showSetPartialDialog) {
             SetPartialDialog(
@@ -215,63 +191,9 @@ fun DashboardScreen(
         }
     }
 
-    LaunchedEffect(uiState.permissionStatus) {
-        if (uiState.permissionStatus == PermissionStatus.GRANTED) {
-            focusRequester.requestFocus()
-        }
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
     }
-}
-
-@Composable
-fun PermissionRequestContent(
-    status: PermissionStatus,
-    onRequestPermission: () -> Unit,
-    onOpenSettings: () -> Unit,
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Icon(
-            imageVector = Icons.Default.Warning,
-            contentDescription = null,
-            modifier = Modifier.size(64.dp),
-            tint = MaterialTheme.colorScheme.error
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = stringResource(
-                if (status == PermissionStatus.RATIONALE_REQUIRED)
-                    R.string.permission_location_rationale
-                else
-                    R.string.permission_location_request
-            ),
-            style = MaterialTheme.typography.bodyLarge,
-            textAlign = TextAlign.Center
-        )
-        Spacer(modifier = Modifier.height(24.dp))
-        Button(
-            onClick = {
-                if (status == PermissionStatus.PERMANENTLY_DENIED) {
-                    onOpenSettings()
-                } else {
-                    onRequestPermission()
-                }
-            }
-        ) {
-            Text(stringResource(R.string.permission_button_grant))
-        }
-    }
-}
-
-private fun Context.openAppSettings() {
-    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-        data = Uri.fromParts("package", packageName, null)
-    }
-    startActivity(intent)
 }
 
 @Composable

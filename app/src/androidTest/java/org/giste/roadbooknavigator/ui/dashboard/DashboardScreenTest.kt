@@ -40,7 +40,6 @@ import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.giste.roadbooknavigator.R
-import org.giste.roadbooknavigator.features.location.domain.PermissionStatus
 import org.giste.roadbooknavigator.features.odometer.domain.Odometer
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Route
 import org.giste.roadbooknavigator.features.roadbook.ui.RoadbookUiState
@@ -247,11 +246,11 @@ class DashboardScreenTest {
     @Test
     fun volumeUpKey_triggersIncrementPartialDistance() {
         val viewModel: DashboardViewModel = mockk(relaxed = true)
-        val uiStateFlow = MutableStateFlow(DashboardUiState(permissionStatus = PermissionStatus.GRANTED))
+        val uiStateFlow = MutableStateFlow(DashboardUiState())
         every { viewModel.uiState } returns uiStateFlow
 
         composeTestRule.setContent {
-            DashboardScreen(
+            DashboardContent(
                 windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp)),
                 onSettingsClick = {},
                 viewModel = viewModel
@@ -277,11 +276,11 @@ class DashboardScreenTest {
     @Test
     fun f6Key_triggersResetPartialDistance() {
         val viewModel: DashboardViewModel = mockk(relaxed = true)
-        val uiStateFlow = MutableStateFlow(DashboardUiState(permissionStatus = PermissionStatus.GRANTED))
+        val uiStateFlow = MutableStateFlow(DashboardUiState())
         every { viewModel.uiState } returns uiStateFlow
 
         composeTestRule.setContent {
-            DashboardScreen(
+            DashboardContent(
                 windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp)),
                 onSettingsClick = {},
                 viewModel = viewModel
@@ -306,11 +305,11 @@ class DashboardScreenTest {
     @Test
     fun volumeDownKey_triggersDecrementPartialDistance() {
         val viewModel: DashboardViewModel = mockk(relaxed = true)
-        val uiStateFlow = MutableStateFlow(DashboardUiState(permissionStatus = PermissionStatus.GRANTED))
+        val uiStateFlow = MutableStateFlow(DashboardUiState())
         every { viewModel.uiState } returns uiStateFlow
 
         composeTestRule.setContent {
-            DashboardScreen(
+            DashboardContent(
                 windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp)),
                 onSettingsClick = {},
                 viewModel = viewModel
@@ -335,11 +334,11 @@ class DashboardScreenTest {
     @Test
     fun dpadUpKey_triggersScrollDown() {
         val viewModel: DashboardViewModel = mockk(relaxed = true)
-        val uiStateFlow = MutableStateFlow(DashboardUiState(permissionStatus = PermissionStatus.GRANTED))
+        val uiStateFlow = MutableStateFlow(DashboardUiState())
         every { viewModel.uiState } returns uiStateFlow
 
         composeTestRule.setContent {
-            DashboardScreen(
+            DashboardContent(
                 windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp)),
                 onSettingsClick = {},
                 viewModel = viewModel
@@ -360,57 +359,17 @@ class DashboardScreenTest {
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     @Test
-    fun permissionDenied_displaysPermissionRequestContent() {
-        val viewModel: DashboardViewModel = mockk(relaxed = true)
-        val uiStateFlow = MutableStateFlow(DashboardUiState(permissionStatus = PermissionStatus.DENIED))
-        every { viewModel.uiState } returns uiStateFlow
-
-        composeTestRule.setContent {
-            DashboardScreen(
-                windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp)),
-                onSettingsClick = {},
-                viewModel = viewModel
-            )
-        }
-
-        val expectedMessage = context.getString(R.string.permission_location_request)
-        composeTestRule.onNodeWithText(expectedMessage).assertIsDisplayed()
-        composeTestRule.onNodeWithText(context.getString(R.string.permission_button_grant)).assertIsDisplayed()
-    }
-
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
-    @Test
-    fun permissionRationaleRequired_displaysRationaleMessage() {
-        val viewModel: DashboardViewModel = mockk(relaxed = true)
-        val uiStateFlow = MutableStateFlow(DashboardUiState(permissionStatus = PermissionStatus.RATIONALE_REQUIRED))
-        every { viewModel.uiState } returns uiStateFlow
-
-        composeTestRule.setContent {
-            DashboardScreen(
-                windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp)),
-                onSettingsClick = {},
-                viewModel = viewModel
-            )
-        }
-
-        val expectedMessage = context.getString(R.string.permission_location_rationale)
-        composeTestRule.onNodeWithText(expectedMessage).assertIsDisplayed()
-    }
-
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
-    @Test
-    fun permissionGranted_displaysMainContent() {
+    fun dashboardContent_displaysMainContent() {
         val viewModel: DashboardViewModel = mockk(relaxed = true)
         val uiStateFlow = MutableStateFlow(
             DashboardUiState(
-                permissionStatus = PermissionStatus.GRANTED,
                 roadbook = RoadbookUiState.Empty
             )
         )
         every { viewModel.uiState } returns uiStateFlow
 
         composeTestRule.setContent {
-            DashboardScreen(
+            DashboardContent(
                 windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp)),
                 onSettingsClick = {},
                 viewModel = viewModel

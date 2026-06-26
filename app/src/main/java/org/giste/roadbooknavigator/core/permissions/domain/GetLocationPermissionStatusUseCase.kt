@@ -15,16 +15,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.location.domain
+package org.giste.roadbooknavigator.core.permissions.domain
 
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
 /**
- * Interface to provide the status of location permissions.
+ * Use case to get the status of location permissions.
  */
-interface LocationPermissionRepository {
+class GetLocationPermissionStatusUseCase @Inject constructor(
+    private val repository: LocationPermissionRepository
+) {
     /**
-     * Returns a flow that emits the current status of location permissions.
+     * Executes the use case.
+     *
+     * @return A flow emitting the current [PermissionStatus].
      */
-    fun getPermissionStatus(): Flow<PermissionStatus>
+    operator fun invoke(): Flow<PermissionStatus> = repository.getPermissionStatus()
 }

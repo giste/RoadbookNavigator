@@ -17,18 +17,19 @@
 
 package org.giste.roadbooknavigator.ui.settings
 
-import androidx.activity.ComponentActivity
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
+import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
-import androidx.compose.ui.test.performTouchInput
-import androidx.compose.ui.test.swipeRight
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
 import androidx.test.platform.app.InstrumentationRegistry
 import org.giste.roadbooknavigator.R
+import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.AppTheme
@@ -36,30 +37,33 @@ import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 class SettingsScreenTest {
 
     @get:Rule
-    val composeTestRule = createAndroidComposeRule<ComponentActivity>()
+    val composeTestRule = createComposeRule()
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
+    private val windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp))
 
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     @Test
     fun tabSwitching_updatesContent() {
         composeTestRule.setContent {
-            SettingsContent(
-                uiState = SettingsUiState.Success(AppSettings()),
-                onBackClick = {},
-                onThemeSelected = {},
-                onOrientationSelected = {},
-                onShortDistanceThresholdChange = {},
-                onOdometerSpeedThresholdChange = {},
-                onOdometerMinAccuracyChange = {},
-                onOdometerMinVerticalAccuracyChange = {},
-                onOdometerPollingIntervalChange = {},
-                onOdometerMinDistanceChange = {},
-                onRestoreOdometerDefaults = {}
-            )
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                SettingsContent(
+                    uiState = SettingsUiState.Success(AppSettings()),
+                    onBackClick = {},
+                    onThemeSelected = {},
+                    onOrientationSelected = {},
+                    onShortDistanceThresholdChange = {},
+                    onOdometerSpeedThresholdChange = {},
+                    onOdometerMinAccuracyChange = {},
+                    onOdometerMinVerticalAccuracyChange = {},
+                    onOdometerPollingIntervalChange = {},
+                    onOdometerMinDistanceChange = {},
+                    onRestoreOdometerDefaults = {}
+                )
+            }
         }
 
         // Initially on User tab
@@ -79,19 +83,21 @@ class SettingsScreenTest {
     fun themeSelection_triggersCallback() {
         var selectedTheme: AppTheme? = null
         composeTestRule.setContent {
-            SettingsContent(
-                uiState = SettingsUiState.Success(AppSettings(theme = AppTheme.LIGHT)),
-                onBackClick = {},
-                onThemeSelected = { selectedTheme = it },
-                onOrientationSelected = {},
-                onShortDistanceThresholdChange = {},
-                onOdometerSpeedThresholdChange = {},
-                onOdometerMinAccuracyChange = {},
-                onOdometerMinVerticalAccuracyChange = {},
-                onOdometerPollingIntervalChange = {},
-                onOdometerMinDistanceChange = {},
-                onRestoreOdometerDefaults = {}
-            )
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                SettingsContent(
+                    uiState = SettingsUiState.Success(AppSettings(theme = AppTheme.LIGHT)),
+                    onBackClick = {},
+                    onThemeSelected = { selectedTheme = it },
+                    onOrientationSelected = {},
+                    onShortDistanceThresholdChange = {},
+                    onOdometerSpeedThresholdChange = {},
+                    onOdometerMinAccuracyChange = {},
+                    onOdometerMinVerticalAccuracyChange = {},
+                    onOdometerPollingIntervalChange = {},
+                    onOdometerMinDistanceChange = {},
+                    onRestoreOdometerDefaults = {}
+                )
+            }
         }
 
         // Click Dark theme card
@@ -104,19 +110,21 @@ class SettingsScreenTest {
     fun backButtonClick_triggersCallback() {
         var backClicked = false
         composeTestRule.setContent {
-            SettingsContent(
-                uiState = SettingsUiState.Success(AppSettings()),
-                onBackClick = { backClicked = true },
-                onThemeSelected = {},
-                onOrientationSelected = {},
-                onShortDistanceThresholdChange = {},
-                onOdometerSpeedThresholdChange = {},
-                onOdometerMinAccuracyChange = {},
-                onOdometerMinVerticalAccuracyChange = {},
-                onOdometerPollingIntervalChange = {},
-                onOdometerMinDistanceChange = {},
-                onRestoreOdometerDefaults = {}
-            )
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                SettingsContent(
+                    uiState = SettingsUiState.Success(AppSettings()),
+                    onBackClick = { backClicked = true },
+                    onThemeSelected = {},
+                    onOrientationSelected = {},
+                    onShortDistanceThresholdChange = {},
+                    onOdometerSpeedThresholdChange = {},
+                    onOdometerMinAccuracyChange = {},
+                    onOdometerMinVerticalAccuracyChange = {},
+                    onOdometerPollingIntervalChange = {},
+                    onOdometerMinDistanceChange = {},
+                    onRestoreOdometerDefaults = {}
+                )
+            }
         }
 
         composeTestRule.onNodeWithTag("SettingsBackButton").performClick()
@@ -128,19 +136,21 @@ class SettingsScreenTest {
     fun restoreDefaultsButton_triggersCallback() {
         var restoreClicked = false
         composeTestRule.setContent {
-            SettingsContent(
-                uiState = SettingsUiState.Success(AppSettings()),
-                onBackClick = {},
-                onThemeSelected = {},
-                onOrientationSelected = {},
-                onShortDistanceThresholdChange = {},
-                onOdometerSpeedThresholdChange = {},
-                onOdometerMinAccuracyChange = {},
-                onOdometerMinVerticalAccuracyChange = {},
-                onOdometerPollingIntervalChange = {},
-                onOdometerMinDistanceChange = {},
-                onRestoreOdometerDefaults = { restoreClicked = true }
-            )
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                SettingsContent(
+                    uiState = SettingsUiState.Success(AppSettings()),
+                    onBackClick = {},
+                    onThemeSelected = {},
+                    onOrientationSelected = {},
+                    onShortDistanceThresholdChange = {},
+                    onOdometerSpeedThresholdChange = {},
+                    onOdometerMinAccuracyChange = {},
+                    onOdometerMinVerticalAccuracyChange = {},
+                    onOdometerPollingIntervalChange = {},
+                    onOdometerMinDistanceChange = {},
+                    onRestoreOdometerDefaults = { restoreClicked = true }
+                )
+            }
         }
 
         // Switch to Advanced tab
@@ -158,19 +168,21 @@ class SettingsScreenTest {
     fun orientationSelection_triggersCallback() {
         var selectedOrientation: AppOrientation? = null
         composeTestRule.setContent {
-            SettingsContent(
-                uiState = SettingsUiState.Success(AppSettings()),
-                onBackClick = {},
-                onThemeSelected = {},
-                onOrientationSelected = { selectedOrientation = it },
-                onShortDistanceThresholdChange = {},
-                onOdometerSpeedThresholdChange = {},
-                onOdometerMinAccuracyChange = {},
-                onOdometerMinVerticalAccuracyChange = {},
-                onOdometerPollingIntervalChange = {},
-                onOdometerMinDistanceChange = {},
-                onRestoreOdometerDefaults = {}
-            )
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                SettingsContent(
+                    uiState = SettingsUiState.Success(AppSettings()),
+                    onBackClick = {},
+                    onThemeSelected = {},
+                    onOrientationSelected = { selectedOrientation = it },
+                    onShortDistanceThresholdChange = {},
+                    onOdometerSpeedThresholdChange = {},
+                    onOdometerMinAccuracyChange = {},
+                    onOdometerMinVerticalAccuracyChange = {},
+                    onOdometerPollingIntervalChange = {},
+                    onOdometerMinDistanceChange = {},
+                    onRestoreOdometerDefaults = {}
+                )
+            }
         }
 
         // Click Horizontal orientation button
@@ -183,25 +195,27 @@ class SettingsScreenTest {
     fun shortDistanceSlider_triggersCallback() {
         var newValue: Long? = null
         composeTestRule.setContent {
-            SettingsContent(
-                uiState = SettingsUiState.Success(AppSettings(shortDistanceThreshold = 100L)),
-                onBackClick = {},
-                onThemeSelected = {},
-                onOrientationSelected = {},
-                onShortDistanceThresholdChange = { newValue = it },
-                onOdometerSpeedThresholdChange = {},
-                onOdometerMinAccuracyChange = {},
-                onOdometerMinVerticalAccuracyChange = {},
-                onOdometerPollingIntervalChange = {},
-                onOdometerMinDistanceChange = {},
-                onRestoreOdometerDefaults = {}
-            )
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                SettingsContent(
+                    uiState = SettingsUiState.Success(AppSettings(shortDistanceThreshold = 100L)),
+                    onBackClick = {},
+                    onThemeSelected = {},
+                    onOrientationSelected = {},
+                    onShortDistanceThresholdChange = { newValue = it },
+                    onOdometerSpeedThresholdChange = {},
+                    onOdometerMinAccuracyChange = {},
+                    onOdometerMinVerticalAccuracyChange = {},
+                    onOdometerPollingIntervalChange = {},
+                    onOdometerMinDistanceChange = {},
+                    onRestoreOdometerDefaults = {}
+                )
+            }
         }
 
-        // Swipe the slider to the right
-        composeTestRule.onNodeWithTag("ShortDistanceSlider").performTouchInput {
-            swipeRight()
-        }
+        // Click on the slider (should click the center by default)
+        composeTestRule.onNodeWithTag("ShortDistanceSlider")
+            .performScrollTo()
+            .performClick()
         composeTestRule.waitForIdle()
 
         assertTrue("Expected newValue to be > 100L but was $newValue", newValue != null && newValue > 100L)
@@ -212,29 +226,31 @@ class SettingsScreenTest {
     fun pollingIntervalSlider_triggersCallback() {
         var newValue: Long? = null
         composeTestRule.setContent {
-            SettingsContent(
-                uiState = SettingsUiState.Success(AppSettings(odometerPollingInterval = 500L)),
-                onBackClick = {},
-                onThemeSelected = {},
-                onOrientationSelected = {},
-                onShortDistanceThresholdChange = {},
-                onOdometerSpeedThresholdChange = {},
-                onOdometerMinAccuracyChange = {},
-                onOdometerMinVerticalAccuracyChange = {},
-                onOdometerPollingIntervalChange = { newValue = it },
-                onOdometerMinDistanceChange = {},
-                onRestoreOdometerDefaults = {}
-            )
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                SettingsContent(
+                    uiState = SettingsUiState.Success(AppSettings(odometerPollingInterval = 500L)),
+                    onBackClick = {},
+                    onThemeSelected = {},
+                    onOrientationSelected = {},
+                    onShortDistanceThresholdChange = {},
+                    onOdometerSpeedThresholdChange = {},
+                    onOdometerMinAccuracyChange = {},
+                    onOdometerMinVerticalAccuracyChange = {},
+                    onOdometerPollingIntervalChange = { newValue = it },
+                    onOdometerMinDistanceChange = {},
+                    onRestoreOdometerDefaults = {}
+                )
+            }
         }
 
         // Switch to Advanced tab
         composeTestRule.onNodeWithTag("SettingsTab_1").performClick()
         composeTestRule.waitForIdle()
 
-        // Swipe the slider
-        composeTestRule.onNodeWithTag("PollingIntervalSlider").performTouchInput {
-            swipeRight()
-        }
+        // Click on the slider
+        composeTestRule.onNodeWithTag("PollingIntervalSlider")
+            .performScrollTo()
+            .performClick()
         composeTestRule.waitForIdle()
 
         assertTrue("Expected newValue to be > 500L but was $newValue", newValue != null && newValue > 500L)
@@ -245,29 +261,31 @@ class SettingsScreenTest {
     fun speedThresholdSlider_triggersCallback() {
         var newValue: Float? = null
         composeTestRule.setContent {
-            SettingsContent(
-                uiState = SettingsUiState.Success(AppSettings(odometerSpeedThreshold = 0.5f)),
-                onBackClick = {},
-                onThemeSelected = {},
-                onOrientationSelected = {},
-                onShortDistanceThresholdChange = {},
-                onOdometerSpeedThresholdChange = { newValue = it },
-                onOdometerMinAccuracyChange = {},
-                onOdometerMinVerticalAccuracyChange = {},
-                onOdometerPollingIntervalChange = {},
-                onOdometerMinDistanceChange = {},
-                onRestoreOdometerDefaults = {}
-            )
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                SettingsContent(
+                    uiState = SettingsUiState.Success(AppSettings(odometerSpeedThreshold = 0.5f)),
+                    onBackClick = {},
+                    onThemeSelected = {},
+                    onOrientationSelected = {},
+                    onShortDistanceThresholdChange = {},
+                    onOdometerSpeedThresholdChange = { newValue = it },
+                    onOdometerMinAccuracyChange = {},
+                    onOdometerMinVerticalAccuracyChange = {},
+                    onOdometerPollingIntervalChange = {},
+                    onOdometerMinDistanceChange = {},
+                    onRestoreOdometerDefaults = {}
+                )
+            }
         }
 
         // Switch to Advanced tab
         composeTestRule.onNodeWithTag("SettingsTab_1").performClick()
         composeTestRule.waitForIdle()
 
-        // Swipe the slider
-        composeTestRule.onNodeWithTag("SpeedThresholdSlider").performTouchInput {
-            swipeRight()
-        }
+        // Click on the slider
+        composeTestRule.onNodeWithTag("SpeedThresholdSlider")
+            .performScrollTo()
+            .performClick()
         composeTestRule.waitForIdle()
 
         assertTrue("Expected newValue to be > 0.5f but was $newValue", newValue != null && newValue > 0.5f)
@@ -278,29 +296,31 @@ class SettingsScreenTest {
     fun minAccuracySlider_triggersCallback() {
         var newValue: Float? = null
         composeTestRule.setContent {
-            SettingsContent(
-                uiState = SettingsUiState.Success(AppSettings(odometerMinAccuracy = 10.0f)),
-                onBackClick = {},
-                onThemeSelected = {},
-                onOrientationSelected = {},
-                onShortDistanceThresholdChange = {},
-                onOdometerSpeedThresholdChange = {},
-                onOdometerMinAccuracyChange = { newValue = it },
-                onOdometerMinVerticalAccuracyChange = {},
-                onOdometerPollingIntervalChange = {},
-                onOdometerMinDistanceChange = {},
-                onRestoreOdometerDefaults = {}
-            )
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                SettingsContent(
+                    uiState = SettingsUiState.Success(AppSettings(odometerMinAccuracy = 10.0f)),
+                    onBackClick = {},
+                    onThemeSelected = {},
+                    onOrientationSelected = {},
+                    onShortDistanceThresholdChange = {},
+                    onOdometerSpeedThresholdChange = {},
+                    onOdometerMinAccuracyChange = { newValue = it },
+                    onOdometerMinVerticalAccuracyChange = {},
+                    onOdometerPollingIntervalChange = {},
+                    onOdometerMinDistanceChange = {},
+                    onRestoreOdometerDefaults = {}
+                )
+            }
         }
 
         // Switch to Advanced tab
         composeTestRule.onNodeWithTag("SettingsTab_1").performClick()
         composeTestRule.waitForIdle()
 
-        // Swipe the slider
-        composeTestRule.onNodeWithTag("MinAccuracySlider").performTouchInput {
-            swipeRight()
-        }
+        // Click on the slider
+        composeTestRule.onNodeWithTag("MinAccuracySlider")
+            .performScrollTo()
+            .performClick()
         composeTestRule.waitForIdle()
 
         assertTrue("Expected newValue to be > 10.0f but was $newValue", newValue != null && newValue > 10.0f)
@@ -311,29 +331,31 @@ class SettingsScreenTest {
     fun minVerticalAccuracySlider_triggersCallback() {
         var newValue: Float? = null
         composeTestRule.setContent {
-            SettingsContent(
-                uiState = SettingsUiState.Success(AppSettings(odometerMinVerticalAccuracy = 5.0f)),
-                onBackClick = {},
-                onThemeSelected = {},
-                onOrientationSelected = {},
-                onShortDistanceThresholdChange = {},
-                onOdometerSpeedThresholdChange = {},
-                onOdometerMinAccuracyChange = {},
-                onOdometerMinVerticalAccuracyChange = { newValue = it },
-                onOdometerPollingIntervalChange = {},
-                onOdometerMinDistanceChange = {},
-                onRestoreOdometerDefaults = {}
-            )
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                SettingsContent(
+                    uiState = SettingsUiState.Success(AppSettings(odometerMinVerticalAccuracy = 5.0f)),
+                    onBackClick = {},
+                    onThemeSelected = {},
+                    onOrientationSelected = {},
+                    onShortDistanceThresholdChange = {},
+                    onOdometerSpeedThresholdChange = {},
+                    onOdometerMinAccuracyChange = {},
+                    onOdometerMinVerticalAccuracyChange = { newValue = it },
+                    onOdometerPollingIntervalChange = {},
+                    onOdometerMinDistanceChange = {},
+                    onRestoreOdometerDefaults = {}
+                )
+            }
         }
 
         // Switch to Advanced tab
         composeTestRule.onNodeWithTag("SettingsTab_1").performClick()
         composeTestRule.waitForIdle()
 
-        // Swipe the slider
-        composeTestRule.onNodeWithTag("MinVerticalAccuracySlider").performTouchInput {
-            swipeRight()
-        }
+        // Click on the slider
+        composeTestRule.onNodeWithTag("MinVerticalAccuracySlider")
+            .performScrollTo()
+            .performClick()
         composeTestRule.waitForIdle()
 
         assertTrue("Expected newValue to be > 5.0f but was $newValue", newValue != null && newValue > 5.0f)
@@ -344,29 +366,31 @@ class SettingsScreenTest {
     fun minDistanceSlider_triggersCallback() {
         var newValue: Float? = null
         composeTestRule.setContent {
-            SettingsContent(
-                uiState = SettingsUiState.Success(AppSettings(odometerMinDistance = 1.0f)),
-                onBackClick = {},
-                onThemeSelected = {},
-                onOrientationSelected = {},
-                onShortDistanceThresholdChange = {},
-                onOdometerSpeedThresholdChange = {},
-                onOdometerMinAccuracyChange = {},
-                onOdometerMinVerticalAccuracyChange = {},
-                onOdometerPollingIntervalChange = {},
-                onOdometerMinDistanceChange = { newValue = it },
-                onRestoreOdometerDefaults = {}
-            )
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                SettingsContent(
+                    uiState = SettingsUiState.Success(AppSettings(odometerMinDistance = 1.0f)),
+                    onBackClick = {},
+                    onThemeSelected = {},
+                    onOrientationSelected = {},
+                    onShortDistanceThresholdChange = {},
+                    onOdometerSpeedThresholdChange = {},
+                    onOdometerMinAccuracyChange = {},
+                    onOdometerMinVerticalAccuracyChange = {},
+                    onOdometerPollingIntervalChange = {},
+                    onOdometerMinDistanceChange = { newValue = it },
+                    onRestoreOdometerDefaults = {}
+                )
+            }
         }
 
         // Switch to Advanced tab
         composeTestRule.onNodeWithTag("SettingsTab_1").performClick()
         composeTestRule.waitForIdle()
 
-        // Swipe the slider
-        composeTestRule.onNodeWithTag("MinDistanceSlider").performTouchInput {
-            swipeRight()
-        }
+        // Click on the slider
+        composeTestRule.onNodeWithTag("MinDistanceSlider")
+            .performScrollTo()
+            .performClick()
         composeTestRule.waitForIdle()
 
         assertTrue("Expected newValue to be > 1.0f but was $newValue", newValue != null && newValue > 1.0f)

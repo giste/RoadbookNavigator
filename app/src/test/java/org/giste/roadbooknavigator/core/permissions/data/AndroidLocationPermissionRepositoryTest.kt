@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.location.data
+package org.giste.roadbooknavigator.core.permissions.data
 
 import android.Manifest
 import android.content.Context
@@ -27,7 +27,7 @@ import io.mockk.mockkStatic
 import io.mockk.unmockkStatic
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
-import org.giste.roadbooknavigator.features.location.domain.PermissionStatus
+import org.giste.roadbooknavigator.core.permissions.domain.PermissionStatus
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before

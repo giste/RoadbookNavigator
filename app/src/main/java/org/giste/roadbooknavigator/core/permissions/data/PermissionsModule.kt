@@ -15,21 +15,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.location.domain
+package org.giste.roadbooknavigator.core.permissions.data
 
-/**
- * Represents the various states of a permission.
- */
-enum class PermissionStatus {
-    /** Permission has been granted by the user. */
-    GRANTED,
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import org.giste.roadbooknavigator.core.permissions.domain.LocationPermissionRepository
+import javax.inject.Singleton
 
-    /** Permission is not granted, but can be requested. */
-    DENIED,
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class PermissionsModule {
 
-    /** Permission is denied, and we should show a rationale before requesting again. */
-    RATIONALE_REQUIRED,
-
-    /** Permission is permanently denied; the user must enable it in system settings. */
-    PERMANENTLY_DENIED
+    @Binds
+    @Singleton
+    abstract fun bindLocationPermissionRepository(
+        androidLocationPermissionRepository: AndroidLocationPermissionRepository
+    ): LocationPermissionRepository
 }

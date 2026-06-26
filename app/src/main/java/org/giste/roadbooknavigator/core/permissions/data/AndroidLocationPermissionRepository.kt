@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.location.data
+package org.giste.roadbooknavigator.core.permissions.data
 
 import android.Manifest
 import android.content.Context
@@ -25,8 +25,8 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import org.giste.roadbooknavigator.features.location.domain.LocationPermissionRepository
-import org.giste.roadbooknavigator.features.location.domain.PermissionStatus
+import org.giste.roadbooknavigator.core.permissions.domain.LocationPermissionRepository
+import org.giste.roadbooknavigator.core.permissions.domain.PermissionStatus
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -35,7 +35,7 @@ import javax.inject.Singleton
  */
 @Singleton
 class AndroidLocationPermissionRepository @Inject constructor(
-    @param:ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context
 ) : LocationPermissionRepository {
 
     private val _permissionStatus = MutableStateFlow(checkCurrentStatus())

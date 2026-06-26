@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.location.domain
+package org.giste.roadbooknavigator.core.permissions.domain
 
 import io.mockk.every
 import io.mockk.mockk

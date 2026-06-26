@@ -52,8 +52,8 @@
     <string name="settings_advanced_min_distance_title">Distancia mín. GPS (m)</string>
     <string name="settings_advanced_min_distance_helper">Distancia de movimiento mínima para disparar una actualización.</string>
     <string name="settings_advanced_range_error">El valor debe estar entre %1$s y %2$s</string>
-    <string name="settings_user_short_distance_title">Umbral de distancia corta (m)</string>
-    <string name="settings_user_short_distance_helper">Resalta waypoints más cercanos a esta distancia (0-1000m).</string>
+    <string name="settings_user_short_distance_title">Umbral de distancia corta</string>
+    <string name="settings_user_short_distance_helper">Resalta waypoints más cercanos a esta distancia (metros).</string>
     <string name="settings_roadbook_restore_defaults">Restablecer valores por defecto</string>
     <string name="main_no_route">No hay ruta cargada</string>
     <string name="main_error_prefix">Error: %1$s</string>

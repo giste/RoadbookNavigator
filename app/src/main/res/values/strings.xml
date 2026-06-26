@@ -34,8 +34,8 @@
     <string name="settings_advanced_min_distance_title">GPS Min Distance (m)</string>
     <string name="settings_advanced_min_distance_helper">Minimum movement distance to trigger an update.</string>
     <string name="settings_advanced_range_error">Value must be between %1$s and %2$s</string>
-    <string name="settings_user_short_distance_title">Short distance threshold (m)</string>
-    <string name="settings_user_short_distance_helper">Highlights waypoints closer than this distance (0-1000m).</string>
+    <string name="settings_user_short_distance_title">Short distance threshold</string>
+    <string name="settings_user_short_distance_helper">Highlights waypoints closer than this distance (meters).</string>
     <string name="settings_roadbook_restore_defaults">Restore roadbook defaults</string>
     <string name="main_no_route">No route loaded</string>
     <string name="main_error_prefix">Error: %1$s</string>

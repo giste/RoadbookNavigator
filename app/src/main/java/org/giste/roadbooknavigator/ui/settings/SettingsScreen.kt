@@ -40,16 +40,20 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.ScreenRotation
+import androidx.compose.material.icons.filled.StayCurrentLandscape
+import androidx.compose.material.icons.filled.StayCurrentPortrait
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
@@ -347,7 +351,7 @@ fun SliderSettingItem(
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         title?.let {
-            Text(text = it, style = titleStyle(), fontWeight = FontWeight.Bold)
+            SettingsSectionTitle(it)
         }
         Text(text = helper, style = labelStyle())
         Slider(
@@ -410,6 +414,7 @@ fun ThemeSelector(currentTheme: AppTheme, onThemeSelected: (AppTheme) -> Unit) {
             )
         }
         // Spacer for alignment if last row is incomplete
+        @Suppress("KotlinConstantConditions")
         if (options.size % 2 != 0) {
             Spacer(modifier = Modifier.weight(1f))
         }
@@ -559,22 +564,36 @@ private fun Modifier.minWidth(width: androidx.compose.ui.unit.Dp) = this.default
 @Composable
 fun OrientationSelector(currentOrientation: AppOrientation, onOrientationSelected: (AppOrientation) -> Unit) {
     val options = listOf(
-        AppOrientation.VERTICAL to stringResource(R.string.settings_orientation_vertical),
-        AppOrientation.HORIZONTAL to stringResource(R.string.settings_orientation_horizontal),
-        AppOrientation.FOLLOW_SYSTEM to stringResource(R.string.settings_orientation_system)
+        AppOrientation.VERTICAL to Icons.Default.StayCurrentPortrait,
+        AppOrientation.HORIZONTAL to Icons.Default.StayCurrentLandscape,
+        AppOrientation.FOLLOW_SYSTEM to Icons.Default.ScreenRotation
     )
 
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        options.forEach { (orientation, label) ->
-            FilterChip(
-                selected = currentOrientation == orientation,
-                onClick = { onOrientationSelected(orientation) },
-                label = { Text(label, style = labelStyle()) },
-                modifier = Modifier.weight(1f)
-            )
+        options.forEach { (orientation, icon) ->
+            val isSelected = currentOrientation == orientation
+            IconToggleButton(
+                checked = isSelected,
+                onCheckedChange = { if (it) onOrientationSelected(orientation) },
+                modifier = Modifier
+                    .weight(1f)
+                    .height(RoadbookNavigatorTheme.dimensions.dialogButtonHeight),
+                colors = IconButtonDefaults.iconToggleButtonColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    checkedContainerColor = MaterialTheme.colorScheme.primary,
+                    checkedContentColor = MaterialTheme.colorScheme.onPrimary,
+                )
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.actionIconSize)
+                )
+            }
         }
     }
 }

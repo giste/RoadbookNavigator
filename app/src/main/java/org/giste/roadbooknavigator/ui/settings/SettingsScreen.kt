@@ -18,21 +18,59 @@
 package org.giste.roadbooknavigator.ui.settings
 
 import android.content.res.Configuration
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.*
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.PrimaryTabRow
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
+import androidx.compose.material3.Tab
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,7 +78,15 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import org.giste.roadbooknavigator.R
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
-import org.giste.roadbooknavigator.features.settings.domain.*
+import org.giste.roadbooknavigator.features.settings.domain.AccuracyThreshold
+import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
+import org.giste.roadbooknavigator.features.settings.domain.AppSettings
+import org.giste.roadbooknavigator.features.settings.domain.AppTheme
+import org.giste.roadbooknavigator.features.settings.domain.MinDistanceThreshold
+import org.giste.roadbooknavigator.features.settings.domain.PollingIntervalThreshold
+import org.giste.roadbooknavigator.features.settings.domain.ShortDistanceThreshold
+import org.giste.roadbooknavigator.features.settings.domain.SpeedThreshold
+import org.giste.roadbooknavigator.features.settings.domain.VerticalAccuracyThreshold
 
 @Composable
 fun SettingsScreen(
@@ -335,6 +381,7 @@ fun SettingsSectionTitle(title: String) {
     )
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ThemeSelector(currentTheme: AppTheme, onThemeSelected: (AppTheme) -> Unit) {
     val options = listOf(
@@ -345,36 +392,169 @@ fun ThemeSelector(currentTheme: AppTheme, onThemeSelected: (AppTheme) -> Unit) {
         AppTheme.DYNAMIC to stringResource(R.string.settings_theme_dynamic)
     )
 
-    Column(
-        modifier = Modifier.selectableGroup(),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+    FlowRow(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        maxItemsInEachRow = 3
     ) {
         options.forEach { (theme, label) ->
-            val isSelected = currentTheme == theme
-            Row(
+            ThemePreviewCard(
+                theme = theme,
+                label = label,
+                isSelected = currentTheme == theme,
+                onClick = { onThemeSelected(theme) },
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .selectable(
-                        selected = isSelected,
-                        onClick = { onThemeSelected(theme) },
-                        role = Role.RadioButton
-                    ),
-                verticalAlignment = Alignment.CenterVertically
+                    .weight(1f)
+                    .minWidth(100.dp)
+            )
+        }
+        // Spacer for alignment if last row is incomplete
+        if (options.size % 2 != 0) {
+            Spacer(modifier = Modifier.weight(1f))
+        }
+    }
+}
+
+@Composable
+fun ThemePreviewCard(
+    theme: AppTheme,
+    label: String,
+    isSelected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val borderColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant
+    val borderWidth = if (isSelected) 3.dp else 1.dp
+
+    Card(
+        onClick = onClick,
+        modifier = modifier.height(120.dp),
+        border = BorderStroke(borderWidth, borderColor),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        )
+    ) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
-                RadioButton(
-                    selected = isSelected,
-                    onClick = null, // Interaction handled by the Row
-                    modifier = Modifier.size(48.dp)
-                )
+                ThemeMiniPreview(theme = theme, modifier = Modifier.size(60.dp, 40.dp))
+                Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = label,
-                    style = labelStyle(),
-                    modifier = Modifier.padding(start = 16.dp)
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                    modifier = Modifier.padding(horizontal = 4.dp)
+                )
+            }
+
+            if (isSelected) {
+                Icon(
+                    imageVector = Icons.Default.CheckCircle,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(4.dp)
+                        .size(20.dp)
+                        .background(MaterialTheme.colorScheme.surface, CircleShape)
                 )
             }
         }
     }
 }
+
+@Composable
+fun ThemeMiniPreview(theme: AppTheme, modifier: Modifier = Modifier) {
+    // colors from org.giste.roadbooknavigator.core.ui.theme
+    val lightPrimary = Color(0xFFF28E1C)
+    val lightSurface = Color(0xFFFFFBF0)
+    val darkPrimary = Color(0xFFFFB300)
+    val darkSurface = Color(0xFF0F0908)
+    val fiaPrimary = Color(0xFF0000FF)
+    val fiaSurface = Color(0xFFFFFFFF)
+
+    val surfaceBrush = when (theme) {
+        AppTheme.LIGHT -> Brush.linearGradient(listOf(lightSurface, lightSurface))
+        AppTheme.DARK -> Brush.linearGradient(listOf(darkSurface, darkSurface))
+        AppTheme.FIA -> Brush.linearGradient(listOf(fiaSurface, fiaSurface))
+        AppTheme.FOLLOW_SYSTEM -> Brush.linearGradient(
+            0.0f to lightSurface,
+            0.5f to lightSurface,
+            0.5f to darkSurface,
+            1.0f to darkSurface,
+            start = Offset.Zero,
+            end = Offset.Infinite
+        )
+
+        AppTheme.DYNAMIC -> Brush.linearGradient(
+            listOf(Color(0xFF80DEEA), Color(0xFFCE93D8), Color(0xFFFFF59D))
+        )
+    }
+
+    val primaryBrush = when (theme) {
+        AppTheme.LIGHT -> Brush.linearGradient(listOf(lightPrimary, lightPrimary))
+        AppTheme.DARK -> Brush.linearGradient(listOf(darkPrimary, darkPrimary))
+        AppTheme.FIA -> Brush.linearGradient(listOf(fiaPrimary, fiaPrimary))
+        AppTheme.FOLLOW_SYSTEM -> Brush.linearGradient(
+            0.0f to lightPrimary,
+            0.5f to lightPrimary,
+            0.5f to darkPrimary,
+            1.0f to darkPrimary,
+            start = Offset.Zero,
+            end = Offset.Infinite
+        )
+
+        AppTheme.DYNAMIC -> Brush.linearGradient(
+            listOf(Color(0xFF42A5F5), Color(0xFF66BB6A), Color(0xFFFFA726))
+        )
+    }
+
+    Box(
+        modifier = modifier
+            .border(1.dp, MaterialTheme.colorScheme.outlineVariant, MaterialTheme.shapes.extraSmall)
+            .background(surfaceBrush, MaterialTheme.shapes.extraSmall)
+            .padding(4.dp)
+    ) {
+        Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            // Header
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(6.dp)
+                    .background(primaryBrush, MaterialTheme.shapes.extraSmall)
+            )
+            // Content rows
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(2.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(10.dp)
+                        .background(primaryBrush, CircleShape, alpha = 0.6f)
+                )
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(4.dp)
+                        .background(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(0.7f)
+                    .height(4.dp)
+                    .background(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
+            )
+        }
+    }
+}
+
+private fun Modifier.minWidth(width: androidx.compose.ui.unit.Dp) = this.defaultMinSize(minWidth = width)
 
 @Composable
 fun OrientationSelector(currentOrientation: AppOrientation, onOrientationSelected: (AppOrientation) -> Unit) {

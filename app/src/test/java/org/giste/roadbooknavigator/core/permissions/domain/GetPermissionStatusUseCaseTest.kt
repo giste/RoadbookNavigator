@@ -26,21 +26,22 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 /**
- * Unit tests for [GetLocationPermissionStatusUseCase].
+ * Unit tests for [GetPermissionStatusUseCase].
  */
-class GetLocationPermissionStatusUseCaseTest {
+class GetPermissionStatusUseCaseTest {
 
-    private val repository: LocationPermissionRepository = mockk()
-    private val useCase = GetLocationPermissionStatusUseCase(repository)
+    private val repository: PermissionRepository = mockk()
+    private val useCase = GetPermissionStatusUseCase(repository)
 
     @Test
     fun `invoke should return GRANTED when repository returns GRANTED`() = runTest {
         // Given
+        val permission = AppPermission.Location
         val expectedStatus = PermissionStatus.GRANTED
-        every { repository.getPermissionStatus() } returns flowOf(expectedStatus)
+        every { repository.getPermissionStatus(permission) } returns flowOf(expectedStatus)
 
         // When
-        val result = useCase().first()
+        val result = useCase(permission).first()
 
         // Then
         assertEquals(expectedStatus, result)
@@ -49,37 +50,12 @@ class GetLocationPermissionStatusUseCaseTest {
     @Test
     fun `invoke should return DENIED when repository returns DENIED`() = runTest {
         // Given
+        val permission = AppPermission.Location
         val expectedStatus = PermissionStatus.DENIED
-        every { repository.getPermissionStatus() } returns flowOf(expectedStatus)
+        every { repository.getPermissionStatus(permission) } returns flowOf(expectedStatus)
 
         // When
-        val result = useCase().first()
-
-        // Then
-        assertEquals(expectedStatus, result)
-    }
-
-    @Test
-    fun `invoke should return RATIONALE_REQUIRED when repository returns RATIONALE_REQUIRED`() = runTest {
-        // Given
-        val expectedStatus = PermissionStatus.RATIONALE_REQUIRED
-        every { repository.getPermissionStatus() } returns flowOf(expectedStatus)
-
-        // When
-        val result = useCase().first()
-
-        // Then
-        assertEquals(expectedStatus, result)
-    }
-
-    @Test
-    fun `invoke should return PERMANENTLY_DENIED when repository returns PERMANENTLY_DENIED`() = runTest {
-        // Given
-        val expectedStatus = PermissionStatus.PERMANENTLY_DENIED
-        every { repository.getPermissionStatus() } returns flowOf(expectedStatus)
-
-        // When
-        val result = useCase().first()
+        val result = useCase(permission).first()
 
         // Then
         assertEquals(expectedStatus, result)

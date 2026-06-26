@@ -69,7 +69,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import kotlinx.coroutines.launch
 import org.giste.roadbooknavigator.R
-import org.giste.roadbooknavigator.core.permissions.ui.LocationPermissionGate
+import org.giste.roadbooknavigator.core.permissions.domain.AppPermission
+import org.giste.roadbooknavigator.core.permissions.ui.PermissionGate
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 import org.giste.roadbooknavigator.features.odometer.domain.Odometer
 import org.giste.roadbooknavigator.features.odometer.ui.PartialDistance
@@ -89,7 +90,11 @@ fun DashboardScreen(
     onSettingsClick: () -> Unit,
     viewModel: DashboardViewModel = hiltViewModel()
 ) {
-    LocationPermissionGate {
+    PermissionGate(
+        permission = AppPermission.Location,
+        rationaleText = stringResource(R.string.permission_location_rationale),
+        requestText = stringResource(R.string.permission_location_request)
+    ) {
         DashboardContent(
             windowSizeClass = windowSizeClass,
             onSettingsClick = onSettingsClick,

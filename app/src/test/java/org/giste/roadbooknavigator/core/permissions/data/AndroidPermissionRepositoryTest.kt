@@ -27,23 +27,23 @@ import io.mockk.mockkStatic
 import io.mockk.unmockkStatic
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
+import org.giste.roadbooknavigator.core.permissions.domain.AppPermission
 import org.giste.roadbooknavigator.core.permissions.domain.PermissionStatus
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 
-class AndroidLocationPermissionRepositoryTest {
+class AndroidPermissionRepositoryTest {
 
     private val context: Context = mockk()
-    private lateinit var repository: AndroidLocationPermissionRepository
+    private lateinit var repository: AndroidPermissionRepository
 
     @Before
     fun setUp() {
         mockkStatic(ContextCompat::class)
-        // Provide a default return value for the static mock before instantiating the repository
         every { ContextCompat.checkSelfPermission(any(), any()) } returns PackageManager.PERMISSION_DENIED
-        repository = AndroidLocationPermissionRepository(context)
+        repository = AndroidPermissionRepository(context)
     }
 
     @After
@@ -52,8 +52,27 @@ class AndroidLocationPermissionRepositoryTest {
     }
 
     @Test
-    fun `getPermissionStatus should return GRANTED when FINE_LOCATION is granted`() = runTest {
+    fun `getPermissionStatus should return GRANTED when all manifest permissions are granted`() = runTest {
         // Given
+        val permission = AppPermission.Location
+        every {
+            ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+        } returns PackageManager.PERMISSION_GRANTED
+        every {
+            ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
+        } returns PackageManager.PERMISSION_GRANTED
+
+        // When
+        val status = repository.getPermissionStatus(permission).first()
+
+        // Then
+        assertEquals(PermissionStatus.GRANTED, status)
+    }
+
+    @Test
+    fun `getPermissionStatus should return DENIED when at least one permission is denied`() = runTest {
+        // Given
+        val permission = AppPermission.Location
         every {
             ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
         } returns PackageManager.PERMISSION_GRANTED
@@ -62,41 +81,7 @@ class AndroidLocationPermissionRepositoryTest {
         } returns PackageManager.PERMISSION_DENIED
 
         // When
-        val status = repository.getPermissionStatus().first()
-
-        // Then
-        assertEquals(PermissionStatus.GRANTED, status)
-    }
-
-    @Test
-    fun `getPermissionStatus should return GRANTED when COARSE_LOCATION is granted`() = runTest {
-        // Given
-        every {
-            ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
-        } returns PackageManager.PERMISSION_DENIED
-        every {
-            ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
-        } returns PackageManager.PERMISSION_GRANTED
-
-        // When
-        val status = repository.getPermissionStatus().first()
-
-        // Then
-        assertEquals(PermissionStatus.GRANTED, status)
-    }
-
-    @Test
-    fun `getPermissionStatus should return DENIED when neither is granted`() = runTest {
-        // Given
-        every {
-            ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
-        } returns PackageManager.PERMISSION_DENIED
-        every {
-            ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
-        } returns PackageManager.PERMISSION_DENIED
-
-        // When
-        val status = repository.getPermissionStatus().first()
+        val status = repository.getPermissionStatus(permission).first()
 
         // Then
         assertEquals(PermissionStatus.DENIED, status)

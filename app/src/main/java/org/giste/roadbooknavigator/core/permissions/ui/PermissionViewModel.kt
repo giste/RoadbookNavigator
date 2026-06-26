@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  See <https://www.gnu.org/licenses/>.
  */
 
 package org.giste.roadbooknavigator.core.permissions.ui
@@ -20,10 +20,12 @@ package org.giste.roadbooknavigator.core.permissions.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
-import org.giste.roadbooknavigator.core.permissions.domain.GetLocationPermissionStatusUseCase
+import org.giste.roadbooknavigator.core.permissions.domain.AppPermission
+import org.giste.roadbooknavigator.core.permissions.domain.GetPermissionStatusUseCase
 import org.giste.roadbooknavigator.core.permissions.domain.PermissionStatus
 import javax.inject.Inject
 
@@ -32,16 +34,25 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class PermissionViewModel @Inject constructor(
-    getLocationPermissionStatusUseCase: GetLocationPermissionStatusUseCase
+    private val getPermissionStatusUseCase: GetPermissionStatusUseCase
 ) : ViewModel() {
 
     /**
-     * State of the location permission.
+     * Observable map of permission states.
      */
-    val locationPermissionStatus: StateFlow<PermissionStatus> = getLocationPermissionStatusUseCase()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = PermissionStatus.DENIED
-        )
+    private val _permissionStates = mutableMapOf<AppPermission, StateFlow<PermissionStatus>>()
+
+    /**
+     * Gets the state flow for a specific permission.
+     */
+    fun getPermissionStatus(permission: AppPermission): StateFlow<PermissionStatus> {
+        return _permissionStates.getOrPut(permission) {
+            getPermissionStatusUseCase(permission)
+                .stateIn(
+                    scope = viewModelScope,
+                    started = SharingStarted.WhileSubscribed(5000),
+                    initialValue = PermissionStatus.DENIED
+                )
+        }
+    }
 }

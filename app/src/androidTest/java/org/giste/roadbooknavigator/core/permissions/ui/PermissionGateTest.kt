@@ -25,12 +25,12 @@ import androidx.test.platform.app.InstrumentationRegistry
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
-import org.giste.roadbooknavigator.R
+import org.giste.roadbooknavigator.core.permissions.domain.AppPermission
 import org.giste.roadbooknavigator.core.permissions.domain.PermissionStatus
 import org.junit.Rule
 import org.junit.Test
 
-class LocationPermissionGateTest {
+class PermissionGateTest {
 
     @get:Rule
     val composeTestRule = createComposeRule()
@@ -41,10 +41,15 @@ class LocationPermissionGateTest {
     fun whenPermissionGranted_showsContent() {
         val viewModel: PermissionViewModel = mockk(relaxed = true)
         val statusFlow = MutableStateFlow(PermissionStatus.GRANTED)
-        every { viewModel.locationPermissionStatus } returns statusFlow
+        every { viewModel.getPermissionStatus(AppPermission.Location) } returns statusFlow
 
         composeTestRule.setContent {
-            LocationPermissionGate(viewModel = viewModel) {
+            PermissionGate(
+                permission = AppPermission.Location,
+                rationaleText = "Rationale",
+                requestText = "Request",
+                viewModel = viewModel
+            ) {
                 Text("Protected Content")
             }
         }
@@ -56,16 +61,20 @@ class LocationPermissionGateTest {
     fun whenPermissionDenied_showsPermissionRequest() {
         val viewModel: PermissionViewModel = mockk(relaxed = true)
         val statusFlow = MutableStateFlow(PermissionStatus.DENIED)
-        every { viewModel.locationPermissionStatus } returns statusFlow
+        every { viewModel.getPermissionStatus(AppPermission.Location) } returns statusFlow
 
         composeTestRule.setContent {
-            LocationPermissionGate(viewModel = viewModel) {
+            PermissionGate(
+                permission = AppPermission.Location,
+                rationaleText = "Rationale",
+                requestText = "Request",
+                viewModel = viewModel
+            ) {
                 Text("Protected Content")
             }
         }
 
-        val expectedMessage = context.getString(R.string.permission_location_request)
-        composeTestRule.onNodeWithText(expectedMessage).assertIsDisplayed()
+        composeTestRule.onNodeWithText("Request").assertIsDisplayed()
         composeTestRule.onNodeWithText("Protected Content").assertDoesNotExist()
     }
 
@@ -73,15 +82,19 @@ class LocationPermissionGateTest {
     fun whenRationaleRequired_showsRationaleMessage() {
         val viewModel: PermissionViewModel = mockk(relaxed = true)
         val statusFlow = MutableStateFlow(PermissionStatus.RATIONALE_REQUIRED)
-        every { viewModel.locationPermissionStatus } returns statusFlow
+        every { viewModel.getPermissionStatus(AppPermission.Location) } returns statusFlow
 
         composeTestRule.setContent {
-            LocationPermissionGate(viewModel = viewModel) {
+            PermissionGate(
+                permission = AppPermission.Location,
+                rationaleText = "Rationale",
+                requestText = "Request",
+                viewModel = viewModel
+            ) {
                 Text("Protected Content")
             }
         }
 
-        val expectedMessage = context.getString(R.string.permission_location_rationale)
-        composeTestRule.onNodeWithText(expectedMessage).assertIsDisplayed()
+        composeTestRule.onNodeWithText("Rationale").assertIsDisplayed()
     }
 }

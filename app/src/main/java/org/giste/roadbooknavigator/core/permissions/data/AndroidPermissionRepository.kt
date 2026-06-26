@@ -17,7 +17,6 @@
 
 package org.giste.roadbooknavigator.core.permissions.data
 
-import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
@@ -25,44 +24,41 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import org.giste.roadbooknavigator.core.permissions.domain.LocationPermissionRepository
+import org.giste.roadbooknavigator.core.permissions.domain.AppPermission
+import org.giste.roadbooknavigator.core.permissions.domain.PermissionRepository
 import org.giste.roadbooknavigator.core.permissions.domain.PermissionStatus
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Android implementation of [LocationPermissionRepository].
+ * Android implementation of [PermissionRepository].
  */
 @Singleton
-class AndroidLocationPermissionRepository @Inject constructor(
-    @ApplicationContext private val context: Context
-) : LocationPermissionRepository {
+class AndroidPermissionRepository @Inject constructor(
+    @param:ApplicationContext private val context: Context
+) : PermissionRepository {
 
-    private val _permissionStatus = MutableStateFlow(checkCurrentStatus())
+    private val _statusMap = mutableMapOf<AppPermission, MutableStateFlow<PermissionStatus>>()
 
-    override fun getPermissionStatus(): Flow<PermissionStatus> {
+    override fun getPermissionStatus(permission: AppPermission): Flow<PermissionStatus> {
+        val stateFlow = _statusMap.getOrPut(permission) {
+            MutableStateFlow(checkCurrentStatus(permission))
+        }
         // Refresh status when the flow is collected to ensure it's up to date
-        _permissionStatus.value = checkCurrentStatus()
-        return _permissionStatus.asStateFlow()
+        stateFlow.value = checkCurrentStatus(permission)
+        return stateFlow.asStateFlow()
     }
 
-    private fun checkCurrentStatus(): PermissionStatus {
-        val hasFineLocation = ContextCompat.checkSelfPermission(
-            context,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED
+    private fun checkCurrentStatus(permission: AppPermission): PermissionStatus {
+        val allGranted = permission.manifestPermissions.all {
+            ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
+        }
 
-        val hasCoarseLocation = ContextCompat.checkSelfPermission(
-            context,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED
-
-        return if (hasFineLocation || hasCoarseLocation) {
+        return if (allGranted) {
             PermissionStatus.GRANTED
         } else {
-            // Note: RATIONALE_REQUIRED and PERMANENTLY_DENIED 
-            // require an Activity context to be determined accurately.
-            // For now, we default to DENIED.
+            // RATIONALE_REQUIRED and PERMANENTLY_DENIED 
+            // require an Activity context. Default to DENIED.
             PermissionStatus.DENIED
         }
     }

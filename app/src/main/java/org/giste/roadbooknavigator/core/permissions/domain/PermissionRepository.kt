@@ -12,25 +12,19 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  See <https://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.core.permissions.data
+package org.giste.roadbooknavigator.core.permissions.domain
 
-import dagger.Binds
-import dagger.Module
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
-import org.giste.roadbooknavigator.core.permissions.domain.PermissionRepository
-import javax.inject.Singleton
+import kotlinx.coroutines.flow.Flow
 
-@Module
-@InstallIn(SingletonComponent::class)
-abstract class PermissionsModule {
-
-    @Binds
-    @Singleton
-    abstract fun bindPermissionRepository(
-        androidPermissionRepository: AndroidPermissionRepository
-    ): PermissionRepository
+/**
+ * Interface to provide the status of permissions.
+ */
+interface PermissionRepository {
+    /**
+     * Returns a flow that emits the current status of the specified [AppPermission].
+     */
+    fun getPermissionStatus(permission: AppPermission): Flow<PermissionStatus>
 }

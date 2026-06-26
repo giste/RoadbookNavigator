@@ -21,15 +21,17 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 /**
- * Use case to get the status of location permissions.
+ * Use case to get the status of a specific permission.
  */
-class GetLocationPermissionStatusUseCase @Inject constructor(
-    private val repository: LocationPermissionRepository
+class GetPermissionStatusUseCase @Inject constructor(
+    private val repository: PermissionRepository
 ) {
     /**
      * Executes the use case.
      *
+     * @param permission The [AppPermission] to check.
      * @return A flow emitting the current [PermissionStatus].
      */
-    operator fun invoke(): Flow<PermissionStatus> = repository.getPermissionStatus()
+    operator fun invoke(permission: AppPermission): Flow<PermissionStatus> = 
+        repository.getPermissionStatus(permission)
 }

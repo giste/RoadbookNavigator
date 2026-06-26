@@ -17,14 +17,19 @@
 
 package org.giste.roadbooknavigator.core.permissions.domain
 
-import kotlinx.coroutines.flow.Flow
+import android.Manifest
 
 /**
- * Interface to provide the status of location permissions.
+ * Represents a permission required by the application.
  */
-interface LocationPermissionRepository {
-    /**
-     * Returns a flow that emits the current status of location permissions.
-     */
-    fun getPermissionStatus(): Flow<PermissionStatus>
+sealed class AppPermission(val manifestPermissions: List<String>) {
+    /** Location permission, including both fine and coarse. */
+    data object Location : AppPermission(
+        listOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        )
+    )
+
+    // Add other standard permissions here as needed
 }

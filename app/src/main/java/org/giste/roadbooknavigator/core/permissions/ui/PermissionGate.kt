@@ -17,7 +17,6 @@
 
 package org.giste.roadbooknavigator.core.permissions.ui
 
-import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -48,17 +47,21 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import org.giste.roadbooknavigator.R
+import org.giste.roadbooknavigator.core.permissions.domain.AppPermission
 import org.giste.roadbooknavigator.core.permissions.domain.PermissionStatus
 
 /**
- * A gatekeeper composable that only shows its content if location permission is granted.
+ * A generic gatekeeper composable that only shows its content if the specified permission is granted.
  */
 @Composable
-fun LocationPermissionGate(
+fun PermissionGate(
+    permission: AppPermission,
+    rationaleText: String,
+    requestText: String,
     viewModel: PermissionViewModel = hiltViewModel(),
     content: @Composable () -> Unit
 ) {
-    val status by viewModel.locationPermissionStatus.collectAsState()
+    val status by viewModel.getPermissionStatus(permission).collectAsState()
     val context = LocalContext.current
 
     val permissionLauncher = rememberLauncherForActivityResult(
@@ -72,13 +75,10 @@ fun LocationPermissionGate(
     } else {
         PermissionRequestContent(
             status = status,
+            rationaleText = rationaleText,
+            requestText = requestText,
             onRequestPermission = {
-                permissionLauncher.launch(
-                    arrayOf(
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION
-                    )
-                )
+                permissionLauncher.launch(permission.manifestPermissions.toTypedArray())
             },
             onOpenSettings = {
                 context.openAppSettings()
@@ -90,6 +90,8 @@ fun LocationPermissionGate(
 @Composable
 private fun PermissionRequestContent(
     status: PermissionStatus,
+    rationaleText: String,
+    requestText: String,
     onRequestPermission: () -> Unit,
     onOpenSettings: () -> Unit,
 ) {
@@ -108,12 +110,7 @@ private fun PermissionRequestContent(
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = stringResource(
-                if (status == PermissionStatus.RATIONALE_REQUIRED)
-                    R.string.permission_location_rationale
-                else
-                    R.string.permission_location_request
-            ),
+            text = if (status == PermissionStatus.RATIONALE_REQUIRED) rationaleText else requestText,
             style = MaterialTheme.typography.bodyLarge,
             textAlign = TextAlign.Center
         )

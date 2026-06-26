@@ -41,5 +41,6 @@
     <string name="main_error_prefix">Error: %1$s</string>
     <string name="action_import">Import</string>
     <string name="action_settings">Settings</string>
+    <string name="action_back">Back</string>
     <string name="content_description_map">Map placeholder</string>
 </resources>

@@ -74,6 +74,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -147,11 +148,13 @@ fun SettingsContent(
                 navigationIcon = {
                     IconButton(
                         onClick = onBackClick,
-                        modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.actionIconSize)
+                        modifier = Modifier
+                            .size(RoadbookNavigatorTheme.dimensions.actionIconSize)
+                            .testTag("SettingsBackButton")
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = null
+                            contentDescription = stringResource(R.string.action_back)
                         )
                     }
                 }
@@ -168,6 +171,7 @@ fun SettingsContent(
                     Tab(
                         selected = selectedTab == index,
                         onClick = { selectedTab = index },
+                        modifier = Modifier.testTag("SettingsTab_$index"),
                         text = {
                             Text(
                                 text = title,
@@ -329,7 +333,9 @@ fun AdvancedTab(
 
         Button(
             onClick = onRestoreOdometerDefaults,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag("RestoreDefaultsButton"),
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
         ) {
             Text(
@@ -580,7 +586,8 @@ fun OrientationSelector(currentOrientation: AppOrientation, onOrientationSelecte
                 onCheckedChange = { if (it) onOrientationSelected(orientation) },
                 modifier = Modifier
                     .weight(1f)
-                    .height(RoadbookNavigatorTheme.dimensions.dialogButtonHeight),
+                    .height(RoadbookNavigatorTheme.dimensions.dialogButtonHeight)
+                    .testTag("OrientationButton_${orientation.name}"),
                 colors = IconButtonDefaults.iconToggleButtonColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     contentColor = MaterialTheme.colorScheme.onPrimaryContainer,

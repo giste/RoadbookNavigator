@@ -59,5 +59,6 @@
     <string name="main_error_prefix">Error: %1$s</string>
     <string name="action_import">Importar</string>
     <string name="action_settings">Ajustes</string>
+    <string name="action_back">Atrás</string>
     <string name="content_description_map">Marcador de posición del mapa</string>
 </resources>

@@ -21,6 +21,7 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import org.giste.roadbooknavigator.features.location.domain.LocationPermissionRepository
 import org.giste.roadbooknavigator.features.location.domain.LocationRepository
 import javax.inject.Singleton
 
@@ -33,4 +34,10 @@ abstract class LocationDataModule {
     abstract fun bindLocationRepository(
         gpsLocationRepository: GpsLocationRepository
     ): LocationRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindLocationPermissionRepository(
+        androidLocationPermissionRepository: AndroidLocationPermissionRepository
+    ): LocationPermissionRepository
 }

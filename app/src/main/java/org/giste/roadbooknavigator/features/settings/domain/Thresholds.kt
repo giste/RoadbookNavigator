@@ -30,7 +30,7 @@ value class ShortDistanceThreshold(val meters: Long) {
     }
 
     companion object {
-        const val MIN = 0.0
+        const val MIN = 100.0
         const val MAX = 500.0
     }
 }

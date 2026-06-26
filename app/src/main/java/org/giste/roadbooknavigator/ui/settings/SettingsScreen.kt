@@ -30,6 +30,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -84,9 +85,17 @@ fun SettingsContent(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.settings_title)) },
+                title = {
+                    Text(
+                        text = stringResource(R.string.settings_title),
+                        style = MaterialTheme.typography.headlineMedium
+                    )
+                        },
                 navigationIcon = {
-                    IconButton(onClick = onBackClick) {
+                    IconButton(
+                        onClick = onBackClick,
+                        modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.actionIconSize)
+                    ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = null
@@ -109,7 +118,7 @@ fun SettingsContent(
                         text = {
                             Text(
                                 text = title,
-                                style = MaterialTheme.typography.titleMedium
+                                style = MaterialTheme.typography.headlineSmall
                             )
                         }
                     )
@@ -179,7 +188,7 @@ fun UserTab(
 
         // Short Distance Threshold
         SettingsSectionTitle(stringResource(R.string.settings_user_short_distance_title))
-        AdvancedSliderSettingItem(
+        SliderSettingItem(
             helper = stringResource(R.string.settings_user_short_distance_helper),
             value = settings.shortDistanceThreshold.toFloat(),
             onValueChange = { onShortDistanceThresholdChange(it.toLong()) },
@@ -215,12 +224,12 @@ fun AdvancedTab(
                 text = stringResource(R.string.settings_advanced_warning),
                 modifier = Modifier.padding(16.dp),
                 color = MaterialTheme.colorScheme.onErrorContainer,
-                style = MaterialTheme.typography.bodyLarge,
+                style = labelStyle(),
                 fontWeight = FontWeight.Bold
             )
         }
 
-        AdvancedSliderSettingItem(
+        SliderSettingItem(
             title = stringResource(R.string.settings_advanced_speed_threshold_title),
             helper = stringResource(R.string.settings_advanced_speed_threshold_helper),
             value = settings.odometerSpeedThreshold,
@@ -229,7 +238,7 @@ fun AdvancedTab(
             label = "${"%.1f".format(settings.odometerSpeedThreshold)} m/s"
         )
 
-        AdvancedSliderSettingItem(
+        SliderSettingItem(
             title = stringResource(R.string.settings_advanced_min_accuracy_title),
             helper = stringResource(R.string.settings_advanced_min_accuracy_helper),
             value = settings.odometerMinAccuracy,
@@ -238,7 +247,7 @@ fun AdvancedTab(
             label = "${"%.0f".format(settings.odometerMinAccuracy)} m"
         )
 
-        AdvancedSliderSettingItem(
+        SliderSettingItem(
             title = stringResource(R.string.settings_advanced_min_vertical_accuracy_title),
             helper = stringResource(R.string.settings_advanced_min_vertical_accuracy_helper),
             value = settings.odometerMinVerticalAccuracy,
@@ -247,7 +256,7 @@ fun AdvancedTab(
             label = "${"%.0f".format(settings.odometerMinVerticalAccuracy)} m"
         )
 
-        AdvancedSliderSettingItem(
+        SliderSettingItem(
             title = stringResource(R.string.settings_advanced_polling_interval_title),
             helper = stringResource(R.string.settings_advanced_polling_interval_helper),
             value = settings.odometerPollingInterval.toFloat(),
@@ -256,7 +265,7 @@ fun AdvancedTab(
             label = "${settings.odometerPollingInterval} ms"
         )
 
-        AdvancedSliderSettingItem(
+        SliderSettingItem(
             title = stringResource(R.string.settings_advanced_min_distance_title),
             helper = stringResource(R.string.settings_advanced_min_distance_helper),
             value = settings.odometerMinDistance,
@@ -279,7 +288,7 @@ fun AdvancedTab(
 }
 
 @Composable
-fun AdvancedSliderSettingItem(
+fun SliderSettingItem(
     title: String? = null,
     helper: String,
     value: Float,
@@ -289,9 +298,9 @@ fun AdvancedSliderSettingItem(
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         title?.let {
-            Text(text = it, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+            Text(text = it, style = titleStyle(), fontWeight = FontWeight.Bold)
         }
-        Text(text = helper, style = MaterialTheme.typography.bodyLarge)
+        Text(text = helper, style = labelStyle())
         Slider(
             value = value,
             onValueChange = onValueChange,
@@ -299,7 +308,7 @@ fun AdvancedSliderSettingItem(
         )
         Text(
             text = label,
-            style = MaterialTheme.typography.headlineMedium,
+            style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
@@ -317,7 +326,7 @@ fun MapTab() {
 fun SettingsSectionTitle(title: String) {
     Text(
         text = title,
-        style = MaterialTheme.typography.headlineSmall,
+        style = titleStyle(),
         fontWeight = FontWeight.Bold,
         color = MaterialTheme.colorScheme.primary
     )
@@ -346,7 +355,7 @@ fun ThemeSelector(currentTheme: AppTheme, onThemeSelected: (AppTheme) -> Unit) {
                 )
                 Text(
                     text = label,
-                    style = MaterialTheme.typography.bodyLarge,
+                    style = labelStyle(),
                     modifier = Modifier.padding(start = 16.dp)
                 )
             }
@@ -370,12 +379,18 @@ fun OrientationSelector(currentOrientation: AppOrientation, onOrientationSelecte
             FilterChip(
                 selected = currentOrientation == orientation,
                 onClick = { onOrientationSelected(orientation) },
-                label = { Text(label, style = MaterialTheme.typography.bodyLarge) },
+                label = { Text(label, style = labelStyle()) },
                 modifier = Modifier.weight(1f)
             )
         }
     }
 }
+
+@Composable
+fun titleStyle(): TextStyle = MaterialTheme.typography.titleLarge
+
+@Composable
+fun labelStyle(): TextStyle = MaterialTheme.typography.bodyLarge
 
 // --- PREVIEWS ---
 

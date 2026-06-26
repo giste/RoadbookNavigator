@@ -250,7 +250,8 @@ fun UserTab(
             value = settings.shortDistanceThreshold.toFloat(),
             onValueChange = { onShortDistanceThresholdChange(it.toLong()) },
             valueRange = ShortDistanceThreshold.MIN.toFloat()..ShortDistanceThreshold.MAX.toFloat(),
-            label = "${settings.shortDistanceThreshold} m"
+            label = "${settings.shortDistanceThreshold} m",
+            testTag = "ShortDistanceSlider"
         )
     }
 }
@@ -292,7 +293,8 @@ fun AdvancedTab(
             value = settings.odometerSpeedThreshold,
             onValueChange = onOdometerSpeedThresholdChange,
             valueRange = SpeedThreshold.MIN..SpeedThreshold.MAX,
-            label = "${"%.1f".format(settings.odometerSpeedThreshold)} m/s"
+            label = "${"%.1f".format(settings.odometerSpeedThreshold)} m/s",
+            testTag = "SpeedThresholdSlider"
         )
 
         SliderSettingItem(
@@ -301,7 +303,8 @@ fun AdvancedTab(
             value = settings.odometerMinAccuracy,
             onValueChange = onOdometerMinAccuracyChange,
             valueRange = AccuracyThreshold.MIN..AccuracyThreshold.MAX,
-            label = "${"%.0f".format(settings.odometerMinAccuracy)} m"
+            label = "${"%.0f".format(settings.odometerMinAccuracy)} m",
+            testTag = "MinAccuracySlider"
         )
 
         SliderSettingItem(
@@ -310,7 +313,8 @@ fun AdvancedTab(
             value = settings.odometerMinVerticalAccuracy,
             onValueChange = onOdometerMinVerticalAccuracyChange,
             valueRange = VerticalAccuracyThreshold.MIN..VerticalAccuracyThreshold.MAX,
-            label = "${"%.0f".format(settings.odometerMinVerticalAccuracy)} m"
+            label = "${"%.0f".format(settings.odometerMinVerticalAccuracy)} m",
+            testTag = "MinVerticalAccuracySlider"
         )
 
         SliderSettingItem(
@@ -319,7 +323,8 @@ fun AdvancedTab(
             value = settings.odometerPollingInterval.toFloat(),
             onValueChange = { onOdometerPollingIntervalChange(it.toLong()) },
             valueRange = PollingIntervalThreshold.MIN.toFloat()..PollingIntervalThreshold.MAX.toFloat(),
-            label = "${settings.odometerPollingInterval} ms"
+            label = "${settings.odometerPollingInterval} ms",
+            testTag = "PollingIntervalSlider"
         )
 
         SliderSettingItem(
@@ -328,7 +333,8 @@ fun AdvancedTab(
             value = settings.odometerMinDistance,
             onValueChange = onOdometerMinDistanceChange,
             valueRange = MinDistanceThreshold.MIN..MinDistanceThreshold.MAX,
-            label = "${"%.1f".format(settings.odometerMinDistance)} m"
+            label = "${"%.1f".format(settings.odometerMinDistance)} m",
+            testTag = "MinDistanceSlider"
         )
 
         Button(
@@ -353,7 +359,8 @@ fun SliderSettingItem(
     value: Float,
     onValueChange: (Float) -> Unit,
     valueRange: ClosedFloatingPointRange<Float>,
-    label: String
+    label: String,
+    testTag: String? = null
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         title?.let {
@@ -364,6 +371,8 @@ fun SliderSettingItem(
             value = value,
             onValueChange = onValueChange,
             valueRange = valueRange,
+            modifier = (if (testTag != null) Modifier.testTag(testTag) else Modifier)
+                .fillMaxWidth()
         )
         Text(
             text = label,

@@ -25,6 +25,8 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.swipeRight
 import androidx.test.platform.app.InstrumentationRegistry
 import org.giste.roadbooknavigator.R
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
@@ -174,5 +176,199 @@ class SettingsScreenTest {
         // Click Horizontal orientation button
         composeTestRule.onNodeWithTag("OrientationButton_${AppOrientation.HORIZONTAL.name}").performClick()
         assertTrue(selectedOrientation == AppOrientation.HORIZONTAL)
+    }
+
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+    @Test
+    fun shortDistanceSlider_triggersCallback() {
+        var newValue: Long? = null
+        composeTestRule.setContent {
+            SettingsContent(
+                uiState = SettingsUiState.Success(AppSettings(shortDistanceThreshold = 100L)),
+                onBackClick = {},
+                onThemeSelected = {},
+                onOrientationSelected = {},
+                onShortDistanceThresholdChange = { newValue = it },
+                onOdometerSpeedThresholdChange = {},
+                onOdometerMinAccuracyChange = {},
+                onOdometerMinVerticalAccuracyChange = {},
+                onOdometerPollingIntervalChange = {},
+                onOdometerMinDistanceChange = {},
+                onRestoreOdometerDefaults = {}
+            )
+        }
+
+        // Swipe the slider to the right
+        composeTestRule.onNodeWithTag("ShortDistanceSlider").performTouchInput {
+            swipeRight()
+        }
+        composeTestRule.waitForIdle()
+
+        assertTrue("Expected newValue to be > 100L but was $newValue", newValue != null && newValue > 100L)
+    }
+
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+    @Test
+    fun pollingIntervalSlider_triggersCallback() {
+        var newValue: Long? = null
+        composeTestRule.setContent {
+            SettingsContent(
+                uiState = SettingsUiState.Success(AppSettings(odometerPollingInterval = 500L)),
+                onBackClick = {},
+                onThemeSelected = {},
+                onOrientationSelected = {},
+                onShortDistanceThresholdChange = {},
+                onOdometerSpeedThresholdChange = {},
+                onOdometerMinAccuracyChange = {},
+                onOdometerMinVerticalAccuracyChange = {},
+                onOdometerPollingIntervalChange = { newValue = it },
+                onOdometerMinDistanceChange = {},
+                onRestoreOdometerDefaults = {}
+            )
+        }
+
+        // Switch to Advanced tab
+        composeTestRule.onNodeWithTag("SettingsTab_1").performClick()
+        composeTestRule.waitForIdle()
+
+        // Swipe the slider
+        composeTestRule.onNodeWithTag("PollingIntervalSlider").performTouchInput {
+            swipeRight()
+        }
+        composeTestRule.waitForIdle()
+
+        assertTrue("Expected newValue to be > 500L but was $newValue", newValue != null && newValue > 500L)
+    }
+
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+    @Test
+    fun speedThresholdSlider_triggersCallback() {
+        var newValue: Float? = null
+        composeTestRule.setContent {
+            SettingsContent(
+                uiState = SettingsUiState.Success(AppSettings(odometerSpeedThreshold = 0.5f)),
+                onBackClick = {},
+                onThemeSelected = {},
+                onOrientationSelected = {},
+                onShortDistanceThresholdChange = {},
+                onOdometerSpeedThresholdChange = { newValue = it },
+                onOdometerMinAccuracyChange = {},
+                onOdometerMinVerticalAccuracyChange = {},
+                onOdometerPollingIntervalChange = {},
+                onOdometerMinDistanceChange = {},
+                onRestoreOdometerDefaults = {}
+            )
+        }
+
+        // Switch to Advanced tab
+        composeTestRule.onNodeWithTag("SettingsTab_1").performClick()
+        composeTestRule.waitForIdle()
+
+        // Swipe the slider
+        composeTestRule.onNodeWithTag("SpeedThresholdSlider").performTouchInput {
+            swipeRight()
+        }
+        composeTestRule.waitForIdle()
+
+        assertTrue("Expected newValue to be > 0.5f but was $newValue", newValue != null && newValue > 0.5f)
+    }
+
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+    @Test
+    fun minAccuracySlider_triggersCallback() {
+        var newValue: Float? = null
+        composeTestRule.setContent {
+            SettingsContent(
+                uiState = SettingsUiState.Success(AppSettings(odometerMinAccuracy = 10.0f)),
+                onBackClick = {},
+                onThemeSelected = {},
+                onOrientationSelected = {},
+                onShortDistanceThresholdChange = {},
+                onOdometerSpeedThresholdChange = {},
+                onOdometerMinAccuracyChange = { newValue = it },
+                onOdometerMinVerticalAccuracyChange = {},
+                onOdometerPollingIntervalChange = {},
+                onOdometerMinDistanceChange = {},
+                onRestoreOdometerDefaults = {}
+            )
+        }
+
+        // Switch to Advanced tab
+        composeTestRule.onNodeWithTag("SettingsTab_1").performClick()
+        composeTestRule.waitForIdle()
+
+        // Swipe the slider
+        composeTestRule.onNodeWithTag("MinAccuracySlider").performTouchInput {
+            swipeRight()
+        }
+        composeTestRule.waitForIdle()
+
+        assertTrue("Expected newValue to be > 10.0f but was $newValue", newValue != null && newValue > 10.0f)
+    }
+
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+    @Test
+    fun minVerticalAccuracySlider_triggersCallback() {
+        var newValue: Float? = null
+        composeTestRule.setContent {
+            SettingsContent(
+                uiState = SettingsUiState.Success(AppSettings(odometerMinVerticalAccuracy = 5.0f)),
+                onBackClick = {},
+                onThemeSelected = {},
+                onOrientationSelected = {},
+                onShortDistanceThresholdChange = {},
+                onOdometerSpeedThresholdChange = {},
+                onOdometerMinAccuracyChange = {},
+                onOdometerMinVerticalAccuracyChange = { newValue = it },
+                onOdometerPollingIntervalChange = {},
+                onOdometerMinDistanceChange = {},
+                onRestoreOdometerDefaults = {}
+            )
+        }
+
+        // Switch to Advanced tab
+        composeTestRule.onNodeWithTag("SettingsTab_1").performClick()
+        composeTestRule.waitForIdle()
+
+        // Swipe the slider
+        composeTestRule.onNodeWithTag("MinVerticalAccuracySlider").performTouchInput {
+            swipeRight()
+        }
+        composeTestRule.waitForIdle()
+
+        assertTrue("Expected newValue to be > 5.0f but was $newValue", newValue != null && newValue > 5.0f)
+    }
+
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+    @Test
+    fun minDistanceSlider_triggersCallback() {
+        var newValue: Float? = null
+        composeTestRule.setContent {
+            SettingsContent(
+                uiState = SettingsUiState.Success(AppSettings(odometerMinDistance = 1.0f)),
+                onBackClick = {},
+                onThemeSelected = {},
+                onOrientationSelected = {},
+                onShortDistanceThresholdChange = {},
+                onOdometerSpeedThresholdChange = {},
+                onOdometerMinAccuracyChange = {},
+                onOdometerMinVerticalAccuracyChange = {},
+                onOdometerPollingIntervalChange = {},
+                onOdometerMinDistanceChange = { newValue = it },
+                onRestoreOdometerDefaults = {}
+            )
+        }
+
+        // Switch to Advanced tab
+        composeTestRule.onNodeWithTag("SettingsTab_1").performClick()
+        composeTestRule.waitForIdle()
+
+        // Swipe the slider
+        composeTestRule.onNodeWithTag("MinDistanceSlider").performTouchInput {
+            swipeRight()
+        }
+        composeTestRule.waitForIdle()
+
+        assertTrue("Expected newValue to be > 1.0f but was $newValue", newValue != null && newValue > 1.0f)
     }
 }

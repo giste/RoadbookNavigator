@@ -15,9 +15,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.core.permission.domain.model
+package org.giste.roadbooknavigator.core.permission.data
 
-enum class AppPermission {
-    FINE_LOCATION,
-    COARSE_LOCATION,
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import org.giste.roadbooknavigator.core.permission.domain.PermissionRepository
+import javax.inject.Singleton
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class PermissionDataModule {
+
+    @Binds
+    @Singleton
+    abstract fun bindPermissionRepository(
+        repository: AndroidPermissionRepository
+    ): PermissionRepository
 }

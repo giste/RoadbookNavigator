@@ -15,13 +15,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.core.permission.domain.repository
+package org.giste.roadbooknavigator.core.permission.domain
 
-import kotlinx.coroutines.flow.Flow
-import org.giste.roadbooknavigator.core.permission.domain.model.AppPermission
-import org.giste.roadbooknavigator.core.permission.domain.model.PermissionState
-
-interface PermissionRepository {
-    fun observeAllPermissions(): Flow<Map<AppPermission, PermissionState>>
-    fun refreshPermissionStates()
+enum class AppPermission {
+    FINE_LOCATION,
+    COARSE_LOCATION,
 }

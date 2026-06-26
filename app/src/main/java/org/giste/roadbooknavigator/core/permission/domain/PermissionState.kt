@@ -15,15 +15,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.core.permission.domain.usecase
+package org.giste.roadbooknavigator.core.permission.domain
 
-import org.giste.roadbooknavigator.core.permission.domain.repository.PermissionRepository
-import javax.inject.Inject
-
-class RefreshPermissionStatesUseCase @Inject constructor(
-    private val repository: PermissionRepository
-) {
-    operator fun invoke() {
-        repository.refreshPermissionStates()
-    }
+sealed interface PermissionState {
+    object Granted : PermissionState
+    object Denied : PermissionState
+    object ShowRationale : PermissionState
+    object PermanentlyDenied : PermissionState
 }

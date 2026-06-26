@@ -15,30 +15,34 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.core.permission.domain.usecase
+package org.giste.roadbooknavigator.core.permission.domain
 
 import io.mockk.every
-import io.mockk.just
 import io.mockk.mockk
-import io.mockk.runs
-import io.mockk.verify
-import org.giste.roadbooknavigator.core.permission.domain.repository.PermissionRepository
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class RefreshPermissionStatesUseCaseTest {
+class ObserveAllPermissionsUseCaseTest {
 
     private val repository: PermissionRepository = mockk()
-    private val useCase = RefreshPermissionStatesUseCase(repository)
+    private val useCase = ObserveAllPermissionsUseCase(repository)
 
     @Test
-    fun `when invoked then refreshes repository`() {
+    fun `when invoked then returns map flow from repository`() = runTest {
         // Given
-        every { repository.refreshPermissionStates() } just runs
+        val expectedMap = mapOf(
+            AppPermission.FINE_LOCATION to PermissionState.Granted,
+            AppPermission.COARSE_LOCATION to PermissionState.Granted
+        )
+        every { repository.observeAllPermissions() } returns flowOf(expectedMap)
 
         // When
-        useCase()
+        val result = useCase().first()
 
         // Then
-        verify { repository.refreshPermissionStates() }
+        assertEquals(expectedMap, result)
     }
 }

@@ -15,18 +15,29 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.core.permission.domain.usecase
+package org.giste.roadbooknavigator.core.permission.domain
 
-import kotlinx.coroutines.flow.Flow
-import org.giste.roadbooknavigator.core.permission.domain.model.AppPermission
-import org.giste.roadbooknavigator.core.permission.domain.model.PermissionState
-import org.giste.roadbooknavigator.core.permission.domain.repository.PermissionRepository
-import javax.inject.Inject
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.runs
+import io.mockk.verify
+import org.junit.Test
 
-class ObserveAllPermissionsUseCase @Inject constructor(
-    private val repository: PermissionRepository
-) {
-    operator fun invoke(): Flow<Map<AppPermission, PermissionState>> {
-        return repository.observeAllPermissions()
+class RefreshPermissionStatesUseCaseTest {
+
+    private val repository: PermissionRepository = mockk()
+    private val useCase = RefreshPermissionStatesUseCase(repository)
+
+    @Test
+    fun `when invoked then refreshes repository`() {
+        // Given
+        every { repository.refreshPermissionStates() } just runs
+
+        // When
+        useCase()
+
+        // Then
+        verify { repository.refreshPermissionStates() }
     }
 }

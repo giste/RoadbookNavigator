@@ -15,11 +15,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.core.permission.domain.model
+package org.giste.roadbooknavigator.core.permission.domain
 
-sealed interface PermissionState {
-    object Granted : PermissionState
-    object Denied : PermissionState
-    object ShowRationale : PermissionState
-    object PermanentlyDenied : PermissionState
+import kotlinx.coroutines.flow.Flow
+
+interface PermissionRepository {
+    fun observeAllPermissions(): Flow<Map<AppPermission, PermissionState>>
+    fun refreshPermissionStates()
 }

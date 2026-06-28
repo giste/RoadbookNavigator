@@ -27,6 +27,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.location.domain.LocationRepository
 import org.giste.roadbooknavigator.features.location.domain.UserLocation
 import javax.inject.Inject
@@ -48,27 +49,51 @@ class GpsLocationRepository @Inject constructor(
         pollingInterval: Long,
         minDistance: Float
     ): Flow<UserLocation> = callbackFlow {
+        Logger.d(
+            "GpsLocationRepository: Requesting location updates (interval: %d, distance: %f)",
+            pollingInterval,
+            minDistance
+        )
+
         val listener = object : LocationListener {
             override fun onLocationChanged(location: Location) {
+                Logger.v(
+                    "GpsLocationRepository: Location changed: %f, %f (acc: %f)",
+                    location.latitude,
+                    location.longitude,
+                    location.accuracy
+                )
                 trySend(location.toUserLocation())
             }
 
             @Deprecated("Deprecated in Java")
             override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
+                Logger.d("GpsLocationRepository: Status changed for %s: %d", provider, status)
             }
 
-            override fun onProviderEnabled(provider: String) {}
-            override fun onProviderDisabled(provider: String) {}
+            override fun onProviderEnabled(provider: String) {
+                Logger.i("GpsLocationRepository: Provider enabled: %s", provider)
+            }
+
+            override fun onProviderDisabled(provider: String) {
+                Logger.w("GpsLocationRepository: Provider disabled: %s", provider)
+            }
         }
 
-        locationManager.requestLocationUpdates(
-            LocationManager.GPS_PROVIDER,
-            pollingInterval,
-            minDistance,
-            listener
-        )
+        try {
+            locationManager.requestLocationUpdates(
+                LocationManager.GPS_PROVIDER,
+                pollingInterval,
+                minDistance,
+                listener
+            )
+        } catch (e: Exception) {
+            Logger.e(e, "GpsLocationRepository: Error requesting location updates")
+            close(e)
+        }
 
         awaitClose {
+            Logger.d("GpsLocationRepository: Removing location updates")
             locationManager.removeUpdates(listener)
         }
     }

@@ -18,12 +18,17 @@
 package org.giste.roadbooknavigator.core.permission.ui
 
 import androidx.compose.material3.Text
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.testing.TestLifecycleOwner
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.giste.roadbooknavigator.core.permission.domain.AppPermission
 import org.giste.roadbooknavigator.core.permission.domain.PermissionState
@@ -83,5 +88,52 @@ class PermissionGateTest {
         // Then
         composeTestRule.onNodeWithText("Permissions Required").assertIsDisplayed()
         composeTestRule.onNodeWithText("Content Shown").assertDoesNotExist()
+    }
+
+    @Test
+    fun whenPermissionsChange_thenUIUpdatesReactively() {
+        // Given starting denied
+        uiState.value = PermissionUiState(
+            allGranted = false,
+            permissions = mapOf(AppPermission.FINE_LOCATION to PermissionState.Denied)
+        )
+
+        composeTestRule.setContent {
+            PermissionGate(
+                viewModel = viewModel,
+                content = { Text("Content Shown") }
+            )
+        }
+        composeTestRule.onNodeWithText("Permissions Required").assertIsDisplayed()
+
+        // When granting
+        uiState.value = PermissionUiState(allGranted = true)
+
+        // Then
+        composeTestRule.onNodeWithText("Content Shown").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Permissions Required").assertDoesNotExist()
+    }
+
+    @Test
+    fun whenAppResumes_thenViewModelRefreshIsCalled() {
+        // Given
+        val lifecycleOwner = TestLifecycleOwner(Lifecycle.State.INITIALIZED)
+        
+        composeTestRule.setContent {
+            CompositionLocalProvider(LocalLifecycleOwner provides lifecycleOwner) {
+                PermissionGate(
+                    viewModel = viewModel,
+                    content = { Text("Content Shown") }
+                )
+            }
+        }
+
+        // When
+        composeTestRule.runOnUiThread {
+            lifecycleOwner.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
+        }
+
+        // Then
+        verify { viewModel.refresh() }
     }
 }

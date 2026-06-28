@@ -20,6 +20,7 @@ package org.giste.roadbooknavigator.ui.settings
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.StateRestorationTester
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
@@ -438,5 +439,40 @@ class SettingsScreenTest {
         composeTestRule.waitForIdle()
 
         assertTrue("Expected newValue to be > 1.0f but was $newValue", newValue != null && newValue > 1.0f)
+    }
+
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+    @Test
+    fun activeTab_survivesConfigurationChange() {
+        val restorationTester = StateRestorationTester(composeTestRule)
+
+        restorationTester.setContent {
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                SettingsContent(
+                    uiState = SettingsUiState.Success(AppSettings()),
+                    onBackClick = {},
+                    onThemeSelected = {},
+                    onOrientationSelected = {},
+                    onFullScreenChange = {},
+                    onShortDistanceThresholdChange = {},
+                    onOdometerSpeedThresholdChange = {},
+                    onOdometerMinAccuracyChange = {},
+                    onOdometerMinVerticalAccuracyChange = {},
+                    onOdometerPollingIntervalChange = {},
+                    onOdometerMinDistanceChange = {},
+                    onRestoreOdometerDefaults = {}
+                )
+            }
+        }
+
+        // Switch to Advanced tab
+        composeTestRule.onNodeWithTag("SettingsTab_1").performClick()
+        composeTestRule.onNodeWithText(context.getString(R.string.settings_advanced_warning)).assertIsDisplayed()
+
+        // Simulate configuration change
+        restorationTester.emulateSavedInstanceStateRestore()
+
+        // Verify Advanced tab is still active
+        composeTestRule.onNodeWithText(context.getString(R.string.settings_advanced_warning)).assertIsDisplayed()
     }
 }

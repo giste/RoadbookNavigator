@@ -85,6 +85,19 @@ class PermissionViewModelTest {
     }
 
     @Test
+    fun `when permissions map is empty then allGranted is false`() = runTest {
+        // Given
+        val states = emptyMap<AppPermission, PermissionState>()
+        every { observeAllPermissionsUseCase() } returns flowOf(states)
+
+        // When
+        val viewModel = PermissionViewModel(observeAllPermissionsUseCase, refreshPermissionStatesUseCase)
+
+        // Then
+        assertFalse(viewModel.uiState.value.allGranted)
+    }
+
+    @Test
     fun `when refresh is called then use case is executed`() = runTest {
         // Given
         every { observeAllPermissionsUseCase() } returns flowOf(emptyMap())

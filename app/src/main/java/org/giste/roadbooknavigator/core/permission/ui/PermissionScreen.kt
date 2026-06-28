@@ -214,8 +214,7 @@ private fun PermissionScreenDeniedPreview() {
                 permissions = mapOf(
                     AppPermission.FINE_LOCATION to PermissionState.Denied,
                     AppPermission.COARSE_LOCATION to PermissionState.Denied
-                ),
-                allGranted = false
+                )
             )
         )
     }
@@ -233,8 +232,7 @@ private fun PermissionScreenPermanentlyDeniedPreview() {
                 permissions = mapOf(
                     AppPermission.FINE_LOCATION to PermissionState.PermanentlyDenied,
                     AppPermission.COARSE_LOCATION to PermissionState.Granted
-                ),
-                allGranted = false
+                )
             )
         )
     }

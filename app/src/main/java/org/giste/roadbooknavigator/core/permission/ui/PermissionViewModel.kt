@@ -37,10 +37,8 @@ class PermissionViewModel @Inject constructor(
 
     val uiState: StateFlow<PermissionUiState> = observeAllPermissionsUseCase()
         .map { states ->
-            val allGranted = states.isNotEmpty() && states.values.all { it is PermissionState.Granted }
             PermissionUiState(
-                permissions = states,
-                allGranted = allGranted
+                permissions = states
             )
         }
         .stateIn(
@@ -55,6 +53,7 @@ class PermissionViewModel @Inject constructor(
 }
 
 data class PermissionUiState(
-    val permissions: Map<org.giste.roadbooknavigator.core.permission.domain.AppPermission, PermissionState> = emptyMap(),
-    val allGranted: Boolean = false
-)
+    val permissions: Map<org.giste.roadbooknavigator.core.permission.domain.AppPermission, PermissionState> = emptyMap()
+) {
+    val allGranted: Boolean = permissions.isNotEmpty() && permissions.values.all { it is PermissionState.Granted }
+}

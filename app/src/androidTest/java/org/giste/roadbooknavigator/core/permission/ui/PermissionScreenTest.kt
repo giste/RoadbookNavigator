@@ -45,8 +45,7 @@ class PermissionScreenTest {
     fun whenPermissionsAreDenied_thenGrantButtonIsShown() {
         // Given
         val state = PermissionUiState(
-            permissions = mapOf(AppPermission.FINE_LOCATION to PermissionState.Denied),
-            allGranted = false
+            permissions = mapOf(AppPermission.FINE_LOCATION to PermissionState.Denied)
         )
 
         // When
@@ -62,8 +61,7 @@ class PermissionScreenTest {
     fun whenPermissionsArePermanentlyDenied_thenSettingsButtonIsShown() {
         // Given
         val state = PermissionUiState(
-            permissions = mapOf(AppPermission.FINE_LOCATION to PermissionState.PermanentlyDenied),
-            allGranted = false
+            permissions = mapOf(AppPermission.FINE_LOCATION to PermissionState.PermanentlyDenied)
         )
 
         // When
@@ -81,8 +79,7 @@ class PermissionScreenTest {
         try {
             // Given
             val state = PermissionUiState(
-                permissions = mapOf(AppPermission.FINE_LOCATION to PermissionState.PermanentlyDenied),
-                allGranted = false
+                permissions = mapOf(AppPermission.FINE_LOCATION to PermissionState.PermanentlyDenied)
             )
 
             composeTestRule.setContent {

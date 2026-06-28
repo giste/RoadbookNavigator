@@ -54,7 +54,12 @@ class PermissionGateTest {
     @Test
     fun whenPermissionsAreGranted_thenContentIsShown() {
         // Given
-        uiState.value = PermissionUiState(allGranted = true)
+        uiState.value = PermissionUiState(
+            permissions = mapOf(
+                AppPermission.FINE_LOCATION to PermissionState.Granted,
+                AppPermission.COARSE_LOCATION to PermissionState.Granted
+            )
+        )
 
         // When
         composeTestRule.setContent {
@@ -73,7 +78,6 @@ class PermissionGateTest {
     fun whenPermissionsAreDenied_thenPermissionScreenIsShown() {
         // Given
         uiState.value = PermissionUiState(
-            allGranted = false,
             permissions = mapOf(AppPermission.FINE_LOCATION to PermissionState.Denied)
         )
 
@@ -94,7 +98,6 @@ class PermissionGateTest {
     fun whenPermissionsChange_thenUIUpdatesReactively() {
         // Given starting denied
         uiState.value = PermissionUiState(
-            allGranted = false,
             permissions = mapOf(AppPermission.FINE_LOCATION to PermissionState.Denied)
         )
 
@@ -107,7 +110,12 @@ class PermissionGateTest {
         composeTestRule.onNodeWithText("Permissions Required").assertIsDisplayed()
 
         // When granting
-        uiState.value = PermissionUiState(allGranted = true)
+        uiState.value = PermissionUiState(
+            permissions = mapOf(
+                AppPermission.FINE_LOCATION to PermissionState.Granted,
+                AppPermission.COARSE_LOCATION to PermissionState.Granted
+            )
+        )
 
         // Then
         composeTestRule.onNodeWithText("Content Shown").assertIsDisplayed()

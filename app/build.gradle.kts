@@ -21,7 +21,7 @@ configure<ApplicationExtension> {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "org.giste.roadbooknavigator.HiltTestRunner"
     }
 
     buildTypes {
@@ -66,6 +66,10 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
     implementation(libs.androidx.navigation.compose)
     ksp(libs.hilt.compiler)
+    kspTest(libs.hilt.compiler)
+    kspAndroidTest(libs.hilt.compiler)
+    testImplementation(libs.hilt.android.testing)
+    androidTestImplementation(libs.hilt.android.testing)
     implementation(libs.timber)
     testImplementation(libs.junit)
     testImplementation(libs.mockk)

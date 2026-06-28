@@ -17,12 +17,14 @@
 
 package org.giste.roadbooknavigator
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.navigation.compose.NavHost
@@ -31,6 +33,7 @@ import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import org.giste.roadbooknavigator.core.permission.ui.PermissionGate
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
+import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
 import org.giste.roadbooknavigator.ui.Screen
@@ -50,6 +53,15 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val settings by settingsRepository.getSettings().collectAsState(initial = AppSettings())
+
+            LaunchedEffect(settings.orientation) {
+                requestedOrientation = when (settings.orientation) {
+                    AppOrientation.VERTICAL -> ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                    AppOrientation.HORIZONTAL -> ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                    AppOrientation.FOLLOW_SYSTEM -> ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+                }
+            }
+
             val windowSizeClass = calculateWindowSizeClass(this)
             val navController = rememberNavController()
 

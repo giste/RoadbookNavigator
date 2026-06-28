@@ -17,6 +17,8 @@
 
 package org.giste.roadbooknavigator.core.permission.ui
 
+import android.app.Activity
+import android.app.Instrumentation
 import android.content.Intent
 import android.provider.Settings
 import androidx.compose.ui.test.assertIsDisplayed
@@ -25,6 +27,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -77,6 +80,10 @@ class PermissionScreenTest {
     fun whenSettingsButtonClick_thenIntentIsLaunched() {
         Intents.init()
         try {
+            // Stub the intent to avoid opening Settings app and slowing down the test
+            intending(hasAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS))
+                .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+
             // Given
             val state = PermissionUiState(
                 permissions = mapOf(AppPermission.FINE_LOCATION to PermissionState.PermanentlyDenied)

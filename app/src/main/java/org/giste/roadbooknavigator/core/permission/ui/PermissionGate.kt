@@ -29,7 +29,9 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 @Composable
 fun PermissionGate(
     viewModel: PermissionViewModel = hiltViewModel(),
-    permissionDeniedContent: @Composable (PermissionUiState) -> Unit,
+    permissionDeniedContent: @Composable (PermissionUiState) -> Unit = { state ->
+        PermissionScreen(uiState = state)
+    },
     content: @Composable () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()

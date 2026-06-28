@@ -29,6 +29,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
+import org.giste.roadbooknavigator.core.permission.ui.PermissionGate
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
@@ -56,20 +57,22 @@ class MainActivity : ComponentActivity() {
                 windowSizeClass = windowSizeClass,
                 appTheme = settings.theme
             ) {
-                NavHost(
-                    navController = navController,
-                    startDestination = Screen.Dashboard
-                ) {
-                    composable<Screen.Dashboard> {
-                        DashboardScreen(
-                            windowSizeClass = windowSizeClass,
-                            onSettingsClick = { navController.navigate(Screen.Settings) }
-                        )
-                    }
-                    composable<Screen.Settings> {
-                        SettingsScreen(
-                            onBackClick = { navController.popBackStack() }
-                        )
+                PermissionGate {
+                    NavHost(
+                        navController = navController,
+                        startDestination = Screen.Dashboard
+                    ) {
+                        composable<Screen.Dashboard> {
+                            DashboardScreen(
+                                windowSizeClass = windowSizeClass,
+                                onSettingsClick = { navController.navigate(Screen.Settings) }
+                            )
+                        }
+                        composable<Screen.Settings> {
+                            SettingsScreen(
+                                onBackClick = { navController.popBackStack() }
+                            )
+                        }
                     }
                 }
             }

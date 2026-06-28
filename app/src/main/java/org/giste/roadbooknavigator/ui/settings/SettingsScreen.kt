@@ -77,7 +77,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -144,11 +143,8 @@ fun SettingsContent(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(
-                        text = stringResource(R.string.settings_title),
-                        style = MaterialTheme.typography.headlineMedium
-                    )
-                        },
+                    Text(text = stringResource(R.string.settings_title))
+                },
                 navigationIcon = {
                     IconButton(
                         onClick = onBackClick,
@@ -177,10 +173,7 @@ fun SettingsContent(
                         onClick = { selectedTab = index },
                         modifier = Modifier.testTag("SettingsTab_$index"),
                         text = {
-                            Text(
-                                text = title,
-                                style = MaterialTheme.typography.titleLarge
-                            )
+                            Text(text = title)
                         }
                     )
                 }
@@ -257,10 +250,7 @@ fun UserTab(
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 SettingsSectionTitle(stringResource(R.string.settings_full_screen_title))
-                Text(
-                    text = stringResource(R.string.settings_full_screen_helper),
-                    style = labelStyle()
-                )
+                Text(text = stringResource(R.string.settings_full_screen_helper))
             }
             Switch(
                 checked = settings.fullScreen,
@@ -310,7 +300,6 @@ fun AdvancedTab(
                 text = stringResource(R.string.settings_advanced_warning),
                 modifier = Modifier.padding(16.dp),
                 color = MaterialTheme.colorScheme.onErrorContainer,
-                style = labelStyle(),
                 fontWeight = FontWeight.Bold
             )
         }
@@ -394,7 +383,7 @@ fun SliderSettingItem(
         title?.let {
             SettingsSectionTitle(it)
         }
-        Text(text = helper, style = labelStyle())
+        Text(text = helper)
         Slider(
             value = value,
             onValueChange = onValueChange,
@@ -422,8 +411,7 @@ fun MapTab() {
 fun SettingsSectionTitle(title: String) {
     Text(
         text = title,
-        style = titleStyle(),
-        //fontWeight = FontWeight.Bold,
+        fontWeight = FontWeight.Bold,
         color = MaterialTheme.colorScheme.primary
     )
 }
@@ -472,7 +460,8 @@ fun ThemePreviewCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val borderColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant
+    val borderColor = if (isSelected) MaterialTheme.colorScheme.primary
+        else MaterialTheme.colorScheme.outlineVariant
     val borderWidth = if (isSelected) 3.dp else 1.dp
 
     Card(
@@ -493,7 +482,7 @@ fun ThemePreviewCard(
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = label,
-                    style = MaterialTheme.typography.labelLarge,
+                    //style = MaterialTheme.typography.labelLarge,
                     fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
                     modifier = Modifier.padding(horizontal = 4.dp),
                     textAlign = TextAlign.Center,
@@ -603,10 +592,14 @@ fun ThemeMiniPreview(theme: AppTheme, modifier: Modifier = Modifier) {
     }
 }
 
-private fun Modifier.minWidth(width: androidx.compose.ui.unit.Dp) = this.defaultMinSize(minWidth = width)
+private fun Modifier.minWidth(width: androidx.compose.ui.unit.Dp) =
+    this.defaultMinSize(minWidth = width)
 
 @Composable
-fun OrientationSelector(currentOrientation: AppOrientation, onOrientationSelected: (AppOrientation) -> Unit) {
+fun OrientationSelector(
+    currentOrientation: AppOrientation,
+    onOrientationSelected: (AppOrientation) -> Unit
+) {
     val options = listOf(
         AppOrientation.VERTICAL to Icons.Default.StayCurrentPortrait,
         AppOrientation.HORIZONTAL to Icons.Default.StayCurrentLandscape,
@@ -643,11 +636,11 @@ fun OrientationSelector(currentOrientation: AppOrientation, onOrientationSelecte
     }
 }
 
-@Composable
-fun titleStyle(): TextStyle = MaterialTheme.typography.titleMedium
-
-@Composable
-fun labelStyle(): TextStyle = MaterialTheme.typography.bodyLarge
+//@Composable
+//fun titleStyle(): TextStyle = MaterialTheme.typography.titleMedium
+//
+//@Composable
+//fun labelStyle(): TextStyle = MaterialTheme.typography.bodyLarge
 
 // --- PREVIEWS ---
 

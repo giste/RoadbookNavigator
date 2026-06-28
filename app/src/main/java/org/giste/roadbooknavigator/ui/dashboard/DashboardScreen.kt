@@ -216,7 +216,10 @@ fun MainContent(
     Surface(
         modifier = Modifier
             .fillMaxSize()
-            .systemBarsPadding(),
+            .then(
+                if (!uiState.isFullScreen) Modifier.systemBarsPadding()
+                else Modifier
+            ),
         color = MaterialTheme.colorScheme.background
     ) {
         val roadbookState = uiState.roadbook

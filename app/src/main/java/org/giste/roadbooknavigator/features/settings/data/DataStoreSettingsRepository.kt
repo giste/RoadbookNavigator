@@ -19,6 +19,7 @@ package org.giste.roadbooknavigator.features.settings.data
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
@@ -44,6 +45,7 @@ class DataStoreSettingsRepository @Inject constructor(
     private object Keys {
         val THEME = stringPreferencesKey("app_theme")
         val ORIENTATION = stringPreferencesKey("app_orientation")
+        val FULL_SCREEN = booleanPreferencesKey("full_screen")
         val SHORT_DISTANCE_THRESHOLD = longPreferencesKey("short_distance_threshold")
         val ODOMETER_SPEED_THRESHOLD = floatPreferencesKey("odometer_speed_threshold")
         val ODOMETER_MIN_ACCURACY = floatPreferencesKey("odometer_min_accuracy")
@@ -57,6 +59,7 @@ class DataStoreSettingsRepository @Inject constructor(
             theme = preferences[Keys.THEME]?.let { safeThemeOf(it) } ?: AppTheme.FOLLOW_SYSTEM,
             orientation = preferences[Keys.ORIENTATION]?.let { safeOrientationOf(it) }
                 ?: AppOrientation.FOLLOW_SYSTEM,
+            fullScreen = preferences[Keys.FULL_SCREEN] ?: true,
             shortDistanceThreshold = preferences[Keys.SHORT_DISTANCE_THRESHOLD]
                 ?: AppSettings.DEFAULT_SHORT_DISTANCE_THRESHOLD,
             odometerSpeedThreshold = preferences[Keys.ODOMETER_SPEED_THRESHOLD]
@@ -81,6 +84,12 @@ class DataStoreSettingsRepository @Inject constructor(
     override suspend fun setOrientation(orientation: AppOrientation) {
         dataStore.edit { preferences ->
             preferences[Keys.ORIENTATION] = orientation.name
+        }
+    }
+
+    override suspend fun setFullScreen(enabled: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[Keys.FULL_SCREEN] = enabled
         }
     }
 

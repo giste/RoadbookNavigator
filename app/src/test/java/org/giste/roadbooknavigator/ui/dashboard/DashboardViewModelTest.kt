@@ -103,6 +103,19 @@ class DashboardViewModelTest {
         assertEquals(RoadbookUiState.Empty, viewModel.uiState.value.roadbook)
         assertEquals(Odometer(), viewModel.uiState.value.odometer)
         assertEquals(false, viewModel.uiState.value.showSetPartialDialog)
+        // Default in AppSettings is now true
+        assertEquals(true, viewModel.uiState.value.isFullScreen)
+    }
+
+    @Test
+    fun `settings update should update isFullScreen in uiState`() = runTest {
+        backgroundScope.launch(testDispatcher) { viewModel.uiState.collect {} }
+
+        settingsFlow.value = AppSettings(fullScreen = false)
+        assertEquals(false, viewModel.uiState.value.isFullScreen)
+
+        settingsFlow.value = AppSettings(fullScreen = true)
+        assertEquals(true, viewModel.uiState.value.isFullScreen)
     }
 
     @Test

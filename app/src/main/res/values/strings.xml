@@ -17,6 +17,8 @@
     <string name="settings_orientation_vertical">Vertical</string>
     <string name="settings_orientation_horizontal">Horizontal</string>
     <string name="settings_orientation_system">Follow system</string>
+    <string name="settings_full_screen_title">Full Screen</string>
+    <string name="settings_full_screen_helper">Hide status and navigation bars for an immersive experience.</string>
     <string name="settings_tab_user">User</string>
     <string name="settings_tab_advanced">Advanced</string>
     <string name="settings_tab_maps">Maps</string>

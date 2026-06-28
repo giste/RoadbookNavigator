@@ -58,6 +58,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -104,6 +105,7 @@ fun SettingsScreen(
         onBackClick = onBackClick,
         onThemeSelected = viewModel::setTheme,
         onOrientationSelected = viewModel::setOrientation,
+        onFullScreenChange = viewModel::setFullScreen,
         onShortDistanceThresholdChange = viewModel::setShortDistanceThreshold,
         onOdometerSpeedThresholdChange = viewModel::setOdometerSpeedThreshold,
         onOdometerMinAccuracyChange = viewModel::setOdometerMinAccuracy,
@@ -121,6 +123,7 @@ fun SettingsContent(
     onBackClick: () -> Unit,
     onThemeSelected: (AppTheme) -> Unit,
     onOrientationSelected: (AppOrientation) -> Unit,
+    onFullScreenChange: (Boolean) -> Unit,
     onShortDistanceThresholdChange: (Long) -> Unit,
     onOdometerSpeedThresholdChange: (Float) -> Unit,
     onOdometerMinAccuracyChange: (Float) -> Unit,
@@ -195,6 +198,7 @@ fun SettingsContent(
                                 settings = settings,
                                 onThemeSelected = onThemeSelected,
                                 onOrientationSelected = onOrientationSelected,
+                                onFullScreenChange = onFullScreenChange,
                                 onShortDistanceThresholdChange = onShortDistanceThresholdChange
                             )
 
@@ -222,6 +226,7 @@ fun UserTab(
     settings: AppSettings,
     onThemeSelected: (AppTheme) -> Unit,
     onOrientationSelected: (AppOrientation) -> Unit,
+    onFullScreenChange: (Boolean) -> Unit,
     onShortDistanceThresholdChange: (Long) -> Unit,
 ) {
     Column(
@@ -240,6 +245,28 @@ fun UserTab(
         // Orientation Selection
         SettingsSectionTitle(stringResource(R.string.settings_orientation_title))
         OrientationSelector(settings.orientation, onOrientationSelected = onOrientationSelected)
+
+        HorizontalDivider()
+
+        // Full Screen Toggle
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                SettingsSectionTitle(stringResource(R.string.settings_full_screen_title))
+                Text(
+                    text = stringResource(R.string.settings_full_screen_helper),
+                    style = labelStyle()
+                )
+            }
+            Switch(
+                checked = settings.fullScreen,
+                onCheckedChange = onFullScreenChange,
+                modifier = Modifier.testTag("FullScreenSwitch")
+            )
+        }
 
         HorizontalDivider()
 
@@ -638,6 +665,7 @@ fun SettingsPreviewLight() {
             onBackClick = {},
             onThemeSelected = {},
             onOrientationSelected = {},
+            onFullScreenChange = {},
             onShortDistanceThresholdChange = {},
             onOdometerSpeedThresholdChange = {},
             onOdometerMinAccuracyChange = {},
@@ -666,6 +694,7 @@ fun SettingsPreviewDark() {
             onBackClick = {},
             onThemeSelected = {},
             onOrientationSelected = {},
+            onFullScreenChange = {},
             onShortDistanceThresholdChange = {},
             onOdometerSpeedThresholdChange = {},
             onOdometerMinAccuracyChange = {},
@@ -693,6 +722,7 @@ fun SettingsPreviewTablet() {
             onBackClick = {},
             onThemeSelected = {},
             onOrientationSelected = {},
+            onFullScreenChange = {},
             onShortDistanceThresholdChange = {},
             onOdometerSpeedThresholdChange = {},
             onOdometerMinAccuracyChange = {},

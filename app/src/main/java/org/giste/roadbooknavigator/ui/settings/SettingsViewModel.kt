@@ -36,6 +36,7 @@ class SettingsViewModel @Inject constructor(
     getSettingsUseCase: GetSettingsUseCase,
     private val updateThemeUseCase: UpdateThemeUseCase,
     private val updateOrientationUseCase: UpdateOrientationUseCase,
+    private val updateFullScreenUseCase: UpdateFullScreenUseCase,
     private val updateShortDistanceThresholdUseCase: UpdateShortDistanceThresholdUseCase,
     private val updateOdometerSpeedThresholdUseCase: UpdateOdometerSpeedThresholdUseCase,
     private val updateOdometerMinAccuracyUseCase: UpdateOdometerMinAccuracyUseCase,
@@ -62,6 +63,12 @@ class SettingsViewModel @Inject constructor(
     fun setOrientation(orientation: AppOrientation) {
         viewModelScope.launch {
             updateOrientationUseCase(orientation)
+        }
+    }
+
+    fun setFullScreen(enabled: Boolean) {
+        viewModelScope.launch {
+            updateFullScreenUseCase(enabled)
         }
     }
 

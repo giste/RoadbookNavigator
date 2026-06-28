@@ -34,6 +34,9 @@ interface SettingsRepository {
     /** Updates the preferred screen orientation. */
     suspend fun setOrientation(orientation: AppOrientation)
 
+    /** Updates the full-screen mode setting. */
+    suspend fun setFullScreen(enabled: Boolean)
+
     /** Sets the threshold for short distance warnings. */
     suspend fun setShortDistanceThreshold(threshold: Long)
 

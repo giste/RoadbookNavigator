@@ -55,6 +55,7 @@ class SettingsScreenTest {
                     onBackClick = {},
                     onThemeSelected = {},
                     onOrientationSelected = {},
+                    onFullScreenChange = {},
                     onShortDistanceThresholdChange = {},
                     onOdometerSpeedThresholdChange = {},
                     onOdometerMinAccuracyChange = {},
@@ -89,6 +90,7 @@ class SettingsScreenTest {
                     onBackClick = {},
                     onThemeSelected = { selectedTheme = it },
                     onOrientationSelected = {},
+                    onFullScreenChange = {},
                     onShortDistanceThresholdChange = {},
                     onOdometerSpeedThresholdChange = {},
                     onOdometerMinAccuracyChange = {},
@@ -116,6 +118,7 @@ class SettingsScreenTest {
                     onBackClick = { backClicked = true },
                     onThemeSelected = {},
                     onOrientationSelected = {},
+                    onFullScreenChange = {},
                     onShortDistanceThresholdChange = {},
                     onOdometerSpeedThresholdChange = {},
                     onOdometerMinAccuracyChange = {},
@@ -142,6 +145,7 @@ class SettingsScreenTest {
                     onBackClick = {},
                     onThemeSelected = {},
                     onOrientationSelected = {},
+                    onFullScreenChange = {},
                     onShortDistanceThresholdChange = {},
                     onOdometerSpeedThresholdChange = {},
                     onOdometerMinAccuracyChange = {},
@@ -174,6 +178,7 @@ class SettingsScreenTest {
                     onBackClick = {},
                     onThemeSelected = {},
                     onOrientationSelected = { selectedOrientation = it },
+                    onFullScreenChange = {},
                     onShortDistanceThresholdChange = {},
                     onOdometerSpeedThresholdChange = {},
                     onOdometerMinAccuracyChange = {},
@@ -192,6 +197,33 @@ class SettingsScreenTest {
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     @Test
+    fun fullScreenToggle_triggersCallback() {
+        var fullScreenEnabled: Boolean? = null
+        composeTestRule.setContent {
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                SettingsContent(
+                    uiState = SettingsUiState.Success(AppSettings(fullScreen = false)),
+                    onBackClick = {},
+                    onThemeSelected = {},
+                    onOrientationSelected = {},
+                    onFullScreenChange = { fullScreenEnabled = it },
+                    onShortDistanceThresholdChange = {},
+                    onOdometerSpeedThresholdChange = {},
+                    onOdometerMinAccuracyChange = {},
+                    onOdometerMinVerticalAccuracyChange = {},
+                    onOdometerPollingIntervalChange = {},
+                    onOdometerMinDistanceChange = {},
+                    onRestoreOdometerDefaults = {}
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag("FullScreenSwitch").performClick()
+        assertTrue(fullScreenEnabled == true)
+    }
+
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+    @Test
     fun shortDistanceSlider_triggersCallback() {
         var newValue: Long? = null
         composeTestRule.setContent {
@@ -201,6 +233,7 @@ class SettingsScreenTest {
                     onBackClick = {},
                     onThemeSelected = {},
                     onOrientationSelected = {},
+                    onFullScreenChange = {},
                     onShortDistanceThresholdChange = { newValue = it },
                     onOdometerSpeedThresholdChange = {},
                     onOdometerMinAccuracyChange = {},
@@ -232,6 +265,7 @@ class SettingsScreenTest {
                     onBackClick = {},
                     onThemeSelected = {},
                     onOrientationSelected = {},
+                    onFullScreenChange = {},
                     onShortDistanceThresholdChange = {},
                     onOdometerSpeedThresholdChange = {},
                     onOdometerMinAccuracyChange = {},
@@ -267,6 +301,7 @@ class SettingsScreenTest {
                     onBackClick = {},
                     onThemeSelected = {},
                     onOrientationSelected = {},
+                    onFullScreenChange = {},
                     onShortDistanceThresholdChange = {},
                     onOdometerSpeedThresholdChange = { newValue = it },
                     onOdometerMinAccuracyChange = {},
@@ -302,6 +337,7 @@ class SettingsScreenTest {
                     onBackClick = {},
                     onThemeSelected = {},
                     onOrientationSelected = {},
+                    onFullScreenChange = {},
                     onShortDistanceThresholdChange = {},
                     onOdometerSpeedThresholdChange = {},
                     onOdometerMinAccuracyChange = { newValue = it },
@@ -337,6 +373,7 @@ class SettingsScreenTest {
                     onBackClick = {},
                     onThemeSelected = {},
                     onOrientationSelected = {},
+                    onFullScreenChange = {},
                     onShortDistanceThresholdChange = {},
                     onOdometerSpeedThresholdChange = {},
                     onOdometerMinAccuracyChange = {},
@@ -372,6 +409,7 @@ class SettingsScreenTest {
                     onBackClick = {},
                     onThemeSelected = {},
                     onOrientationSelected = {},
+                    onFullScreenChange = {},
                     onShortDistanceThresholdChange = {},
                     onOdometerSpeedThresholdChange = {},
                     onOdometerMinAccuracyChange = {},

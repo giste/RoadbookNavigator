@@ -92,12 +92,14 @@ class DashboardViewModel @Inject constructor(
         getOdometerUseCase().onStart { emit(Odometer()) },
         _showSetPartialDialog,
         getRoadbookPositionUseCase(),
-    ) { roadbook, odometer, showDialog, scrollPosition ->
+        getSettingsUseCase(),
+    ) { roadbook, odometer, showDialog, scrollPosition, settings ->
         DashboardUiState(
             roadbook = roadbook,
             odometer = odometer,
             showSetPartialDialog = showDialog,
             initialScrollPosition = scrollPosition,
+            isFullScreen = settings.fullScreen,
         )
     }.stateIn(
         scope = viewModelScope,
@@ -172,4 +174,5 @@ data class DashboardUiState(
     val odometer: Odometer = Odometer(),
     val showSetPartialDialog: Boolean = false,
     val initialScrollPosition: RoadbookPosition = RoadbookPosition(),
+    val isFullScreen: Boolean = false,
 )

@@ -27,6 +27,9 @@ import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -59,6 +62,17 @@ class MainActivity : ComponentActivity() {
                     AppOrientation.VERTICAL -> ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
                     AppOrientation.HORIZONTAL -> ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
                     AppOrientation.FOLLOW_SYSTEM -> ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+                }
+            }
+
+            LaunchedEffect(settings.fullScreen) {
+                val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
+                if (settings.fullScreen) {
+                    windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
+                    windowInsetsController.systemBarsBehavior =
+                        WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                } else {
+                    windowInsetsController.show(WindowInsetsCompat.Type.systemBars())
                 }
             }
 

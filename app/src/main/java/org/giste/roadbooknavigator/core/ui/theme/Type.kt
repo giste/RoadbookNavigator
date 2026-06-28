@@ -21,13 +21,14 @@ import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.sp
 
 /**
- * Default Material 3 Typography set.
- * These values are based on the official Material 3 design specifications.
+ * Material 3 standard baseline.
+ * Internal reference used to generate scaled versions.
  */
-val compactTypography = Typography(
+private val m3Base = Typography(
     displayLarge = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
@@ -72,7 +73,7 @@ val compactTypography = Typography(
     ),
     titleLarge = TextStyle(
         fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal, // M3 default is Normal for Large
+        fontWeight = FontWeight.Normal,
         fontSize = 22.sp,
         lineHeight = 28.sp,
         letterSpacing = 0.sp
@@ -136,24 +137,45 @@ val compactTypography = Typography(
 )
 
 /**
- * Expanded Typography for tablets or desktop screens.
- * In a professional design system, these are often scaled up slightly or 
- * use different optical weights.
+ * Extension to scale all text styles in a Typography set by a factor.
  */
-val expandedTypography = Typography(
-    displayLarge = compactTypography.displayLarge.copy(fontSize = 64.sp, lineHeight = 72.sp),
-    displayMedium = compactTypography.displayMedium.copy(fontSize = 52.sp, lineHeight = 60.sp),
-    displaySmall = compactTypography.displaySmall.copy(fontSize = 44.sp, lineHeight = 52.sp),
-    headlineLarge = compactTypography.headlineLarge.copy(fontSize = 40.sp, lineHeight = 48.sp),
-    headlineMedium = compactTypography.headlineMedium.copy(fontSize = 32.sp, lineHeight = 40.sp),
-    headlineSmall = compactTypography.headlineSmall.copy(fontSize = 28.sp, lineHeight = 36.sp),
-    titleLarge = compactTypography.titleLarge.copy(fontSize = 24.sp, lineHeight = 32.sp),
-    titleMedium = compactTypography.titleMedium.copy(fontSize = 18.sp, lineHeight = 26.sp),
-    titleSmall = compactTypography.titleSmall.copy(fontSize = 16.sp, lineHeight = 22.sp),
-    bodyLarge = compactTypography.bodyLarge, // Body usually stays standard for readability
-    bodyMedium = compactTypography.bodyMedium,
-    bodySmall = compactTypography.bodySmall,
-    labelLarge = compactTypography.labelLarge,
-    labelMedium = compactTypography.labelMedium,
-    labelSmall = compactTypography.labelSmall
-)
+private fun TextStyle.scaled(factor: Float): TextStyle {
+    return this.copy(
+        fontSize = if (fontSize.type == TextUnitType.Sp) (fontSize.value * factor).sp else fontSize,
+        lineHeight = if (lineHeight.type == TextUnitType.Sp) (lineHeight.value * factor).sp else lineHeight
+    )
+}
+
+/**
+ * Creates a Typography set by scaling the standard Material 3 tokens.
+ */
+fun createTypography(scaleFactor: Float): Typography {
+    return Typography(
+        displayLarge = m3Base.displayLarge.scaled(scaleFactor),
+        displayMedium = m3Base.displayMedium.scaled(scaleFactor),
+        displaySmall = m3Base.displaySmall.scaled(scaleFactor),
+        headlineLarge = m3Base.headlineLarge.scaled(scaleFactor),
+        headlineMedium = m3Base.headlineMedium.scaled(scaleFactor),
+        headlineSmall = m3Base.headlineSmall.scaled(scaleFactor),
+        titleLarge = m3Base.titleLarge.scaled(scaleFactor),
+        titleMedium = m3Base.titleMedium.scaled(scaleFactor),
+        titleSmall = m3Base.titleSmall.scaled(scaleFactor),
+        bodyLarge = m3Base.bodyLarge.scaled(scaleFactor),
+        bodyMedium = m3Base.bodyMedium.scaled(scaleFactor),
+        bodySmall = m3Base.bodySmall.scaled(scaleFactor),
+        labelLarge = m3Base.labelLarge.scaled(scaleFactor),
+        labelMedium = m3Base.labelMedium.scaled(scaleFactor),
+        labelSmall = m3Base.labelSmall.scaled(scaleFactor)
+    )
+}
+
+/**
+ * Final typography sets used by the app theme.
+ * Standard scale for compact devices (phones).
+ */
+val compactTypography = createTypography(scaleFactor = 1.0f)
+
+/**
+ * Slightly enlarged scale for expanded devices (tablets).
+ */
+val expandedTypography = createTypography(scaleFactor = 1.125f)

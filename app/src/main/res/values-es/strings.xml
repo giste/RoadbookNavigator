@@ -59,6 +59,7 @@
     <string name="settings_roadbook_restore_defaults">Restablecer valores por defecto</string>
     <string name="main_no_route">No hay ruta cargada</string>
     <string name="main_error_prefix">Error: %1$s</string>
+    <string name="error_invalid_file_extension">Solo se permiten archivos .rn2</string>
     <string name="action_import">Importar</string>
     <string name="action_settings">Ajustes</string>
     <string name="action_back">Atrás</string>

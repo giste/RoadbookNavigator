@@ -41,6 +41,7 @@
     <string name="settings_roadbook_restore_defaults">Restore roadbook defaults</string>
     <string name="main_no_route">No route loaded</string>
     <string name="main_error_prefix">Error: %1$s</string>
+    <string name="error_invalid_file_extension">Only .rn2 files are supported</string>
     <string name="action_import">Import</string>
     <string name="action_settings">Settings</string>
     <string name="action_back">Back</string>

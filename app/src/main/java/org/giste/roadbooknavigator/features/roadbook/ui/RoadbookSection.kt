@@ -57,6 +57,7 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import org.giste.roadbooknavigator.R
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
+import org.giste.roadbooknavigator.core.util.getFileName
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Coordinates
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Distance
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Point
@@ -76,11 +77,19 @@ fun RoadbookSection(
     onWaypointVisible: (Int, Int) -> Unit
 ) {
     val context = LocalContext.current
+    var hasExtensionError by remember { mutableStateOf(false) }
+
     val filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         uri?.let {
-            context.contentResolver.openInputStream(it)?.let(onFileSelected)
+            val fileName = it.getFileName(context)
+            if (fileName?.endsWith(".rn2", ignoreCase = true) == true) {
+                hasExtensionError = false
+                context.contentResolver.openInputStream(it)?.let(onFileSelected)
+            } else {
+                hasExtensionError = true
+            }
         }
     }
 
@@ -92,7 +101,13 @@ fun RoadbookSection(
                 MaterialTheme.colorScheme.outline
             )
     ) {
-        when (state) {
+        val displayState = if (hasExtensionError) {
+            RoadbookUiState.Error(stringResource(R.string.error_invalid_file_extension))
+        } else {
+            state
+        }
+
+        when (displayState) {
             is RoadbookUiState.Loading -> {
                 CircularProgressIndicator(
                     modifier = Modifier
@@ -128,7 +143,7 @@ fun RoadbookSection(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = stringResource(R.string.main_error_prefix, state.message),
+                        text = stringResource(R.string.main_error_prefix, displayState.message),
                         color = MaterialTheme.colorScheme.error,
                         style = MaterialTheme.typography.titleMedium
                     )
@@ -147,8 +162,8 @@ fun RoadbookSection(
             is RoadbookUiState.Success -> {
                 Box(modifier = Modifier.fillMaxSize()) {
                     RoadbookList(
-                        waypoints = state.route.waypoints,
-                        shortDistanceThreshold = state.shortDistanceThreshold,
+                        waypoints = displayState.route.waypoints,
+                        shortDistanceThreshold = displayState.shortDistanceThreshold,
                         listState = listState,
                         onSetPartialClick = onSetPartialClick,
                         onWaypointVisible = onWaypointVisible

@@ -468,6 +468,7 @@ fun LandscapeDistanceSection(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .height(IntrinsicSize.Min)
                 .border(RoadbookNavigatorTheme.dimensions.sectionBorder, MaterialTheme.colorScheme.outline),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -483,6 +484,7 @@ fun LandscapeDistanceSection(
             }
             TotalDistance(
                 distance = totalDistance,
+                modifier = Modifier.weight(1f).fillMaxHeight()
             )
         }
 
@@ -508,7 +510,8 @@ fun PortraitDistanceSection(
         modifier = modifier
             .fillMaxWidth()
             .height(IntrinsicSize.Min)
-            .border(RoadbookNavigatorTheme.dimensions.sectionBorder, MaterialTheme.colorScheme.outline)
+            .border(RoadbookNavigatorTheme.dimensions.sectionBorder, MaterialTheme.colorScheme.outline),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(
             onClick = onSettingsClick,

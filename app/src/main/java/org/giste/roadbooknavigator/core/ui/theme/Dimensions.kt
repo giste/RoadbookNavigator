@@ -45,7 +45,7 @@ data class AppDimensions(
 )
 
 val compactDimensions = AppDimensions(
-    actionIconSize = 36.dp,
+    actionIconSize = 48.dp,
     buttonPadding = 1.dp,
     sectionBorder = 1.dp,
     dangerMediumThickness = 6.dp,
@@ -63,7 +63,7 @@ val compactDimensions = AppDimensions(
 )
 
 val expandedDimensions = AppDimensions(
-    actionIconSize = 48.dp,
+    actionIconSize = 56.dp,
     buttonPadding = 1.dp,
     sectionBorder = 1.dp,
     dangerMediumThickness = 9.dp,

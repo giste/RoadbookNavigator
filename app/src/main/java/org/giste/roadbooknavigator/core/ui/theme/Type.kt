@@ -24,131 +24,136 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
 /**
- * Ratio used for the Major Third harmonic scale.
+ * Default Material 3 Typography set.
+ * These values are based on the official Material 3 design specifications.
  */
-private const val SCALE_RATIO = 1.25f
-
-/**
- * Creates a complete Material 3 Typography set based on a harmonic scale
- * derived from the [baseSize] (DisplayLarge).
- */
-private fun createHarmonicTypography(baseSize: Float): Typography {
-    // Calculate sizes using the Major Third ratio (1.25)
-    val dl = baseSize
-    val dm = dl / SCALE_RATIO
-    val ds = dm / SCALE_RATIO
-    val hl = ds / SCALE_RATIO
-    val hm = hl / SCALE_RATIO
-    val hs = hm / SCALE_RATIO
-    val tl = hs / SCALE_RATIO
-    val tm = tl / SCALE_RATIO
-    val ts = tm / SCALE_RATIO
-    val bl = ts / SCALE_RATIO
-    val bm = bl / SCALE_RATIO
-    val bs = bm / SCALE_RATIO
-
-    return Typography(
-        displayLarge = TextStyle(
-            fontFamily = FontFamily.Default,
-            fontWeight = FontWeight.Bold,
-            fontSize = dl.sp,
-            lineHeight = (dl * 1.1f).sp,
-            letterSpacing = (-2).sp
-        ),
-        displayMedium = TextStyle(
-            fontFamily = FontFamily.Default,
-            fontWeight = FontWeight.Bold,
-            fontSize = dm.sp,
-            lineHeight = (dm * 1.1f).sp,
-            letterSpacing = (-1).sp
-        ),
-        displaySmall = TextStyle(
-            fontFamily = FontFamily.Default,
-            fontWeight = FontWeight.Bold,
-            fontSize = ds.sp,
-            lineHeight = (ds * 1.1f).sp,
-        ),
-        headlineLarge = TextStyle(
-            fontFamily = FontFamily.Default,
-            fontWeight = FontWeight.Bold,
-            fontSize = hl.sp,
-            lineHeight = (hl * 1.1f).sp,
-        ),
-        headlineMedium = TextStyle(
-            fontFamily = FontFamily.Default,
-            fontWeight = FontWeight.SemiBold,
-            fontSize = hm.sp,
-            lineHeight = (hm * 1.1f).sp,
-        ),
-        headlineSmall = TextStyle(
-            fontFamily = FontFamily.Default,
-            fontWeight = FontWeight.SemiBold,
-            fontSize = hs.sp,
-            lineHeight = (hs * 1.1f).sp,
-        ),
-        titleLarge = TextStyle(
-            fontFamily = FontFamily.Default,
-            fontWeight = FontWeight.SemiBold,
-            fontSize = tl.sp,
-            lineHeight = (tl * 1.2f).sp,
-        ),
-        titleMedium = TextStyle(
-            fontFamily = FontFamily.Default,
-            fontWeight = FontWeight.Medium,
-            fontSize = tm.sp,
-            lineHeight = (tm * 1.2f).sp,
-        ),
-        titleSmall = TextStyle(
-            fontFamily = FontFamily.Default,
-            fontWeight = FontWeight.Medium,
-            fontSize = ts.sp,
-            lineHeight = (ts * 1.2f).sp,
-        ),
-        bodyLarge = TextStyle(
-            fontFamily = FontFamily.Default,
-            fontWeight = FontWeight.Normal,
-            fontSize = bl.coerceAtLeast(16f).sp,
-            lineHeight = (bl.coerceAtLeast(16f) * 1.25f).sp,
-        ),
-        bodyMedium = TextStyle(
-            fontFamily = FontFamily.Default,
-            fontWeight = FontWeight.Normal,
-            fontSize = bm.coerceAtLeast(14f).sp,
-            lineHeight = (bm.coerceAtLeast(14f) * 1.25f).sp,
-        ),
-        bodySmall = TextStyle(
-            fontFamily = FontFamily.Default,
-            fontWeight = FontWeight.Normal,
-            fontSize = bs.coerceAtLeast(12f).sp,
-            lineHeight = (bs.coerceAtLeast(12f) * 1.25f).sp,
-        ),
-        labelLarge = TextStyle(
-            fontFamily = FontFamily.Default,
-            fontWeight = FontWeight.Medium,
-            fontSize = bm.coerceAtLeast(14f).sp,
-            lineHeight = (bm.coerceAtLeast(14f) * 1.25f).sp,
-        ),
-        labelMedium = TextStyle(
-            fontFamily = FontFamily.Default,
-            fontWeight = FontWeight.Medium,
-            fontSize = bs.coerceAtLeast(12f).sp,
-            lineHeight = (bs.coerceAtLeast(12f) * 1.25f).sp,
-        ),
-        labelSmall = TextStyle(
-            fontFamily = FontFamily.Default,
-            fontWeight = FontWeight.Medium,
-            fontSize = (bs / SCALE_RATIO).coerceAtLeast(10f).sp,
-            lineHeight = ((bs / SCALE_RATIO).coerceAtLeast(10f) * 1.25f).sp,
-        )
+val compactTypography = Typography(
+    displayLarge = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Normal,
+        fontSize = 57.sp,
+        lineHeight = 64.sp,
+        letterSpacing = (-0.25).sp
+    ),
+    displayMedium = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Normal,
+        fontSize = 45.sp,
+        lineHeight = 52.sp,
+        letterSpacing = 0.sp
+    ),
+    displaySmall = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Normal,
+        fontSize = 36.sp,
+        lineHeight = 44.sp,
+        letterSpacing = 0.sp
+    ),
+    headlineLarge = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Normal,
+        fontSize = 32.sp,
+        lineHeight = 40.sp,
+        letterSpacing = 0.sp
+    ),
+    headlineMedium = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Normal,
+        fontSize = 28.sp,
+        lineHeight = 36.sp,
+        letterSpacing = 0.sp
+    ),
+    headlineSmall = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Normal,
+        fontSize = 24.sp,
+        lineHeight = 32.sp,
+        letterSpacing = 0.sp
+    ),
+    titleLarge = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Normal, // M3 default is Normal for Large
+        fontSize = 22.sp,
+        lineHeight = 28.sp,
+        letterSpacing = 0.sp
+    ),
+    titleMedium = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Medium,
+        fontSize = 16.sp,
+        lineHeight = 24.sp,
+        letterSpacing = 0.15.sp
+    ),
+    titleSmall = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Medium,
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
+        letterSpacing = 0.1.sp
+    ),
+    bodyLarge = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Normal,
+        fontSize = 16.sp,
+        lineHeight = 24.sp,
+        letterSpacing = 0.5.sp
+    ),
+    bodyMedium = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Normal,
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
+        letterSpacing = 0.25.sp
+    ),
+    bodySmall = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Normal,
+        fontSize = 12.sp,
+        lineHeight = 16.sp,
+        letterSpacing = 0.4.sp
+    ),
+    labelLarge = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Medium,
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
+        letterSpacing = 0.1.sp
+    ),
+    labelMedium = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Medium,
+        fontSize = 12.sp,
+        lineHeight = 16.sp,
+        letterSpacing = 0.5.sp
+    ),
+    labelSmall = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Medium,
+        fontSize = 11.sp,
+        lineHeight = 16.sp,
+        letterSpacing = 0.5.sp
     )
-}
+)
 
 /**
- * Typography for compact screens (phones), based on a 96sp DisplayLarge.
+ * Expanded Typography for tablets or desktop screens.
+ * In a professional design system, these are often scaled up slightly or 
+ * use different optical weights.
  */
-val compactTypography = createHarmonicTypography(baseSize = 56f)
-
-/**
- * Typography for expanded screens (tablets), based on a 112sp DisplayLarge.
- */
-val expandedTypography = createHarmonicTypography(baseSize = 72f)
+val expandedTypography = Typography(
+    displayLarge = compactTypography.displayLarge.copy(fontSize = 64.sp, lineHeight = 72.sp),
+    displayMedium = compactTypography.displayMedium.copy(fontSize = 52.sp, lineHeight = 60.sp),
+    displaySmall = compactTypography.displaySmall.copy(fontSize = 44.sp, lineHeight = 52.sp),
+    headlineLarge = compactTypography.headlineLarge.copy(fontSize = 40.sp, lineHeight = 48.sp),
+    headlineMedium = compactTypography.headlineMedium.copy(fontSize = 32.sp, lineHeight = 40.sp),
+    headlineSmall = compactTypography.headlineSmall.copy(fontSize = 28.sp, lineHeight = 36.sp),
+    titleLarge = compactTypography.titleLarge.copy(fontSize = 24.sp, lineHeight = 32.sp),
+    titleMedium = compactTypography.titleMedium.copy(fontSize = 18.sp, lineHeight = 26.sp),
+    titleSmall = compactTypography.titleSmall.copy(fontSize = 16.sp, lineHeight = 22.sp),
+    bodyLarge = compactTypography.bodyLarge, // Body usually stays standard for readability
+    bodyMedium = compactTypography.bodyMedium,
+    bodySmall = compactTypography.bodySmall,
+    labelLarge = compactTypography.labelLarge,
+    labelMedium = compactTypography.labelMedium,
+    labelSmall = compactTypography.labelSmall
+)

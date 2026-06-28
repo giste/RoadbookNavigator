@@ -179,7 +179,7 @@ fun SettingsContent(
                         text = {
                             Text(
                                 text = title,
-                                style = MaterialTheme.typography.headlineSmall
+                                style = MaterialTheme.typography.titleLarge
                             )
                         }
                     )
@@ -423,7 +423,7 @@ fun SettingsSectionTitle(title: String) {
     Text(
         text = title,
         style = titleStyle(),
-        fontWeight = FontWeight.Bold,
+        //fontWeight = FontWeight.Bold,
         color = MaterialTheme.colorScheme.primary
     )
 }
@@ -644,7 +644,7 @@ fun OrientationSelector(currentOrientation: AppOrientation, onOrientationSelecte
 }
 
 @Composable
-fun titleStyle(): TextStyle = MaterialTheme.typography.titleLarge
+fun titleStyle(): TextStyle = MaterialTheme.typography.titleMedium
 
 @Composable
 fun labelStyle(): TextStyle = MaterialTheme.typography.bodyLarge

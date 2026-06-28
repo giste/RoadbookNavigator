@@ -18,12 +18,16 @@
 package org.giste.roadbooknavigator.core.permission.domain
 
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.onStart
+import org.giste.roadbooknavigator.core.util.Logger
 import javax.inject.Inject
 
 class ObserveAllPermissionsUseCase @Inject constructor(
     private val repository: PermissionRepository
 ) {
     operator fun invoke(): Flow<Map<AppPermission, PermissionState>> {
+        Logger.d("Starting to observe all permissions")
         return repository.observeAllPermissions()
+            .onStart { Logger.v("Permission flow collection started") }
     }
 }

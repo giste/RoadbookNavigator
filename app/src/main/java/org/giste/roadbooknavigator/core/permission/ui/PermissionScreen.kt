@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.DpSize
 import org.giste.roadbooknavigator.core.permission.domain.AppPermission
 import org.giste.roadbooknavigator.core.permission.domain.PermissionState
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
+import org.giste.roadbooknavigator.core.util.Logger
 
 @Composable
 fun PermissionScreen(
@@ -55,7 +56,8 @@ fun PermissionScreen(
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
-    ) { _ ->
+    ) { results ->
+        Logger.d("Permission request results: %s", results)
         // States will be updated via the repository's observation
     }
 
@@ -100,7 +102,10 @@ fun PermissionScreen(
 
             if (hasPermanentlyDenied) {
                 Button(
-                    onClick = { context.openAppSettings() },
+                    onClick = {
+                        Logger.d("Opening app settings for permissions")
+                        context.openAppSettings()
+                    },
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Icon(Icons.Default.Settings, contentDescription = null)
@@ -113,6 +118,7 @@ fun PermissionScreen(
                         val androidPermissions = deniedPermissions.keys
                             .mapNotNull { it.toAndroidPermission() }
                             .toTypedArray()
+                        Logger.d("Requesting permissions: %s", androidPermissions.joinToString())
                         launcher.launch(androidPermissions)
                     },
                     modifier = Modifier.fillMaxWidth()

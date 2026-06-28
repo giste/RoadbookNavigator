@@ -19,12 +19,14 @@ package org.giste.roadbooknavigator.core.permission.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import org.giste.roadbooknavigator.core.util.Logger
 
 @Composable
 fun PermissionGate(
@@ -40,6 +42,7 @@ fun PermissionGate(
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
+                Logger.d("PermissionGate: ON_RESUME, refreshing permissions")
                 viewModel.refresh()
             }
         }
@@ -47,6 +50,10 @@ fun PermissionGate(
         onDispose {
             lifecycleOwner.lifecycle.removeObserver(observer)
         }
+    }
+
+    LaunchedEffect(state.allGranted) {
+        Logger.d("PermissionGate: allGranted = %s", state.allGranted)
     }
 
     if (state.allGranted) {

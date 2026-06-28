@@ -23,10 +23,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import org.giste.roadbooknavigator.core.permission.domain.ObserveAllPermissionsUseCase
 import org.giste.roadbooknavigator.core.permission.domain.PermissionState
 import org.giste.roadbooknavigator.core.permission.domain.RefreshPermissionStatesUseCase
+import org.giste.roadbooknavigator.core.util.Logger
 import javax.inject.Inject
 
 @HiltViewModel
@@ -41,6 +43,9 @@ class PermissionViewModel @Inject constructor(
                 permissions = states
             )
         }
+        .onEach { state ->
+            Logger.d("PermissionUiState updated: allGranted=%s", state.allGranted)
+        }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
@@ -48,6 +53,7 @@ class PermissionViewModel @Inject constructor(
         )
 
     fun refresh() {
+        Logger.d("Permission refresh requested from ViewModel")
         refreshPermissionStatesUseCase()
     }
 }

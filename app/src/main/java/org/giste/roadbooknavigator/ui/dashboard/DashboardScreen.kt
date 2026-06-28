@@ -48,9 +48,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -125,6 +127,18 @@ fun DashboardContent(
         }
     }
 
+    // Keep track of the waypoint we are currently aiming for to handle rapid key presses
+    var targetWaypointIndex by remember(routeKey) {
+        mutableIntStateOf(uiState.initialScrollPosition.index)
+    }
+
+    // Synchronize targetWaypointIndex with the list state when manual scrolling finishes
+    LaunchedEffect(listState.isScrollInProgress) {
+        if (!listState.isScrollInProgress) {
+            targetWaypointIndex = listState.firstVisibleItemIndex
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -135,14 +149,28 @@ fun DashboardContent(
                 if (event.type == KeyEventType.KeyDown) {
                     when (event.key) {
                         Key.MediaNext, Key.DirectionUp -> {
-                            coroutineScope.launch {
-                                listState.animateScrollToItem(listState.firstVisibleItemIndex + 1)
+                            val waypointsCount = (uiState.roadbook as? RoadbookUiState.Success)
+                                ?.route?.waypoints?.size ?: 0
+                            if (waypointsCount > 0) {
+                                coroutineScope.launch {
+                                    targetWaypointIndex = (targetWaypointIndex + 1)
+                                        .coerceAtMost(waypointsCount - 1)
+                                    listState.animateScrollToItem(targetWaypointIndex)
+                                }
                             }
                             true
                         }
+
                         Key.MediaPrevious, Key.DirectionDown -> {
                             coroutineScope.launch {
-                                listState.animateScrollToItem(maxOf(0, listState.firstVisibleItemIndex - 1))
+                                targetWaypointIndex = if (listState.firstVisibleItemScrollOffset > 0) {
+                                    // If partially scrolled, first snap to the top of current waypoint
+                                    listState.firstVisibleItemIndex
+                                } else {
+                                    // Otherwise move to the previous one
+                                    (targetWaypointIndex - 1).coerceAtLeast(0)
+                                }
+                                listState.animateScrollToItem(targetWaypointIndex)
                             }
                             true
                         }

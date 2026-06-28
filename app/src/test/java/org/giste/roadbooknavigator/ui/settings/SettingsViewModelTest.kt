@@ -43,6 +43,7 @@ class SettingsViewModelTest {
 
     private val getSettingsUseCase: GetSettingsUseCase = mockk()
     private val updateThemeUseCase: UpdateThemeUseCase = mockk()
+    private val updateFullScreenUseCase: UpdateFullScreenUseCase = mockk()
     private val updateOrientationUseCase: UpdateOrientationUseCase = mockk()
     private val updateShortDistanceThresholdUseCase: UpdateShortDistanceThresholdUseCase = mockk()
     private val updateOdometerSpeedThresholdUseCase: UpdateOdometerSpeedThresholdUseCase = mockk()
@@ -66,6 +67,7 @@ class SettingsViewModelTest {
             getSettingsUseCase,
             updateThemeUseCase,
             updateOrientationUseCase,
+            updateFullScreenUseCase,
             updateShortDistanceThresholdUseCase,
             updateOdometerSpeedThresholdUseCase,
             updateOdometerMinAccuracyUseCase,
@@ -86,6 +88,13 @@ class SettingsViewModelTest {
         backgroundScope.launch(testDispatcher) { viewModel.uiState.collect {} }
 
         assertEquals(SettingsUiState.Success(AppSettings()), viewModel.uiState.value)
+    }
+
+    @Test
+    fun `setFullScreen should call use case`() = runTest {
+        coEvery { updateFullScreenUseCase(any()) } returns Result.success(Unit)
+        viewModel.setFullScreen(true)
+        coVerify { updateFullScreenUseCase(true) }
     }
 
     @Test

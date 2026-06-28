@@ -26,7 +26,7 @@ import javax.inject.Inject
 class UpdateFullScreenUseCase @Inject constructor(
     private val repository: SettingsRepository
 ) {
-    suspend operator fun invoke(enabled: Boolean) {
+    suspend operator fun invoke(enabled: Boolean): Result<Unit> = runCatching {
         repository.setFullScreen(enabled)
     }
 }

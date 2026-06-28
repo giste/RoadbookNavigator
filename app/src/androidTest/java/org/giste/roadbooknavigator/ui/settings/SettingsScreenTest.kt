@@ -103,7 +103,9 @@ class SettingsScreenTest {
         }
 
         // Click Dark theme card
-        composeTestRule.onNodeWithText(context.getString(R.string.settings_theme_dark)).performClick()
+        composeTestRule.onNodeWithText(context.getString(R.string.settings_theme_dark))
+            .performScrollTo()
+            .performClick()
         assertTrue(selectedTheme == AppTheme.DARK)
     }
 
@@ -191,7 +193,9 @@ class SettingsScreenTest {
         }
 
         // Click Horizontal orientation button
-        composeTestRule.onNodeWithTag("OrientationButton_${AppOrientation.HORIZONTAL.name}").performClick()
+        composeTestRule.onNodeWithTag("OrientationButton_${AppOrientation.HORIZONTAL.name}")
+            .performScrollTo()
+            .performClick()
         assertTrue(selectedOrientation == AppOrientation.HORIZONTAL)
     }
 
@@ -218,7 +222,9 @@ class SettingsScreenTest {
             }
         }
 
-        composeTestRule.onNodeWithTag("FullScreenSwitch").performClick()
+        composeTestRule.onNodeWithTag("FullScreenSwitch")
+            .performScrollTo()
+            .performClick()
         assertTrue(fullScreenEnabled == true)
     }
 

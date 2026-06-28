@@ -32,6 +32,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performKeyPress
 import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.swipeUp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.test.platform.app.InstrumentationRegistry
@@ -41,7 +42,11 @@ import io.mockk.verify
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.giste.roadbooknavigator.R
 import org.giste.roadbooknavigator.features.odometer.domain.Odometer
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Coordinates
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Distance
+import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookPosition
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Route
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Waypoint
 import org.giste.roadbooknavigator.features.roadbook.ui.RoadbookUiState
 import org.junit.Rule
 import org.junit.Test
@@ -378,5 +383,152 @@ class DashboardScreenTest {
 
         val expectedMessage = context.getString(R.string.main_no_route)
         composeTestRule.onNodeWithText(expectedMessage).assertIsDisplayed()
+    }
+
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+    @Test
+    fun directionUpKey_scrollsToNextWaypoint() {
+        val waypoints = List(10) { i ->
+            Waypoint(
+                number = i + 1,
+                coordinates = Coordinates(0.0, 0.0),
+                distance = Distance(i * 1000L),
+                distanceFromPrevious = Distance(1000L)
+            )
+        }
+        val viewModel: DashboardViewModel = mockk(relaxed = true)
+        val uiStateFlow = MutableStateFlow(
+            DashboardUiState(
+                roadbook = RoadbookUiState.Success(Route(name = "Test", waypoints = waypoints))
+            )
+        )
+        every { viewModel.uiState } returns uiStateFlow
+
+        composeTestRule.setContent {
+            DashboardContent(
+                windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp)),
+                onSettingsClick = {},
+                viewModel = viewModel
+            )
+        }
+
+        // Initially waypoint 1 is displayed
+        composeTestRule.onNodeWithText("1").assertIsDisplayed()
+
+        // Press Direction Up (Forward)
+        composeTestRule.onNodeWithTag("MainScreen").performClick()
+        composeTestRule.onNodeWithTag("MainScreen").performKeyPress(
+            KeyEvent(
+                nativeKeyEvent = android.view.KeyEvent(
+                    android.view.KeyEvent.ACTION_DOWN,
+                    android.view.KeyEvent.KEYCODE_DPAD_UP
+                )
+            )
+        )
+
+        composeTestRule.waitForIdle()
+
+        // Waypoint 2 should now be visible
+        composeTestRule.onNodeWithText("2").assertIsDisplayed()
+    }
+
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+    @Test
+    fun directionDownKey_scrollsToPreviousWaypoint() {
+        val waypoints = List(10) { i ->
+            Waypoint(
+                number = i + 1,
+                coordinates = Coordinates(0.0, 0.0),
+                distance = Distance(i * 1000L),
+                distanceFromPrevious = Distance(1000L)
+            )
+        }
+        val viewModel: DashboardViewModel = mockk(relaxed = true)
+        // Start at waypoint 3
+        val uiStateFlow = MutableStateFlow(
+            DashboardUiState(
+                roadbook = RoadbookUiState.Success(Route(name = "Test", waypoints = waypoints)),
+                initialScrollPosition = RoadbookPosition(2, 0)
+            )
+        )
+        every { viewModel.uiState } returns uiStateFlow
+
+        composeTestRule.setContent {
+            DashboardContent(
+                windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp)),
+                onSettingsClick = {},
+                viewModel = viewModel
+            )
+        }
+
+        // Initially waypoint 3 is displayed
+        composeTestRule.onNodeWithText("3").assertIsDisplayed()
+
+        // Press Direction Down (Backward)
+        composeTestRule.onNodeWithTag("MainScreen").performClick()
+        composeTestRule.onNodeWithTag("MainScreen").performKeyPress(
+            KeyEvent(
+                nativeKeyEvent = android.view.KeyEvent(
+                    android.view.KeyEvent.ACTION_DOWN,
+                    android.view.KeyEvent.KEYCODE_DPAD_DOWN
+                )
+            )
+        )
+
+        composeTestRule.waitForIdle()
+
+        // Waypoint 2 should now be visible
+        composeTestRule.onNodeWithText("2").assertIsDisplayed()
+    }
+
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+    @Test
+    fun directionDownKey_whenPartiallyScrolled_snapsToCurrentWaypoint() {
+        val waypoints = List(10) { i ->
+            Waypoint(
+                number = i + 1,
+                coordinates = Coordinates(0.0, 0.0),
+                distance = Distance(i * 1000L),
+                distanceFromPrevious = Distance(1000L)
+            )
+        }
+        val viewModel: DashboardViewModel = mockk(relaxed = true)
+        val uiStateFlow = MutableStateFlow(
+            DashboardUiState(
+                roadbook = RoadbookUiState.Success(Route(name = "Test", waypoints = waypoints))
+            )
+        )
+        every { viewModel.uiState } returns uiStateFlow
+
+        composeTestRule.setContent {
+            DashboardContent(
+                windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp)),
+                onSettingsClick = {},
+                viewModel = viewModel
+            )
+        }
+
+        // Manually scroll partially
+        composeTestRule.onNodeWithTag("RoadbookList").performTouchInput {
+            swipeUp(startY = 500f, endY = 400f) // Small swipe up to leave waypoint 1 partially visible
+        }
+
+        composeTestRule.waitForIdle()
+
+        // Press Direction Down (Backward)
+        composeTestRule.onNodeWithTag("MainScreen").performClick()
+        composeTestRule.onNodeWithTag("MainScreen").performKeyPress(
+            KeyEvent(
+                nativeKeyEvent = android.view.KeyEvent(
+                    android.view.KeyEvent.ACTION_DOWN,
+                    android.view.KeyEvent.KEYCODE_DPAD_DOWN
+                )
+            )
+        )
+
+        composeTestRule.waitForIdle()
+
+        // Should still show waypoint 1 (snapped to top)
+        composeTestRule.onNodeWithText("1").assertIsDisplayed()
     }
 }

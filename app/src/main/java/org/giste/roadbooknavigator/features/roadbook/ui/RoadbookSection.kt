@@ -195,7 +195,9 @@ fun RoadbookList(
 
     LazyColumn(
         state = listState,
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .testTag("RoadbookList"),
     ) {
         itemsIndexed(
             items = waypoints,

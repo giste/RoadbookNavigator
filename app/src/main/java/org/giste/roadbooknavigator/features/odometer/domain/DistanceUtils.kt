@@ -17,6 +17,7 @@
 
 package org.giste.roadbooknavigator.features.odometer.domain
 
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.location.domain.UserLocation
 import kotlin.math.atan2
 import kotlin.math.cos
@@ -67,8 +68,11 @@ object DistanceUtils {
 
         return if (canUseAltitude) {
             val heightDistance = end.altitude - start.altitude
-            sqrt(horizontalDistance * horizontalDistance + heightDistance * heightDistance)
+            val distance3D = sqrt(horizontalDistance * horizontalDistance + heightDistance * heightDistance)
+            Logger.d("DistanceUtils: Using 3D distance = $distance3D (H=$horizontalDistance, V=$heightDistance)")
+            distance3D
         } else {
+            Logger.v("DistanceUtils: Using 2D distance = $horizontalDistance (altitude accuracy insufficient)")
             horizontalDistance
         }
     }

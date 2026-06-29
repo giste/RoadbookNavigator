@@ -17,6 +17,7 @@
 
 package org.giste.roadbooknavigator.features.odometer.domain.usecase
 
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerRepository
 import javax.inject.Inject
 
@@ -27,6 +28,7 @@ class DecrementPartialDistanceUseCase @Inject constructor(
     private val repository: OdometerRepository
 ) {
     suspend operator fun invoke() {
+        Logger.d("DecrementPartialDistanceUseCase: Invoked")
         repository.updatePartialDistance(-10.0)
     }
 }

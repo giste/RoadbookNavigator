@@ -17,6 +17,8 @@
 
 package org.giste.roadbooknavigator.features.odometer.domain
 
+import org.giste.roadbooknavigator.core.util.Logger
+
 /**
  * Represents the current state of the odometer.
  * Distances are in meters.
@@ -32,8 +34,12 @@ class Odometer(
         const val MIN_DISTANCE_METERS = 0.0
     }
 
-    val total: Double = total.coerceIn(MIN_DISTANCE_METERS, MAX_TOTAL_METERS)
-    val partial: Double = partial.coerceIn(MIN_DISTANCE_METERS, MAX_PARTIAL_METERS)
+    val total: Double = total.coerceIn(MIN_DISTANCE_METERS, MAX_TOTAL_METERS).also {
+        if (it != total) Logger.w("Odometer: Total distance $total clamped to $it")
+    }
+    val partial: Double = partial.coerceIn(MIN_DISTANCE_METERS, MAX_PARTIAL_METERS).also {
+        if (it != partial) Logger.w("Odometer: Partial distance $partial clamped to $it")
+    }
 
     /**
      * Returns a copy of the odometer with optionally updated values.

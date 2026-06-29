@@ -20,8 +20,10 @@ package org.giste.roadbooknavigator.features.odometer.domain.usecase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.scan
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.location.domain.ObserveLocationUseCase
 import org.giste.roadbooknavigator.features.location.domain.UserLocation
 import org.giste.roadbooknavigator.features.odometer.domain.DistanceUtils
@@ -46,6 +48,7 @@ class GetOdometerUseCase @Inject constructor(
     private val getSettingsUseCase: GetSettingsUseCase
 ) {
     operator fun invoke(): Flow<Odometer> {
+        Logger.d("GetOdometerUseCase: Invoked")
         val locationFlow = observeLocationUseCase()
             .onStart { emit(UserLocation(0.0, 0.0, 0.0, 999f, null, 0f, 0f, 0L)) }
 
@@ -64,6 +67,7 @@ class GetOdometerUseCase @Inject constructor(
             odometerRepository.odometer,
             processedLocations
         ) { odometer, _ -> odometer }
+            .onEach { Logger.v("GetOdometerUseCase: New odometer state: total=%f, partial=%f", it.total, it.partial) }
     }
 
     private suspend fun processLocation(
@@ -71,12 +75,21 @@ class GetOdometerUseCase @Inject constructor(
         current: UserLocation,
         settings: AppSettings
     ): UserLocation? {
-        if (current.accuracy > settings.odometerMinAccuracy) return lastValid
+        if (current.accuracy > settings.odometerMinAccuracy) {
+            Logger.v("GetOdometerUseCase: Location ignored (poor accuracy: %f > %f)", current.accuracy, settings.odometerMinAccuracy)
+            return lastValid
+        }
 
-        if (lastValid == null) return current
+        if (lastValid == null) {
+            Logger.d("GetOdometerUseCase: First valid location received: %f, %f", current.latitude, current.longitude)
+            return current
+        }
 
         // Ignore updates if the user is effectively stopped to avoid GPS jitter "drifting" the odometer
-        if (current.speed < settings.odometerSpeedThreshold) return lastValid
+        if (current.speed < settings.odometerSpeedThreshold) {
+            Logger.v("GetOdometerUseCase: Location ignored (speed %f < threshold %f)", current.speed, settings.odometerSpeedThreshold)
+            return lastValid
+        }
 
         val delta = DistanceUtils.calculateDistance(
             start = lastValid,
@@ -85,6 +98,7 @@ class GetOdometerUseCase @Inject constructor(
         )
 
         if (delta > 0) {
+            Logger.d("GetOdometerUseCase: Updating distance with delta: %f", delta)
             odometerRepository.updateDistance(delta)
         }
         return current

@@ -17,6 +17,7 @@
 
 package org.giste.roadbooknavigator.features.roadbook.domain.usecase
 
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookPosition
 import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookSessionRepository
 import javax.inject.Inject
@@ -27,6 +28,8 @@ import javax.inject.Inject
 class SaveRoadbookPositionUseCase @Inject constructor(
     private val repository: RoadbookSessionRepository
 ) {
-    suspend operator fun invoke(index: Int, offset: Int) =
+    suspend operator fun invoke(index: Int, offset: Int) {
+        Logger.v("SaveRoadbookPositionUseCase: Saving position index=$index, offset=$offset")
         repository.saveScrollPosition(RoadbookPosition(index, offset))
+    }
 }

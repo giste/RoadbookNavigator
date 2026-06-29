@@ -23,6 +23,8 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookPosition
 import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookSessionRepository
 import javax.inject.Inject
@@ -52,9 +54,12 @@ class DataStoreRoadbookSessionRepository @Inject constructor(
             // Fallback for safety, though the checks above should prevent this
             RoadbookPosition(0, 0)
         }
+    }.onEach { position ->
+        Logger.v("DataStoreRoadbookSessionRepository: Current scroll position loaded: index=${position.index}, offset=${position.offset}")
     }
 
     override suspend fun saveScrollPosition(position: RoadbookPosition) {
+        Logger.v("DataStoreRoadbookSessionRepository: Saving scroll position: index=${position.index}, offset=${position.offset}")
         dataStore.edit { preferences ->
             preferences[Keys.SCROLL_INDEX] = position.index
             preferences[Keys.SCROLL_OFFSET] = position.offset

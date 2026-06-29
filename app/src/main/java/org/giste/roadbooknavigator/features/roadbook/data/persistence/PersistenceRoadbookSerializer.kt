@@ -24,6 +24,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.roadbook.data.persistence.dto.PersistentElement
 import org.giste.roadbooknavigator.features.roadbook.data.persistence.dto.PersistentIcon
 import org.giste.roadbooknavigator.features.roadbook.data.persistence.dto.PersistentRoad
@@ -62,19 +63,25 @@ class PersistenceRoadbookSerializer @Inject constructor() : Serializer<Persisten
                 deserializer = PersistentRoute.serializer(),
                 string = input.readBytes().decodeToString()
             )
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            Logger.e(e, "PersistenceRoadbookSerializer: Failed to read persistent roadbook, using default")
             defaultValue
         }
     }
 
     override suspend fun writeTo(t: PersistentRoute, output: OutputStream) {
         withContext(Dispatchers.IO) {
-            output.write(
-                json.encodeToString(
-                    serializer = PersistentRoute.serializer(),
-                    value = t
-                ).encodeToByteArray()
-            )
+            try {
+                output.write(
+                    json.encodeToString(
+                        serializer = PersistentRoute.serializer(),
+                        value = t
+                    ).encodeToByteArray()
+                )
+            } catch (e: Exception) {
+                Logger.e(e, "PersistenceRoadbookSerializer: Failed to write persistent roadbook")
+                throw e
+            }
         }
     }
 }

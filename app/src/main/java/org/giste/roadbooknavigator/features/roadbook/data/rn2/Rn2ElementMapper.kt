@@ -150,7 +150,10 @@ class Rn2ElementMapper @Inject constructor(
             is Rn2Icon.Roundabout -> Icon.IconType.Roundabout
             is Rn2Icon.Stop -> Icon.IconType.Stop
             is Rn2Icon.RiverWater -> Icon.IconType.RiverWater
-            is Rn2Icon.Unknown -> Icon.IconType.Unknown
+            is Rn2Icon.Unknown -> {
+                Logger.w("Rn2ElementMapper: Unknown icon encountered with ID: ${jsonIcon.id}")
+                Icon.IconType.Unknown
+            }
         }
 
         return Icon(

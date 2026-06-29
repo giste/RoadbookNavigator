@@ -38,6 +38,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Waypoint
 
@@ -64,7 +65,11 @@ internal fun DistanceSection(
             .background(backgroundColor)
             .testTag("WaypointDistanceInfo_${waypoint.number}")
             .combinedClickable(
-                onLongClick = { onSetPartialClick(if (waypoint.reset) 0.0 else waypoint.distance.kilometers * 1000) },
+                onLongClick = {
+                    val valueToSet = if (waypoint.reset) 0.0 else waypoint.distance.kilometers * 1000.0
+                    Logger.d("DistanceSection: Long clicked waypoint ${waypoint.number}, requesting to set partial to $valueToSet")
+                    onSetPartialClick(valueToSet)
+                },
                 onClick = {}
             ),
     ) {

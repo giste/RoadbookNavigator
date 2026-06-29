@@ -17,6 +17,7 @@
 
 package org.giste.roadbooknavigator.features.roadbook.domain.usecase
 
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Route
 import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookRepository
 import java.io.InputStream
@@ -29,8 +30,15 @@ class ImportRoadbookUseCase @Inject constructor(
     private val repository: RoadbookRepository,
     private val resetRoadbookPositionUseCase: ResetRoadbookPositionUseCase
 ) {
-    suspend operator fun invoke(inputStream: InputStream): Result<Route> =
-        repository.processNewRoadbook(inputStream).onSuccess {
-            resetRoadbookPositionUseCase()
-        }
+    suspend operator fun invoke(inputStream: InputStream): Result<Route> {
+        Logger.i("ImportRoadbookUseCase: Starting roadbook import")
+        return repository.processNewRoadbook(inputStream)
+            .onSuccess { route ->
+                Logger.i("ImportRoadbookUseCase: Successfully imported roadbook: ${route.name}")
+                resetRoadbookPositionUseCase()
+            }
+            .onFailure { error ->
+                Logger.e(error, "ImportRoadbookUseCase: Failed to import roadbook")
+            }
+    }
 }

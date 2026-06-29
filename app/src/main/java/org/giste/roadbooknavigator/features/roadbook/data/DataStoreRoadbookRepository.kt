@@ -21,8 +21,10 @@ import androidx.datastore.core.DataStore
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.withContext
 import org.giste.roadbooknavigator.core.di.IoDispatcher
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.roadbook.data.persistence.PersistenceMapper
 import org.giste.roadbooknavigator.features.roadbook.data.persistence.dto.PersistentRoute
 import org.giste.roadbooknavigator.features.roadbook.data.rn2.Rn2Mapper
@@ -48,18 +50,31 @@ class DataStoreRoadbookRepository @Inject constructor(
         } else {
             persistenceMapper.toDomain(persistentRoute)
         }
+    }.onEach { route ->
+        if (route != null) {
+            Logger.d("DataStoreRoadbookRepository: Loaded active roadbook: ${route.name} (${route.waypoints.size} waypoints)")
+        } else {
+            Logger.v("DataStoreRoadbookRepository: No active roadbook loaded")
+        }
     }
 
     override suspend fun processNewRoadbook(inputStream: InputStream): Result<Route> =
         withContext(ioDispatcher) {
+            Logger.i("DataStoreRoadbookRepository: Processing new roadbook from input stream")
             runCatching {
                 val jsonString = inputStream.bufferedReader().use { it.readText() }
+                Logger.v("DataStoreRoadbookRepository: JSON string read (size: ${jsonString.length} bytes)")
+                
                 val route = mapper.mapToDomain(jsonString)
+                Logger.d("DataStoreRoadbookRepository: Domain mapping complete for: ${route.name}")
 
                 val persistentRoute = persistenceMapper.toPersistent(route)
                 dataStore.updateData { persistentRoute }
+                Logger.i("DataStoreRoadbookRepository: Roadbook ${route.name} persisted successfully")
 
                 route
+            }.onFailure { error ->
+                Logger.e(error, "DataStoreRoadbookRepository: Failed to process new roadbook")
             }
         }
 }

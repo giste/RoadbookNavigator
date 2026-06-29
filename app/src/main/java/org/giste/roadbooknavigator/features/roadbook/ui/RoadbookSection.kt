@@ -56,6 +56,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import org.giste.roadbooknavigator.R
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Coordinates
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Distance
@@ -80,7 +81,17 @@ fun RoadbookSection(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         uri?.let {
+            Logger.i("RoadbookSection: File selected via picker: $it")
             context.contentResolver.openInputStream(it)?.let(onFileSelected)
+        } ?: Logger.d("RoadbookSection: File picker cancelled")
+    }
+
+    LaunchedEffect(state) {
+        when (state) {
+            is RoadbookUiState.Success -> Logger.d("RoadbookSection: UI state changed to SUCCESS (${state.route.name})")
+            is RoadbookUiState.Error -> Logger.e("RoadbookSection: UI state changed to ERROR: ${state.message}")
+            RoadbookUiState.Loading -> Logger.v("RoadbookSection: UI state changed to LOADING")
+            RoadbookUiState.Empty -> Logger.v("RoadbookSection: UI state changed to EMPTY")
         }
     }
 
@@ -111,7 +122,10 @@ fun RoadbookSection(
                         style = MaterialTheme.typography.titleLarge
                     )
                     Button(
-                        onClick = { filePickerLauncher.launch("*/*") },
+                        onClick = {
+                            Logger.d("RoadbookSection: Clicked import button (Empty state)")
+                            filePickerLauncher.launch("*/*")
+                        },
                         modifier = Modifier.padding(top = 16.dp)
                     ) {
                         Icon(
@@ -133,7 +147,10 @@ fun RoadbookSection(
                         style = MaterialTheme.typography.titleMedium
                     )
                     Button(
-                        onClick = { filePickerLauncher.launch("*/*") },
+                        onClick = {
+                            Logger.d("RoadbookSection: Clicked import button (Error state)")
+                            filePickerLauncher.launch("*/*")
+                        },
                         modifier = Modifier.padding(top = 16.dp)
                     ) {
                         Icon(
@@ -154,7 +171,10 @@ fun RoadbookSection(
                         onWaypointVisible = onWaypointVisible
                     )
                     FloatingActionButton(
-                        onClick = { filePickerLauncher.launch("*/*") },
+                        onClick = {
+                            Logger.d("RoadbookSection: Clicked import FAB (Success state)")
+                            filePickerLauncher.launch("*/*")
+                        },
                         modifier = Modifier
                             .align(Alignment.BottomEnd)
                             .padding(16.dp)

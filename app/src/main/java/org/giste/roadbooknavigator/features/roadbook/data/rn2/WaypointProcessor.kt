@@ -47,9 +47,10 @@ class WaypointProcessor @Inject constructor(
      */
     fun processWaypoints(waypoints: List<Rn2Waypoint>): List<Waypoint> {
         if (waypoints.isEmpty()) {
-            Logger.w("Waypoint list is empty")
+            Logger.w("WaypointProcessor: Waypoint list is empty")
             return emptyList()
         }
+        Logger.d("WaypointProcessor: Processing ${waypoints.size} raw waypoints")
 
         val states = mutableListOf<WaypointProcessingState>()
         var currentAccDist = 0.0
@@ -115,9 +116,11 @@ class WaypointProcessor @Inject constructor(
                     null
                 ),
             )
-            Logger.v("Processed waypoint ${state.waypoint.waypointId}: $domainWaypoint")
+            Logger.v("WaypointProcessor: Processed waypoint ${state.waypoint.waypointId} (visible index: $visibleCount): $domainWaypoint")
 
             domainWaypoint
+        }.also {
+            Logger.i("WaypointProcessor: Finished processing waypoints. Total visible: ${it.size}")
         }
     }
 

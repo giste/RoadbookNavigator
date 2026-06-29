@@ -35,6 +35,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import org.giste.roadbooknavigator.core.permission.ui.PermissionGate
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
@@ -53,11 +54,13 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Logger.i("MainActivity: onCreate")
         enableEdgeToEdge()
         setContent {
             val settings by getSettingsUseCase().collectAsState(initial = AppSettings())
 
             LaunchedEffect(settings.orientation) {
+                Logger.d("MainActivity: Applying orientation setting: ${settings.orientation}")
                 requestedOrientation = when (settings.orientation) {
                     AppOrientation.VERTICAL -> ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
                     AppOrientation.HORIZONTAL -> ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
@@ -66,6 +69,7 @@ class MainActivity : ComponentActivity() {
             }
 
             LaunchedEffect(settings.fullScreen) {
+                Logger.d("MainActivity: Applying full screen setting: ${settings.fullScreen}")
                 val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
                 if (settings.fullScreen) {
                     windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())

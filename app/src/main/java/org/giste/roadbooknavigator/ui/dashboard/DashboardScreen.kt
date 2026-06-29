@@ -71,6 +71,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import kotlinx.coroutines.launch
 import org.giste.roadbooknavigator.R
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 import org.giste.roadbooknavigator.features.odometer.domain.Odometer
 import org.giste.roadbooknavigator.features.odometer.ui.PartialDistance
@@ -152,6 +153,7 @@ fun DashboardContent(
                             val waypointsCount = (uiState.roadbook as? RoadbookUiState.Success)
                                 ?.route?.waypoints?.size ?: 0
                             if (waypointsCount > 0) {
+                                Logger.d("DashboardScreen: Key ${event.key} pressed, navigating forward")
                                 coroutineScope.launch {
                                     targetWaypointIndex = (targetWaypointIndex + 1)
                                         .coerceAtMost(waypointsCount - 1)
@@ -162,6 +164,7 @@ fun DashboardContent(
                         }
 
                         Key.MediaPrevious, Key.DirectionDown -> {
+                            Logger.d("DashboardScreen: Key ${event.key} pressed, navigating backward")
                             coroutineScope.launch {
                                 targetWaypointIndex = if (listState.firstVisibleItemScrollOffset > 0) {
                                     // If partially scrolled, first snap to the top of current waypoint
@@ -175,14 +178,17 @@ fun DashboardContent(
                             true
                         }
                         Key.VolumeUp, Key.DirectionRight -> {
+                            Logger.d("DashboardScreen: Key ${event.key} pressed, incrementing partial")
                             viewModel.incrementPartialDistance()
                             true
                         }
                         Key.VolumeDown, Key.DirectionLeft -> {
+                            Logger.d("DashboardScreen: Key ${event.key} pressed, decrementing partial")
                             viewModel.decrementPartialDistance()
                             true
                         }
                         Key.MediaPlayPause, Key.MediaPlay, Key.MediaPause, Key.F6 -> {
+                            Logger.d("DashboardScreen: Key ${event.key} pressed, resetting partial")
                             viewModel.resetPartialDistance()
                             true
                         }
@@ -207,8 +213,12 @@ fun DashboardContent(
         if (uiState.showSetPartialDialog) {
             SetPartialDialog(
                 windowSizeClass = windowSizeClass,
-                onDismiss = { viewModel.hideSetPartialDialog() },
+                onDismiss = {
+                    Logger.d("DashboardScreen: Dismissing SetPartialDialog")
+                    viewModel.hideSetPartialDialog()
+                },
                 onConfirm = {
+                    Logger.i("DashboardScreen: Confirming new partial value: $it")
                     viewModel.setPartialDistance(it)
                     viewModel.hideSetPartialDialog()
                 }

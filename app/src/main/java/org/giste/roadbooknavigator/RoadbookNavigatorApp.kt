@@ -19,6 +19,7 @@ package org.giste.roadbooknavigator
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
+import org.giste.roadbooknavigator.core.util.Logger
 import timber.log.Timber
 
 @HiltAndroidApp
@@ -28,5 +29,6 @@ class RoadbookNavigatorApp : Application() {
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         }
+        Logger.i("RoadbookNavigatorApp: Application started")
     }
 }

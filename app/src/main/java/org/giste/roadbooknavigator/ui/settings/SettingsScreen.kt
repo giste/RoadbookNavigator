@@ -83,6 +83,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import org.giste.roadbooknavigator.R
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 import org.giste.roadbooknavigator.features.settings.domain.AccuracyThreshold
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
@@ -147,7 +148,10 @@ fun SettingsContent(
                 },
                 navigationIcon = {
                     IconButton(
-                        onClick = onBackClick,
+                        onClick = {
+                            Logger.d("SettingsScreen: Back clicked")
+                            onBackClick()
+                        },
                         modifier = Modifier
                             .size(RoadbookNavigatorTheme.dimensions.actionIconSize)
                             .testTag("SettingsBackButton")
@@ -170,7 +174,10 @@ fun SettingsContent(
                 tabs.forEachIndexed { index, title ->
                     Tab(
                         selected = selectedTab == index,
-                        onClick = { selectedTab = index },
+                        onClick = {
+                            Logger.v("SettingsScreen: Tab $index selected ($title)")
+                            selectedTab = index
+                        },
                         modifier = Modifier.testTag("SettingsTab_$index"),
                         text = {
                             Text(text = title)

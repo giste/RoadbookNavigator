@@ -17,6 +17,7 @@
 
 package org.giste.roadbooknavigator.features.settings.domain.usecase
 
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.settings.domain.AppTheme
 import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
 import javax.inject.Inject
@@ -27,7 +28,10 @@ import javax.inject.Inject
 class UpdateThemeUseCase @Inject constructor(
     private val repository: SettingsRepository
 ) {
-    suspend operator fun invoke(theme: AppTheme): Result<Unit> = runCatching {
-        repository.setTheme(theme)
+    suspend operator fun invoke(theme: AppTheme): Result<Unit> {
+        Logger.i("UpdateThemeUseCase: Updating theme to $theme")
+        return runCatching {
+            repository.setTheme(theme)
+        }
     }
 }

@@ -19,9 +19,8 @@ package org.giste.roadbooknavigator.features.settings.data
 
 import android.content.Context
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStoreFile
+import androidx.datastore.preferences.preferencesDataStore
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -30,6 +29,8 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
 import javax.inject.Singleton
+
+private val Context.settingsDataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -45,10 +46,7 @@ abstract class SettingsModule {
         @Provides
         @Singleton
         @SettingsDataStore
-        fun provideSettingsDataStore(@ApplicationContext context: Context): DataStore<Preferences> {
-            return PreferenceDataStoreFactory.create(
-                produceFile = { context.preferencesDataStoreFile("settings") }
-            )
-        }
+        fun provideSettingsDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
+            context.settingsDataStore
     }
 }

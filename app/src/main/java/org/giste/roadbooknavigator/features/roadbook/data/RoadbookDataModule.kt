@@ -21,9 +21,8 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.dataStoreFile
-import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStoreFile
+import androidx.datastore.preferences.preferencesDataStore
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -49,6 +48,8 @@ annotation class RoadbookDataStoreQualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class RoadbookSessionDataStoreQualifier
 
+private val Context.roadbookSessionDataStore: DataStore<Preferences> by preferencesDataStore(name = "roadbook_session_state")
+
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class RoadbookDataModule {
@@ -66,6 +67,9 @@ abstract class RoadbookDataModule {
     ): RoadbookSessionRepository
 
     companion object {
+        @Volatile
+        private var roadbookDataStore: DataStore<PersistentRoute>? = null
+
         @Provides
         @Singleton
         @RoadbookDataStoreQualifier
@@ -73,21 +77,21 @@ abstract class RoadbookDataModule {
             @ApplicationContext context: Context,
             @IoDispatcher ioDispatcher: CoroutineDispatcher,
             serializer: PersistenceRoadbookSerializer
-        ): DataStore<PersistentRoute> = DataStoreFactory.create(
-            serializer = serializer,
-            scope = CoroutineScope(ioDispatcher + SupervisorJob()),
-            produceFile = { context.dataStoreFile("active_roadbook.json") }
-        )
+        ): DataStore<PersistentRoute> {
+            return roadbookDataStore ?: synchronized(this) {
+                roadbookDataStore ?: DataStoreFactory.create(
+                    serializer = serializer,
+                    scope = CoroutineScope(ioDispatcher + SupervisorJob()),
+                    produceFile = { context.dataStoreFile("active_roadbook.json") }
+                ).also { roadbookDataStore = it }
+            }
+        }
 
         @Provides
         @Singleton
         @RoadbookSessionDataStoreQualifier
         fun provideRoadbookSessionDataStore(
-            @ApplicationContext context: Context,
-            @IoDispatcher ioDispatcher: CoroutineDispatcher
-        ): DataStore<Preferences> = PreferenceDataStoreFactory.create(
-            scope = CoroutineScope(ioDispatcher + SupervisorJob()),
-            produceFile = { context.preferencesDataStoreFile("roadbook_session_state") }
-        )
+            @ApplicationContext context: Context
+        ): DataStore<Preferences> = context.roadbookSessionDataStore
     }
 }

@@ -19,19 +19,14 @@ package org.giste.roadbooknavigator.features.odometer.data
 
 import android.content.Context
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStoreFile
+import androidx.datastore.preferences.preferencesDataStore
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import org.giste.roadbooknavigator.core.di.IoDispatcher
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerRepository
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -39,6 +34,8 @@ import javax.inject.Singleton
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class OdometerDataStoreQualifier
+
+private val Context.odometerDataStore: DataStore<Preferences> by preferencesDataStore(name = "odometer_state")
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -55,11 +52,7 @@ abstract class OdometerModule {
         @Singleton
         @OdometerDataStoreQualifier
         fun provideOdometerDataStore(
-            @ApplicationContext context: Context,
-            @IoDispatcher ioDispatcher: CoroutineDispatcher
-        ): DataStore<Preferences> = PreferenceDataStoreFactory.create(
-            scope = CoroutineScope(ioDispatcher + SupervisorJob()),
-            produceFile = { context.preferencesDataStoreFile("odometer_state") }
-        )
+            @ApplicationContext context: Context
+        ): DataStore<Preferences> = context.odometerDataStore
     }
 }

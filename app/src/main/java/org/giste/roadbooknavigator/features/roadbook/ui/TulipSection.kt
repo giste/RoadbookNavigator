@@ -61,43 +61,41 @@ internal fun TulipSection(waypoint: Waypoint, modifier: Modifier = Modifier) {
         Canvas(modifier = Modifier.fillMaxSize()) {
             val scale = size.width / CANVAS_LOGICAL_WIDTH
             clipRect {
-                // 1. Draw scaled elements (Roads)
                 withTransform({
                     scale(scale, scale, pivot = Offset.Zero)
                 }) {
                     drawWaypointStart(onSurfaceColor)
-                    waypoint.tulipElements.forEach { element ->
-                        when (element) {
-                            is Road -> drawRoad(
+                }
+                waypoint.tulipElements.forEach { element ->
+                    when (element) {
+                        is Road -> withTransform({
+                            scale(scale, scale, pivot = Offset.Zero)
+                        }) {
+                            drawRoad(
                                 element,
                                 onSurfaceColor,
                                 disabledOnSurface,
                                 RoadTermination.PERPENDICULAR
                             )
-
-                            is Track -> {
-                                drawRoad(
-                                    element.roadIn,
-                                    trackColor,
-                                    secondaryTrackColor,
-                                    RoadTermination.NONE
-                                )
-                                drawRoad(
-                                    element.roadOut,
-                                    trackColor,
-                                    secondaryTrackColor,
-                                    RoadTermination.ARROW
-                                )
-                            }
-
-                            else -> {}
                         }
-                    }
-                }
 
-                // 2. Draw pixel-perfect elements (Icons and Text)
-                waypoint.tulipElements.forEach { element ->
-                    when (element) {
+                        is Track -> withTransform({
+                            scale(scale, scale, pivot = Offset.Zero)
+                        }) {
+                            drawRoad(
+                                element.roadIn,
+                                trackColor,
+                                secondaryTrackColor,
+                                RoadTermination.NONE
+                            )
+                            drawRoad(
+                                element.roadOut,
+                                trackColor,
+                                secondaryTrackColor,
+                                RoadTermination.ARROW
+                            )
+                        }
+
                         is Icon -> {
                             iconPainters[element]?.let { painter ->
                                 val tint = when (element.type) {
@@ -114,8 +112,6 @@ internal fun TulipSection(waypoint: Waypoint, modifier: Modifier = Modifier) {
                         is TulipText -> {
                             drawTulipText(element, textMeasurer, onSurfaceColor, scale)
                         }
-
-                        else -> {}
                     }
                 }
             }

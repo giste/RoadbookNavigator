@@ -35,10 +35,10 @@ fun RoadbookIcons.Landmark.aboveBridge(onSurface: Color, surface: Color): ImageV
     ).apply {
         // Bridge floor
         path(fill = SolidColor(surface)) {
-            moveTo(14f, 7f)
-            horizontalLineToRelative(22f)
+            moveTo(15f, 7f)
+            horizontalLineToRelative(20f)
             verticalLineToRelative(34f)
-            horizontalLineToRelative(-22f)
+            horizontalLineToRelative(-20f)
             close()
         }
         // Bridge structure - Left
@@ -46,7 +46,7 @@ fun RoadbookIcons.Landmark.aboveBridge(onSurface: Color, surface: Color): ImageV
             stroke = SolidColor(onSurface),
             strokeLineWidth = 3f
         ) {
-            moveTo(8f, 1f)
+            moveTo(9f, 1f)
             lineToRelative(6f, 6f)
             verticalLineTo(41f)
             lineToRelative(-6f, 6f)
@@ -56,7 +56,7 @@ fun RoadbookIcons.Landmark.aboveBridge(onSurface: Color, surface: Color): ImageV
             stroke = SolidColor(onSurface),
             strokeLineWidth = 3f
         ) {
-            moveTo(40f, 1f)
+            moveTo(39f, 1f)
             lineToRelative(-6f, 6f)
             verticalLineTo(41f)
             lineToRelative(6f, 6f)

@@ -39,7 +39,7 @@ class WaypointProcessor @Inject constructor(
         val waypoint: Rn2Waypoint,
         val accumulatedDist: Double,
         val lastVisibleDist: Double,
-        val resetFromPrevious: Boolean,
+        val reset: Boolean,
     )
 
     /**
@@ -50,49 +50,46 @@ class WaypointProcessor @Inject constructor(
             Logger.w("WaypointProcessor: Waypoint list is empty")
             return emptyList()
         }
-        Logger.d("WaypointProcessor: Processing ${waypoints.size} raw waypoints")
 
-        val states = mutableListOf<WaypointProcessingState>()
-        var currentAccDist = 0.0
-        var currentLastVisibleDist = 0.0
-        var previousWaypoint: Rn2Waypoint? = null
-        var previousWasReset = false
-
-        for (waypoint in waypoints) {
-            if (previousWaypoint != null) {
-                val distance = geometryCalculator.calculateDistance(previousWaypoint, waypoint)
-                currentAccDist = if (previousWasReset) distance else currentAccDist + distance
-            }
-
-            states.add(
+        val states = waypoints.asSequence()
+            .drop(1)
+            .scan(
                 WaypointProcessingState(
-                    waypoint = waypoint,
-                    accumulatedDist = currentAccDist,
-                    lastVisibleDist = currentLastVisibleDist,
-                    resetFromPrevious = previousWasReset
+                    waypoint = waypoints.first(),
+                    accumulatedDist = 0.0,
+                    lastVisibleDist = 0.0,
+                    reset = hasReset(waypoints.first()),
                 )
-            )
+            ) { acc, current ->
+                val distance = geometryCalculator.calculateDistance(acc.waypoint, current)
+                val newAccumulatedDist =
+                    if (acc.reset) distance else acc.accumulatedDist + distance
+                val newLastVisibleDist =
+                    if (acc.waypoint.show) distance else acc.lastVisibleDist + distance
 
-            if (waypoint.show) {
-                currentLastVisibleDist = currentAccDist
+                val waypointProcessingState = WaypointProcessingState(
+                    waypoint = current,
+                    accumulatedDist = newAccumulatedDist,
+                    lastVisibleDist = newLastVisibleDist,
+                    reset = hasReset(current)
+                )
+                Logger.v("WaypointProcessor: Processed waypoint state %s", waypointProcessingState)
+                waypointProcessingState
             }
-
-            previousWaypoint = waypoint
-            previousWasReset = hasReset(waypoint)
-        }
+            .toList()
 
         var visibleCount = 0
-        return states.mapIndexedNotNull { index, state ->
+        val mappedWaypoints = states.mapIndexedNotNull { index, state ->
             if (!state.waypoint.show) return@mapIndexedNotNull null
 
             visibleCount++
-            val distFromPrev =
-                if (visibleCount == 1) 0.0 else state.accumulatedDist - state.lastVisibleDist
+            Logger.d("WaypointProcessor: Processing visible waypoint number %s", visibleCount)
+            Logger.v("WaypointProcessor: Processing visible waypoint state %s", state)
 
             val prevWaypoint = if (index > 0) states[index - 1].waypoint else null
             val nextWaypoint = if (index < states.size - 1) states[index + 1].waypoint else null
 
-            val domainWaypoint = Waypoint(
+            val waypoint = Waypoint(
                 number = visibleCount,
                 coordinates = Coordinates(
                     latitude = state.waypoint.lat,
@@ -100,8 +97,8 @@ class WaypointProcessor @Inject constructor(
                     elevation = state.waypoint.ele
                 ),
                 distance = Distance(state.accumulatedDist.roundToLong()),
-                distanceFromPrevious = Distance(distFromPrev.roundToLong()),
-                reset = hasReset(state.waypoint),
+                distanceFromPrevious = Distance(state.lastVisibleDist.roundToLong()),
+                reset = state.reset,
                 dangerLevel = mapToDangerLevel(state.waypoint),
                 tulipElements = rn2ElementMapper.mapElements(
                     state.waypoint.tulip.elements,
@@ -116,12 +113,14 @@ class WaypointProcessor @Inject constructor(
                     null
                 ),
             )
-            Logger.v("WaypointProcessor: Processed waypoint ${state.waypoint.waypointId} (visible index: $visibleCount): $domainWaypoint")
+            Logger.d("Processed waypoint number %s",state.waypoint.waypointId)
+            Logger.v("Processed waypoint %s", waypoint)
 
-            domainWaypoint
-        }.also {
-            Logger.i("WaypointProcessor: Finished processing waypoints. Total visible: ${it.size}")
+            waypoint
         }
+
+        Logger.d("Processed ${states.size} waypoints, ${mappedWaypoints.size} are visible")
+        return mappedWaypoints
     }
 
     private fun hasReset(waypoint: Rn2Waypoint): Boolean {

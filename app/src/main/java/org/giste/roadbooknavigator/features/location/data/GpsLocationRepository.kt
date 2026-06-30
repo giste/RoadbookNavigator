@@ -27,7 +27,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import org.giste.roadbooknavigator.core.util.Logger
+import org.giste.roadbooknavigator.core.util.logger
 import org.giste.roadbooknavigator.features.location.domain.LocationRepository
 import org.giste.roadbooknavigator.features.location.domain.UserLocation
 import javax.inject.Inject
@@ -49,7 +49,7 @@ class GpsLocationRepository @Inject constructor(
         pollingInterval: Long,
         minDistance: Float
     ): Flow<UserLocation> = callbackFlow {
-        Logger.d(
+        logger.d(
             "GpsLocationRepository: Requesting location updates (interval: %d, distance: %f)",
             pollingInterval,
             minDistance
@@ -57,7 +57,7 @@ class GpsLocationRepository @Inject constructor(
 
         val listener = object : LocationListener {
             override fun onLocationChanged(location: Location) {
-                Logger.v(
+                logger.v(
                     "GpsLocationRepository: Location changed: %f, %f (acc: %f)",
                     location.latitude,
                     location.longitude,
@@ -68,15 +68,15 @@ class GpsLocationRepository @Inject constructor(
 
             @Deprecated("Deprecated in Java")
             override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
-                Logger.d("GpsLocationRepository: Status changed for %s: %d", provider, status)
+                logger.d("GpsLocationRepository: Status changed for %s: %d", provider, status)
             }
 
             override fun onProviderEnabled(provider: String) {
-                Logger.i("GpsLocationRepository: Provider enabled: %s", provider)
+                logger.i("GpsLocationRepository: Provider enabled: %s", provider)
             }
 
             override fun onProviderDisabled(provider: String) {
-                Logger.w("GpsLocationRepository: Provider disabled: %s", provider)
+                logger.w("GpsLocationRepository: Provider disabled: %s", provider)
             }
         }
 
@@ -88,12 +88,12 @@ class GpsLocationRepository @Inject constructor(
                 listener
             )
         } catch (e: Exception) {
-            Logger.e(e, "GpsLocationRepository: Error requesting location updates")
+            logger.e(e, "GpsLocationRepository: Error requesting location updates")
             close(e)
         }
 
         awaitClose {
-            Logger.d("GpsLocationRepository: Removing location updates")
+            logger.d("GpsLocationRepository: Removing location updates")
             locationManager.removeUpdates(listener)
         }
     }

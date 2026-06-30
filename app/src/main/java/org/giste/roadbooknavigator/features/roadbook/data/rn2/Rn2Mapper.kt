@@ -17,7 +17,7 @@
 
 package org.giste.roadbooknavigator.features.roadbook.data.rn2
 
-import org.giste.roadbooknavigator.core.util.Logger
+import org.giste.roadbooknavigator.core.util.logger
 import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2RouteData
 import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2RouteResponse
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Route
@@ -38,13 +38,13 @@ class Rn2Mapper @Inject constructor(
      * @return The fully parsed and processed [Route].
      */
     fun mapToDomain(jsonString: String): Route {
-        Logger.d("Starting mapping from JSON string, length: ${jsonString.length}")
+        logger.d("Starting mapping from JSON string, length: %d", jsonString.length)
         val jsonResponse = Rn2RouteResponse.fromJson(jsonString)
         return mapToDomain(jsonResponse.route)
     }
 
     private fun mapToDomain(rn2RouteData: Rn2RouteData): Route {
-        Logger.i("Mapping route: ${rn2RouteData.name} with ${rn2RouteData.waypoints.size} waypoints")
+        logger.i("Mapping route: %s with %d waypoints", rn2RouteData.name, rn2RouteData.waypoints.size)
         return Route(
             name = rn2RouteData.name,
             description = rn2RouteData.description,

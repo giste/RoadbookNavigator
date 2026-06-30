@@ -27,7 +27,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import org.giste.roadbooknavigator.core.util.Logger
+import org.giste.roadbooknavigator.core.util.logger
 import org.giste.roadbooknavigator.features.odometer.domain.Odometer
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.DecrementPartialDistanceUseCase
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.GetOdometerUseCase
@@ -131,35 +131,35 @@ class DashboardViewModel @Inject constructor(
     }
 
     fun resetPartialDistance() {
-        Logger.i("DashboardViewModel: Resetting partial distance")
+        logger.i("DashboardViewModel: Resetting partial distance")
         viewModelScope.launch {
             resetPartialDistanceUseCase()
         }
     }
 
     fun resetAllDistances() {
-        Logger.i("DashboardViewModel: Resetting all distances")
+        logger.i("DashboardViewModel: Resetting all distances")
         viewModelScope.launch {
             resetAllDistancesUseCase()
         }
     }
 
     fun incrementPartialDistance() {
-        Logger.d("DashboardViewModel: Incrementing partial distance")
+        logger.d("DashboardViewModel: Incrementing partial distance")
         viewModelScope.launch {
             incrementPartialDistanceUseCase()
         }
     }
 
     fun decrementPartialDistance() {
-        Logger.d("DashboardViewModel: Decrementing partial distance")
+        logger.d("DashboardViewModel: Decrementing partial distance")
         viewModelScope.launch {
             decrementPartialDistanceUseCase()
         }
     }
 
     fun setPartialDistance(distance: Double) {
-        Logger.i("DashboardViewModel: Setting partial distance to $distance")
+        logger.i("DashboardViewModel: Setting partial distance to %f", distance)
         viewModelScope.launch {
             setPartialDistanceUseCase(distance)
         }

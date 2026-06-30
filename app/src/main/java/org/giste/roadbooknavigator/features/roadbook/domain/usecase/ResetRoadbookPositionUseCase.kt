@@ -17,7 +17,7 @@
 
 package org.giste.roadbooknavigator.features.roadbook.domain.usecase
 
-import org.giste.roadbooknavigator.core.util.Logger
+import org.giste.roadbooknavigator.core.util.logger
 import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookPosition
 import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookSessionRepository
 import javax.inject.Inject
@@ -29,7 +29,7 @@ class ResetRoadbookPositionUseCase @Inject constructor(
     private val repository: RoadbookSessionRepository
 ) {
     suspend operator fun invoke() {
-        Logger.i("ResetRoadbookPositionUseCase: Resetting position to (0,0)")
+        logger.i("ResetRoadbookPositionUseCase: Resetting position to (0,0)")
         repository.saveScrollPosition(RoadbookPosition(0, 0))
     }
 }

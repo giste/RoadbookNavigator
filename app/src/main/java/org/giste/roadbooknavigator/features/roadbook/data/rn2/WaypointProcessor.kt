@@ -17,7 +17,7 @@
 
 package org.giste.roadbooknavigator.features.roadbook.data.rn2
 
-import org.giste.roadbooknavigator.core.util.Logger
+import org.giste.roadbooknavigator.core.util.logger
 import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2Icon
 import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2Waypoint
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Coordinates
@@ -50,7 +50,7 @@ class WaypointProcessor @Inject constructor(
      */
     fun processWaypoints(waypoints: List<Rn2Waypoint>): List<Waypoint> {
         if (waypoints.isEmpty()) {
-            Logger.w("WaypointProcessor: Waypoint list is empty")
+            logger.w("WaypointProcessor: Waypoint list is empty")
             return emptyList()
         }
 
@@ -70,12 +70,13 @@ class WaypointProcessor @Inject constructor(
             .plus(sequenceOf(waypoints.last() to null))
             .drop(1)
             .scan(initialState) { acc, (current, next) ->
+                logger.v("Processing state for waypoint %d: %s", current.waypointId, current)
                 val distance = geometryCalculator.calculateDistance(acc.current, current)
                 val newAccDist = if (acc.isReset) distance else acc.accDist + distance
                 val newDistFromVisible = if (acc.current.show) distance else acc.distFromVisible + distance
                 val newVisibleCount = if (current.show) acc.visibleCount + 1 else acc.visibleCount
 
-                ProcessingState(
+                val currentProcessingState = ProcessingState(
                     prev = acc.current,
                     current = current,
                     next = next,
@@ -84,9 +85,13 @@ class WaypointProcessor @Inject constructor(
                     visibleCount = newVisibleCount,
                     isReset = hasReset(current)
                 )
+                logger.v("Processed state for waypoint %s: %s", current, currentProcessingState)
+
+                currentProcessingState
             }
             .filter { it.current.show }
             .map { state ->
+                logger.v("Mapping waypoint %d to Domain model: %s", state.current.waypointId, state)
                 Waypoint(
                     number = state.visibleCount,
                     coordinates = Coordinates(
@@ -115,12 +120,12 @@ class WaypointProcessor @Inject constructor(
                         null
                     ),
                 ).also {
-                    Logger.v("WaypointProcessor: Processed waypoint %d: %s", it.number, it)
+                    logger.v("WaypointProcessor: Processed waypoint %d: %s", it.number, it)
                 }
             }
             .toList()
             .also {
-                Logger.i("WaypointProcessor: Finished processing waypoints. Total visible: ${it.size}")
+                logger.i("WaypointProcessor: Finished processing waypoints. Total visible: ${it.size}")
             }
     }
 

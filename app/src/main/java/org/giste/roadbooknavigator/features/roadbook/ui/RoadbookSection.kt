@@ -81,15 +81,15 @@ fun RoadbookSection(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         uri?.let {
-            Logger.i("RoadbookSection: File selected via picker: $it")
+            Logger.i("RoadbookSection: File selected via picker: %s", it.toString())
             context.contentResolver.openInputStream(it)?.let(onFileSelected)
         } ?: Logger.d("RoadbookSection: File picker cancelled")
     }
 
     LaunchedEffect(state) {
         when (state) {
-            is RoadbookUiState.Success -> Logger.d("RoadbookSection: UI state changed to SUCCESS (${state.route.name})")
-            is RoadbookUiState.Error -> Logger.e("RoadbookSection: UI state changed to ERROR: ${state.message}")
+            is RoadbookUiState.Success -> Logger.d("RoadbookSection: UI state changed to SUCCESS (%s)", state.route.name)
+            is RoadbookUiState.Error -> Logger.e("RoadbookSection: UI state changed to ERROR: %s", state.message)
             RoadbookUiState.Loading -> Logger.v("RoadbookSection: UI state changed to LOADING")
             RoadbookUiState.Empty -> Logger.v("RoadbookSection: UI state changed to EMPTY")
         }

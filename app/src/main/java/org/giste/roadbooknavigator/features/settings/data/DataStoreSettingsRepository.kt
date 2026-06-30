@@ -27,7 +27,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import org.giste.roadbooknavigator.core.util.Logger
+import org.giste.roadbooknavigator.core.util.logger
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.AppTheme
@@ -76,74 +76,74 @@ class DataStoreSettingsRepository @Inject constructor(
                 ?: AppSettings.DEFAULT_ODOMETER_MIN_DISTANCE
         )
     }.onEach {
-        Logger.v("DataStoreSettingsRepository: Settings updated: $it")
+        logger.v("DataStoreSettingsRepository: Settings updated: %s", it)
     }
 
     override suspend fun setTheme(theme: AppTheme) {
-        Logger.i("DataStoreSettingsRepository: Setting theme to $theme")
+        logger.i("DataStoreSettingsRepository: Setting theme to %s", theme)
         dataStore.edit { preferences ->
             preferences[Keys.THEME] = theme.name
         }
     }
 
     override suspend fun setOrientation(orientation: AppOrientation) {
-        Logger.i("DataStoreSettingsRepository: Setting orientation to $orientation")
+        logger.i("DataStoreSettingsRepository: Setting orientation to %s", orientation)
         dataStore.edit { preferences ->
             preferences[Keys.ORIENTATION] = orientation.name
         }
     }
 
     override suspend fun setFullScreen(enabled: Boolean) {
-        Logger.i("DataStoreSettingsRepository: Setting full screen to $enabled")
+        logger.i("DataStoreSettingsRepository: Setting full screen to %s", enabled)
         dataStore.edit { preferences ->
             preferences[Keys.FULL_SCREEN] = enabled
         }
     }
 
     override suspend fun setShortDistanceThreshold(threshold: Long) {
-        Logger.i("DataStoreSettingsRepository: Setting short distance threshold to $threshold")
+        logger.i("DataStoreSettingsRepository: Setting short distance threshold to %d", threshold)
         dataStore.edit { preferences ->
             preferences[Keys.SHORT_DISTANCE_THRESHOLD] = threshold
         }
     }
 
     override suspend fun setOdometerSpeedThreshold(threshold: Float) {
-        Logger.i("DataStoreSettingsRepository: Setting odometer speed threshold to $threshold")
+        logger.i("DataStoreSettingsRepository: Setting odometer speed threshold to %f", threshold)
         dataStore.edit { preferences ->
             preferences[Keys.ODOMETER_SPEED_THRESHOLD] = threshold
         }
     }
 
     override suspend fun setOdometerMinAccuracy(accuracy: Float) {
-        Logger.i("DataStoreSettingsRepository: Setting odometer min accuracy to $accuracy")
+        logger.i("DataStoreSettingsRepository: Setting odometer min accuracy to %f", accuracy)
         dataStore.edit { preferences ->
             preferences[Keys.ODOMETER_MIN_ACCURACY] = accuracy
         }
     }
 
     override suspend fun setOdometerMinVerticalAccuracy(accuracy: Float) {
-        Logger.i("DataStoreSettingsRepository: Setting odometer min vertical accuracy to $accuracy")
+        logger.i("DataStoreSettingsRepository: Setting odometer min vertical accuracy to %f", accuracy)
         dataStore.edit { preferences ->
             preferences[Keys.ODOMETER_MIN_VERTICAL_ACCURACY] = accuracy
         }
     }
 
     override suspend fun setOdometerPollingInterval(interval: Long) {
-        Logger.i("DataStoreSettingsRepository: Setting odometer polling interval to $interval")
+        logger.i("DataStoreSettingsRepository: Setting odometer polling interval to %d", interval)
         dataStore.edit { preferences ->
             preferences[Keys.ODOMETER_POLLING_INTERVAL] = interval
         }
     }
 
     override suspend fun setOdometerMinDistance(distance: Float) {
-        Logger.i("DataStoreSettingsRepository: Setting odometer min distance to $distance")
+        logger.i("DataStoreSettingsRepository: Setting odometer min distance to %f", distance)
         dataStore.edit { preferences ->
             preferences[Keys.ODOMETER_MIN_DISTANCE] = distance
         }
     }
 
     override suspend fun restoreOdometerDefaults() {
-        Logger.i("DataStoreSettingsRepository: Restoring odometer defaults")
+        logger.i("DataStoreSettingsRepository: Restoring odometer defaults")
         dataStore.edit { preferences ->
             preferences.remove(Keys.ODOMETER_SPEED_THRESHOLD)
             preferences.remove(Keys.ODOMETER_MIN_ACCURACY)

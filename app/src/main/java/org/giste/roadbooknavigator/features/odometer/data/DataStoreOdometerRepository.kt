@@ -24,7 +24,7 @@ import androidx.datastore.preferences.core.edit
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
-import org.giste.roadbooknavigator.core.util.Logger
+import org.giste.roadbooknavigator.core.util.logger
 import org.giste.roadbooknavigator.features.odometer.domain.Odometer
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerRepository
 import javax.inject.Inject
@@ -51,10 +51,10 @@ class DataStoreOdometerRepository @Inject constructor(
                 partial = prefs[PARTIAL_DISTANCE_KEY] ?: 0.0
             )
         }
-        .onStart { Logger.d("DataStoreOdometerRepository: Odometer flow started") }
+        .onStart { logger.d("DataStoreOdometerRepository: Odometer flow started") }
 
     override suspend fun updateDistance(delta: Double) {
-        Logger.v("DataStoreOdometerRepository: Updating total and partial with delta: %f", delta)
+        logger.v("DataStoreOdometerRepository: Updating total and partial with delta: %f", delta)
         dataStore.edit { prefs ->
             val currentTotal = prefs[TOTAL_DISTANCE_KEY] ?: 0.0
             val currentPartial = prefs[PARTIAL_DISTANCE_KEY] ?: 0.0
@@ -64,7 +64,7 @@ class DataStoreOdometerRepository @Inject constructor(
     }
 
     override suspend fun updatePartialDistance(delta: Double) {
-        Logger.v("DataStoreOdometerRepository: Updating partial with delta: %f", delta)
+        logger.v("DataStoreOdometerRepository: Updating partial with delta: %f", delta)
         dataStore.edit { prefs ->
             val currentPartial = prefs[PARTIAL_DISTANCE_KEY] ?: 0.0
             prefs[PARTIAL_DISTANCE_KEY] = currentPartial + delta
@@ -72,12 +72,12 @@ class DataStoreOdometerRepository @Inject constructor(
     }
 
     override suspend fun resetPartialDistance() {
-        Logger.i("DataStoreOdometerRepository: Resetting partial distance")
+        logger.i("DataStoreOdometerRepository: Resetting partial distance")
         dataStore.edit { it[PARTIAL_DISTANCE_KEY] = 0.0 }
     }
 
     override suspend fun resetAllDistances() {
-        Logger.i("DataStoreOdometerRepository: Resetting all distances")
+        logger.i("DataStoreOdometerRepository: Resetting all distances")
         dataStore.edit {
             it[TOTAL_DISTANCE_KEY] = 0.0
             it[PARTIAL_DISTANCE_KEY] = 0.0
@@ -85,7 +85,7 @@ class DataStoreOdometerRepository @Inject constructor(
     }
 
     override suspend fun setPartialDistance(distance: Double) {
-        Logger.i("DataStoreOdometerRepository: Setting partial distance to: %f", distance)
+        logger.i("DataStoreOdometerRepository: Setting partial distance to: %f", distance)
         dataStore.edit { it[PARTIAL_DISTANCE_KEY] = distance }
     }
 }

@@ -17,7 +17,7 @@
 
 package org.giste.roadbooknavigator.features.roadbook.data.rn2
 
-import org.giste.roadbooknavigator.core.util.Logger
+import org.giste.roadbooknavigator.core.util.logger
 import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2Waypoint
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Point
 import javax.inject.Inject
@@ -89,13 +89,11 @@ class RoadbookGeometryCalculator @Inject constructor() {
         else if (dy < 0) t = minOf(t, top / dy)
 
         val exitPoint = Point(dx * t, dy * t)
-        Logger.v(
-            "Calculated relative exit point for wp ${current.waypointId}: in=${
-                Math.toDegrees(
-                    bearingIn
-                )
-            }°, out=${Math.toDegrees(bearingOut)}°"
-        )
+        logger.v(
+            "Calculated relative exit point for wp %d: in=%f°, out=%f°",
+            current.waypointId,
+            Math.toDegrees(bearingIn),
+            Math.toDegrees(bearingOut))
         return exitPoint
     }
 

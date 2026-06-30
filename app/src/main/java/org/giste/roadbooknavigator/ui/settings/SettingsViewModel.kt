@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import org.giste.roadbooknavigator.core.util.Logger
+import org.giste.roadbooknavigator.core.util.logger
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.AppTheme
@@ -49,7 +49,7 @@ class SettingsViewModel @Inject constructor(
 ) : ViewModel() {
 
     val uiState: StateFlow<SettingsUiState> = getSettingsUseCase()
-        .onEach { Logger.v("SettingsViewModel: Settings stream emitted: $it") }
+        .onEach { logger.v("SettingsViewModel: Settings stream emitted: %s", it) }
         .map { settings -> SettingsUiState.Success(settings) }
         .stateIn(
             scope = viewModelScope,
@@ -58,70 +58,70 @@ class SettingsViewModel @Inject constructor(
         )
 
     fun setTheme(theme: AppTheme) {
-        Logger.d("SettingsViewModel: setTheme requested: $theme")
+        logger.d("SettingsViewModel: setTheme requested: %s", theme)
         viewModelScope.launch {
             updateThemeUseCase(theme)
         }
     }
 
     fun setOrientation(orientation: AppOrientation) {
-        Logger.d("SettingsViewModel: setOrientation requested: $orientation")
+        logger.d("SettingsViewModel: setOrientation requested: %s", orientation)
         viewModelScope.launch {
             updateOrientationUseCase(orientation)
         }
     }
 
     fun setFullScreen(enabled: Boolean) {
-        Logger.d("SettingsViewModel: setFullScreen requested: $enabled")
+        logger.d("SettingsViewModel: setFullScreen requested: %b", enabled)
         viewModelScope.launch {
             updateFullScreenUseCase(enabled)
         }
     }
 
     fun setShortDistanceThreshold(threshold: Long) {
-        Logger.d("SettingsViewModel: setShortDistanceThreshold requested: $threshold")
+        logger.d("SettingsViewModel: setShortDistanceThreshold requested: %d", threshold)
         viewModelScope.launch {
             updateShortDistanceThresholdUseCase(threshold)
         }
     }
 
     fun setOdometerSpeedThreshold(threshold: Float) {
-        Logger.d("SettingsViewModel: setOdometerSpeedThreshold requested: $threshold")
+        logger.d("SettingsViewModel: setOdometerSpeedThreshold requested: %f", threshold)
         viewModelScope.launch {
             updateOdometerSpeedThresholdUseCase(threshold)
         }
     }
 
     fun setOdometerMinAccuracy(accuracy: Float) {
-        Logger.d("SettingsViewModel: setOdometerMinAccuracy requested: $accuracy")
+        logger.d("SettingsViewModel: setOdometerMinAccuracy requested: %f", accuracy)
         viewModelScope.launch {
             updateOdometerMinAccuracyUseCase(accuracy)
         }
     }
 
     fun setOdometerMinVerticalAccuracy(accuracy: Float) {
-        Logger.d("SettingsViewModel: setOdometerMinVerticalAccuracy requested: $accuracy")
+        logger.d("SettingsViewModel: setOdometerMinVerticalAccuracy requested: %f", accuracy)
         viewModelScope.launch {
             updateOdometerMinVerticalAccuracyUseCase(accuracy)
         }
     }
 
     fun setOdometerPollingInterval(interval: Long) {
-        Logger.d("SettingsViewModel: setOdometerPollingInterval requested: $interval")
+        logger.d("SettingsViewModel: setOdometerPollingInterval requested: %d", interval)
         viewModelScope.launch {
             updateOdometerPollingIntervalUseCase(interval)
         }
     }
 
     fun setOdometerMinDistance(distance: Float) {
-        Logger.d("SettingsViewModel: setOdometerMinDistance requested: $distance")
+        logger.d("SettingsViewModel: setOdometerMinDistance requested: %f", distance)
         viewModelScope.launch {
             updateOdometerMinDistanceUseCase(distance)
         }
     }
 
     fun restoreOdometerDefaults() {
-        Logger.i("SettingsViewModel: restoreOdometerDefaults requested")
+        logger.i("SettingsViewModel: restoreOdometerDefaults requested")
         viewModelScope.launch {
             restoreOdometerDefaultsUseCase()
         }

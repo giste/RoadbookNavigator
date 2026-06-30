@@ -73,6 +73,7 @@ import kotlinx.coroutines.launch
 import org.giste.roadbooknavigator.R
 import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
+import org.giste.roadbooknavigator.core.util.logger
 import org.giste.roadbooknavigator.features.odometer.domain.Odometer
 import org.giste.roadbooknavigator.features.odometer.ui.PartialDistance
 import org.giste.roadbooknavigator.features.odometer.ui.SetPartialDialog
@@ -153,7 +154,7 @@ fun DashboardContent(
                             val waypointsCount = (uiState.roadbook as? RoadbookUiState.Success)
                                 ?.route?.waypoints?.size ?: 0
                             if (waypointsCount > 0) {
-                                Logger.d("DashboardScreen: Key ${event.key} pressed, navigating forward")
+                                Logger.d("DashboardScreen: Key %s pressed, navigating forward", event.key)
                                 coroutineScope.launch {
                                     targetWaypointIndex = (targetWaypointIndex + 1)
                                         .coerceAtMost(waypointsCount - 1)
@@ -164,7 +165,7 @@ fun DashboardContent(
                         }
 
                         Key.MediaPrevious, Key.DirectionDown -> {
-                            Logger.d("DashboardScreen: Key ${event.key} pressed, navigating backward")
+                            Logger.d("DashboardScreen: Key %s pressed, navigating backward", event.key)
                             coroutineScope.launch {
                                 targetWaypointIndex = if (listState.firstVisibleItemScrollOffset > 0) {
                                     // If partially scrolled, first snap to the top of current waypoint
@@ -178,17 +179,17 @@ fun DashboardContent(
                             true
                         }
                         Key.VolumeUp, Key.DirectionRight -> {
-                            Logger.d("DashboardScreen: Key ${event.key} pressed, incrementing partial")
+                            Logger.d("DashboardScreen: Key %s pressed, incrementing partial", event.key)
                             viewModel.incrementPartialDistance()
                             true
                         }
                         Key.VolumeDown, Key.DirectionLeft -> {
-                            Logger.d("DashboardScreen: Key ${event.key} pressed, decrementing partial")
+                            Logger.d("DashboardScreen: Key %s pressed, decrementing partial", event.key)
                             viewModel.decrementPartialDistance()
                             true
                         }
                         Key.MediaPlayPause, Key.MediaPlay, Key.MediaPause, Key.F6 -> {
-                            Logger.d("DashboardScreen: Key ${event.key} pressed, resetting partial")
+                            Logger.d("DashboardScreen: Key %s pressed, resetting partial", event.key)
                             viewModel.resetPartialDistance()
                             true
                         }
@@ -218,7 +219,7 @@ fun DashboardContent(
                     viewModel.hideSetPartialDialog()
                 },
                 onConfirm = {
-                    Logger.i("DashboardScreen: Confirming new partial value: $it")
+                    Logger.i("DashboardScreen: Confirming new partial value: %f", it)
                     viewModel.setPartialDistance(it)
                     viewModel.hideSetPartialDialog()
                 }

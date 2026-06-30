@@ -17,7 +17,7 @@
 
 package org.giste.roadbooknavigator.features.roadbook.data.rn2
 
-import org.giste.roadbooknavigator.core.util.Logger
+import org.giste.roadbooknavigator.core.util.logger
 import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2Element
 import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2Icon
 import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2Road
@@ -86,7 +86,7 @@ class Rn2ElementMapper @Inject constructor(
                         nextWaypoint
                     )
                 } else {
-                    Logger.v("No roadOut end and no next waypoint for waypoint ${currentWaypoint.waypointId}, using default")
+                    logger.v("No roadOut end and no next waypoint for waypoint %d, using default", currentWaypoint.waypointId)
                     Point(0.0, -55.0) // Default if no next waypoint
                 }
 
@@ -151,7 +151,7 @@ class Rn2ElementMapper @Inject constructor(
             is Rn2Icon.Stop -> Icon.IconType.Stop
             is Rn2Icon.RiverWater -> Icon.IconType.RiverWater
             is Rn2Icon.Unknown -> {
-                Logger.w("Rn2ElementMapper: Unknown icon encountered with ID: ${jsonIcon.id}")
+                logger.w("Rn2ElementMapper: Unknown icon encountered with ID: %s", jsonIcon.id)
                 Icon.IconType.Unknown
             }
         }

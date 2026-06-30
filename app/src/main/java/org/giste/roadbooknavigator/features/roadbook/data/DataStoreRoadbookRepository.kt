@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.withContext
 import org.giste.roadbooknavigator.core.di.IoDispatcher
-import org.giste.roadbooknavigator.core.util.Logger
+import org.giste.roadbooknavigator.core.util.logger
 import org.giste.roadbooknavigator.features.roadbook.data.persistence.PersistenceMapper
 import org.giste.roadbooknavigator.features.roadbook.data.persistence.dto.PersistentRoute
 import org.giste.roadbooknavigator.features.roadbook.data.rn2.Rn2Mapper
@@ -52,29 +52,29 @@ class DataStoreRoadbookRepository @Inject constructor(
         }
     }.onEach { route ->
         if (route != null) {
-            Logger.d("DataStoreRoadbookRepository: Loaded active roadbook: ${route.name} (${route.waypoints.size} waypoints)")
+            logger.d("DataStoreRoadbookRepository: Loaded active roadbook: %s (%d waypoints)", route.name, route.waypoints.size)
         } else {
-            Logger.v("DataStoreRoadbookRepository: No active roadbook loaded")
+            logger.v("DataStoreRoadbookRepository: No active roadbook loaded")
         }
     }
 
     override suspend fun processNewRoadbook(inputStream: InputStream): Result<Route> =
         withContext(ioDispatcher) {
-            Logger.i("DataStoreRoadbookRepository: Processing new roadbook from input stream")
+            logger.i("DataStoreRoadbookRepository: Processing new roadbook from input stream")
             runCatching {
                 val jsonString = inputStream.bufferedReader().use { it.readText() }
-                Logger.v("DataStoreRoadbookRepository: JSON string read (size: ${jsonString.length} bytes)")
+                logger.v("DataStoreRoadbookRepository: JSON string read (size: %d bytes)", jsonString.length)
                 
                 val route = mapper.mapToDomain(jsonString)
-                Logger.d("DataStoreRoadbookRepository: Domain mapping complete for: ${route.name}")
+                logger.d("DataStoreRoadbookRepository: Domain mapping complete for: %s", route.name)
 
                 val persistentRoute = persistenceMapper.toPersistent(route)
                 dataStore.updateData { persistentRoute }
-                Logger.i("DataStoreRoadbookRepository: Roadbook ${route.name} persisted successfully")
+                logger.i("DataStoreRoadbookRepository: Roadbook %s persisted successfully", route.name)
 
                 route
             }.onFailure { error ->
-                Logger.e(error, "DataStoreRoadbookRepository: Failed to process new roadbook")
+                logger.e(error, "DataStoreRoadbookRepository: Failed to process new roadbook")
             }
         }
 }

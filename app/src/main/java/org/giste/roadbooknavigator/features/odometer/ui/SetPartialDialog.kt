@@ -67,8 +67,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import org.giste.roadbooknavigator.R
-import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
+import org.giste.roadbooknavigator.core.util.logger
 
 @Composable
 fun SetPartialDialog(
@@ -149,7 +149,7 @@ fun SetPartialPortrait(
                     onDismiss = onDismiss,
                     onConfirm = {
                         val newValue = input.toDoubleOrNull() ?: 0.0
-                        Logger.d("SetPartialDialog (Portrait): Confirming value $newValue")
+                        logger.d("SetPartialDialog (Portrait): Confirming value %f", newValue)
                         onConfirm(newValue * 1000.0)
                     }
                 )
@@ -211,7 +211,7 @@ fun SetPartialLandscape(
                         onDismiss = onDismiss,
                         onConfirm = {
                             val newValue = input.toDoubleOrNull() ?: 0.0
-                            Logger.d("SetPartialDialog (Landscape): Confirming value $newValue")
+                            logger.d("SetPartialDialog (Landscape): Confirming value %f", newValue)
                             onConfirm(newValue * 1000.0)
                         }
                     )

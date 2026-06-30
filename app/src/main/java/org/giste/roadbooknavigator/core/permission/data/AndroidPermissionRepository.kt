@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import org.giste.roadbooknavigator.core.permission.domain.AppPermission
 import org.giste.roadbooknavigator.core.permission.domain.PermissionState
 import org.giste.roadbooknavigator.core.permission.domain.PermissionRepository
-import org.giste.roadbooknavigator.core.util.Logger
+import org.giste.roadbooknavigator.core.util.logger
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -25,12 +25,12 @@ class AndroidPermissionRepository @Inject constructor(
     override fun observeAllPermissions(): Flow<Map<AppPermission, PermissionState>> = _states.asStateFlow()
 
     override fun refreshPermissionStates() {
-        Logger.d("Refreshing permission states in repository")
+        logger.d("Refreshing permission states in repository")
         _states.value = calculatePermissionStates()
     }
 
     private fun calculatePermissionStates(): Map<AppPermission, PermissionState> {
-        Logger.v("Calculating permission states")
+        logger.v("Calculating permission states")
         val states = AppPermission.entries.associateWith { permission ->
             val androidPermission = permission.toAndroidPermission ?: return@associateWith PermissionState.Granted
 
@@ -45,7 +45,7 @@ class AndroidPermissionRepository @Inject constructor(
                 PermissionState.Denied
             }
         }
-        Logger.d("New permission states calculated: %s", states)
+        logger.d("New permission states calculated: %s", states)
         return states
     }
 

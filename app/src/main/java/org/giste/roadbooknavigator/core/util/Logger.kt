@@ -48,4 +48,28 @@ object Logger {
     fun v(message: String, vararg args: Any?) {
         Timber.v(message, *args)
     }
+
+    /**
+     * Creates a logger instance with a specific tag.
+     */
+    fun withTag(tag: String): TaggedLogger = TaggedLogger(tag)
+}
+
+/**
+ * Extension property to provide a logger with the class name as tag.
+ * Usage: logger.d("message")
+ */
+val Any.logger: TaggedLogger
+    get() = Logger.withTag(this::class.java.simpleName)
+
+/**
+ * Wrapper to provide tagged logging.
+ */
+class TaggedLogger(private val tag: String) {
+    fun d(message: String, vararg args: Any?) = Timber.tag(tag).d(message, *args)
+    fun i(message: String, vararg args: Any?) = Timber.tag(tag).i(message, *args)
+    fun w(message: String, vararg args: Any?) = Timber.tag(tag).w(message, *args)
+    fun v(message: String, vararg args: Any?) = Timber.tag(tag).v(message, *args)
+    fun e(message: String, vararg args: Any?) = Timber.tag(tag).e(message, *args)
+    fun e(t: Throwable, message: String, vararg args: Any?) = Timber.tag(tag).e(t, message, *args)
 }

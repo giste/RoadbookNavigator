@@ -33,30 +33,33 @@ fun RoadbookIcons.Landmark.aboveBridge(onSurface: Color, surface: Color): ImageV
         viewportWidth = 48f,
         viewportHeight = 48f
     ).apply {
+        // Bridge floor
         path(fill = SolidColor(surface)) {
-            moveTo(13f, 6.5f)
-            horizontalLineToRelative(24f)
-            verticalLineToRelative(35f)
-            horizontalLineToRelative(-24f)
+            moveTo(14f, 7f)
+            horizontalLineToRelative(22f)
+            verticalLineToRelative(34f)
+            horizontalLineToRelative(-22f)
             close()
         }
+        // Bridge structure - Left
         path(
             stroke = SolidColor(onSurface),
-            strokeLineWidth = 2f
+            strokeLineWidth = 3f
         ) {
-            moveTo(44f, 1f)
-            lineTo(38f, 7f)
+            moveTo(8f, 1f)
+            lineToRelative(6f, 6f)
             verticalLineTo(41f)
-            lineTo(44f, 47f)
+            lineToRelative(-6f, 6f)
         }
+        // Bridge structure - Right
         path(
             stroke = SolidColor(onSurface),
-            strokeLineWidth = 2f
+            strokeLineWidth = 3f
         ) {
-            moveTo(6f, 1f)
-            lineTo(12f, 7f)
+            moveTo(40f, 1f)
+            lineToRelative(-6f, 6f)
             verticalLineTo(41f)
-            lineTo(6f, 47f)
+            lineToRelative(6f, 6f)
         }
     }.build()
 }

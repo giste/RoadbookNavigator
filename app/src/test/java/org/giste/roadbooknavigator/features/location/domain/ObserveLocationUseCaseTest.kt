@@ -40,7 +40,7 @@ class ObserveLocationUseCaseTest {
             odometerMinDistance = 10f
         )
         every { getSettingsUseCase() } returns flowOf(settings)
-        every { repository.getLocations(any(), any()) } returns flowOf(mockk())
+        every { repository.getLocations(any(), any()) } returns flowOf(mockk(relaxed = true))
 
         useCase().first()
 

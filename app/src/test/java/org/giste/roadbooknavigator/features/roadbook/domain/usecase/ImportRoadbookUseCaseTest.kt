@@ -38,7 +38,7 @@ class ImportRoadbookUseCaseTest {
     fun `invoke should call processNewRoadbook and reset position on success`() = runTest {
         // Given
         val inputStream: InputStream = mockk()
-        val route = mockk<Route>()
+        val route = mockk<Route>(relaxed = true)
         coEvery { repository.processNewRoadbook(inputStream) } returns Result.success(route)
         coEvery { resetRoadbookPositionUseCase() } returns Unit
 

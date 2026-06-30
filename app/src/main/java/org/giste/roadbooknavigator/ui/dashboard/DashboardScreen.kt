@@ -71,9 +71,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import kotlinx.coroutines.launch
 import org.giste.roadbooknavigator.R
-import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
-import org.giste.roadbooknavigator.core.util.logger
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.odometer.domain.Odometer
 import org.giste.roadbooknavigator.features.odometer.ui.PartialDistance
 import org.giste.roadbooknavigator.features.odometer.ui.SetPartialDialog

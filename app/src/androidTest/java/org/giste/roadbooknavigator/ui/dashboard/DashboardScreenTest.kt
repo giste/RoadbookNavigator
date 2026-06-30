@@ -531,4 +531,72 @@ class DashboardScreenTest {
         // Should still show waypoint 1 (snapped to top)
         composeTestRule.onNodeWithText("1").assertIsDisplayed()
     }
+
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+    @Test
+    fun longClickOnWaypointDistance_setsPartialDistance() {
+        val distance = 1500L
+        val waypoint = Waypoint(
+            number = 1,
+            coordinates = Coordinates(0.0, 0.0),
+            distance = Distance(distance),
+            distanceFromPrevious = Distance(distance),
+            reset = false
+        )
+        val viewModel: DashboardViewModel = mockk(relaxed = true)
+        val uiStateFlow = MutableStateFlow(
+            DashboardUiState(
+                roadbook = RoadbookUiState.Success(Route(name = "Test", waypoints = listOf(waypoint)))
+            )
+        )
+        every { viewModel.uiState } returns uiStateFlow
+
+        composeTestRule.setContent {
+            DashboardContent(
+                windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp)),
+                onSettingsClick = {},
+                viewModel = viewModel
+            )
+        }
+
+        composeTestRule.onNodeWithTag("WaypointDistanceInfo_1").performTouchInput {
+            longClick()
+        }
+
+        verify { viewModel.setPartialDistance(distance.toDouble()) }
+    }
+
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+    @Test
+    fun longClickOnResetWaypointDistance_resetsPartialDistance() {
+        val distance = 1500L
+        val waypoint = Waypoint(
+            number = 1,
+            coordinates = Coordinates(0.0, 0.0),
+            distance = Distance(distance),
+            distanceFromPrevious = Distance(distance),
+            reset = true
+        )
+        val viewModel: DashboardViewModel = mockk(relaxed = true)
+        val uiStateFlow = MutableStateFlow(
+            DashboardUiState(
+                roadbook = RoadbookUiState.Success(Route(name = "Test", waypoints = listOf(waypoint)))
+            )
+        )
+        every { viewModel.uiState } returns uiStateFlow
+
+        composeTestRule.setContent {
+            DashboardContent(
+                windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp)),
+                onSettingsClick = {},
+                viewModel = viewModel
+            )
+        }
+
+        composeTestRule.onNodeWithTag("WaypointDistanceInfo_1").performTouchInput {
+            longClick()
+        }
+
+        verify { viewModel.setPartialDistance(0.0) }
+    }
 }

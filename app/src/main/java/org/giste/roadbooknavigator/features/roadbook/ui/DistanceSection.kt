@@ -66,8 +66,8 @@ internal fun DistanceSection(
             .testTag("WaypointDistanceInfo_${waypoint.number}")
             .combinedClickable(
                 onLongClick = {
-                    val valueToSet = if (waypoint.reset) 0.0 else waypoint.distance.kilometers * 1000.0
-                    Logger.d("DistanceSection: Long clicked waypoint %d, requesting to set partial to %d", waypoint.number, valueToSet)
+                    val valueToSet = if (waypoint.reset) 0.0 else waypoint.distance.meters.toDouble()
+                    Logger.d("DistanceSection: Long clicked waypoint %d, requesting to set partial to %.2f", waypoint.number, valueToSet)
                     onSetPartialClick(valueToSet)
                 },
                 onClick = {}

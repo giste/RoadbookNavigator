@@ -35,7 +35,7 @@ import javax.inject.Singleton
  * It only handles persistent storage using DataStore.
  */
 @Singleton
-class DataStoreOdometerRepository @Inject constructor(
+internal class DataStoreOdometerRepository @Inject constructor(
     @param:OdometerDataStoreQualifier private val dataStore: DataStore<Preferences>
 ) : OdometerRepository {
 

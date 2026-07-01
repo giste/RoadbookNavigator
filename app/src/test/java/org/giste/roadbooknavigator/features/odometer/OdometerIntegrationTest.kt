@@ -33,6 +33,8 @@ import org.giste.roadbooknavigator.features.location.domain.UserLocation
 import org.giste.roadbooknavigator.features.location.domain.usecase.ObserveLocationUseCase
 import org.giste.roadbooknavigator.features.odometer.data.DataStoreOdometerRepository
 import org.giste.roadbooknavigator.features.odometer.domain.Odometer
+import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettings
+import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettingsRepository
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.GetOdometerUseCase
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.usecase.GetSettingsUseCase
@@ -57,9 +59,10 @@ class OdometerIntegrationTest {
     private lateinit var odometerRepository: DataStoreOdometerRepository
     private val observeLocationUseCase: ObserveLocationUseCase = mockk()
     private val getSettingsUseCase: GetSettingsUseCase = mockk()
+    private val odometerSettingsRepository: OdometerSettingsRepository = mockk()
     
     private val gpsFlow = MutableSharedFlow<UserLocation>()
-    private val settingsFlow = MutableSharedFlow<AppSettings>()
+    private val settingsFlow = MutableSharedFlow<OdometerSettings>()
     
     private lateinit var getOdometerUseCase: GetOdometerUseCase
 
@@ -72,9 +75,9 @@ class OdometerIntegrationTest {
         odometerRepository = DataStoreOdometerRepository(dataStore)
         
         every { observeLocationUseCase() } returns gpsFlow
-        every { getSettingsUseCase() } returns settingsFlow
+        every { odometerSettingsRepository.getSettings() } returns settingsFlow
         
-        getOdometerUseCase = GetOdometerUseCase(odometerRepository, observeLocationUseCase, getSettingsUseCase)
+        getOdometerUseCase = GetOdometerUseCase(odometerRepository, observeLocationUseCase, odometerSettingsRepository)
     }
 
     @Test
@@ -86,7 +89,7 @@ class OdometerIntegrationTest {
         }
 
         // 1. Setup settings
-        settingsFlow.emit(AppSettings(odometerMinAccuracy = 10f, odometerSpeedThreshold = 0.5f))
+        settingsFlow.emit(OdometerSettings(minAccuracy = 10f, speedThreshold = 0.5f))
 
         // 2. Initial state should be 0,0 (emitted when odometerRepository.odometer is combined)
         assertTrue(results.any { it.total == 0.0 && it.partial == 0.0 })
@@ -119,7 +122,7 @@ class OdometerIntegrationTest {
         }
 
         // Valid fix 1
-        settingsFlow.emit(AppSettings(odometerSpeedThreshold = 0.5f))
+        settingsFlow.emit(OdometerSettings(speedThreshold = 0.5f))
         val loc1 = createLocation(40.0, -3.0)
         gpsFlow.emit(loc1)
 
@@ -130,7 +133,7 @@ class OdometerIntegrationTest {
         assertTrue(firstDistance > 0)
 
         // Change settings (e.g. higher speed threshold)
-        settingsFlow.emit(AppSettings(odometerSpeedThreshold = 50.0f))
+        settingsFlow.emit(OdometerSettings(speedThreshold = 50.0f))
         
         // Valid fix 3 but ignored due to speed threshold
         val loc3 = createLocation(40.002, -3.0, speed = 10f) // 10 < 50
@@ -140,7 +143,7 @@ class OdometerIntegrationTest {
         assertEquals(firstDistance, results.last().total, 0.001)
 
         // Restore settings
-        settingsFlow.emit(AppSettings(odometerSpeedThreshold = 0.5f))
+        settingsFlow.emit(OdometerSettings(speedThreshold = 0.5f))
 
         // Valid fix 4 -> Should calculate distance from loc2 (last valid point) to loc4
         val loc4 = createLocation(40.003, -3.0)

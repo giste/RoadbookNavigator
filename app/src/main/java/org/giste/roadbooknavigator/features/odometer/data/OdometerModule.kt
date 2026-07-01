@@ -28,24 +28,31 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerRepository
+import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettingsRepository
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class OdometerDataStoreQualifier
+internal annotation class OdometerDataStoreQualifier
 
 private val Context.odometerDataStore: DataStore<Preferences> by preferencesDataStore(name = "odometer_state")
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class OdometerModule {
+internal abstract class OdometerModule {
 
     @Binds
     @Singleton
-    abstract fun bindOdometerRepository(
+    internal abstract fun bindOdometerRepository(
         impl: DataStoreOdometerRepository
     ): OdometerRepository
+
+    @Binds
+    @Singleton
+    internal abstract fun bindOdometerSettingsRepository(
+        impl: DataStoreOdometerSettingsRepository
+    ): OdometerSettingsRepository
 
     companion object {
         @Provides

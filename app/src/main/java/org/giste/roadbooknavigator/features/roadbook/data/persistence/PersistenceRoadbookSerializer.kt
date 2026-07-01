@@ -38,7 +38,7 @@ import javax.inject.Inject
 /**
  * Serializer for [PersistentRoute] using kotlinx.serialization JSON.
  */
-class PersistenceRoadbookSerializer @Inject constructor() : Serializer<PersistentRoute> {
+internal class PersistenceRoadbookSerializer @Inject constructor() : Serializer<PersistentRoute> {
 
     private val json = Json {
         encodeDefaults = true

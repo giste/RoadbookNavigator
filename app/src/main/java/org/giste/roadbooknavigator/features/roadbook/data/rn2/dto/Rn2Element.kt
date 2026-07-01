@@ -26,9 +26,9 @@ import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.JsonElement as KJsonElement
 
 @Serializable(with = Rn2ElementSerializer::class)
-sealed class Rn2Element
+internal sealed class Rn2Element
 
-object Rn2ElementSerializer : JsonContentPolymorphicSerializer<Rn2Element>(Rn2Element::class) {
+internal object Rn2ElementSerializer : JsonContentPolymorphicSerializer<Rn2Element>(Rn2Element::class) {
     override fun selectDeserializer(element: KJsonElement): DeserializationStrategy<Rn2Element> {
         val jsonObject = element.jsonObject
         val type = jsonObject["type"]?.jsonPrimitive?.content
@@ -45,7 +45,7 @@ object Rn2ElementSerializer : JsonContentPolymorphicSerializer<Rn2Element>(Rn2El
 }
 
 @Serializable
-data class Rn2Road(
+internal data class Rn2Road(
     val start: Rn2Point? = null,
     val end: Rn2Point? = null,
     val typeId: Int? = null,
@@ -53,13 +53,13 @@ data class Rn2Road(
 ) : Rn2Element()
 
 @Serializable
-data class Rn2Track(
+internal data class Rn2Track(
     val roadIn: Rn2Road,
     val roadOut: Rn2Road,
 ) : Rn2Element()
 
 @Serializable
-data class Rn2Text(
+internal data class Rn2Text(
     val id: String? = null,
     val text: String,
     val fontSize: Int,
@@ -73,7 +73,7 @@ data class Rn2Text(
 ) : Rn2Element()
 
 @Serializable
-data class Rn2Point(
+internal data class Rn2Point(
     val x: Double,
     val y: Double
 )

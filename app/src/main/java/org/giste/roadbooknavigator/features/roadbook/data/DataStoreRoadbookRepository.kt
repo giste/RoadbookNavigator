@@ -37,7 +37,7 @@ import javax.inject.Inject
  * Implementation of [RoadbookRepository] that handles .rn2 files and internal caching
  * using Jetpack DataStore.
  */
-class DataStoreRoadbookRepository @Inject constructor(
+internal class DataStoreRoadbookRepository @Inject constructor(
     private val mapper: Rn2Mapper,
     private val persistenceMapper: PersistenceMapper,
     @param:RoadbookDataStoreQualifier private val dataStore: DataStore<PersistentRoute>,

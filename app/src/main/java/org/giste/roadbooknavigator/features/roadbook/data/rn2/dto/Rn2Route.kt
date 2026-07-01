@@ -22,7 +22,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
 @Serializable
-data class Rn2RouteResponse(
+internal data class Rn2RouteResponse(
     val route: Rn2RouteData
 ) {
     companion object {
@@ -41,7 +41,7 @@ data class Rn2RouteResponse(
 }
 
 @Serializable
-data class Rn2RouteData(
+internal data class Rn2RouteData(
     val version: Int,
     val name: String = "",
     val description: String = "",
@@ -53,7 +53,7 @@ data class Rn2RouteData(
 )
 
 @Serializable
-data class Rn2Waypoint(
+internal data class Rn2Waypoint(
     @SerialName("t_uuid") val tUuid: String,
     @SerialName("waypointid") val waypointId: Int,
     val lat: Double,
@@ -65,17 +65,17 @@ data class Rn2Waypoint(
 )
 
 @Serializable
-data class Rn2Tulip(
+internal data class Rn2Tulip(
     val elements: List<Rn2Element> = emptyList()
 )
 
 @Serializable
-data class Rn2Notes(
+internal data class Rn2Notes(
     val elements: List<Rn2Element> = emptyList()
 )
 
 @Serializable
-data class Rn2RouteSettings(
+internal data class Rn2RouteSettings(
     val units: String = "metric",
     @SerialName("coordFormat") val coordFormat: Int = 1,
     val showHighlight: Boolean = true

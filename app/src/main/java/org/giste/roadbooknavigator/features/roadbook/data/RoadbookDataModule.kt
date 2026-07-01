@@ -42,17 +42,17 @@ import javax.inject.Singleton
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class RoadbookDataStoreQualifier
+internal annotation class RoadbookDataStoreQualifier
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class RoadbookSessionDataStoreQualifier
+internal annotation class RoadbookSessionDataStoreQualifier
 
 private val Context.roadbookSessionDataStore: DataStore<Preferences> by preferencesDataStore(name = "roadbook_session_state")
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class RoadbookDataModule {
+internal abstract class RoadbookDataModule {
 
     @Binds
     @Singleton
@@ -73,7 +73,7 @@ abstract class RoadbookDataModule {
         @Provides
         @Singleton
         @RoadbookDataStoreQualifier
-        fun provideRoadbookDataStore(
+        internal fun provideRoadbookDataStore(
             @ApplicationContext context: Context,
             @IoDispatcher ioDispatcher: CoroutineDispatcher,
             serializer: PersistenceRoadbookSerializer
@@ -90,7 +90,7 @@ abstract class RoadbookDataModule {
         @Provides
         @Singleton
         @RoadbookSessionDataStoreQualifier
-        fun provideRoadbookSessionDataStore(
+        internal fun provideRoadbookSessionDataStore(
             @ApplicationContext context: Context
         ): DataStore<Preferences> = context.roadbookSessionDataStore
     }

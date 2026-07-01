@@ -36,7 +36,7 @@ import javax.inject.Inject
  * Mapper class responsible for converting individual JSON elements (Icons, Roads, etc.)
  * into their corresponding Domain models.
  */
-class Rn2ElementMapper @Inject constructor(
+internal class Rn2ElementMapper @Inject constructor(
     private val geometryCalculator: RoadbookGeometryCalculator
 ) {
 

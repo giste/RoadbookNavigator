@@ -30,7 +30,7 @@ import kotlin.math.roundToLong
  * Service responsible for the sequential processing of waypoints,
  * including distance accumulation, reset logic, and visibility filtering.
  */
-class WaypointProcessor @Inject constructor(
+internal class WaypointProcessor @Inject constructor(
     private val geometryCalculator: RoadbookGeometryCalculator,
     private val rn2ElementMapper: Rn2ElementMapper
 ) {

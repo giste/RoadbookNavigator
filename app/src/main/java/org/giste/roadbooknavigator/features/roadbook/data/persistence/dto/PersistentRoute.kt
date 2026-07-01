@@ -20,7 +20,7 @@ package org.giste.roadbooknavigator.features.roadbook.data.persistence.dto
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class PersistentRoute(
+internal data class PersistentRoute(
     val name: String = "",
     val description: String = "",
     val startLocation: String = "",
@@ -33,7 +33,7 @@ data class PersistentRoute(
 }
 
 @Serializable
-data class PersistentWaypoint(
+internal data class PersistentWaypoint(
     val number: Int,
     val coordinates: PersistentCoordinates,
     val distanceMeters: Long,
@@ -48,7 +48,7 @@ data class PersistentWaypoint(
  * Persistent DTO for geographic coordinates.
  */
 @Serializable
-data class PersistentCoordinates(
+internal data class PersistentCoordinates(
     val latitude: Double,
     val longitude: Double,
     val elevation: Double = 0.0,
@@ -58,7 +58,7 @@ data class PersistentCoordinates(
  * Persistent DTO for a 2D point in the drawing canvas.
  */
 @Serializable
-data class PersistentPoint(
+internal data class PersistentPoint(
     val x: Double,
     val y: Double,
 )

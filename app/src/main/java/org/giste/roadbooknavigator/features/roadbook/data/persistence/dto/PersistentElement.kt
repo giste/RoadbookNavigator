@@ -20,10 +20,10 @@ package org.giste.roadbooknavigator.features.roadbook.data.persistence.dto
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed class PersistentElement
+internal sealed class PersistentElement
 
 @Serializable
-data class PersistentRoad(
+internal data class PersistentRoad(
     val start: PersistentPoint?,
     val end: PersistentPoint?,
     val roadType: String,
@@ -31,13 +31,13 @@ data class PersistentRoad(
 ) : PersistentElement()
 
 @Serializable
-data class PersistentTrack(
+internal data class PersistentTrack(
     val roadIn: PersistentRoad,
     val roadOut: PersistentRoad,
 ) : PersistentElement()
 
 @Serializable
-data class PersistentIcon(
+internal data class PersistentIcon(
     val iconType: String,
     val width: Int,
     val height: Int,
@@ -49,7 +49,7 @@ data class PersistentIcon(
 ) : PersistentElement()
 
 @Serializable
-data class PersistentText(
+internal data class PersistentText(
     val text: String,
     val fontSize: Int,
     val lineHeight: Double,

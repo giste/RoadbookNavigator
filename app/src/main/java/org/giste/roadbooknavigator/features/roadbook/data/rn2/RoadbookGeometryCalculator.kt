@@ -30,7 +30,7 @@ import kotlin.math.sqrt
 /**
  * Utility class for geometric calculations required by the roadbook parser.
  */
-class RoadbookGeometryCalculator @Inject constructor() {
+internal class RoadbookGeometryCalculator @Inject constructor() {
 
     /**
      * Calculates the Haversine distance between two waypoints in meters.

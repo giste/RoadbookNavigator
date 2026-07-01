@@ -27,7 +27,7 @@ import javax.inject.Inject
  * High-level Orchestrator to convert RN2 JSON strings to Domain Route models.
  * Delegates specific processing and mapping to specialized components.
  */
-class Rn2Mapper @Inject constructor(
+internal class Rn2Mapper @Inject constructor(
     private val waypointProcessor: WaypointProcessor
 ) {
 

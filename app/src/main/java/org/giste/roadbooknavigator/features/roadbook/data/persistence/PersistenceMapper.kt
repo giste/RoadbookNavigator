@@ -42,7 +42,7 @@ import javax.inject.Inject
 /**
  * Mapper responsible for converting between Domain models and Persistence DTOs.
  */
-class PersistenceMapper @Inject constructor() {
+internal class PersistenceMapper @Inject constructor() {
 
     fun toPersistent(route: Route): PersistentRoute {
         return PersistentRoute(

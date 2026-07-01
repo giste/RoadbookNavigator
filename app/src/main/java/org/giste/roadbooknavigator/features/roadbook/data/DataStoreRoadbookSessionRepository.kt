@@ -32,7 +32,7 @@ import javax.inject.Inject
 /**
  * Implementation of [RoadbookSessionRepository] using Preferences DataStore.
  */
-class DataStoreRoadbookSessionRepository @Inject constructor(
+internal class DataStoreRoadbookSessionRepository @Inject constructor(
     @param:RoadbookSessionDataStoreQualifier private val dataStore: DataStore<Preferences>
 ) : RoadbookSessionRepository {
 

@@ -37,13 +37,14 @@ class ObserveLocationUseCaseTest {
     fun `should call repository getLocations with parameters from settings`() = runTest {
         val settings = AppSettings(
             odometerPollingInterval = 2000L,
-            odometerMinDistance = 10f
+            odometerMinDistance = 10f,
         )
         every { getSettingsUseCase() } returns flowOf(settings)
         every { repository.getLocations(any(), any()) } returns flowOf(mockk(relaxed = true))
 
         useCase().first()
 
+        @Suppress("UnusedFlow")
         verify { repository.getLocations(2000L, 10f) }
     }
 }

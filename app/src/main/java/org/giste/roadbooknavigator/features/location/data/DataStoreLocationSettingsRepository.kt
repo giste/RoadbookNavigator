@@ -40,9 +40,6 @@ internal class DataStoreLocationSettingsRepository @Inject constructor(
     private object Keys {
         val POLLING_INTERVAL = longPreferencesKey("polling_interval")
         val MIN_DISTANCE = floatPreferencesKey("min_distance")
-        val MIN_ACCURACY = floatPreferencesKey("min_accuracy")
-        val MIN_VERTICAL_ACCURACY = floatPreferencesKey("min_vertical_accuracy")
-        val SPEED_THRESHOLD = floatPreferencesKey("speed_threshold")
     }
 
     override fun getLocationSettings(): Flow<LocationSettings> = dataStore.data.map { preferences ->
@@ -51,12 +48,6 @@ internal class DataStoreLocationSettingsRepository @Inject constructor(
                 ?: LocationSettings.DEFAULT_POLLING_INTERVAL,
             minDistance = preferences[Keys.MIN_DISTANCE]
                 ?: LocationSettings.DEFAULT_MIN_DISTANCE,
-            minAccuracy = preferences[Keys.MIN_ACCURACY]
-                ?: LocationSettings.DEFAULT_MIN_ACCURACY,
-            minVerticalAccuracy = preferences[Keys.MIN_VERTICAL_ACCURACY]
-                ?: LocationSettings.DEFAULT_MIN_VERTICAL_ACCURACY,
-            speedThreshold = preferences[Keys.SPEED_THRESHOLD]
-                ?: LocationSettings.DEFAULT_SPEED_THRESHOLD
         )
     }
 
@@ -69,24 +60,6 @@ internal class DataStoreLocationSettingsRepository @Inject constructor(
     override suspend fun updateMinDistance(distance: Float) {
         dataStore.edit { preferences ->
             preferences[Keys.MIN_DISTANCE] = distance
-        }
-    }
-
-    override suspend fun updateMinAccuracy(accuracy: Float) {
-        dataStore.edit { preferences ->
-            preferences[Keys.MIN_ACCURACY] = accuracy
-        }
-    }
-
-    override suspend fun updateMinVerticalAccuracy(accuracy: Float) {
-        dataStore.edit { preferences ->
-            preferences[Keys.MIN_VERTICAL_ACCURACY] = accuracy
-        }
-    }
-
-    override suspend fun updateSpeedThreshold(threshold: Float) {
-        dataStore.edit { preferences ->
-            preferences[Keys.SPEED_THRESHOLD] = threshold
         }
     }
 

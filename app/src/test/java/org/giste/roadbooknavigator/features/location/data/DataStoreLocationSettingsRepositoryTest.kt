@@ -58,9 +58,6 @@ class DataStoreLocationSettingsRepositoryTest {
         val settings = repository.getLocationSettings().first()
         assertEquals(LocationSettings.DEFAULT_POLLING_INTERVAL, settings.pollingInterval)
         assertEquals(LocationSettings.DEFAULT_MIN_DISTANCE, settings.minDistance)
-        assertEquals(LocationSettings.DEFAULT_MIN_ACCURACY, settings.minAccuracy)
-        assertEquals(LocationSettings.DEFAULT_MIN_VERTICAL_ACCURACY, settings.minVerticalAccuracy)
-        assertEquals(LocationSettings.DEFAULT_SPEED_THRESHOLD, settings.speedThreshold)
     }
 
     @Test
@@ -82,37 +79,8 @@ class DataStoreLocationSettingsRepositoryTest {
     }
 
     @Test
-    fun `updateMinAccuracy should persist value`() = runTest {
-        val newValue = 15.0f
-        repository.updateMinAccuracy(newValue)
-        
-        val settings = repository.getLocationSettings().first()
-        assertEquals(newValue, settings.minAccuracy)
-    }
-
-    @Test
-    fun `updateMinVerticalAccuracy should persist value`() = runTest {
-        val newValue = 8.0f
-        repository.updateMinVerticalAccuracy(newValue)
-        
-        val settings = repository.getLocationSettings().first()
-        assertEquals(newValue, settings.minVerticalAccuracy)
-    }
-
-    @Test
-    fun `updateSpeedThreshold should persist value`() = runTest {
-        val newValue = 1.2f
-        repository.updateSpeedThreshold(newValue)
-        
-        val settings = repository.getLocationSettings().first()
-        assertEquals(newValue, settings.speedThreshold)
-    }
-
-    @Test
     fun `restoreDefaults should reset values`() = runTest {
         // Given
-        repository.updateMinAccuracy(50f)
-        repository.updateMinVerticalAccuracy(30f)
         repository.updatePollingInterval(3000L)
         
         // When
@@ -120,8 +88,6 @@ class DataStoreLocationSettingsRepositoryTest {
         
         // Then
         val settings = repository.getLocationSettings().first()
-        assertEquals(LocationSettings.DEFAULT_MIN_ACCURACY, settings.minAccuracy)
-        assertEquals(LocationSettings.DEFAULT_MIN_VERTICAL_ACCURACY, settings.minVerticalAccuracy)
         assertEquals(LocationSettings.DEFAULT_POLLING_INTERVAL, settings.pollingInterval)
     }
 }

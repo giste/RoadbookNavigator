@@ -39,21 +39,6 @@ interface LocationSettingsRepository {
     suspend fun updateMinDistance(distance: Float)
 
     /**
-     * Updates the minimum horizontal accuracy.
-     */
-    suspend fun updateMinAccuracy(accuracy: Float)
-
-    /**
-     * Updates the minimum vertical accuracy.
-     */
-    suspend fun updateMinVerticalAccuracy(accuracy: Float)
-
-    /**
-     * Updates the speed threshold.
-     */
-    suspend fun updateSpeedThreshold(threshold: Float)
-
-    /**
      * Restores default values for all location settings.
      */
     suspend fun restoreDefaults()

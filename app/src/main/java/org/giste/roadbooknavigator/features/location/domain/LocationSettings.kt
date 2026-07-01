@@ -22,22 +22,13 @@ package org.giste.roadbooknavigator.features.location.domain
  *
  * @property pollingInterval Minimum time interval between location updates, in milliseconds.
  * @property minDistance Minimum distance between location updates, in meters.
- * @property minAccuracy Maximum allowed horizontal GPS accuracy in meters.
- * @property minVerticalAccuracy Maximum allowed vertical GPS accuracy in meters.
- * @property speedThreshold Minimum speed in m/s below which updates might be ignored to prevent "jitter".
  */
 data class LocationSettings(
     val pollingInterval: Long = DEFAULT_POLLING_INTERVAL,
     val minDistance: Float = DEFAULT_MIN_DISTANCE,
-    val minAccuracy: Float = DEFAULT_MIN_ACCURACY,
-    val minVerticalAccuracy: Float = DEFAULT_MIN_VERTICAL_ACCURACY,
-    val speedThreshold: Float = DEFAULT_SPEED_THRESHOLD
 ) {
     companion object {
         const val DEFAULT_POLLING_INTERVAL = 500L // ms
         const val DEFAULT_MIN_DISTANCE = 1.0f // m
-        const val DEFAULT_MIN_ACCURACY = 20.0f // m
-        const val DEFAULT_MIN_VERTICAL_ACCURACY = 10.0f // m
-        const val DEFAULT_SPEED_THRESHOLD = 0.5f // m/s
     }
 }

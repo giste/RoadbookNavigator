@@ -25,36 +25,36 @@ import org.giste.roadbooknavigator.features.location.domain.LocationSettingsRepo
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-class UpdateMinDistanceUseCaseTest {
+class UpdateLocationPollingIntervalUseCaseTest {
 
     private val repository: LocationSettingsRepository = mockk()
-    private val useCase = UpdateMinDistanceUseCase(repository)
+    private val useCase = UpdateLocationPollingIntervalUseCase(repository)
 
     @Test
-    fun `invoke should call repository when distance is valid`() = runTest {
+    fun `invoke should call repository when interval is valid`() = runTest {
         // Given
-        val distance = 5.0f
-        coEvery { repository.updateMinDistance(distance) } returns Unit
+        val interval = 1000L
+        coEvery { repository.updatePollingInterval(interval) } returns Unit
 
         // When
-        val result = useCase(distance)
+        val result = useCase(interval)
 
         // Then
         assertTrue(result.isSuccess)
-        coVerify { repository.updateMinDistance(distance) }
+        coVerify { repository.updatePollingInterval(interval) }
     }
 
     @Test
-    fun `invoke should return failure when distance is invalid`() = runTest {
+    fun `invoke should return failure when interval is invalid`() = runTest {
         // Given
-        val distance = -1.0f
+        val interval = 50L
 
         // When
-        val result = useCase(distance)
+        val result = useCase(interval)
 
         // Then
         assertTrue(result.isFailure)
         assertTrue(result.exceptionOrNull() is IllegalArgumentException)
-        coVerify(exactly = 0) { repository.updateMinDistance(any()) }
+        coVerify(exactly = 0) { repository.updatePollingInterval(any()) }
     }
 }

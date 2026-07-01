@@ -18,17 +18,17 @@
 package org.giste.roadbooknavigator.features.location.domain.usecase
 
 import org.giste.roadbooknavigator.features.location.domain.LocationSettingsRepository
-import org.giste.roadbooknavigator.features.location.domain.PollingIntervalThreshold
+import org.giste.roadbooknavigator.features.location.domain.MinDistanceThreshold
 import javax.inject.Inject
 
 /**
- * Use case to update the location polling interval.
+ * Use case to update the minimum distance between location updates.
  */
-class UpdatePollingIntervalUseCase @Inject constructor(
+class UpdateLocationMinDistanceUseCase @Inject constructor(
     private val repository: LocationSettingsRepository
 ) {
-    suspend operator fun invoke(interval: Long): Result<Unit> = runCatching {
-        PollingIntervalThreshold(interval)
-        repository.updatePollingInterval(interval)
+    suspend operator fun invoke(distance: Float): Result<Unit> = runCatching {
+        MinDistanceThreshold(distance)
+        repository.updateMinDistance(distance)
     }
 }

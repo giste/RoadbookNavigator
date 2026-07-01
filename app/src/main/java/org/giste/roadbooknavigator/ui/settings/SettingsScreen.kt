@@ -84,12 +84,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import org.giste.roadbooknavigator.R
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
+import org.giste.roadbooknavigator.features.location.domain.MinDistanceThreshold
+import org.giste.roadbooknavigator.features.location.domain.PollingIntervalThreshold
 import org.giste.roadbooknavigator.features.settings.domain.AccuracyThreshold
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.AppTheme
-import org.giste.roadbooknavigator.features.settings.domain.MinDistanceThreshold
-import org.giste.roadbooknavigator.features.settings.domain.PollingIntervalThreshold
 import org.giste.roadbooknavigator.features.settings.domain.ShortDistanceThreshold
 import org.giste.roadbooknavigator.features.settings.domain.SpeedThreshold
 import org.giste.roadbooknavigator.features.settings.domain.VerticalAccuracyThreshold
@@ -190,7 +190,7 @@ fun SettingsContent(
                     }
 
                     is SettingsUiState.Success -> {
-                        val settings = uiState.settings
+                        val settings = uiState.appSettings
                         when (selectedTab) {
                             0 -> UserTab(
                                 settings = settings,

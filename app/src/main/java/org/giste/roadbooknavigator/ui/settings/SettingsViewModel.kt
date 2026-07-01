@@ -22,20 +22,34 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.giste.roadbooknavigator.core.util.logger
+import org.giste.roadbooknavigator.features.location.domain.LocationSettings
+import org.giste.roadbooknavigator.features.location.domain.usecase.GetLocationSettingsUseCase
+import org.giste.roadbooknavigator.features.location.domain.usecase.RestoreLocationDefaultsUseCase
+import org.giste.roadbooknavigator.features.location.domain.usecase.UpdateLocationMinDistanceUseCase
+import org.giste.roadbooknavigator.features.location.domain.usecase.UpdateLocationPollingIntervalUseCase
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.AppTheme
-import org.giste.roadbooknavigator.features.settings.domain.usecase.*
+import org.giste.roadbooknavigator.features.settings.domain.usecase.GetSettingsUseCase
+import org.giste.roadbooknavigator.features.settings.domain.usecase.RestoreOdometerDefaultsUseCase
+import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateFullScreenUseCase
+import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateOdometerMinAccuracyUseCase
+import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateOdometerMinVerticalAccuracyUseCase
+import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateOdometerSpeedThresholdUseCase
+import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateOrientationUseCase
+import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateShortDistanceThresholdUseCase
+import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateThemeUseCase
 import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     getSettingsUseCase: GetSettingsUseCase,
+    getLocationSettingsUseCase: GetLocationSettingsUseCase,
     private val updateThemeUseCase: UpdateThemeUseCase,
     private val updateOrientationUseCase: UpdateOrientationUseCase,
     private val updateFullScreenUseCase: UpdateFullScreenUseCase,
@@ -43,14 +57,19 @@ class SettingsViewModel @Inject constructor(
     private val updateOdometerSpeedThresholdUseCase: UpdateOdometerSpeedThresholdUseCase,
     private val updateOdometerMinAccuracyUseCase: UpdateOdometerMinAccuracyUseCase,
     private val updateOdometerMinVerticalAccuracyUseCase: UpdateOdometerMinVerticalAccuracyUseCase,
-    private val updateOdometerPollingIntervalUseCase: UpdateOdometerPollingIntervalUseCase,
-    private val updateOdometerMinDistanceUseCase: UpdateOdometerMinDistanceUseCase,
-    private val restoreOdometerDefaultsUseCase: RestoreOdometerDefaultsUseCase
+    private val restoreOdometerDefaultsUseCase: RestoreOdometerDefaultsUseCase,
+    private val updateLocationPollingIntervalUseCase: UpdateLocationPollingIntervalUseCase,
+    private val updateLocationMinDistanceUseCase: UpdateLocationMinDistanceUseCase,
+    private val restoreLocationDefaultsUseCase: RestoreLocationDefaultsUseCase,
 ) : ViewModel() {
 
-    val uiState: StateFlow<SettingsUiState> = getSettingsUseCase()
+    val uiState: StateFlow<SettingsUiState> = combine(
+        getSettingsUseCase(),
+        getLocationSettingsUseCase()
+    ) { settings, locationSettings ->
+        SettingsUiState.Success(settings, locationSettings)
+    }
         .onEach { logger.v("SettingsViewModel: Settings stream emitted: %s", it) }
-        .map { settings -> SettingsUiState.Success(settings) }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
@@ -109,14 +128,14 @@ class SettingsViewModel @Inject constructor(
     fun setOdometerPollingInterval(interval: Long) {
         logger.d("SettingsViewModel: setOdometerPollingInterval requested: %d", interval)
         viewModelScope.launch {
-            updateOdometerPollingIntervalUseCase(interval)
+            updateLocationPollingIntervalUseCase(interval)
         }
     }
 
     fun setOdometerMinDistance(distance: Float) {
         logger.d("SettingsViewModel: setOdometerMinDistance requested: %f", distance)
         viewModelScope.launch {
-            updateOdometerMinDistanceUseCase(distance)
+            updateLocationMinDistanceUseCase(distance)
         }
     }
 
@@ -124,11 +143,15 @@ class SettingsViewModel @Inject constructor(
         logger.i("SettingsViewModel: restoreOdometerDefaults requested")
         viewModelScope.launch {
             restoreOdometerDefaultsUseCase()
+            restoreLocationDefaultsUseCase()
         }
     }
 }
 
 sealed interface SettingsUiState {
     data object Loading : SettingsUiState
-    data class Success(val settings: AppSettings) : SettingsUiState
+    data class Success(
+        val appSettings: AppSettings = AppSettings(),
+        val locationSettings: LocationSettings = LocationSettings(),
+    ) : SettingsUiState
 }

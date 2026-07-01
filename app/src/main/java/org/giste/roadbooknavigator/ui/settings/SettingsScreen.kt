@@ -456,6 +456,7 @@ fun RemoteTab(
 
         SettingsSectionTitle(stringResource(R.string.settings_remote_keys_title))
 
+        val isCustom = settings.model == RemoteModel.CUSTOM
         RemoteAction.entries.forEach { action ->
             val keyCodes = when (action) {
                 RemoteAction.ROADBOOK_UP -> settings.customKeys.roadbookUp
@@ -468,6 +469,7 @@ fun RemoteTab(
             KeyMappingItem(
                 action = action,
                 keyCodes = keyCodes,
+                enabled = isCustom,
                 onClick = { capturingAction = action }
             )
         }
@@ -542,24 +544,44 @@ fun RemoteModelSelector(
 fun KeyMappingItem(
     action: RemoteAction,
     keyCodes: List<Int>,
+    enabled: Boolean,
     onClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp)
+            .background(
+                if (enabled) Color.Transparent else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.05f),
+                MaterialTheme.shapes.medium
+            )
             .border(1.dp, MaterialTheme.colorScheme.outlineVariant, MaterialTheme.shapes.medium)
+            .clickable(enabled = enabled, onClick = onClick)
             .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(text = stringResource(action.labelRes), fontWeight = FontWeight.Medium)
-        Button(
-            onClick = onClick,
-            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
-            modifier = Modifier.defaultMinSize(minHeight = 32.dp)
+        Text(
+            text = stringResource(action.labelRes),
+            fontWeight = FontWeight.Medium,
+            color = if (enabled) Color.Unspecified else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+        )
+        Box(
+            modifier = Modifier
+                .defaultMinSize(minWidth = 64.dp)
+                .background(
+                    if (enabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant,
+                    MaterialTheme.shapes.small
+                )
+                .padding(horizontal = 12.dp, vertical = 6.dp),
+            contentAlignment = Alignment.Center
         ) {
-            Text(text = keyCodes.joinToString(", ") { keyCodeToName(it) })
+            Text(
+                text = keyCodes.joinToString(", ") { keyCodeToName(it) },
+                style = MaterialTheme.typography.labelLarge,
+                color = if (enabled) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
+                fontWeight = FontWeight.Bold
+            )
         }
     }
 }

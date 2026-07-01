@@ -17,12 +17,26 @@
 
 package org.giste.roadbooknavigator.features.location.data
 
+import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import org.giste.roadbooknavigator.features.location.domain.LocationRepository
+import org.giste.roadbooknavigator.features.location.domain.LocationSettingsRepository
+import javax.inject.Qualifier
 import javax.inject.Singleton
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class LocationSettingsDataStore
+
+private val Context.locationSettingsDataStore: DataStore<Preferences> by preferencesDataStore(name = "location_settings")
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -33,4 +47,18 @@ abstract class LocationDataModule {
     abstract fun bindLocationRepository(
         gpsLocationRepository: GpsLocationRepository
     ): LocationRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindLocationSettingsRepository(
+        dataStoreLocationSettingsRepository: DataStoreLocationSettingsRepository
+    ): LocationSettingsRepository
+
+    companion object {
+        @Provides
+        @Singleton
+        @LocationSettingsDataStore
+        fun provideLocationSettingsDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
+            context.locationSettingsDataStore
+    }
 }

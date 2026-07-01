@@ -34,11 +34,11 @@ private val Context.settingsDataStore: DataStore<Preferences> by preferencesData
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class SettingsModule {
+internal abstract class SettingsModule {
 
     @Binds
     @Singleton
-    abstract fun bindSettingsRepository(
+    internal abstract fun bindSettingsRepository(
         settingsRepository: DataStoreSettingsRepository
     ): SettingsRepository
 
@@ -46,7 +46,7 @@ abstract class SettingsModule {
         @Provides
         @Singleton
         @SettingsDataStore
-        fun provideSettingsDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
+        internal fun provideSettingsDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
             context.settingsDataStore
     }
 }

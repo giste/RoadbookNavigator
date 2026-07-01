@@ -58,7 +58,7 @@ internal abstract class LocationDataModule {
         @Provides
         @Singleton
         @LocationSettingsDataStore
-        fun provideLocationSettingsDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
+        internal fun provideLocationSettingsDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
             context.locationSettingsDataStore
     }
 }

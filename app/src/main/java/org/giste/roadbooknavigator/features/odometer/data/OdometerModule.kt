@@ -58,7 +58,7 @@ internal abstract class OdometerModule {
         @Provides
         @Singleton
         @OdometerDataStoreQualifier
-        fun provideOdometerDataStore(
+        internal fun provideOdometerDataStore(
             @ApplicationContext context: Context
         ): DataStore<Preferences> = context.odometerDataStore
     }

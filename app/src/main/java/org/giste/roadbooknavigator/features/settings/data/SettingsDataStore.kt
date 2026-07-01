@@ -21,4 +21,4 @@ import javax.inject.Qualifier
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class SettingsDataStore
+internal annotation class SettingsDataStore

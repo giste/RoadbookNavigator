@@ -39,7 +39,7 @@ import javax.inject.Inject
  * This class handles the persistence of user preferences in a reactive way
  * using a key-value pair storage system.
  */
-class DataStoreSettingsRepository @Inject constructor(
+internal class DataStoreSettingsRepository @Inject constructor(
     @param:SettingsDataStore private val dataStore: DataStore<Preferences>
 ) : SettingsRepository {
 

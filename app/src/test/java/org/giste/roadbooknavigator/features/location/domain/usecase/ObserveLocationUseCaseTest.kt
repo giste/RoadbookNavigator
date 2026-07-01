@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.location.domain
+package org.giste.roadbooknavigator.features.location.domain.usecase
 
 import io.mockk.every
 import io.mockk.mockk
@@ -23,28 +23,28 @@ import io.mockk.verify
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import org.giste.roadbooknavigator.features.settings.domain.AppSettings
-import org.giste.roadbooknavigator.features.settings.domain.usecase.GetSettingsUseCase
+import org.giste.roadbooknavigator.features.location.domain.LocationRepository
+import org.giste.roadbooknavigator.features.location.domain.LocationSettings
 import org.junit.Test
 
 class ObserveLocationUseCaseTest {
 
     private val repository: LocationRepository = mockk()
-    private val getSettingsUseCase: GetSettingsUseCase = mockk()
-    private val useCase = ObserveLocationUseCase(repository, getSettingsUseCase)
+    private val getLocationSettingsUseCase: GetLocationSettingsUseCase = mockk()
+    private val useCase = ObserveLocationUseCase(repository, getLocationSettingsUseCase)
 
     @Test
     fun `should call repository getLocations with parameters from settings`() = runTest {
-        val settings = AppSettings(
-            odometerPollingInterval = 2000L,
-            odometerMinDistance = 10f,
+        val settings = LocationSettings(
+            pollingInterval = 2000L,
+            minDistance = 10f,
         )
-        every { getSettingsUseCase() } returns flowOf(settings)
+        every { getLocationSettingsUseCase() } returns flowOf(settings)
         every { repository.getLocations(any(), any()) } returns flowOf(mockk(relaxed = true))
 
         useCase().first()
 
         @Suppress("UnusedFlow")
-        verify { repository.getLocations(2000L, 10f) }
+        (verify { repository.getLocations(2000L, 10f) })
     }
 }

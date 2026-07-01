@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.location.domain
+package org.giste.roadbooknavigator.features.location.domain.usecase
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -23,7 +23,8 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import org.giste.roadbooknavigator.core.util.logger
-import org.giste.roadbooknavigator.features.settings.domain.usecase.GetSettingsUseCase
+import org.giste.roadbooknavigator.features.location.domain.LocationRepository
+import org.giste.roadbooknavigator.features.location.domain.UserLocation
 import javax.inject.Inject
 
 /**
@@ -31,21 +32,21 @@ import javax.inject.Inject
  */
 class ObserveLocationUseCase @Inject constructor(
     private val repository: LocationRepository,
-    private val getSettingsUseCase: GetSettingsUseCase
+    private val getLocationSettingsUseCase: GetLocationSettingsUseCase
 ) {
     @OptIn(ExperimentalCoroutinesApi::class)
     operator fun invoke(): Flow<UserLocation> {
         logger.d("ObserveLocationUseCase: Invoked")
-        return getSettingsUseCase()
+        return getLocationSettingsUseCase()
             .flatMapLatest { settings ->
                 logger.d(
                     "ObserveLocationUseCase: Settings updated, requesting locations with interval: %d ms, minDistance: %f m",
-                    settings.odometerPollingInterval,
-                    settings.odometerMinDistance
+                    settings.pollingInterval,
+                    settings.minDistance
                 )
                 repository.getLocations(
-                    pollingInterval = settings.odometerPollingInterval,
-                    minDistance = settings.odometerMinDistance
+                    pollingInterval = settings.pollingInterval,
+                    minDistance = settings.minDistance
                 )
             }
             .onStart { logger.i("ObserveLocationUseCase: Location flow started") }

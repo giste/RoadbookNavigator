@@ -37,7 +37,7 @@ import javax.inject.Singleton
  * Implementation of [LocationRepository] using the Android Framework [android.location.LocationManager].
  */
 @Singleton
-class GpsLocationRepository @Inject constructor(
+internal class GpsLocationRepository @Inject constructor(
     @param:ApplicationContext private val context: Context
 ) : LocationRepository {
 

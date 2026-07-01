@@ -33,8 +33,8 @@ import javax.inject.Singleton
  * Jetpack DataStore implementation of [LocationSettingsRepository].
  */
 @Singleton
-class DataStoreLocationSettingsRepository @Inject constructor(
-    @LocationSettingsDataStore private val dataStore: DataStore<Preferences>
+internal class DataStoreLocationSettingsRepository @Inject constructor(
+    @param:LocationSettingsDataStore private val dataStore: DataStore<Preferences>
 ) : LocationSettingsRepository {
 
     private object Keys {

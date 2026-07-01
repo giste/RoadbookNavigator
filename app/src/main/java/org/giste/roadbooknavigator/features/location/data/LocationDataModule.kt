@@ -34,23 +34,23 @@ import javax.inject.Singleton
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class LocationSettingsDataStore
+internal annotation class LocationSettingsDataStore
 
 private val Context.locationSettingsDataStore: DataStore<Preferences> by preferencesDataStore(name = "location_settings")
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class LocationDataModule {
+internal abstract class LocationDataModule {
 
     @Binds
     @Singleton
-    abstract fun bindLocationRepository(
+    internal abstract fun bindLocationRepository(
         gpsLocationRepository: GpsLocationRepository
     ): LocationRepository
 
     @Binds
     @Singleton
-    abstract fun bindLocationSettingsRepository(
+    internal abstract fun bindLocationSettingsRepository(
         dataStoreLocationSettingsRepository: DataStoreLocationSettingsRepository
     ): LocationSettingsRepository
 

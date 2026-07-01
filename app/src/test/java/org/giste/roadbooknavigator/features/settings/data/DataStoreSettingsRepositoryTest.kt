@@ -28,6 +28,8 @@ import kotlinx.coroutines.test.runTest
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.AppTheme
+import org.giste.roadbooknavigator.features.settings.domain.RemoteKeys
+import org.giste.roadbooknavigator.features.settings.domain.RemoteModel
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -95,6 +97,31 @@ class DataStoreSettingsRepositoryTest {
         
         val settings = repository.getSettings().first()
         assertEquals(newThreshold, settings.shortDistanceThreshold)
+    }
+
+    @Test
+    fun `setRemoteModel should persist model and update keys if not custom`() = runTest {
+        repository.setRemoteModel(RemoteModel.TERRA_PIRATA)
+        
+        val settings = repository.getSettings().first()
+        assertEquals(RemoteModel.TERRA_PIRATA, settings.remoteKeySettings.model)
+        assertEquals(RemoteKeys.TERRA_PIRATA, settings.remoteKeySettings.customKeys)
+    }
+
+    @Test
+    fun `setCustomKeys should persist keys and set model to CUSTOM`() = runTest {
+        val customKeys = RemoteKeys(
+            roadbookUp = listOf(1),
+            roadbookDown = listOf(2),
+            increasePartial = listOf(3),
+            decreasePartial = listOf(4),
+            resetPartial = listOf(5)
+        )
+        repository.setCustomKeys(customKeys)
+        
+        val settings = repository.getSettings().first()
+        assertEquals(RemoteModel.CUSTOM, settings.remoteKeySettings.model)
+        assertEquals(customKeys, settings.remoteKeySettings.customKeys)
     }
 
     @Test

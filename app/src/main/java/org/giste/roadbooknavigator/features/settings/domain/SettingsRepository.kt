@@ -39,4 +39,10 @@ interface SettingsRepository {
 
     /** Sets the threshold for short distance warnings. */
     suspend fun setShortDistanceThreshold(threshold: Long)
+
+    /** Updates the selected remote control model. */
+    suspend fun setRemoteModel(model: RemoteModel)
+
+    /** Updates the custom key mappings. */
+    suspend fun setCustomKeys(keys: RemoteKeys)
 }

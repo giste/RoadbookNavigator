@@ -30,6 +30,9 @@ import org.giste.roadbooknavigator.core.util.logger
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.AppTheme
+import org.giste.roadbooknavigator.features.settings.domain.RemoteKeySettings
+import org.giste.roadbooknavigator.features.settings.domain.RemoteKeys
+import org.giste.roadbooknavigator.features.settings.domain.RemoteModel
 import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
 import javax.inject.Inject
 
@@ -48,9 +51,16 @@ internal class DataStoreSettingsRepository @Inject constructor(
         val ORIENTATION = stringPreferencesKey("app_orientation")
         val FULL_SCREEN = booleanPreferencesKey("full_screen")
         val SHORT_DISTANCE_THRESHOLD = longPreferencesKey("short_distance_threshold")
+        val REMOTE_MODEL = stringPreferencesKey("remote_model")
+        val CUSTOM_ROADBOOK_UP = stringPreferencesKey("custom_roadbook_up")
+        val CUSTOM_ROADBOOK_DOWN = stringPreferencesKey("custom_roadbook_down")
+        val CUSTOM_INCREASE_PARTIAL = stringPreferencesKey("custom_increase_partial")
+        val CUSTOM_DECREASE_PARTIAL = stringPreferencesKey("custom_decrease_partial")
+        val CUSTOM_RESET_PARTIAL = stringPreferencesKey("custom_reset_partial")
     }
 
     override fun getSettings(): Flow<AppSettings> = dataStore.data.map { preferences ->
+        val remoteModel = preferences[Keys.REMOTE_MODEL]?.let { safeRemoteModelOf(it) } ?: RemoteModel.DND2
         AppSettings(
             theme = preferences[Keys.THEME]?.let { safeThemeOf(it) } ?: AppTheme.FOLLOW_SYSTEM,
             orientation = preferences[Keys.ORIENTATION]?.let { safeOrientationOf(it) }
@@ -58,6 +68,16 @@ internal class DataStoreSettingsRepository @Inject constructor(
             fullScreen = preferences[Keys.FULL_SCREEN] ?: true,
             shortDistanceThreshold = preferences[Keys.SHORT_DISTANCE_THRESHOLD]
                 ?: AppSettings.DEFAULT_SHORT_DISTANCE_THRESHOLD,
+            remoteKeySettings = RemoteKeySettings(
+                model = remoteModel,
+                customKeys = RemoteKeys(
+                    roadbookUp = preferences[Keys.CUSTOM_ROADBOOK_UP]?.toIntList() ?: RemoteKeys.DND2.roadbookUp,
+                    roadbookDown = preferences[Keys.CUSTOM_ROADBOOK_DOWN]?.toIntList() ?: RemoteKeys.DND2.roadbookDown,
+                    increasePartial = preferences[Keys.CUSTOM_INCREASE_PARTIAL]?.toIntList() ?: RemoteKeys.DND2.increasePartial,
+                    decreasePartial = preferences[Keys.CUSTOM_DECREASE_PARTIAL]?.toIntList() ?: RemoteKeys.DND2.decreasePartial,
+                    resetPartial = preferences[Keys.CUSTOM_RESET_PARTIAL]?.toIntList() ?: RemoteKeys.DND2.resetPartial,
+                )
+            )
         )
     }.onEach {
         logger.v("DataStoreSettingsRepository: Settings updated: %s", it)
@@ -91,6 +111,39 @@ internal class DataStoreSettingsRepository @Inject constructor(
         }
     }
 
+    override suspend fun setRemoteModel(model: RemoteModel) {
+        logger.i("DataStoreSettingsRepository: Setting remote model to %s", model)
+        dataStore.edit { preferences ->
+            preferences[Keys.REMOTE_MODEL] = model.name
+            if (model != RemoteModel.CUSTOM) {
+                val keys = when (model) {
+                    RemoteModel.DND2 -> RemoteKeys.DND2
+                    RemoteModel.TERRA_PIRATA -> RemoteKeys.TERRA_PIRATA
+                    RemoteModel.CUSTOM -> null
+                }
+                keys?.let {
+                    preferences[Keys.CUSTOM_ROADBOOK_UP] = it.roadbookUp.toPreferenceString()
+                    preferences[Keys.CUSTOM_ROADBOOK_DOWN] = it.roadbookDown.toPreferenceString()
+                    preferences[Keys.CUSTOM_INCREASE_PARTIAL] = it.increasePartial.toPreferenceString()
+                    preferences[Keys.CUSTOM_DECREASE_PARTIAL] = it.decreasePartial.toPreferenceString()
+                    preferences[Keys.CUSTOM_RESET_PARTIAL] = it.resetPartial.toPreferenceString()
+                }
+            }
+        }
+    }
+
+    override suspend fun setCustomKeys(keys: RemoteKeys) {
+        logger.i("DataStoreSettingsRepository: Setting custom keys")
+        dataStore.edit { preferences ->
+            preferences[Keys.REMOTE_MODEL] = RemoteModel.CUSTOM.name
+            preferences[Keys.CUSTOM_ROADBOOK_UP] = keys.roadbookUp.toPreferenceString()
+            preferences[Keys.CUSTOM_ROADBOOK_DOWN] = keys.roadbookDown.toPreferenceString()
+            preferences[Keys.CUSTOM_INCREASE_PARTIAL] = keys.increasePartial.toPreferenceString()
+            preferences[Keys.CUSTOM_DECREASE_PARTIAL] = keys.decreasePartial.toPreferenceString()
+            preferences[Keys.CUSTOM_RESET_PARTIAL] = keys.resetPartial.toPreferenceString()
+        }
+    }
+
     private fun safeThemeOf(name: String): AppTheme = try {
         AppTheme.valueOf(name)
     } catch (_: IllegalArgumentException) {
@@ -102,4 +155,14 @@ internal class DataStoreSettingsRepository @Inject constructor(
     } catch (_: IllegalArgumentException) {
         AppOrientation.FOLLOW_SYSTEM
     }
+
+    private fun safeRemoteModelOf(name: String): RemoteModel = try {
+        RemoteModel.valueOf(name)
+    } catch (_: IllegalArgumentException) {
+        RemoteModel.DND2
+    }
+
+    private fun List<Int>.toPreferenceString(): String = joinToString(",")
+
+    private fun String.toIntList(): List<Int> = if (isEmpty()) emptyList() else split(",").mapNotNull { it.toIntOrNull() }
 }

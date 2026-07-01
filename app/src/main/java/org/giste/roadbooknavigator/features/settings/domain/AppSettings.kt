@@ -24,12 +24,14 @@ package org.giste.roadbooknavigator.features.settings.domain
  * @property orientation Preferred screen orientation.
  * @property fullScreen Whether the app should be in immersive full-screen mode.
  * @property shortDistanceThreshold Threshold in meters to highlight "short distance" instructions.
+ * @property remoteKeySettings Configuration for remote control keys.
  */
 data class AppSettings(
     val theme: AppTheme = AppTheme.FOLLOW_SYSTEM,
     val orientation: AppOrientation = AppOrientation.FOLLOW_SYSTEM,
     val fullScreen: Boolean = true,
     val shortDistanceThreshold: Long = DEFAULT_SHORT_DISTANCE_THRESHOLD,
+    val remoteKeySettings: RemoteKeySettings = RemoteKeySettings(),
 ) {
     companion object {
         const val DEFAULT_SHORT_DISTANCE_THRESHOLD = 300L

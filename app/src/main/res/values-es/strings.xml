@@ -38,8 +38,23 @@
     <string name="settings_full_screen_title">Pantalla completa</string>
     <string name="settings_full_screen_helper">Ocultar barras de estado y navegación para una experiencia inmersiva.</string>
     <string name="settings_tab_user">Usuario</string>
+    <string name="settings_tab_remote">Mando</string>
     <string name="settings_tab_advanced">Avanzado</string>
     <string name="settings_tab_maps">Mapas</string>
+
+    <string name="settings_remote_model_title">Modelo de mando</string>
+    <string name="settings_remote_model_dnd2">DND2</string>
+    <string name="settings_remote_model_terra_pirata">Terra Pirata</string>
+    <string name="settings_remote_model_custom">Mapeo personalizado</string>
+    <string name="settings_remote_keys_title">Mapeo de teclas</string>
+    <string name="settings_remote_action_rb_up">Roadbook arriba</string>
+    <string name="settings_remote_action_rb_down">Roadbook abajo</string>
+    <string name="settings_remote_action_inc_partial">Aumentar parcial</string>
+    <string name="settings_remote_action_dec_partial">Disminuir parcial</string>
+    <string name="settings_remote_action_reset_partial">Reset parcial</string>
+    <string name="settings_remote_capture_title">Capturar tecla</string>
+    <string name="settings_remote_capture_helper">Pulsa un botón en tu mando para asignarlo a %1$s.</string>
+    <string name="settings_remote_capture_detected">Código detectado: %1$d</string>
 
     <string name="settings_advanced_warning">ADVERTENCIA: Estos ajustes afectan al rendimiento del GPS. No los cambie a menos que sepa lo que está haciendo.</string>
     <string name="settings_advanced_restore_defaults">Restablecer GPS por defecto</string>

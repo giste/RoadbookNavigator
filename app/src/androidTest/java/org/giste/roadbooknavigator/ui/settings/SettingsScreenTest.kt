@@ -36,6 +36,8 @@ import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettings
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.AppTheme
+import org.giste.roadbooknavigator.features.settings.domain.RemoteModel
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -65,7 +67,9 @@ class SettingsScreenTest {
                     onOdometerMinVerticalAccuracyChange = {},
                     onLocationPollingIntervalChange = {},
                     onLocationMinDistanceChange = {},
-                    onRestoreOdometerDefaults = {}
+                    onRestoreOdometerDefaults = {},
+                    onRemoteModelSelected = {},
+                    onCustomKeysChanged = {}
                 )
             }
         }
@@ -73,12 +77,16 @@ class SettingsScreenTest {
         // Initially on User tab
         composeTestRule.onNodeWithText(context.getString(R.string.settings_theme_title)).assertIsDisplayed()
 
-        // Switch to Advanced tab
+        // Switch to Remote tab
         composeTestRule.onNodeWithTag("SettingsTab_1").performClick()
+        composeTestRule.onNodeWithText(context.getString(R.string.settings_remote_model_title)).assertIsDisplayed()
+
+        // Switch to Advanced tab
+        composeTestRule.onNodeWithTag("SettingsTab_2").performClick()
         composeTestRule.onNodeWithText(context.getString(R.string.settings_advanced_warning)).assertIsDisplayed()
 
         // Switch to Maps tab
-        composeTestRule.onNodeWithTag("SettingsTab_2").performClick()
+        composeTestRule.onNodeWithTag("SettingsTab_3").performClick()
         composeTestRule.onNodeWithText("Map Management - Coming Soon").assertIsDisplayed()
     }
 
@@ -100,7 +108,9 @@ class SettingsScreenTest {
                     onOdometerMinVerticalAccuracyChange = {},
                     onLocationPollingIntervalChange = {},
                     onLocationMinDistanceChange = {},
-                    onRestoreOdometerDefaults = {}
+                    onRestoreOdometerDefaults = {},
+                    onRemoteModelSelected = {},
+                    onCustomKeysChanged = {}
                 )
             }
         }
@@ -130,7 +140,9 @@ class SettingsScreenTest {
                     onOdometerMinVerticalAccuracyChange = {},
                     onLocationPollingIntervalChange = {},
                     onLocationMinDistanceChange = {},
-                    onRestoreOdometerDefaults = {}
+                    onRestoreOdometerDefaults = {},
+                    onRemoteModelSelected = {},
+                    onCustomKeysChanged = {}
                 )
             }
         }
@@ -146,7 +158,11 @@ class SettingsScreenTest {
         composeTestRule.setContent {
             RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
                 SettingsContent(
-                    uiState = SettingsUiState.Success(AppSettings(), LocationSettings(), OdometerSettings()),
+                    uiState = SettingsUiState.Success(
+                        AppSettings(),
+                        LocationSettings(),
+                        OdometerSettings()
+                    ),
                     onBackClick = {},
                     onThemeSelected = {},
                     onOrientationSelected = {},
@@ -157,13 +173,15 @@ class SettingsScreenTest {
                     onOdometerMinVerticalAccuracyChange = {},
                     onLocationPollingIntervalChange = {},
                     onLocationMinDistanceChange = {},
-                    onRestoreOdometerDefaults = { restoreClicked = true }
+                    onRestoreOdometerDefaults = { restoreClicked = true },
+                    onRemoteModelSelected = {},
+                    onCustomKeysChanged = {}
                 )
             }
         }
 
         // Switch to Advanced tab
-        composeTestRule.onNodeWithTag("SettingsTab_1").performClick()
+        composeTestRule.onNodeWithTag("SettingsTab_2").performClick()
 
         // Click restore defaults button
         composeTestRule.onNodeWithTag("RestoreDefaultsButton")
@@ -190,7 +208,9 @@ class SettingsScreenTest {
                     onOdometerMinVerticalAccuracyChange = {},
                     onLocationPollingIntervalChange = {},
                     onLocationMinDistanceChange = {},
-                    onRestoreOdometerDefaults = {}
+                    onRestoreOdometerDefaults = {},
+                    onRemoteModelSelected = {},
+                    onCustomKeysChanged = {}
                 )
             }
         }
@@ -220,7 +240,9 @@ class SettingsScreenTest {
                     onOdometerMinVerticalAccuracyChange = {},
                     onLocationPollingIntervalChange = {},
                     onLocationMinDistanceChange = {},
-                    onRestoreOdometerDefaults = {}
+                    onRestoreOdometerDefaults = {},
+                    onRemoteModelSelected = {},
+                    onCustomKeysChanged = {}
                 )
             }
         }
@@ -249,7 +271,9 @@ class SettingsScreenTest {
                     onOdometerMinVerticalAccuracyChange = {},
                     onLocationPollingIntervalChange = {},
                     onLocationMinDistanceChange = {},
-                    onRestoreOdometerDefaults = {}
+                    onRestoreOdometerDefaults = {},
+                    onRemoteModelSelected = {},
+                    onCustomKeysChanged = {}
                 )
             }
         }
@@ -281,13 +305,15 @@ class SettingsScreenTest {
                     onOdometerMinVerticalAccuracyChange = {},
                     onLocationPollingIntervalChange = { newValue = it },
                     onLocationMinDistanceChange = {},
-                    onRestoreOdometerDefaults = {}
+                    onRestoreOdometerDefaults = {},
+                    onRemoteModelSelected = {},
+                    onCustomKeysChanged = {}
                 )
             }
         }
 
         // Switch to Advanced tab
-        composeTestRule.onNodeWithTag("SettingsTab_1").performClick()
+        composeTestRule.onNodeWithTag("SettingsTab_2").performClick()
         composeTestRule.waitForIdle()
 
         // Click on the slider
@@ -317,13 +343,15 @@ class SettingsScreenTest {
                     onOdometerMinVerticalAccuracyChange = {},
                     onLocationPollingIntervalChange = {},
                     onLocationMinDistanceChange = {},
-                    onRestoreOdometerDefaults = {}
+                    onRestoreOdometerDefaults = {},
+                    onRemoteModelSelected = {},
+                    onCustomKeysChanged = {}
                 )
             }
         }
 
         // Switch to Advanced tab
-        composeTestRule.onNodeWithTag("SettingsTab_1").performClick()
+        composeTestRule.onNodeWithTag("SettingsTab_2").performClick()
         composeTestRule.waitForIdle()
 
         // Click on the slider
@@ -353,13 +381,15 @@ class SettingsScreenTest {
                     onOdometerMinVerticalAccuracyChange = {},
                     onLocationPollingIntervalChange = {},
                     onLocationMinDistanceChange = {},
-                    onRestoreOdometerDefaults = {}
+                    onRestoreOdometerDefaults = {},
+                    onRemoteModelSelected = {},
+                    onCustomKeysChanged = {}
                 )
             }
         }
 
         // Switch to Advanced tab
-        composeTestRule.onNodeWithTag("SettingsTab_1").performClick()
+        composeTestRule.onNodeWithTag("SettingsTab_2").performClick()
         composeTestRule.waitForIdle()
 
         // Click on the slider
@@ -389,13 +419,15 @@ class SettingsScreenTest {
                     onOdometerMinVerticalAccuracyChange = { newValue = it },
                     onLocationPollingIntervalChange = {},
                     onLocationMinDistanceChange = {},
-                    onRestoreOdometerDefaults = {}
+                    onRestoreOdometerDefaults = {},
+                    onRemoteModelSelected = {},
+                    onCustomKeysChanged = {}
                 )
             }
         }
 
         // Switch to Advanced tab
-        composeTestRule.onNodeWithTag("SettingsTab_1").performClick()
+        composeTestRule.onNodeWithTag("SettingsTab_2").performClick()
         composeTestRule.waitForIdle()
 
         // Click on the slider
@@ -414,7 +446,11 @@ class SettingsScreenTest {
         composeTestRule.setContent {
             RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
                 SettingsContent(
-                    uiState = SettingsUiState.Success(locationSettings = LocationSettings(minDistance = 1.0f), odometerSettings = OdometerSettings()),
+                    uiState = SettingsUiState.Success(
+                        locationSettings = LocationSettings(
+                            minDistance = 1.0f
+                        ), odometerSettings = OdometerSettings()
+                    ),
                     onBackClick = {},
                     onThemeSelected = {},
                     onOrientationSelected = {},
@@ -425,13 +461,15 @@ class SettingsScreenTest {
                     onOdometerMinVerticalAccuracyChange = {},
                     onLocationPollingIntervalChange = {},
                     onLocationMinDistanceChange = { newValue = it },
-                    onRestoreOdometerDefaults = {}
+                    onRestoreOdometerDefaults = {},
+                    onRemoteModelSelected = {},
+                    onCustomKeysChanged = {}
                 )
             }
         }
 
         // Switch to Advanced tab
-        composeTestRule.onNodeWithTag("SettingsTab_1").performClick()
+        composeTestRule.onNodeWithTag("SettingsTab_2").performClick()
         composeTestRule.waitForIdle()
 
         // Click on the slider
@@ -462,13 +500,15 @@ class SettingsScreenTest {
                     onOdometerMinVerticalAccuracyChange = {},
                     onLocationPollingIntervalChange = {},
                     onLocationMinDistanceChange = {},
-                    onRestoreOdometerDefaults = {}
+                    onRestoreOdometerDefaults = {},
+                    onRemoteModelSelected = {},
+                    onCustomKeysChanged = {}
                 )
             }
         }
 
         // Switch to Advanced tab
-        composeTestRule.onNodeWithTag("SettingsTab_1").performClick()
+        composeTestRule.onNodeWithTag("SettingsTab_2").performClick()
         composeTestRule.onNodeWithText(context.getString(R.string.settings_advanced_warning)).assertIsDisplayed()
 
         // Simulate configuration change
@@ -476,5 +516,40 @@ class SettingsScreenTest {
 
         // Verify Advanced tab is still active
         composeTestRule.onNodeWithText(context.getString(R.string.settings_advanced_warning)).assertIsDisplayed()
+    }
+
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+    @Test
+    fun remoteModelSelection_triggersCallback() {
+        var selectedModel: RemoteModel? = null
+        composeTestRule.setContent {
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                SettingsContent(
+                    uiState = SettingsUiState.Success(AppSettings(), LocationSettings(), OdometerSettings()),
+                    onBackClick = {},
+                    onThemeSelected = {},
+                    onOrientationSelected = {},
+                    onFullScreenChange = {},
+                    onShortDistanceThresholdChange = {},
+                    onOdometerSpeedThresholdChange = {},
+                    onOdometerMinAccuracyChange = {},
+                    onOdometerMinVerticalAccuracyChange = {},
+                    onLocationPollingIntervalChange = {},
+                    onLocationMinDistanceChange = {},
+                    onRestoreOdometerDefaults = {},
+                    onRemoteModelSelected = { selectedModel = it },
+                    onCustomKeysChanged = {}
+                )
+            }
+        }
+
+        // Switch to Remote tab
+        composeTestRule.onNodeWithTag("SettingsTab_1").performClick()
+
+        // Click Terra Pirata button
+        composeTestRule.onNodeWithTag("RemoteModelButton_${RemoteModel.TERRA_PIRATA.name}")
+            .performScrollTo()
+            .performClick()
+        assertEquals(RemoteModel.TERRA_PIRATA, selectedModel)
     }
 }

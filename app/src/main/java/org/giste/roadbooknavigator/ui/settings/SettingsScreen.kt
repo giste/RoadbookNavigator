@@ -21,11 +21,13 @@ import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
@@ -40,6 +42,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.RadioButtonUnchecked
 import androidx.compose.material.icons.filled.ScreenRotation
 import androidx.compose.material.icons.filled.StayCurrentLandscape
 import androidx.compose.material.icons.filled.StayCurrentPortrait
@@ -65,22 +68,31 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.nativeKeyCode
+import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import org.giste.roadbooknavigator.R
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
@@ -94,6 +106,8 @@ import org.giste.roadbooknavigator.features.odometer.domain.VerticalAccuracyThre
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.AppTheme
+import org.giste.roadbooknavigator.features.settings.domain.RemoteKeys
+import org.giste.roadbooknavigator.features.settings.domain.RemoteModel
 import org.giste.roadbooknavigator.features.settings.domain.ShortDistanceThreshold
 
 @Composable
@@ -114,7 +128,9 @@ fun SettingsScreen(
         onOdometerMinVerticalAccuracyChange = viewModel::setOdometerMinVerticalAccuracy,
         onLocationPollingIntervalChange = viewModel::setLocationPollingInterval,
         onLocationMinDistanceChange = viewModel::setLocationMinDistance,
-        onRestoreOdometerDefaults = viewModel::restoreOdometerDefaults
+        onRestoreOdometerDefaults = viewModel::restoreOdometerDefaults,
+        onRemoteModelSelected = viewModel::setRemoteModel,
+        onCustomKeysChanged = viewModel::setCustomKeys
     )
 }
 
@@ -133,10 +149,13 @@ fun SettingsContent(
     onLocationPollingIntervalChange: (Long) -> Unit,
     onLocationMinDistanceChange: (Float) -> Unit,
     onRestoreOdometerDefaults: () -> Unit,
+    onRemoteModelSelected: (RemoteModel) -> Unit,
+    onCustomKeysChanged: (RemoteKeys) -> Unit,
 ) {
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
     val tabs = listOf(
         stringResource(R.string.settings_tab_user),
+        stringResource(R.string.settings_tab_remote),
         stringResource(R.string.settings_tab_advanced),
         stringResource(R.string.settings_tab_maps)
     )
@@ -202,7 +221,13 @@ fun SettingsContent(
                                 onShortDistanceThresholdChange = onShortDistanceThresholdChange
                             )
 
-                            1 -> AdvancedTab(
+                            1 -> RemoteTab(
+                                settings = settings.remoteKeySettings,
+                                onModelSelected = onRemoteModelSelected,
+                                onKeysChanged = onCustomKeysChanged
+                            )
+
+                            2 -> AdvancedTab(
                                 locationSettings = uiState.locationSettings,
                                 odometerSettings = uiState.odometerSettings,
                                 onOdometerSpeedThresholdChange = onOdometerSpeedThresholdChange,
@@ -213,7 +238,7 @@ fun SettingsContent(
                                 onRestoreOdometerDefaults = onRestoreOdometerDefaults
                             )
 
-                            2 -> MapTab()
+                            3 -> MapTab()
                         }
                     }
                 }
@@ -406,6 +431,213 @@ fun SliderSettingItem(
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
     }
+}
+
+@Composable
+fun RemoteTab(
+    settings: org.giste.roadbooknavigator.features.settings.domain.RemoteKeySettings,
+    onModelSelected: (RemoteModel) -> Unit,
+    onKeysChanged: (RemoteKeys) -> Unit
+) {
+    var capturingAction by remember { mutableStateOf<RemoteAction?>(null) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(RoadbookNavigatorTheme.dimensions.paddingLarge),
+        verticalArrangement = Arrangement.spacedBy(RoadbookNavigatorTheme.dimensions.paddingLarge)
+    ) {
+        SettingsSectionTitle(stringResource(R.string.settings_remote_model_title))
+        RemoteModelSelector(currentModel = settings.model, onModelSelected = onModelSelected)
+
+        HorizontalDivider()
+
+        SettingsSectionTitle(stringResource(R.string.settings_remote_keys_title))
+
+        RemoteAction.entries.forEach { action ->
+            val keyCodes = when (action) {
+                RemoteAction.ROADBOOK_UP -> settings.customKeys.roadbookUp
+                RemoteAction.ROADBOOK_DOWN -> settings.customKeys.roadbookDown
+                RemoteAction.INCREASE_PARTIAL -> settings.customKeys.increasePartial
+                RemoteAction.DECREASE_PARTIAL -> settings.customKeys.decreasePartial
+                RemoteAction.RESET_PARTIAL -> settings.customKeys.resetPartial
+            }
+
+            KeyMappingItem(
+                action = action,
+                keyCodes = keyCodes,
+                onClick = { capturingAction = action }
+            )
+        }
+    }
+
+    capturingAction?.let { action ->
+        KeyCaptureDialog(
+            action = action,
+            onKeyCaptured = { keyCode ->
+                val currentKeys = settings.customKeys
+                val newKeys = when (action) {
+                    RemoteAction.ROADBOOK_UP -> currentKeys.copy(roadbookUp = listOf(keyCode))
+                    RemoteAction.ROADBOOK_DOWN -> currentKeys.copy(roadbookDown = listOf(keyCode))
+                    RemoteAction.INCREASE_PARTIAL -> currentKeys.copy(increasePartial = listOf(keyCode))
+                    RemoteAction.DECREASE_PARTIAL -> currentKeys.copy(decreasePartial = listOf(keyCode))
+                    RemoteAction.RESET_PARTIAL -> currentKeys.copy(resetPartial = listOf(keyCode))
+                }
+                onKeysChanged(newKeys)
+                capturingAction = null
+            },
+            onDismiss = { capturingAction = null }
+        )
+    }
+}
+
+@Composable
+fun RemoteModelSelector(
+    currentModel: RemoteModel,
+    onModelSelected: (RemoteModel) -> Unit
+) {
+    val options = listOf(
+        RemoteModel.DND2 to stringResource(R.string.settings_remote_model_dnd2),
+        RemoteModel.TERRA_PIRATA to stringResource(R.string.settings_remote_model_terra_pirata),
+        RemoteModel.CUSTOM to stringResource(R.string.settings_remote_model_custom)
+    )
+
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        options.forEach { (model, label) ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+                    .background(
+                        if (currentModel == model) MaterialTheme.colorScheme.primaryContainer
+                        else Color.Transparent,
+                        MaterialTheme.shapes.small
+                    )
+                    .border(
+                        1.dp,
+                        if (currentModel == model) MaterialTheme.colorScheme.primary
+                        else MaterialTheme.colorScheme.outlineVariant,
+                        MaterialTheme.shapes.small
+                    )
+                    .clickable { onModelSelected(model) }
+                    .padding(horizontal = 16.dp)
+                    .testTag("RemoteModelButton_${model.name}"),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(text = label, fontWeight = if (currentModel == model) FontWeight.Bold else FontWeight.Normal)
+                Icon(
+                    imageVector = if (currentModel == model) Icons.Default.CheckCircle else Icons.Default.RadioButtonUnchecked,
+                    contentDescription = null,
+                    tint = if (currentModel == model) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun KeyMappingItem(
+    action: RemoteAction,
+    keyCodes: List<Int>,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp)
+            .border(1.dp, MaterialTheme.colorScheme.outlineVariant, MaterialTheme.shapes.medium)
+            .padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(text = stringResource(action.labelRes), fontWeight = FontWeight.Medium)
+        Button(
+            onClick = onClick,
+            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
+            modifier = Modifier.defaultMinSize(minHeight = 32.dp)
+        ) {
+            Text(text = keyCodes.joinToString(", "))
+        }
+    }
+}
+
+@Composable
+fun KeyCaptureDialog(
+    action: RemoteAction,
+    onKeyCaptured: (Int) -> Unit,
+    onDismiss: () -> Unit
+) {
+    var detectedKeyCode by remember { mutableIntStateOf(-1) }
+    val focusRequester = remember { FocusRequester() }
+
+    Dialog(onDismissRequest = onDismiss) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .focusRequester(focusRequester)
+                .onPreviewKeyEvent { event ->
+                    detectedKeyCode = event.key.nativeKeyCode
+                    true
+                },
+            shape = MaterialTheme.shapes.large,
+        ) {
+            Column(
+                modifier = Modifier.padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.settings_remote_capture_title),
+                    style = MaterialTheme.typography.headlineSmall
+                )
+                Text(
+                    text = stringResource(R.string.settings_remote_capture_helper, stringResource(action.labelRes)),
+                    textAlign = TextAlign.Center
+                )
+
+                if (detectedKeyCode != -1) {
+                    Text(
+                        text = stringResource(R.string.settings_remote_capture_detected, detectedKeyCode),
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Button(onClick = onDismiss, colors = ButtonDefaults.textButtonColors()) {
+                        Text(stringResource(R.string.action_cancel))
+                    }
+                    Spacer(modifier = Modifier.size(8.dp))
+                    Button(
+                        onClick = { if (detectedKeyCode != -1) onKeyCaptured(detectedKeyCode) },
+                        enabled = detectedKeyCode != -1
+                    ) {
+                        Text(stringResource(R.string.action_confirm))
+                    }
+                }
+            }
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
+}
+
+enum class RemoteAction(val labelRes: Int) {
+    ROADBOOK_UP(R.string.settings_remote_action_rb_up),
+    ROADBOOK_DOWN(R.string.settings_remote_action_rb_down),
+    INCREASE_PARTIAL(R.string.settings_remote_action_inc_partial),
+    DECREASE_PARTIAL(R.string.settings_remote_action_dec_partial),
+    RESET_PARTIAL(R.string.settings_remote_action_reset_partial)
 }
 
 @Composable
@@ -675,7 +907,9 @@ fun SettingsPreviewLight() {
             onOdometerMinVerticalAccuracyChange = {},
             onLocationPollingIntervalChange = {},
             onLocationMinDistanceChange = {},
-            onRestoreOdometerDefaults = {}
+            onRestoreOdometerDefaults = {},
+            onRemoteModelSelected = {},
+            onCustomKeysChanged = {}
         )
     }
 }
@@ -704,7 +938,9 @@ fun SettingsPreviewDark() {
             onOdometerMinVerticalAccuracyChange = {},
             onLocationPollingIntervalChange = {},
             onLocationMinDistanceChange = {},
-            onRestoreOdometerDefaults = {}
+            onRestoreOdometerDefaults = {},
+            onRemoteModelSelected = {},
+            onCustomKeysChanged = {}
         )
     }
 }
@@ -732,7 +968,9 @@ fun SettingsPreviewTablet() {
             onOdometerMinVerticalAccuracyChange = {},
             onLocationPollingIntervalChange = {},
             onLocationMinDistanceChange = {},
-            onRestoreOdometerDefaults = {}
+            onRestoreOdometerDefaults = {},
+            onRemoteModelSelected = {},
+            onCustomKeysChanged = {}
         )
     }
 }

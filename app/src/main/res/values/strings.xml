@@ -20,8 +20,23 @@
     <string name="settings_full_screen_title">Full Screen</string>
     <string name="settings_full_screen_helper">Hide status and navigation bars for an immersive experience.</string>
     <string name="settings_tab_user">User</string>
+    <string name="settings_tab_remote">Remote</string>
     <string name="settings_tab_advanced">Advanced</string>
     <string name="settings_tab_maps">Maps</string>
+
+    <string name="settings_remote_model_title">Remote Model</string>
+    <string name="settings_remote_model_dnd2">DND2</string>
+    <string name="settings_remote_model_terra_pirata">Terra Pirata</string>
+    <string name="settings_remote_model_custom">Custom Mapping</string>
+    <string name="settings_remote_keys_title">Key Mapping</string>
+    <string name="settings_remote_action_rb_up">Roadbook Up</string>
+    <string name="settings_remote_action_rb_down">Roadbook Down</string>
+    <string name="settings_remote_action_inc_partial">Increase Partial</string>
+    <string name="settings_remote_action_dec_partial">Decrease Partial</string>
+    <string name="settings_remote_action_reset_partial">Reset Partial</string>
+    <string name="settings_remote_capture_title">Capture Key</string>
+    <string name="settings_remote_capture_helper">Press a button on your remote control to map it to %1$s.</string>
+    <string name="settings_remote_capture_detected">Detected KeyCode: %1$d</string>
 
     <string name="settings_advanced_warning">WARNING: These settings affect GPS performance. Don\'t change them unless you know what you\'re doing.</string>
     <string name="settings_advanced_restore_defaults">Restore GPS Defaults</string>

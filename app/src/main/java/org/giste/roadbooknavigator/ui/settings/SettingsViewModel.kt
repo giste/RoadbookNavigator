@@ -41,9 +41,13 @@ import org.giste.roadbooknavigator.features.odometer.domain.usecase.UpdateOdomet
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.AppTheme
+import org.giste.roadbooknavigator.features.settings.domain.RemoteKeys
+import org.giste.roadbooknavigator.features.settings.domain.RemoteModel
 import org.giste.roadbooknavigator.features.settings.domain.usecase.GetSettingsUseCase
+import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateCustomKeysUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateFullScreenUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateOrientationUseCase
+import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateRemoteModelUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateShortDistanceThresholdUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateThemeUseCase
 import javax.inject.Inject
@@ -64,6 +68,8 @@ class SettingsViewModel @Inject constructor(
     private val updateLocationPollingIntervalUseCase: UpdateLocationPollingIntervalUseCase,
     private val updateLocationMinDistanceUseCase: UpdateLocationMinDistanceUseCase,
     private val restoreLocationDefaultsUseCase: RestoreLocationDefaultsUseCase,
+    private val updateRemoteModelUseCase: UpdateRemoteModelUseCase,
+    private val updateCustomKeysUseCase: UpdateCustomKeysUseCase,
 ) : ViewModel() {
 
     val uiState: StateFlow<SettingsUiState> = combine(
@@ -148,6 +154,20 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             restoreOdometerSettingsDefaultsUseCase()
             restoreLocationDefaultsUseCase()
+        }
+    }
+
+    fun setRemoteModel(model: RemoteModel) {
+        logger.d("SettingsViewModel: setRemoteModel requested: %s", model)
+        viewModelScope.launch {
+            updateRemoteModelUseCase(model)
+        }
+    }
+
+    fun setCustomKeys(keys: RemoteKeys) {
+        logger.d("SettingsViewModel: setCustomKeys requested")
+        viewModelScope.launch {
+            updateCustomKeysUseCase(keys)
         }
     }
 }

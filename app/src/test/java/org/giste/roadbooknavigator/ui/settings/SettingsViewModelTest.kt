@@ -43,9 +43,13 @@ import org.giste.roadbooknavigator.features.odometer.domain.usecase.UpdateOdomet
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.AppTheme
+import org.giste.roadbooknavigator.features.settings.domain.RemoteKeys
+import org.giste.roadbooknavigator.features.settings.domain.RemoteModel
 import org.giste.roadbooknavigator.features.settings.domain.usecase.GetSettingsUseCase
+import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateCustomKeysUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateFullScreenUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateOrientationUseCase
+import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateRemoteModelUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateShortDistanceThresholdUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateThemeUseCase
 import org.junit.After
@@ -70,7 +74,8 @@ class SettingsViewModelTest {
     private val updateLocationPollingIntervalUseCase: UpdateLocationPollingIntervalUseCase = mockk()
     private val updateLocationMinDistanceUseCase: UpdateLocationMinDistanceUseCase = mockk()
     private val restoreLocationDefaultsUseCase: RestoreLocationDefaultsUseCase = mockk()
-
+    private val updateRemoteModelUseCase: UpdateRemoteModelUseCase = mockk()
+    private val updateCustomKeysUseCase: UpdateCustomKeysUseCase = mockk()
 
     private val settingsFlow = MutableStateFlow(AppSettings())
     private val locationSettingsFlow = MutableStateFlow(LocationSettings())
@@ -101,6 +106,8 @@ class SettingsViewModelTest {
             updateLocationPollingIntervalUseCase = updateLocationPollingIntervalUseCase,
             updateLocationMinDistanceUseCase = updateLocationMinDistanceUseCase,
             restoreLocationDefaultsUseCase = restoreLocationDefaultsUseCase,
+            updateRemoteModelUseCase = updateRemoteModelUseCase,
+            updateCustomKeysUseCase = updateCustomKeysUseCase,
         )
     }
 
@@ -188,5 +195,20 @@ class SettingsViewModelTest {
             restoreOdometerSettingsDefaultsUseCase()
             restoreLocationDefaultsUseCase()
         }
+    }
+
+    @Test
+    fun `setRemoteModel should call use case`() = runTest {
+        coEvery { updateRemoteModelUseCase(any()) } returns Result.success(Unit)
+        viewModel.setRemoteModel(RemoteModel.TERRA_PIRATA)
+        coVerify { updateRemoteModelUseCase(RemoteModel.TERRA_PIRATA) }
+    }
+
+    @Test
+    fun `setCustomKeys should call use case`() = runTest {
+        val keys = RemoteKeys.DND2
+        coEvery { updateCustomKeysUseCase(any()) } returns Result.success(Unit)
+        viewModel.setCustomKeys(keys)
+        coVerify { updateCustomKeysUseCase(keys) }
     }
 }

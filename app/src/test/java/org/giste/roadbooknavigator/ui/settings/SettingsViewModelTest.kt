@@ -34,10 +34,20 @@ import org.giste.roadbooknavigator.features.location.domain.usecase.GetLocationS
 import org.giste.roadbooknavigator.features.location.domain.usecase.RestoreLocationDefaultsUseCase
 import org.giste.roadbooknavigator.features.location.domain.usecase.UpdateLocationMinDistanceUseCase
 import org.giste.roadbooknavigator.features.location.domain.usecase.UpdateLocationPollingIntervalUseCase
+import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettings
+import org.giste.roadbooknavigator.features.odometer.domain.usecase.GetOdometerSettingsUseCase
+import org.giste.roadbooknavigator.features.odometer.domain.usecase.RestoreOdometerSettingsDefaultsUseCase
+import org.giste.roadbooknavigator.features.odometer.domain.usecase.UpdateOdometerMinAccuracyUseCase
+import org.giste.roadbooknavigator.features.odometer.domain.usecase.UpdateOdometerMinVerticalAccuracyUseCase
+import org.giste.roadbooknavigator.features.odometer.domain.usecase.UpdateOdometerSpeedThresholdUseCase
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.AppTheme
-import org.giste.roadbooknavigator.features.settings.domain.usecase.*
+import org.giste.roadbooknavigator.features.settings.domain.usecase.GetSettingsUseCase
+import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateFullScreenUseCase
+import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateOrientationUseCase
+import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateShortDistanceThresholdUseCase
+import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateThemeUseCase
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -48,6 +58,7 @@ class SettingsViewModelTest {
 
     private val getSettingsUseCase: GetSettingsUseCase = mockk()
     private val getLocationsUseCase: GetLocationSettingsUseCase = mockk()
+    private val getOdometerSettingsUseCase: GetOdometerSettingsUseCase = mockk()
     private val updateThemeUseCase: UpdateThemeUseCase = mockk()
     private val updateFullScreenUseCase: UpdateFullScreenUseCase = mockk()
     private val updateOrientationUseCase: UpdateOrientationUseCase = mockk()
@@ -55,7 +66,7 @@ class SettingsViewModelTest {
     private val updateOdometerSpeedThresholdUseCase: UpdateOdometerSpeedThresholdUseCase = mockk()
     private val updateOdometerMinAccuracyUseCase: UpdateOdometerMinAccuracyUseCase = mockk()
     private val updateOdometerMinVerticalAccuracyUseCase: UpdateOdometerMinVerticalAccuracyUseCase = mockk()
-    private val restoreOdometerDefaultsUseCase: RestoreOdometerDefaultsUseCase = mockk()
+    private val restoreOdometerSettingsDefaultsUseCase: RestoreOdometerSettingsDefaultsUseCase = mockk()
     private val updateLocationPollingIntervalUseCase: UpdateLocationPollingIntervalUseCase = mockk()
     private val updateLocationMinDistanceUseCase: UpdateLocationMinDistanceUseCase = mockk()
     private val restoreLocationDefaultsUseCase: RestoreLocationDefaultsUseCase = mockk()
@@ -63,6 +74,7 @@ class SettingsViewModelTest {
 
     private val settingsFlow = MutableStateFlow(AppSettings())
     private val locationSettingsFlow = MutableStateFlow(LocationSettings())
+    private val odometerSettingsFlow = MutableStateFlow(OdometerSettings())
     private val testDispatcher = UnconfinedTestDispatcher()
 
     private lateinit var viewModel: SettingsViewModel
@@ -72,10 +84,12 @@ class SettingsViewModelTest {
         Dispatchers.setMain(testDispatcher)
         every { getSettingsUseCase() } returns settingsFlow
         every { getLocationsUseCase() } returns locationSettingsFlow
+        every { getOdometerSettingsUseCase() } returns odometerSettingsFlow
 
         viewModel = SettingsViewModel(
             getSettingsUseCase = getSettingsUseCase,
             getLocationSettingsUseCase = getLocationsUseCase,
+            getOdometerSettingsUseCase = getOdometerSettingsUseCase,
             updateThemeUseCase = updateThemeUseCase,
             updateOrientationUseCase = updateOrientationUseCase,
             updateFullScreenUseCase = updateFullScreenUseCase,
@@ -83,7 +97,7 @@ class SettingsViewModelTest {
             updateOdometerSpeedThresholdUseCase = updateOdometerSpeedThresholdUseCase,
             updateOdometerMinAccuracyUseCase = updateOdometerMinAccuracyUseCase,
             updateOdometerMinVerticalAccuracyUseCase = updateOdometerMinVerticalAccuracyUseCase,
-            restoreOdometerDefaultsUseCase = restoreOdometerDefaultsUseCase,
+            restoreOdometerSettingsDefaultsUseCase = restoreOdometerSettingsDefaultsUseCase,
             updateLocationPollingIntervalUseCase = updateLocationPollingIntervalUseCase,
             updateLocationMinDistanceUseCase = updateLocationMinDistanceUseCase,
             restoreLocationDefaultsUseCase = restoreLocationDefaultsUseCase,
@@ -99,7 +113,7 @@ class SettingsViewModelTest {
     fun `initial state should be Success with default settings`() = runTest {
         backgroundScope.launch(testDispatcher) { viewModel.uiState.collect {} }
 
-        assertEquals(SettingsUiState.Success(AppSettings()), viewModel.uiState.value)
+        assertEquals(SettingsUiState.Success(AppSettings(), LocationSettings(), OdometerSettings()), viewModel.uiState.value)
     }
 
     @Test
@@ -167,11 +181,11 @@ class SettingsViewModelTest {
 
     @Test
     fun `restoreOdometerDefaults should call use case`() = runTest {
-        coEvery { restoreOdometerDefaultsUseCase() } returns Result.success(Unit)
+        coEvery { restoreOdometerSettingsDefaultsUseCase() } returns Result.success(Unit)
         coEvery { restoreLocationDefaultsUseCase() } returns Result.success(Unit)
         viewModel.restoreOdometerDefaults()
         coVerify {
-            restoreOdometerDefaultsUseCase()
+            restoreOdometerSettingsDefaultsUseCase()
             restoreLocationDefaultsUseCase()
         }
     }

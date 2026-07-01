@@ -87,13 +87,14 @@ import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 import org.giste.roadbooknavigator.features.location.domain.LocationSettings
 import org.giste.roadbooknavigator.features.location.domain.MinDistanceThreshold
 import org.giste.roadbooknavigator.features.location.domain.PollingIntervalThreshold
-import org.giste.roadbooknavigator.features.settings.domain.AccuracyThreshold
+import org.giste.roadbooknavigator.features.odometer.domain.AccuracyThreshold
+import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettings
+import org.giste.roadbooknavigator.features.odometer.domain.SpeedThreshold
+import org.giste.roadbooknavigator.features.odometer.domain.VerticalAccuracyThreshold
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.AppTheme
 import org.giste.roadbooknavigator.features.settings.domain.ShortDistanceThreshold
-import org.giste.roadbooknavigator.features.settings.domain.SpeedThreshold
-import org.giste.roadbooknavigator.features.settings.domain.VerticalAccuracyThreshold
 
 @Composable
 fun SettingsScreen(
@@ -202,8 +203,8 @@ fun SettingsContent(
                             )
 
                             1 -> AdvancedTab(
-                                settings = settings,
                                 locationSettings = uiState.locationSettings,
+                                odometerSettings = uiState.odometerSettings,
                                 onOdometerSpeedThresholdChange = onOdometerSpeedThresholdChange,
                                 onOdometerMinAccuracyChange = onOdometerMinAccuracyChange,
                                 onOdometerMinVerticalAccuracyChange = onOdometerMinVerticalAccuracyChange,
@@ -282,8 +283,8 @@ fun UserTab(
 
 @Composable
 fun AdvancedTab(
-    settings: AppSettings,
     locationSettings: LocationSettings,
+    odometerSettings: OdometerSettings,
     onOdometerSpeedThresholdChange: (Float) -> Unit,
     onOdometerMinAccuracyChange: (Float) -> Unit,
     onOdometerMinVerticalAccuracyChange: (Float) -> Unit,
@@ -314,30 +315,30 @@ fun AdvancedTab(
         SliderSettingItem(
             title = stringResource(R.string.settings_advanced_speed_threshold_title),
             helper = stringResource(R.string.settings_advanced_speed_threshold_helper),
-            value = settings.odometerSpeedThreshold,
+            value = odometerSettings.speedThreshold,
             onValueChange = onOdometerSpeedThresholdChange,
             valueRange = SpeedThreshold.MIN..SpeedThreshold.MAX,
-            label = "${"%.1f".format(settings.odometerSpeedThreshold)} m/s",
+            label = "${"%.1f".format(odometerSettings.speedThreshold)} m/s",
             testTag = "SpeedThresholdSlider"
         )
 
         SliderSettingItem(
             title = stringResource(R.string.settings_advanced_min_accuracy_title),
             helper = stringResource(R.string.settings_advanced_min_accuracy_helper),
-            value = settings.odometerMinAccuracy,
+            value = odometerSettings.minAccuracy,
             onValueChange = onOdometerMinAccuracyChange,
             valueRange = AccuracyThreshold.MIN..AccuracyThreshold.MAX,
-            label = "${"%.0f".format(settings.odometerMinAccuracy)} m",
+            label = "${"%.0f".format(odometerSettings.minAccuracy)} m",
             testTag = "MinAccuracySlider"
         )
 
         SliderSettingItem(
             title = stringResource(R.string.settings_advanced_min_vertical_accuracy_title),
             helper = stringResource(R.string.settings_advanced_min_vertical_accuracy_helper),
-            value = settings.odometerMinVerticalAccuracy,
+            value = odometerSettings.minVerticalAccuracy,
             onValueChange = onOdometerMinVerticalAccuracyChange,
             valueRange = VerticalAccuracyThreshold.MIN..VerticalAccuracyThreshold.MAX,
-            label = "${"%.0f".format(settings.odometerMinVerticalAccuracy)} m",
+            label = "${"%.0f".format(odometerSettings.minVerticalAccuracy)} m",
             testTag = "MinVerticalAccuracySlider"
         )
 
@@ -663,7 +664,7 @@ fun SettingsPreviewLight() {
     val windowSizeClass = WindowSizeClass.calculateFromSize(size)
     RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
         SettingsContent(
-            uiState = SettingsUiState.Success(AppSettings()),
+            uiState = SettingsUiState.Success(AppSettings(), LocationSettings(), OdometerSettings()),
             onBackClick = {},
             onThemeSelected = {},
             onOrientationSelected = {},
@@ -692,7 +693,7 @@ fun SettingsPreviewDark() {
     val windowSizeClass = WindowSizeClass.calculateFromSize(size)
     RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
         SettingsContent(
-            uiState = SettingsUiState.Success(AppSettings()),
+            uiState = SettingsUiState.Success(AppSettings(), LocationSettings(), OdometerSettings()),
             onBackClick = {},
             onThemeSelected = {},
             onOrientationSelected = {},
@@ -720,7 +721,7 @@ fun SettingsPreviewTablet() {
     val windowSizeClass = WindowSizeClass.calculateFromSize(size)
     RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
         SettingsContent(
-            uiState = SettingsUiState.Success(AppSettings()),
+            uiState = SettingsUiState.Success(AppSettings(), LocationSettings(), OdometerSettings()),
             onBackClick = {},
             onThemeSelected = {},
             onOrientationSelected = {},

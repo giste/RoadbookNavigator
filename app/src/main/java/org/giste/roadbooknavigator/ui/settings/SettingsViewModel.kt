@@ -32,15 +32,17 @@ import org.giste.roadbooknavigator.features.location.domain.usecase.GetLocationS
 import org.giste.roadbooknavigator.features.location.domain.usecase.RestoreLocationDefaultsUseCase
 import org.giste.roadbooknavigator.features.location.domain.usecase.UpdateLocationMinDistanceUseCase
 import org.giste.roadbooknavigator.features.location.domain.usecase.UpdateLocationPollingIntervalUseCase
+import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettings
+import org.giste.roadbooknavigator.features.odometer.domain.usecase.GetOdometerSettingsUseCase
+import org.giste.roadbooknavigator.features.odometer.domain.usecase.RestoreOdometerSettingsDefaultsUseCase
+import org.giste.roadbooknavigator.features.odometer.domain.usecase.UpdateOdometerMinAccuracyUseCase
+import org.giste.roadbooknavigator.features.odometer.domain.usecase.UpdateOdometerMinVerticalAccuracyUseCase
+import org.giste.roadbooknavigator.features.odometer.domain.usecase.UpdateOdometerSpeedThresholdUseCase
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.AppTheme
 import org.giste.roadbooknavigator.features.settings.domain.usecase.GetSettingsUseCase
-import org.giste.roadbooknavigator.features.settings.domain.usecase.RestoreOdometerDefaultsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateFullScreenUseCase
-import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateOdometerMinAccuracyUseCase
-import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateOdometerMinVerticalAccuracyUseCase
-import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateOdometerSpeedThresholdUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateOrientationUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateShortDistanceThresholdUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateThemeUseCase
@@ -50,6 +52,7 @@ import javax.inject.Inject
 class SettingsViewModel @Inject constructor(
     getSettingsUseCase: GetSettingsUseCase,
     getLocationSettingsUseCase: GetLocationSettingsUseCase,
+    getOdometerSettingsUseCase: GetOdometerSettingsUseCase,
     private val updateThemeUseCase: UpdateThemeUseCase,
     private val updateOrientationUseCase: UpdateOrientationUseCase,
     private val updateFullScreenUseCase: UpdateFullScreenUseCase,
@@ -57,7 +60,7 @@ class SettingsViewModel @Inject constructor(
     private val updateOdometerSpeedThresholdUseCase: UpdateOdometerSpeedThresholdUseCase,
     private val updateOdometerMinAccuracyUseCase: UpdateOdometerMinAccuracyUseCase,
     private val updateOdometerMinVerticalAccuracyUseCase: UpdateOdometerMinVerticalAccuracyUseCase,
-    private val restoreOdometerDefaultsUseCase: RestoreOdometerDefaultsUseCase,
+    private val restoreOdometerSettingsDefaultsUseCase: RestoreOdometerSettingsDefaultsUseCase,
     private val updateLocationPollingIntervalUseCase: UpdateLocationPollingIntervalUseCase,
     private val updateLocationMinDistanceUseCase: UpdateLocationMinDistanceUseCase,
     private val restoreLocationDefaultsUseCase: RestoreLocationDefaultsUseCase,
@@ -65,9 +68,10 @@ class SettingsViewModel @Inject constructor(
 
     val uiState: StateFlow<SettingsUiState> = combine(
         getSettingsUseCase(),
-        getLocationSettingsUseCase()
-    ) { settings, locationSettings ->
-        SettingsUiState.Success(settings, locationSettings)
+        getLocationSettingsUseCase(),
+        getOdometerSettingsUseCase()
+    ) { settings, locationSettings, odometerSettings ->
+        SettingsUiState.Success(settings, locationSettings, odometerSettings)
     }
         .onEach { logger.v("SettingsViewModel: Settings stream emitted: %s", it) }
         .stateIn(
@@ -142,7 +146,7 @@ class SettingsViewModel @Inject constructor(
     fun restoreOdometerDefaults() {
         logger.i("SettingsViewModel: restoreOdometerDefaults requested")
         viewModelScope.launch {
-            restoreOdometerDefaultsUseCase()
+            restoreOdometerSettingsDefaultsUseCase()
             restoreLocationDefaultsUseCase()
         }
     }
@@ -153,5 +157,6 @@ sealed interface SettingsUiState {
     data class Success(
         val appSettings: AppSettings = AppSettings(),
         val locationSettings: LocationSettings = LocationSettings(),
+        val odometerSettings: OdometerSettings = OdometerSettings(),
     ) : SettingsUiState
 }

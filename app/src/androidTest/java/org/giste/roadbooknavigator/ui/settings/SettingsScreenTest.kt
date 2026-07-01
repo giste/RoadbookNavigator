@@ -32,6 +32,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import org.giste.roadbooknavigator.R
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 import org.giste.roadbooknavigator.features.location.domain.LocationSettings
+import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettings
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.AppTheme
@@ -53,7 +54,7 @@ class SettingsScreenTest {
         composeTestRule.setContent {
             RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
                 SettingsContent(
-                    uiState = SettingsUiState.Success(AppSettings()),
+                    uiState = SettingsUiState.Success(AppSettings(), LocationSettings(), OdometerSettings()),
                     onBackClick = {},
                     onThemeSelected = {},
                     onOrientationSelected = {},
@@ -88,7 +89,7 @@ class SettingsScreenTest {
         composeTestRule.setContent {
             RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
                 SettingsContent(
-                    uiState = SettingsUiState.Success(AppSettings(theme = AppTheme.LIGHT)),
+                    uiState = SettingsUiState.Success(AppSettings(theme = AppTheme.LIGHT), LocationSettings(), OdometerSettings()),
                     onBackClick = {},
                     onThemeSelected = { selectedTheme = it },
                     onOrientationSelected = {},
@@ -118,7 +119,7 @@ class SettingsScreenTest {
         composeTestRule.setContent {
             RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
                 SettingsContent(
-                    uiState = SettingsUiState.Success(AppSettings()),
+                    uiState = SettingsUiState.Success(AppSettings(), LocationSettings(), OdometerSettings()),
                     onBackClick = { backClicked = true },
                     onThemeSelected = {},
                     onOrientationSelected = {},
@@ -145,7 +146,7 @@ class SettingsScreenTest {
         composeTestRule.setContent {
             RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
                 SettingsContent(
-                    uiState = SettingsUiState.Success(AppSettings()),
+                    uiState = SettingsUiState.Success(AppSettings(), LocationSettings(), OdometerSettings()),
                     onBackClick = {},
                     onThemeSelected = {},
                     onOrientationSelected = {},
@@ -178,7 +179,7 @@ class SettingsScreenTest {
         composeTestRule.setContent {
             RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
                 SettingsContent(
-                    uiState = SettingsUiState.Success(AppSettings()),
+                    uiState = SettingsUiState.Success(AppSettings(), LocationSettings(), OdometerSettings()),
                     onBackClick = {},
                     onThemeSelected = {},
                     onOrientationSelected = { selectedOrientation = it },
@@ -208,7 +209,7 @@ class SettingsScreenTest {
         composeTestRule.setContent {
             RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
                 SettingsContent(
-                    uiState = SettingsUiState.Success(AppSettings(fullScreen = false)),
+                    uiState = SettingsUiState.Success(AppSettings(fullScreen = false), LocationSettings(), OdometerSettings()),
                     onBackClick = {},
                     onThemeSelected = {},
                     onOrientationSelected = {},
@@ -237,7 +238,7 @@ class SettingsScreenTest {
         composeTestRule.setContent {
             RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
                 SettingsContent(
-                    uiState = SettingsUiState.Success(AppSettings(shortDistanceThreshold = 100L)),
+                    uiState = SettingsUiState.Success(AppSettings(shortDistanceThreshold = 100L), LocationSettings(), OdometerSettings()),
                     onBackClick = {},
                     onThemeSelected = {},
                     onOrientationSelected = {},
@@ -269,7 +270,7 @@ class SettingsScreenTest {
         composeTestRule.setContent {
             RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
                 SettingsContent(
-                    uiState = SettingsUiState.Success(locationSettings = LocationSettings(pollingInterval = 500L)),
+                    uiState = SettingsUiState.Success(locationSettings = LocationSettings(pollingInterval = 500L), odometerSettings = OdometerSettings()),
                     onBackClick = {},
                     onThemeSelected = {},
                     onOrientationSelected = {},
@@ -305,7 +306,7 @@ class SettingsScreenTest {
         composeTestRule.setContent {
             RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
                 SettingsContent(
-                    uiState = SettingsUiState.Success(AppSettings(odometerSpeedThreshold = 0.5f)),
+                    uiState = SettingsUiState.Success(appSettings = AppSettings(), locationSettings = LocationSettings(), odometerSettings = OdometerSettings(speedThreshold = 0.5f)),
                     onBackClick = {},
                     onThemeSelected = {},
                     onOrientationSelected = {},
@@ -341,7 +342,7 @@ class SettingsScreenTest {
         composeTestRule.setContent {
             RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
                 SettingsContent(
-                    uiState = SettingsUiState.Success(AppSettings(odometerMinAccuracy = 10.0f)),
+                    uiState = SettingsUiState.Success(appSettings = AppSettings(), locationSettings = LocationSettings(), odometerSettings = OdometerSettings(minAccuracy = 10.0f)),
                     onBackClick = {},
                     onThemeSelected = {},
                     onOrientationSelected = {},
@@ -377,7 +378,7 @@ class SettingsScreenTest {
         composeTestRule.setContent {
             RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
                 SettingsContent(
-                    uiState = SettingsUiState.Success(AppSettings(odometerMinVerticalAccuracy = 5.0f)),
+                    uiState = SettingsUiState.Success(appSettings = AppSettings(), locationSettings = LocationSettings(), odometerSettings = OdometerSettings(minVerticalAccuracy = 5.0f)),
                     onBackClick = {},
                     onThemeSelected = {},
                     onOrientationSelected = {},
@@ -413,7 +414,7 @@ class SettingsScreenTest {
         composeTestRule.setContent {
             RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
                 SettingsContent(
-                    uiState = SettingsUiState.Success(locationSettings = LocationSettings(minDistance = 1.0f)),
+                    uiState = SettingsUiState.Success(locationSettings = LocationSettings(minDistance = 1.0f), odometerSettings = OdometerSettings()),
                     onBackClick = {},
                     onThemeSelected = {},
                     onOrientationSelected = {},
@@ -450,7 +451,7 @@ class SettingsScreenTest {
         restorationTester.setContent {
             RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
                 SettingsContent(
-                    uiState = SettingsUiState.Success(AppSettings()),
+                    uiState = SettingsUiState.Success(AppSettings(), LocationSettings(), OdometerSettings()),
                     onBackClick = {},
                     onThemeSelected = {},
                     onOrientationSelected = {},

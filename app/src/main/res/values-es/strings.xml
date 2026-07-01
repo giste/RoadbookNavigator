@@ -54,7 +54,7 @@
     <string name="settings_remote_action_reset_partial">Reset parcial</string>
     <string name="settings_remote_capture_title">Capturar tecla</string>
     <string name="settings_remote_capture_helper">Pulsa un botón en tu mando para asignarlo a %1$s.</string>
-    <string name="settings_remote_capture_detected">Código detectado: %1$d</string>
+    <string name="settings_remote_capture_detected">Tecla detectada: %1$s</string>
 
     <string name="settings_advanced_warning">ADVERTENCIA: Estos ajustes afectan al rendimiento del GPS. No los cambie a menos que sepa lo que está haciendo.</string>
     <string name="settings_advanced_restore_defaults">Restablecer GPS por defecto</string>

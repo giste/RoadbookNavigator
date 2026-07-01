@@ -86,6 +86,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.nativeKeyCode
 import androidx.compose.ui.input.key.onPreviewKeyEvent
+import android.view.KeyEvent
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -558,7 +559,7 @@ fun KeyMappingItem(
             contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
             modifier = Modifier.defaultMinSize(minHeight = 32.dp)
         ) {
-            Text(text = keyCodes.joinToString(", "))
+            Text(text = keyCodes.joinToString(", ") { keyCodeToName(it) })
         }
     }
 }
@@ -600,7 +601,7 @@ fun KeyCaptureDialog(
 
                 if (detectedKeyCode != -1) {
                     Text(
-                        text = stringResource(R.string.settings_remote_capture_detected, detectedKeyCode),
+                        text = stringResource(R.string.settings_remote_capture_detected, keyCodeToName(detectedKeyCode)),
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary
@@ -638,6 +639,38 @@ enum class RemoteAction(val labelRes: Int) {
     INCREASE_PARTIAL(R.string.settings_remote_action_inc_partial),
     DECREASE_PARTIAL(R.string.settings_remote_action_dec_partial),
     RESET_PARTIAL(R.string.settings_remote_action_reset_partial)
+}
+
+/**
+ * Converts an Android native key code to a human-readable name.
+ */
+private fun keyCodeToName(keyCode: Int): String {
+    return when (keyCode) {
+        KeyEvent.KEYCODE_DPAD_UP -> "Up"
+        KeyEvent.KEYCODE_DPAD_DOWN -> "Down"
+        KeyEvent.KEYCODE_DPAD_LEFT -> "Left"
+        KeyEvent.KEYCODE_DPAD_RIGHT -> "Right"
+        KeyEvent.KEYCODE_VOLUME_UP -> "Vol +"
+        KeyEvent.KEYCODE_VOLUME_DOWN -> "Vol -"
+        KeyEvent.KEYCODE_MEDIA_NEXT -> "Next"
+        KeyEvent.KEYCODE_MEDIA_PREVIOUS -> "Prev"
+        KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE -> "Play/Pause"
+        KeyEvent.KEYCODE_MEDIA_PLAY -> "Play"
+        KeyEvent.KEYCODE_F6 -> "F6"
+        KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_DPAD_CENTER -> "Enter"
+        KeyEvent.KEYCODE_BACK -> "Back"
+        KeyEvent.KEYCODE_MENU -> "Menu"
+        KeyEvent.KEYCODE_SPACE -> "Space"
+        KeyEvent.KEYCODE_ESCAPE -> "Esc"
+        else -> {
+            KeyEvent.keyCodeToString(keyCode)
+                ?.removePrefix("KEYCODE_")
+                ?.replace("_", " ")
+                ?.lowercase()
+                ?.replaceFirstChar { it.uppercase() }
+                ?: keyCode.toString()
+        }
+    }
 }
 
 @Composable

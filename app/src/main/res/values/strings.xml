@@ -36,7 +36,7 @@
     <string name="settings_remote_action_reset_partial">Reset Partial</string>
     <string name="settings_remote_capture_title">Capture Key</string>
     <string name="settings_remote_capture_helper">Press a button on your remote control to map it to %1$s.</string>
-    <string name="settings_remote_capture_detected">Detected KeyCode: %1$d</string>
+    <string name="settings_remote_capture_detected">Detected Key: %1$s</string>
 
     <string name="settings_advanced_warning">WARNING: These settings affect GPS performance. Don\'t change them unless you know what you\'re doing.</string>
     <string name="settings_advanced_restore_defaults">Restore GPS Defaults</string>

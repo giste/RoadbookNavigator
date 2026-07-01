@@ -18,15 +18,18 @@
 package org.giste.roadbooknavigator.features.roadbook.ui
 
 import android.content.res.Configuration
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.VerticalDivider
@@ -60,26 +63,55 @@ fun WaypointItem(
         if (isHighDanger) RoadbookNavigatorTheme.dimensions.dangerHighThickness else RoadbookNavigatorTheme.dimensions.sectionBorder
     val borderColor =
         if (isHighDanger) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
+    val isShortDistance = waypoint.distanceFromPrevious.meters in 1..<shortDistanceThreshold
 
     Box(
         modifier = modifier
             .fillMaxWidth()
             .aspectRatio(535f / 135)
     ) {
-        if (isHighDanger) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .border(width = borderWidth, color = borderColor)
-            )
+        // Z=0: Background
+        if (isShortDistance) {
+            Row(modifier = Modifier.fillMaxSize()) {
+                Box(
+                    modifier = Modifier
+                        .weight(weight = 1f, fill = true)
+                        .fillMaxHeight()
+                        .background(MaterialTheme.colorScheme.tertiaryContainer)
+                )
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .width(RoadbookNavigatorTheme.dimensions.sectionBorder)
+                )
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .aspectRatio(CANVAS_LOGICAL_WIDTH / CANVAS_LOGICAL_HEIGHT)
+                )
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .width(RoadbookNavigatorTheme.dimensions.sectionBorder)
+                )
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .aspectRatio(CANVAS_LOGICAL_WIDTH / CANVAS_LOGICAL_HEIGHT)
+                )
+            }
         }
-        Row(
+
+        // Z=1: Border
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .border(
-                    width = if (isHighDanger) 0.dp else borderWidth,
-                    color = borderColor
-                ),
+                .border(width = borderWidth, color = borderColor)
+        )
+
+        // Z=2: Content
+        Row(
+            modifier = Modifier.fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             // First part: Distance info and number
@@ -344,6 +376,14 @@ fun WaypointItemPreview() {
                 )
                 WaypointItem(
                     waypoint = waypointWithHighDangerAndHandles,
+                    shortDistanceThreshold = 300L,
+                    onSetPartialClick = {}
+                )
+                WaypointItem(
+                    waypoint = waypointWithHighDangerAndHandles.copy(
+                        number = 10,
+                        distanceFromPrevious = Distance(100)
+                    ),
                     shortDistanceThreshold = 300L,
                     onSetPartialClick = {}
                 )

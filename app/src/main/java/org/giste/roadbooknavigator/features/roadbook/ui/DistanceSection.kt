@@ -33,7 +33,6 @@ import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
@@ -51,8 +50,6 @@ internal fun DistanceSection(
 ) {
     val locale = LocalConfiguration.current.locales[0]
     val isShortDistance = waypoint.distanceFromPrevious.meters in 1..<shortDistanceThreshold
-    val backgroundColor =
-        if (isShortDistance) MaterialTheme.colorScheme.tertiaryContainer else Color.Unspecified
     val contentColor = if (isShortDistance) {
         MaterialTheme.colorScheme.onTertiaryContainer
     } else {
@@ -62,7 +59,6 @@ internal fun DistanceSection(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(backgroundColor)
             .testTag("WaypointDistanceInfo_${waypoint.number}")
             .combinedClickable(
                 onLongClick = {

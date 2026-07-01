@@ -24,23 +24,14 @@ package org.giste.roadbooknavigator.features.settings.domain
  * @property orientation Preferred screen orientation.
  * @property fullScreen Whether the app should be in immersive full-screen mode.
  * @property shortDistanceThreshold Threshold in meters to highlight "short distance" instructions.
- * @property odometerSpeedThreshold Minimum speed in m/s below which the odometer might ignore updates to prevent "jitter".
- * @property odometerMinAccuracy Maximum allowed horizontal GPS accuracy in meters.
- * @property odometerMinVerticalAccuracy Maximum allowed vertical GPS accuracy in meters.
  */
 data class AppSettings(
     val theme: AppTheme = AppTheme.FOLLOW_SYSTEM,
     val orientation: AppOrientation = AppOrientation.FOLLOW_SYSTEM,
     val fullScreen: Boolean = true,
     val shortDistanceThreshold: Long = DEFAULT_SHORT_DISTANCE_THRESHOLD,
-    val odometerSpeedThreshold: Float = DEFAULT_ODOMETER_SPEED_THRESHOLD,
-    val odometerMinAccuracy: Float = DEFAULT_ODOMETER_MIN_ACCURACY,
-    val odometerMinVerticalAccuracy: Float = DEFAULT_ODOMETER_MIN_VERTICAL_ACCURACY,
 ) {
     companion object {
         const val DEFAULT_SHORT_DISTANCE_THRESHOLD = 300L
-        const val DEFAULT_ODOMETER_SPEED_THRESHOLD = 0.5f // m/s
-        const val DEFAULT_ODOMETER_MIN_ACCURACY = 20.0f // m
-        const val DEFAULT_ODOMETER_MIN_VERTICAL_ACCURACY = 10.0f // m
     }
 }

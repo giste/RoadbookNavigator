@@ -98,30 +98,6 @@ class DataStoreSettingsRepositoryTest {
     }
 
     @Test
-    fun `setOdometerSpeedThreshold should persist value`() = runTest {
-        val newValue = 1.5f
-        repository.setOdometerSpeedThreshold(newValue)
-        
-        val settings = repository.getSettings().first()
-        assertEquals(newValue, settings.odometerSpeedThreshold)
-    }
-
-    @Test
-    fun `restoreOdometerDefaults should reset accuracy values`() = runTest {
-        // Given
-        repository.setOdometerMinAccuracy(50f)
-        repository.setOdometerMinVerticalAccuracy(30f)
-        
-        // When
-        repository.restoreOdometerDefaults()
-        
-        // Then
-        val settings = repository.getSettings().first()
-        assertEquals(AppSettings.DEFAULT_ODOMETER_MIN_ACCURACY, settings.odometerMinAccuracy)
-        assertEquals(AppSettings.DEFAULT_ODOMETER_MIN_VERTICAL_ACCURACY, settings.odometerMinVerticalAccuracy)
-    }
-
-    @Test
     fun `safe parsing should fallback to default for unknown theme string`() = runTest {
         // We need to bypass the public API to inject a corrupted string directly into DataStore
         // But since safeThemeOf is private, we verify it implicitly by ensuring it doesn't crash 

@@ -21,7 +21,6 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
@@ -49,9 +48,6 @@ class DataStoreSettingsRepository @Inject constructor(
         val ORIENTATION = stringPreferencesKey("app_orientation")
         val FULL_SCREEN = booleanPreferencesKey("full_screen")
         val SHORT_DISTANCE_THRESHOLD = longPreferencesKey("short_distance_threshold")
-        val ODOMETER_SPEED_THRESHOLD = floatPreferencesKey("odometer_speed_threshold")
-        val ODOMETER_MIN_ACCURACY = floatPreferencesKey("odometer_min_accuracy")
-        val ODOMETER_MIN_VERTICAL_ACCURACY = floatPreferencesKey("odometer_min_vertical_accuracy")
     }
 
     override fun getSettings(): Flow<AppSettings> = dataStore.data.map { preferences ->
@@ -62,12 +58,6 @@ class DataStoreSettingsRepository @Inject constructor(
             fullScreen = preferences[Keys.FULL_SCREEN] ?: true,
             shortDistanceThreshold = preferences[Keys.SHORT_DISTANCE_THRESHOLD]
                 ?: AppSettings.DEFAULT_SHORT_DISTANCE_THRESHOLD,
-            odometerSpeedThreshold = preferences[Keys.ODOMETER_SPEED_THRESHOLD]
-                ?: AppSettings.DEFAULT_ODOMETER_SPEED_THRESHOLD,
-            odometerMinAccuracy = preferences[Keys.ODOMETER_MIN_ACCURACY]
-                ?: AppSettings.DEFAULT_ODOMETER_MIN_ACCURACY,
-            odometerMinVerticalAccuracy = preferences[Keys.ODOMETER_MIN_VERTICAL_ACCURACY]
-                ?: AppSettings.DEFAULT_ODOMETER_MIN_VERTICAL_ACCURACY,
         )
     }.onEach {
         logger.v("DataStoreSettingsRepository: Settings updated: %s", it)
@@ -98,36 +88,6 @@ class DataStoreSettingsRepository @Inject constructor(
         logger.i("DataStoreSettingsRepository: Setting short distance threshold to %d", threshold)
         dataStore.edit { preferences ->
             preferences[Keys.SHORT_DISTANCE_THRESHOLD] = threshold
-        }
-    }
-
-    override suspend fun setOdometerSpeedThreshold(threshold: Float) {
-        logger.i("DataStoreSettingsRepository: Setting odometer speed threshold to %f", threshold)
-        dataStore.edit { preferences ->
-            preferences[Keys.ODOMETER_SPEED_THRESHOLD] = threshold
-        }
-    }
-
-    override suspend fun setOdometerMinAccuracy(accuracy: Float) {
-        logger.i("DataStoreSettingsRepository: Setting odometer min accuracy to %f", accuracy)
-        dataStore.edit { preferences ->
-            preferences[Keys.ODOMETER_MIN_ACCURACY] = accuracy
-        }
-    }
-
-    override suspend fun setOdometerMinVerticalAccuracy(accuracy: Float) {
-        logger.i("DataStoreSettingsRepository: Setting odometer min vertical accuracy to %f", accuracy)
-        dataStore.edit { preferences ->
-            preferences[Keys.ODOMETER_MIN_VERTICAL_ACCURACY] = accuracy
-        }
-    }
-
-    override suspend fun restoreOdometerDefaults() {
-        logger.i("DataStoreSettingsRepository: Restoring odometer defaults")
-        dataStore.edit { preferences ->
-            preferences.remove(Keys.ODOMETER_SPEED_THRESHOLD)
-            preferences.remove(Keys.ODOMETER_MIN_ACCURACY)
-            preferences.remove(Keys.ODOMETER_MIN_VERTICAL_ACCURACY)
         }
     }
 

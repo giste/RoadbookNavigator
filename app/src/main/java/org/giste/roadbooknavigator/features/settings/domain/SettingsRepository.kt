@@ -39,16 +39,4 @@ interface SettingsRepository {
 
     /** Sets the threshold for short distance warnings. */
     suspend fun setShortDistanceThreshold(threshold: Long)
-
-    /** Sets the speed threshold for the GPS odometer. */
-    suspend fun setOdometerSpeedThreshold(threshold: Float)
-
-    /** Sets the minimum horizontal accuracy required for odometer updates. */
-    suspend fun setOdometerMinAccuracy(accuracy: Float)
-
-    /** Sets the minimum vertical accuracy required for altitude-related odometer logic. */
-    suspend fun setOdometerMinVerticalAccuracy(accuracy: Float)
-
-    /** Resets all odometer-related parameters to their default values. */
-    suspend fun restoreOdometerDefaults()
 }

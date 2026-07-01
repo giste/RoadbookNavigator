@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.test.platform.app.InstrumentationRegistry
 import org.giste.roadbooknavigator.R
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
+import org.giste.roadbooknavigator.features.location.domain.LocationSettings
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.AppTheme
@@ -61,8 +62,8 @@ class SettingsScreenTest {
                     onOdometerSpeedThresholdChange = {},
                     onOdometerMinAccuracyChange = {},
                     onOdometerMinVerticalAccuracyChange = {},
-                    onOdometerPollingIntervalChange = {},
-                    onOdometerMinDistanceChange = {},
+                    onLocationPollingIntervalChange = {},
+                    onLocationMinDistanceChange = {},
                     onRestoreOdometerDefaults = {}
                 )
             }
@@ -96,8 +97,8 @@ class SettingsScreenTest {
                     onOdometerSpeedThresholdChange = {},
                     onOdometerMinAccuracyChange = {},
                     onOdometerMinVerticalAccuracyChange = {},
-                    onOdometerPollingIntervalChange = {},
-                    onOdometerMinDistanceChange = {},
+                    onLocationPollingIntervalChange = {},
+                    onLocationMinDistanceChange = {},
                     onRestoreOdometerDefaults = {}
                 )
             }
@@ -126,8 +127,8 @@ class SettingsScreenTest {
                     onOdometerSpeedThresholdChange = {},
                     onOdometerMinAccuracyChange = {},
                     onOdometerMinVerticalAccuracyChange = {},
-                    onOdometerPollingIntervalChange = {},
-                    onOdometerMinDistanceChange = {},
+                    onLocationPollingIntervalChange = {},
+                    onLocationMinDistanceChange = {},
                     onRestoreOdometerDefaults = {}
                 )
             }
@@ -153,8 +154,8 @@ class SettingsScreenTest {
                     onOdometerSpeedThresholdChange = {},
                     onOdometerMinAccuracyChange = {},
                     onOdometerMinVerticalAccuracyChange = {},
-                    onOdometerPollingIntervalChange = {},
-                    onOdometerMinDistanceChange = {},
+                    onLocationPollingIntervalChange = {},
+                    onLocationMinDistanceChange = {},
                     onRestoreOdometerDefaults = { restoreClicked = true }
                 )
             }
@@ -186,8 +187,8 @@ class SettingsScreenTest {
                     onOdometerSpeedThresholdChange = {},
                     onOdometerMinAccuracyChange = {},
                     onOdometerMinVerticalAccuracyChange = {},
-                    onOdometerPollingIntervalChange = {},
-                    onOdometerMinDistanceChange = {},
+                    onLocationPollingIntervalChange = {},
+                    onLocationMinDistanceChange = {},
                     onRestoreOdometerDefaults = {}
                 )
             }
@@ -216,8 +217,8 @@ class SettingsScreenTest {
                     onOdometerSpeedThresholdChange = {},
                     onOdometerMinAccuracyChange = {},
                     onOdometerMinVerticalAccuracyChange = {},
-                    onOdometerPollingIntervalChange = {},
-                    onOdometerMinDistanceChange = {},
+                    onLocationPollingIntervalChange = {},
+                    onLocationMinDistanceChange = {},
                     onRestoreOdometerDefaults = {}
                 )
             }
@@ -245,8 +246,8 @@ class SettingsScreenTest {
                     onOdometerSpeedThresholdChange = {},
                     onOdometerMinAccuracyChange = {},
                     onOdometerMinVerticalAccuracyChange = {},
-                    onOdometerPollingIntervalChange = {},
-                    onOdometerMinDistanceChange = {},
+                    onLocationPollingIntervalChange = {},
+                    onLocationMinDistanceChange = {},
                     onRestoreOdometerDefaults = {}
                 )
             }
@@ -268,7 +269,7 @@ class SettingsScreenTest {
         composeTestRule.setContent {
             RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
                 SettingsContent(
-                    uiState = SettingsUiState.Success(AppSettings(odometerPollingInterval = 500L)),
+                    uiState = SettingsUiState.Success(locationSettings = LocationSettings(pollingInterval = 500L)),
                     onBackClick = {},
                     onThemeSelected = {},
                     onOrientationSelected = {},
@@ -277,8 +278,8 @@ class SettingsScreenTest {
                     onOdometerSpeedThresholdChange = {},
                     onOdometerMinAccuracyChange = {},
                     onOdometerMinVerticalAccuracyChange = {},
-                    onOdometerPollingIntervalChange = { newValue = it },
-                    onOdometerMinDistanceChange = {},
+                    onLocationPollingIntervalChange = { newValue = it },
+                    onLocationMinDistanceChange = {},
                     onRestoreOdometerDefaults = {}
                 )
             }
@@ -313,8 +314,8 @@ class SettingsScreenTest {
                     onOdometerSpeedThresholdChange = { newValue = it },
                     onOdometerMinAccuracyChange = {},
                     onOdometerMinVerticalAccuracyChange = {},
-                    onOdometerPollingIntervalChange = {},
-                    onOdometerMinDistanceChange = {},
+                    onLocationPollingIntervalChange = {},
+                    onLocationMinDistanceChange = {},
                     onRestoreOdometerDefaults = {}
                 )
             }
@@ -349,8 +350,8 @@ class SettingsScreenTest {
                     onOdometerSpeedThresholdChange = {},
                     onOdometerMinAccuracyChange = { newValue = it },
                     onOdometerMinVerticalAccuracyChange = {},
-                    onOdometerPollingIntervalChange = {},
-                    onOdometerMinDistanceChange = {},
+                    onLocationPollingIntervalChange = {},
+                    onLocationMinDistanceChange = {},
                     onRestoreOdometerDefaults = {}
                 )
             }
@@ -385,8 +386,8 @@ class SettingsScreenTest {
                     onOdometerSpeedThresholdChange = {},
                     onOdometerMinAccuracyChange = {},
                     onOdometerMinVerticalAccuracyChange = { newValue = it },
-                    onOdometerPollingIntervalChange = {},
-                    onOdometerMinDistanceChange = {},
+                    onLocationPollingIntervalChange = {},
+                    onLocationMinDistanceChange = {},
                     onRestoreOdometerDefaults = {}
                 )
             }
@@ -412,7 +413,7 @@ class SettingsScreenTest {
         composeTestRule.setContent {
             RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
                 SettingsContent(
-                    uiState = SettingsUiState.Success(AppSettings(odometerMinDistance = 1.0f)),
+                    uiState = SettingsUiState.Success(locationSettings = LocationSettings(minDistance = 1.0f)),
                     onBackClick = {},
                     onThemeSelected = {},
                     onOrientationSelected = {},
@@ -421,8 +422,8 @@ class SettingsScreenTest {
                     onOdometerSpeedThresholdChange = {},
                     onOdometerMinAccuracyChange = {},
                     onOdometerMinVerticalAccuracyChange = {},
-                    onOdometerPollingIntervalChange = {},
-                    onOdometerMinDistanceChange = { newValue = it },
+                    onLocationPollingIntervalChange = {},
+                    onLocationMinDistanceChange = { newValue = it },
                     onRestoreOdometerDefaults = {}
                 )
             }
@@ -458,8 +459,8 @@ class SettingsScreenTest {
                     onOdometerSpeedThresholdChange = {},
                     onOdometerMinAccuracyChange = {},
                     onOdometerMinVerticalAccuracyChange = {},
-                    onOdometerPollingIntervalChange = {},
-                    onOdometerMinDistanceChange = {},
+                    onLocationPollingIntervalChange = {},
+                    onLocationMinDistanceChange = {},
                     onRestoreOdometerDefaults = {}
                 )
             }

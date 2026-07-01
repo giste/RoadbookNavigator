@@ -84,6 +84,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import org.giste.roadbooknavigator.R
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
+import org.giste.roadbooknavigator.features.location.domain.LocationSettings
 import org.giste.roadbooknavigator.features.location.domain.MinDistanceThreshold
 import org.giste.roadbooknavigator.features.location.domain.PollingIntervalThreshold
 import org.giste.roadbooknavigator.features.settings.domain.AccuracyThreshold
@@ -110,8 +111,8 @@ fun SettingsScreen(
         onOdometerSpeedThresholdChange = viewModel::setOdometerSpeedThreshold,
         onOdometerMinAccuracyChange = viewModel::setOdometerMinAccuracy,
         onOdometerMinVerticalAccuracyChange = viewModel::setOdometerMinVerticalAccuracy,
-        onOdometerPollingIntervalChange = viewModel::setOdometerPollingInterval,
-        onOdometerMinDistanceChange = viewModel::setOdometerMinDistance,
+        onLocationPollingIntervalChange = viewModel::setLocationPollingInterval,
+        onLocationMinDistanceChange = viewModel::setLocationMinDistance,
         onRestoreOdometerDefaults = viewModel::restoreOdometerDefaults
     )
 }
@@ -128,8 +129,8 @@ fun SettingsContent(
     onOdometerSpeedThresholdChange: (Float) -> Unit,
     onOdometerMinAccuracyChange: (Float) -> Unit,
     onOdometerMinVerticalAccuracyChange: (Float) -> Unit,
-    onOdometerPollingIntervalChange: (Long) -> Unit,
-    onOdometerMinDistanceChange: (Float) -> Unit,
+    onLocationPollingIntervalChange: (Long) -> Unit,
+    onLocationMinDistanceChange: (Float) -> Unit,
     onRestoreOdometerDefaults: () -> Unit,
 ) {
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
@@ -202,11 +203,12 @@ fun SettingsContent(
 
                             1 -> AdvancedTab(
                                 settings = settings,
+                                locationSettings = uiState.locationSettings,
                                 onOdometerSpeedThresholdChange = onOdometerSpeedThresholdChange,
                                 onOdometerMinAccuracyChange = onOdometerMinAccuracyChange,
                                 onOdometerMinVerticalAccuracyChange = onOdometerMinVerticalAccuracyChange,
-                                onOdometerPollingIntervalChange = onOdometerPollingIntervalChange,
-                                onOdometerMinDistanceChange = onOdometerMinDistanceChange,
+                                onOdometerPollingIntervalChange = onLocationPollingIntervalChange,
+                                onOdometerMinDistanceChange = onLocationMinDistanceChange,
                                 onRestoreOdometerDefaults = onRestoreOdometerDefaults
                             )
 
@@ -281,6 +283,7 @@ fun UserTab(
 @Composable
 fun AdvancedTab(
     settings: AppSettings,
+    locationSettings: LocationSettings,
     onOdometerSpeedThresholdChange: (Float) -> Unit,
     onOdometerMinAccuracyChange: (Float) -> Unit,
     onOdometerMinVerticalAccuracyChange: (Float) -> Unit,
@@ -341,20 +344,20 @@ fun AdvancedTab(
         SliderSettingItem(
             title = stringResource(R.string.settings_advanced_polling_interval_title),
             helper = stringResource(R.string.settings_advanced_polling_interval_helper),
-            value = settings.odometerPollingInterval.toFloat(),
+            value = locationSettings.pollingInterval.toFloat(),
             onValueChange = { onOdometerPollingIntervalChange(it.toLong()) },
             valueRange = PollingIntervalThreshold.MIN.toFloat()..PollingIntervalThreshold.MAX.toFloat(),
-            label = "${settings.odometerPollingInterval} ms",
+            label = "${locationSettings.pollingInterval} ms",
             testTag = "PollingIntervalSlider"
         )
 
         SliderSettingItem(
             title = stringResource(R.string.settings_advanced_min_distance_title),
             helper = stringResource(R.string.settings_advanced_min_distance_helper),
-            value = settings.odometerMinDistance,
+            value = locationSettings.minDistance,
             onValueChange = onOdometerMinDistanceChange,
             valueRange = MinDistanceThreshold.MIN..MinDistanceThreshold.MAX,
-            label = "${"%.1f".format(settings.odometerMinDistance)} m",
+            label = "${"%.1f".format(locationSettings.minDistance)} m",
             testTag = "MinDistanceSlider"
         )
 
@@ -669,8 +672,8 @@ fun SettingsPreviewLight() {
             onOdometerSpeedThresholdChange = {},
             onOdometerMinAccuracyChange = {},
             onOdometerMinVerticalAccuracyChange = {},
-            onOdometerPollingIntervalChange = {},
-            onOdometerMinDistanceChange = {},
+            onLocationPollingIntervalChange = {},
+            onLocationMinDistanceChange = {},
             onRestoreOdometerDefaults = {}
         )
     }
@@ -698,8 +701,8 @@ fun SettingsPreviewDark() {
             onOdometerSpeedThresholdChange = {},
             onOdometerMinAccuracyChange = {},
             onOdometerMinVerticalAccuracyChange = {},
-            onOdometerPollingIntervalChange = {},
-            onOdometerMinDistanceChange = {},
+            onLocationPollingIntervalChange = {},
+            onLocationMinDistanceChange = {},
             onRestoreOdometerDefaults = {}
         )
     }
@@ -726,8 +729,8 @@ fun SettingsPreviewTablet() {
             onOdometerSpeedThresholdChange = {},
             onOdometerMinAccuracyChange = {},
             onOdometerMinVerticalAccuracyChange = {},
-            onOdometerPollingIntervalChange = {},
-            onOdometerMinDistanceChange = {},
+            onLocationPollingIntervalChange = {},
+            onLocationMinDistanceChange = {},
             onRestoreOdometerDefaults = {}
         )
     }

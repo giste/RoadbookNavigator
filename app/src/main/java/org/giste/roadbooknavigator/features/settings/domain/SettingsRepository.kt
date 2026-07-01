@@ -49,12 +49,6 @@ interface SettingsRepository {
     /** Sets the minimum vertical accuracy required for altitude-related odometer logic. */
     suspend fun setOdometerMinVerticalAccuracy(accuracy: Float)
 
-    /** Sets the polling interval for GPS updates in milliseconds. */
-    suspend fun setOdometerPollingInterval(interval: Long)
-
-    /** Sets the minimum distance for GPS updates in meters. */
-    suspend fun setOdometerMinDistance(distance: Float)
-
     /** Resets all odometer-related parameters to their default values. */
     suspend fun restoreOdometerDefaults()
 }

@@ -154,14 +154,14 @@ class SettingsViewModelTest {
     @Test
     fun `setLocationPollingInterval should call use case`() = runTest {
         coEvery { updateLocationPollingIntervalUseCase(any()) } returns Result.success(Unit)
-        viewModel.setOdometerPollingInterval(1000L)
+        viewModel.setLocationPollingInterval(1000L)
         coVerify { updateLocationPollingIntervalUseCase(1000L) }
     }
 
     @Test
     fun `setLocationMinDistance should call use case`() = runTest {
         coEvery { updateLocationMinDistanceUseCase(any()) } returns Result.success(Unit)
-        viewModel.setOdometerMinDistance(2.0f)
+        viewModel.setLocationMinDistance(2.0f)
         coVerify { updateLocationMinDistanceUseCase(2.0f) }
     }
 

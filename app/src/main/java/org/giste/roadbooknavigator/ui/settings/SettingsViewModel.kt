@@ -125,14 +125,14 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun setOdometerPollingInterval(interval: Long) {
+    fun setLocationPollingInterval(interval: Long) {
         logger.d("SettingsViewModel: setOdometerPollingInterval requested: %d", interval)
         viewModelScope.launch {
             updateLocationPollingIntervalUseCase(interval)
         }
     }
 
-    fun setOdometerMinDistance(distance: Float) {
+    fun setLocationMinDistance(distance: Float) {
         logger.d("SettingsViewModel: setOdometerMinDistance requested: %f", distance)
         viewModelScope.launch {
             updateLocationMinDistanceUseCase(distance)

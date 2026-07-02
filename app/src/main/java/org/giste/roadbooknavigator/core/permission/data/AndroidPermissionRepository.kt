@@ -11,13 +11,14 @@ import kotlinx.coroutines.flow.asStateFlow
 import org.giste.roadbooknavigator.core.permission.domain.AppPermission
 import org.giste.roadbooknavigator.core.permission.domain.PermissionState
 import org.giste.roadbooknavigator.core.permission.domain.PermissionRepository
-import org.giste.roadbooknavigator.core.util.logger
+import org.giste.roadbooknavigator.core.util.AppLogger
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class AndroidPermissionRepository @Inject constructor(
-    @param:ApplicationContext private val context: Context
+    @param:ApplicationContext private val context: Context,
+    private val logger: AppLogger
 ) : PermissionRepository {
 
     private val _states = MutableStateFlow(calculatePermissionStates())

@@ -15,19 +15,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator
+package org.giste.roadbooknavigator.core.util
 
-import android.app.Application
-import dagger.hilt.android.HiltAndroidApp
-import org.giste.roadbooknavigator.core.util.AutomaticTagTree
-import timber.log.Timber
-
-@HiltAndroidApp
-class RoadbookNavigatorApp : Application() {
-    override fun onCreate() {
-        super.onCreate()
-        if (BuildConfig.DEBUG) {
-            Timber.plant(AutomaticTagTree())
-        }
-    }
+/**
+ * A central logging interface for the application.
+ * This allows domain logic to log without depending on Android or Timber.
+ */
+interface AppLogger {
+    fun v(message: String, vararg args: Any?)
+    fun d(message: String, vararg args: Any?)
+    fun i(message: String, vararg args: Any?)
+    fun w(message: String, vararg args: Any?)
+    fun e(message: String, vararg args: Any?)
+    fun e(t: Throwable, message: String, vararg args: Any?)
 }

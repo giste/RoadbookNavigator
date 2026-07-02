@@ -15,19 +15,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator
+package org.giste.roadbooknavigator.core.di
 
-import android.app.Application
-import dagger.hilt.android.HiltAndroidApp
-import org.giste.roadbooknavigator.core.util.AutomaticTagTree
-import timber.log.Timber
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import org.giste.roadbooknavigator.core.util.AppLogger
+import org.giste.roadbooknavigator.core.util.TimberLogger
+import javax.inject.Singleton
 
-@HiltAndroidApp
-class RoadbookNavigatorApp : Application() {
-    override fun onCreate() {
-        super.onCreate()
-        if (BuildConfig.DEBUG) {
-            Timber.plant(AutomaticTagTree())
-        }
-    }
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class LoggerModule {
+
+    @Binds
+    @Singleton
+    abstract fun bindLogger(timberLogger: TimberLogger): AppLogger
 }

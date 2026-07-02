@@ -33,6 +33,7 @@ import org.giste.roadbooknavigator.core.permission.domain.AppPermission
 import org.giste.roadbooknavigator.core.permission.domain.ObserveAllPermissionsUseCase
 import org.giste.roadbooknavigator.core.permission.domain.PermissionState
 import org.giste.roadbooknavigator.core.permission.domain.RefreshPermissionStatesUseCase
+import org.giste.roadbooknavigator.core.util.AppLogger
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -43,6 +44,7 @@ class PermissionViewModelTest {
 
     private val observeAllPermissionsUseCase: ObserveAllPermissionsUseCase = mockk()
     private val refreshPermissionStatesUseCase: RefreshPermissionStatesUseCase = mockk()
+    private val logger: AppLogger = mockk(relaxed = true)
     private val testDispatcher = StandardTestDispatcher()
 
     @Before
@@ -60,7 +62,7 @@ class PermissionViewModelTest {
         every { observeAllPermissionsUseCase() } returns flowOf(states)
 
         // When
-        val viewModel = PermissionViewModel(observeAllPermissionsUseCase, refreshPermissionStatesUseCase)
+        val viewModel = PermissionViewModel(observeAllPermissionsUseCase, refreshPermissionStatesUseCase, logger)
         
         // Then
         viewModel.uiState.first { it.allGranted }
@@ -77,7 +79,7 @@ class PermissionViewModelTest {
         every { observeAllPermissionsUseCase() } returns flowOf(states)
 
         // When
-        val viewModel = PermissionViewModel(observeAllPermissionsUseCase, refreshPermissionStatesUseCase)
+        val viewModel = PermissionViewModel(observeAllPermissionsUseCase, refreshPermissionStatesUseCase, logger)
         
         // Then
         viewModel.uiState.first { it.permissions.isNotEmpty() }
@@ -91,7 +93,7 @@ class PermissionViewModelTest {
         every { observeAllPermissionsUseCase() } returns flowOf(states)
 
         // When
-        val viewModel = PermissionViewModel(observeAllPermissionsUseCase, refreshPermissionStatesUseCase)
+        val viewModel = PermissionViewModel(observeAllPermissionsUseCase, refreshPermissionStatesUseCase, logger)
 
         // Then
         assertFalse(viewModel.uiState.value.allGranted)
@@ -102,7 +104,7 @@ class PermissionViewModelTest {
         // Given
         every { observeAllPermissionsUseCase() } returns flowOf(emptyMap())
         every { refreshPermissionStatesUseCase() } just runs
-        val viewModel = PermissionViewModel(observeAllPermissionsUseCase, refreshPermissionStatesUseCase)
+        val viewModel = PermissionViewModel(observeAllPermissionsUseCase, refreshPermissionStatesUseCase, logger)
 
         // When
         viewModel.refresh()

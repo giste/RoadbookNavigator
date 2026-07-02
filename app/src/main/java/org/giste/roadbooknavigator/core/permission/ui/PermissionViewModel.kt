@@ -28,13 +28,14 @@ import kotlinx.coroutines.flow.stateIn
 import org.giste.roadbooknavigator.core.permission.domain.ObserveAllPermissionsUseCase
 import org.giste.roadbooknavigator.core.permission.domain.PermissionState
 import org.giste.roadbooknavigator.core.permission.domain.RefreshPermissionStatesUseCase
-import org.giste.roadbooknavigator.core.util.logger
+import org.giste.roadbooknavigator.core.util.AppLogger
 import javax.inject.Inject
 
 @HiltViewModel
 class PermissionViewModel @Inject constructor(
     observeAllPermissionsUseCase: ObserveAllPermissionsUseCase,
-    private val refreshPermissionStatesUseCase: RefreshPermissionStatesUseCase
+    private val refreshPermissionStatesUseCase: RefreshPermissionStatesUseCase,
+    private val logger: AppLogger
 ) : ViewModel() {
 
     val uiState: StateFlow<PermissionUiState> = observeAllPermissionsUseCase()

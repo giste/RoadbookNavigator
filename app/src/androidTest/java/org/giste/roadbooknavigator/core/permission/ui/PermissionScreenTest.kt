@@ -19,7 +19,6 @@ package org.giste.roadbooknavigator.core.permission.ui
 
 import android.app.Activity
 import android.app.Instrumentation
-import android.content.Intent
 import android.provider.Settings
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
@@ -53,7 +52,7 @@ class PermissionScreenTest {
 
         // When
         composeTestRule.setContent {
-            PermissionScreen(uiState = state)
+            PermissionScreen(uiState = state, onPermissionResults = {})
         }
 
         // Then
@@ -69,7 +68,7 @@ class PermissionScreenTest {
 
         // When
         composeTestRule.setContent {
-            PermissionScreen(uiState = state)
+            PermissionScreen(uiState = state, onPermissionResults = {})
         }
 
         // Then
@@ -90,7 +89,7 @@ class PermissionScreenTest {
             )
 
             composeTestRule.setContent {
-                PermissionScreen(uiState = state)
+                PermissionScreen(uiState = state, onPermissionResults = {})
             }
 
             // When

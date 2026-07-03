@@ -32,4 +32,14 @@ class TimberLogger @Inject constructor() : AppLogger {
     override fun w(message: String, vararg args: Any?) = Timber.w(message, *args)
     override fun e(message: String, vararg args: Any?) = Timber.e(message, *args)
     override fun e(t: Throwable, message: String, vararg args: Any?) = Timber.e(t, message, *args)
+    override fun withTag(tag: String): AppLogger = TimberTaggedLogger(tag)
+    private class TimberTaggedLogger(private val tag: String) : AppLogger {
+        override fun v(message: String, vararg args: Any?) = Timber.tag(tag).v(message, *args)
+        override fun d(message: String, vararg args: Any?) = Timber.tag(tag).d(message, *args)
+        override fun i(message: String, vararg args: Any?) = Timber.tag(tag).i(message, *args)
+        override fun w(message: String, vararg args: Any?) = Timber.tag(tag).w(message, *args)
+        override fun e(message: String, vararg args: Any?) = Timber.tag(tag).e(message, *args)
+        override fun e(t: Throwable, message: String, vararg args: Any?) = Timber.tag(tag).e(t, message, *args)
+        override fun withTag(tag: String): AppLogger = TimberTaggedLogger(tag)
+    }
 }

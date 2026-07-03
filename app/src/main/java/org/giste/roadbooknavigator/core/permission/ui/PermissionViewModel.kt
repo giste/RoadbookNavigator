@@ -57,6 +57,10 @@ class PermissionViewModel @Inject constructor(
         logger.d("Permission refresh requested from ViewModel")
         refreshPermissionStatesUseCase()
     }
+
+    fun onPermissionResults(results: Map<String, Boolean>) {
+        logger.d("Permission request results: %s", results)
+    }
 }
 
 data class PermissionUiState(

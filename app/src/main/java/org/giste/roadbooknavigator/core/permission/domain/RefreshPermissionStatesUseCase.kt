@@ -17,14 +17,11 @@
 
 package org.giste.roadbooknavigator.core.permission.domain
 
-import org.giste.roadbooknavigator.core.util.logger
 import javax.inject.Inject
 
 class RefreshPermissionStatesUseCase @Inject constructor(
     private val repository: PermissionRepository
 ) {
-    operator fun invoke() {
-        logger.d("Refreshing permission states")
-        repository.refreshPermissionStates()
-    }
+    operator fun invoke() = repository.refreshPermissionStates()
 }
+

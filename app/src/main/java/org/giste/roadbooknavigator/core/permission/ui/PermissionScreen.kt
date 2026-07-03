@@ -48,15 +48,17 @@ import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 @Composable
 fun PermissionScreen(
     uiState: PermissionUiState,
-    modifier: Modifier = Modifier
+    onPermissionResults: (Map<String, Boolean>) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
     val deniedPermissions = uiState.permissions.filter { it.value != PermissionState.Granted }
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
-    ) { _ ->
+    ) { results ->
         // States will be updated via the repository's observation
+        onPermissionResults(results)
     }
 
     Scaffold(
@@ -217,7 +219,8 @@ private fun PermissionScreenDeniedPreview() {
                     AppPermission.FINE_LOCATION to PermissionState.Denied,
                     AppPermission.COARSE_LOCATION to PermissionState.Denied
                 )
-            )
+            ),
+            onPermissionResults = {},
         )
     }
 }
@@ -235,7 +238,8 @@ private fun PermissionScreenPermanentlyDeniedPreview() {
                     AppPermission.FINE_LOCATION to PermissionState.PermanentlyDenied,
                     AppPermission.COARSE_LOCATION to PermissionState.Granted
                 )
-            )
+            ),
+            onPermissionResults = {},
         )
     }
 }

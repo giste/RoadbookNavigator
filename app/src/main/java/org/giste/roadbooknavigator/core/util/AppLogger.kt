@@ -28,4 +28,5 @@ interface AppLogger {
     fun w(message: String, vararg args: Any?)
     fun e(message: String, vararg args: Any?)
     fun e(t: Throwable, message: String, vararg args: Any?)
+    fun withTag(tag: String): AppLogger
 }

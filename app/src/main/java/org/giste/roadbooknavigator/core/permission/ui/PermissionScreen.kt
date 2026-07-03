@@ -52,7 +52,6 @@ fun PermissionScreen(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
-    val deniedPermissions = uiState.permissions.filter { it.value != PermissionState.Granted }
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
@@ -88,7 +87,7 @@ fun PermissionScreen(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                items(deniedPermissions.toList()) { (permission, state) ->
+                items(uiState.deniedPermissions.toList()) { (permission, state) ->
                     PermissionItem(
                         permission = permission,
                         state = state
@@ -98,9 +97,7 @@ fun PermissionScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            val hasPermanentlyDenied = deniedPermissions.values.any { it is PermissionState.PermanentlyDenied }
-
-            if (hasPermanentlyDenied) {
+            if (uiState.hasPermanentlyDenied) {
                 Button(
                     onClick = {
                         context.openAppSettings()
@@ -114,10 +111,7 @@ fun PermissionScreen(
             } else {
                 Button(
                     onClick = {
-                        val androidPermissions = deniedPermissions.keys
-                            .mapNotNull { it.toAndroidPermission() }
-                            .toTypedArray()
-                        launcher.launch(androidPermissions)
+                        launcher.launch(uiState.androidPermissionsToRequest)
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -199,12 +193,6 @@ private val AppPermission.icon: ImageVector
     get() = when (this) {
         AppPermission.FINE_LOCATION, AppPermission.COARSE_LOCATION -> Icons.Default.Place
     }
-
-// Re-using the mapping logic (should ideally be shared or in domain, but Manifest is Android-specific)
-private fun AppPermission.toAndroidPermission(): String? = when (this) {
-    AppPermission.FINE_LOCATION -> android.Manifest.permission.ACCESS_FINE_LOCATION
-    AppPermission.COARSE_LOCATION -> android.Manifest.permission.ACCESS_COARSE_LOCATION
-}
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Preview(showBackground = true)

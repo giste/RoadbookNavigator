@@ -34,6 +34,7 @@ import org.giste.roadbooknavigator.core.permission.domain.ObserveAllPermissionsU
 import org.giste.roadbooknavigator.core.permission.domain.PermissionState
 import org.giste.roadbooknavigator.core.permission.domain.RefreshPermissionStatesUseCase
 import org.giste.roadbooknavigator.core.util.AppLogger
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -111,5 +112,43 @@ class PermissionViewModelTest {
 
         // Then
         verify { refreshPermissionStatesUseCase() }
+    }
+
+    @Test
+    fun `when some permissions are permanently denied then hasPermanentlyDenied is true`() = runTest {
+        // Given
+        val states = mapOf(
+            AppPermission.FINE_LOCATION to PermissionState.PermanentlyDenied,
+            AppPermission.COARSE_LOCATION to PermissionState.Granted
+        )
+        every { observeAllPermissionsUseCase() } returns flowOf(states)
+
+        // When
+        val viewModel = PermissionViewModel(observeAllPermissionsUseCase, refreshPermissionStatesUseCase, logger)
+
+        // Then
+        viewModel.uiState.first { it.permissions.isNotEmpty() }
+        assertTrue(viewModel.uiState.value.hasPermanentlyDenied)
+        assertEquals(1, viewModel.uiState.value.deniedPermissions.size)
+    }
+
+    @Test
+    fun `when permissions are denied then androidPermissionsToRequest contains manifest strings`() = runTest {
+        // Given
+        val states = mapOf(
+            AppPermission.FINE_LOCATION to PermissionState.Denied,
+            AppPermission.COARSE_LOCATION to PermissionState.Denied
+        )
+        every { observeAllPermissionsUseCase() } returns flowOf(states)
+
+        // When
+        val viewModel = PermissionViewModel(observeAllPermissionsUseCase, refreshPermissionStatesUseCase, logger)
+
+        // Then
+        viewModel.uiState.first { it.permissions.isNotEmpty() }
+        val permissions = viewModel.uiState.value.androidPermissionsToRequest
+        assertTrue(permissions.contains(android.Manifest.permission.ACCESS_FINE_LOCATION))
+        assertTrue(permissions.contains(android.Manifest.permission.ACCESS_COARSE_LOCATION))
+        assertEquals(2, permissions.size)
     }
 }

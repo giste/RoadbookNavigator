@@ -66,8 +66,8 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import org.giste.roadbooknavigator.R
 import org.giste.roadbooknavigator.core.R as CoreR
+import org.giste.roadbooknavigator.feature.odometer.R
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 
 @Composable

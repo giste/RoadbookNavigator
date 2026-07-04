@@ -96,6 +96,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import org.giste.roadbooknavigator.R
+import org.giste.roadbooknavigator.features.roadbook.R as RoadbookR
 import org.giste.roadbooknavigator.core.R as CoreR
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 import org.giste.roadbooknavigator.features.location.domain.LocationSettings

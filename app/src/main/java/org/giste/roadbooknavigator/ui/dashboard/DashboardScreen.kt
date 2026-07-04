@@ -71,7 +71,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import kotlinx.coroutines.launch
 import org.giste.roadbooknavigator.R
-import org.giste.roadbooknavigator.core.R as CoreR
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 import org.giste.roadbooknavigator.features.odometer.domain.Odometer
 import org.giste.roadbooknavigator.features.odometer.ui.PartialDistance
@@ -84,6 +83,7 @@ import org.giste.roadbooknavigator.features.roadbook.domain.model.Waypoint
 import org.giste.roadbooknavigator.features.roadbook.ui.RoadbookSection
 import org.giste.roadbooknavigator.features.roadbook.ui.RoadbookUiState
 import java.io.InputStream
+import org.giste.roadbooknavigator.features.roadbook.R as RoadbookR
 
 @Composable
 fun DashboardScreen(
@@ -555,7 +555,7 @@ fun MapSection(
     ) {
         Icon(
             imageVector = Icons.Default.Place,
-            contentDescription = stringResource(R.string.content_description_map),
+            contentDescription = stringResource(RoadbookR.string.content_description_map),
             modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.actionIconSize),
             tint = MaterialTheme.colorScheme.onSurfaceVariant
         )

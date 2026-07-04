@@ -40,7 +40,6 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.flow.MutableStateFlow
-import org.giste.roadbooknavigator.R
 import org.giste.roadbooknavigator.features.odometer.domain.Odometer
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Coordinates
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Distance
@@ -51,6 +50,7 @@ import org.giste.roadbooknavigator.features.roadbook.ui.RoadbookUiState
 import org.junit.Rule
 import org.junit.Test
 import java.util.Locale
+import org.giste.roadbooknavigator.features.roadbook.R as RoadbookR
 
 class DashboardScreenTest {
 
@@ -80,7 +80,7 @@ class DashboardScreenTest {
             )
         }
 
-        val expectedMessage = context.getString(R.string.main_no_route)
+        val expectedMessage = context.getString(RoadbookR.string.main_no_route)
         composeTestRule.onNodeWithText(expectedMessage).assertIsDisplayed()
     }
 
@@ -191,7 +191,7 @@ class DashboardScreenTest {
             )
         }
 
-        val expectedMessage = context.getString(R.string.main_error_prefix, errorMessage)
+        val expectedMessage = context.getString(RoadbookR.string.main_error_prefix, errorMessage)
         composeTestRule.onNodeWithText(expectedMessage).assertIsDisplayed()
     }
 
@@ -217,7 +217,7 @@ class DashboardScreenTest {
             )
         }
 
-        val mapDescription = context.getString(R.string.content_description_map)
+        val mapDescription = context.getString(RoadbookR.string.content_description_map)
         composeTestRule.onNodeWithContentDescription(mapDescription).assertIsDisplayed()
     }
 
@@ -243,7 +243,7 @@ class DashboardScreenTest {
             )
         }
 
-        val mapDescription = context.getString(R.string.content_description_map)
+        val mapDescription = context.getString(RoadbookR.string.content_description_map)
         composeTestRule.onAllNodesWithContentDescription(mapDescription).assertCountEquals(0)
     }
 
@@ -381,7 +381,7 @@ class DashboardScreenTest {
             )
         }
 
-        val expectedMessage = context.getString(R.string.main_no_route)
+        val expectedMessage = context.getString(RoadbookR.string.main_no_route)
         composeTestRule.onNodeWithText(expectedMessage).assertIsDisplayed()
     }
 

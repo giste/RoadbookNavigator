@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Roadbook Navigator</string>
-    <string name="set_partial_title">SET PARTIAL DISTANCE</string>
     <string name="settings_title">Settings</string>
     <string name="settings_theme_title">Theme</string>
     <string name="settings_theme_light">Light</string>
@@ -49,9 +48,5 @@
     <string name="settings_user_short_distance_title">Short distance threshold</string>
     <string name="settings_user_short_distance_helper">Highlights waypoints closer than this distance (meters).</string>
     <string name="settings_roadbook_restore_defaults">Restore roadbook defaults</string>
-    <string name="main_no_route">No route loaded</string>
-    <string name="main_error_prefix">Error: %1$s</string>
-    <string name="action_import">Import</string>
     <string name="action_settings">Settings</string>
-    <string name="content_description_map">Map placeholder</string>
 </resources>

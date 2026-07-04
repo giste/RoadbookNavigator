@@ -65,9 +65,12 @@ class DistanceUtils @Inject constructor(
     ): Double {
         val horizontalDistance = calculateDistance2D(start, end)
 
-        val canUseAltitude = start.verticalAccuracy != null && end.verticalAccuracy != null &&
-                start.verticalAccuracy <= verticalAccuracyThreshold &&
-                end.verticalAccuracy <= verticalAccuracyThreshold
+        val startVA = start.verticalAccuracy
+        val endVA = end.verticalAccuracy
+
+        val canUseAltitude = startVA != null && endVA != null &&
+                startVA <= verticalAccuracyThreshold &&
+                endVA <= verticalAccuracyThreshold
 
         return if (canUseAltitude) {
             val heightDistance = end.altitude - start.altitude

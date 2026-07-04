@@ -15,6 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import com.android.build.api.dsl.ApplicationExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -24,7 +25,7 @@ plugins {
     alias(libs.plugins.hilt.android)
 }
 
-android {
+configure<ApplicationExtension> {
     namespace = "org.giste.roadbooknavigator.core"
     compileSdk = 37
 

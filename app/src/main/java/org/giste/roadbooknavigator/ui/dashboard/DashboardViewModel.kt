@@ -27,7 +27,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import org.giste.roadbooknavigator.core.util.logger
+import org.giste.roadbooknavigator.core.util.AppLogger
 import org.giste.roadbooknavigator.features.odometer.domain.Odometer
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.DecrementPartialDistanceUseCase
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.GetOdometerUseCase
@@ -58,6 +58,7 @@ class DashboardViewModel @Inject constructor(
     getRoadbookPositionUseCase: GetRoadbookPositionUseCase,
     private val saveRoadbookPositionUseCase: SaveRoadbookPositionUseCase,
     getSettingsUseCase: GetSettingsUseCase,
+    private val logger: AppLogger
 ) : ViewModel() {
 
     private val _showSetPartialDialog = MutableStateFlow(false)

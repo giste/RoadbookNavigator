@@ -17,7 +17,7 @@
 
 package org.giste.roadbooknavigator.features.roadbook.domain.usecase
 
-import org.giste.roadbooknavigator.core.util.logger
+import org.giste.roadbooknavigator.core.util.AppLogger
 import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookPosition
 import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookSessionRepository
 import javax.inject.Inject
@@ -26,7 +26,8 @@ import javax.inject.Inject
  * Use case to save the current roadbook scroll position.
  */
 class SaveRoadbookPositionUseCase @Inject constructor(
-    private val repository: RoadbookSessionRepository
+    private val repository: RoadbookSessionRepository,
+    private val logger: AppLogger
 ) {
     suspend operator fun invoke(index: Int, offset: Int) {
         logger.v("SaveRoadbookPositionUseCase: Saving position index=%d, offset=%d", index, offset)

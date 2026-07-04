@@ -17,7 +17,7 @@
 
 package org.giste.roadbooknavigator.features.roadbook.domain.usecase
 
-import org.giste.roadbooknavigator.core.util.logger
+import org.giste.roadbooknavigator.core.util.AppLogger
 import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookPosition
 import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookSessionRepository
 import javax.inject.Inject
@@ -26,7 +26,8 @@ import javax.inject.Inject
  * Use case to reset the roadbook scroll position to the beginning.
  */
 class ResetRoadbookPositionUseCase @Inject constructor(
-    private val repository: RoadbookSessionRepository
+    private val repository: RoadbookSessionRepository,
+    private val logger: AppLogger
 ) {
     suspend operator fun invoke() {
         logger.i("ResetRoadbookPositionUseCase: Resetting position to (0,0)")

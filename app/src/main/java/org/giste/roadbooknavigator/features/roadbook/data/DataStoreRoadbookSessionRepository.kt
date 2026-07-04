@@ -24,7 +24,7 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import org.giste.roadbooknavigator.core.util.logger
+import org.giste.roadbooknavigator.core.util.AppLogger
 import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookPosition
 import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookSessionRepository
 import javax.inject.Inject
@@ -33,7 +33,8 @@ import javax.inject.Inject
  * Implementation of [RoadbookSessionRepository] using Preferences DataStore.
  */
 internal class DataStoreRoadbookSessionRepository @Inject constructor(
-    @param:RoadbookSessionDataStoreQualifier private val dataStore: DataStore<Preferences>
+    @param:RoadbookSessionDataStoreQualifier private val dataStore: DataStore<Preferences>,
+    private val logger: AppLogger
 ) : RoadbookSessionRepository {
 
     private object Keys {

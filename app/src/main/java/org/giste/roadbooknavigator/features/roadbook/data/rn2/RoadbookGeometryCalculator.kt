@@ -17,7 +17,7 @@
 
 package org.giste.roadbooknavigator.features.roadbook.data.rn2
 
-import org.giste.roadbooknavigator.core.util.logger
+import org.giste.roadbooknavigator.core.util.AppLogger
 import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2Waypoint
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Point
 import javax.inject.Inject
@@ -30,7 +30,9 @@ import kotlin.math.sqrt
 /**
  * Utility class for geometric calculations required by the roadbook parser.
  */
-internal class RoadbookGeometryCalculator @Inject constructor() {
+internal class RoadbookGeometryCalculator @Inject constructor(
+    private val logger: AppLogger
+) {
 
     /**
      * Calculates the Haversine distance between two waypoints in meters.

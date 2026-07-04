@@ -22,6 +22,7 @@ import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
+import io.mockk.mockk
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
@@ -31,6 +32,7 @@ import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
+import org.giste.roadbooknavigator.core.util.AppLogger
 import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookPosition
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -47,6 +49,7 @@ class DataStoreRoadbookSessionRepositoryTest {
 
     private lateinit var dataStore: DataStore<Preferences>
     private lateinit var repository: DataStoreRoadbookSessionRepository
+    private val logger: AppLogger = mockk(relaxed = true)
     private val testDispatcher = UnconfinedTestDispatcher()
 
     @Before
@@ -55,7 +58,7 @@ class DataStoreRoadbookSessionRepositoryTest {
             scope = CoroutineScope(testDispatcher + SupervisorJob()),
             produceFile = { File(temporaryFolder.newFolder(), "test_session.preferences_pb") }
         )
-        repository = DataStoreRoadbookSessionRepository(dataStore)
+        repository = DataStoreRoadbookSessionRepository(dataStore, logger)
     }
 
     @Test
@@ -74,7 +77,7 @@ class DataStoreRoadbookSessionRepositoryTest {
         assertEquals(expectedPosition, position)
 
         // Verify persistence with a new instance
-        val newRepo = DataStoreRoadbookSessionRepository(dataStore)
+        val newRepo = DataStoreRoadbookSessionRepository(dataStore, logger)
         val persistedPosition = newRepo.scrollPosition.first()
         assertEquals(expectedPosition, persistedPosition)
     }

@@ -18,6 +18,7 @@
 package org.giste.roadbooknavigator.features.roadbook.data
 
 import androidx.datastore.core.DataStoreFactory
+import io.mockk.mockk
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -25,6 +26,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
+import org.giste.roadbooknavigator.core.util.AppLogger
 import org.giste.roadbooknavigator.features.roadbook.data.persistence.PersistenceMapper
 import org.giste.roadbooknavigator.features.roadbook.data.persistence.PersistenceRoadbookSerializer
 import org.giste.roadbooknavigator.features.roadbook.data.rn2.Rn2ElementMapper
@@ -46,16 +48,17 @@ class RoadbookDataIntegrationTest {
     val tempFolder = TemporaryFolder()
 
     private val testDispatcher = UnconfinedTestDispatcher()
+    private val logger: AppLogger = mockk(relaxed = true)
     
     private lateinit var persistenceMapper: PersistenceMapper
     private lateinit var rn2Mapper: Rn2Mapper
 
     @Before
     fun setup() {
-        val geometryCalculator = RoadbookGeometryCalculator()
-        val rn2ElementMapper = Rn2ElementMapper(geometryCalculator)
-        val waypointProcessor = WaypointProcessor(geometryCalculator, rn2ElementMapper)
-        rn2Mapper = Rn2Mapper(waypointProcessor)
+        val geometryCalculator = RoadbookGeometryCalculator(logger)
+        val rn2ElementMapper = Rn2ElementMapper(geometryCalculator, logger)
+        val waypointProcessor = WaypointProcessor(geometryCalculator, rn2ElementMapper, logger)
+        rn2Mapper = Rn2Mapper(waypointProcessor, logger)
         persistenceMapper = PersistenceMapper()
     }
 
@@ -65,7 +68,7 @@ class RoadbookDataIntegrationTest {
         val dataStoreFile = File(tempFolder.root, "test_roadbook.json")
         
         val dataStore1 = DataStoreFactory.create(
-            serializer = PersistenceRoadbookSerializer(),
+            serializer = PersistenceRoadbookSerializer(logger),
             scope = scope1,
             produceFile = { dataStoreFile }
         )
@@ -74,7 +77,8 @@ class RoadbookDataIntegrationTest {
             mapper = rn2Mapper,
             persistenceMapper = persistenceMapper,
             dataStore = dataStore1,
-            ioDispatcher = testDispatcher
+            ioDispatcher = testDispatcher,
+            logger = logger
         )
 
         // 1. Load the real .rn2 sample
@@ -95,7 +99,7 @@ class RoadbookDataIntegrationTest {
 
         val scope2 = CoroutineScope(testDispatcher + Job())
         val dataStore2 = DataStoreFactory.create(
-            serializer = PersistenceRoadbookSerializer(),
+            serializer = PersistenceRoadbookSerializer(logger),
             scope = scope2,
             produceFile = { dataStoreFile }
         )
@@ -103,7 +107,8 @@ class RoadbookDataIntegrationTest {
             mapper = rn2Mapper,
             persistenceMapper = persistenceMapper,
             dataStore = dataStore2,
-            ioDispatcher = testDispatcher
+            ioDispatcher = testDispatcher,
+            logger = logger
         )
 
         // 5. Verify data is preserved after "restart"

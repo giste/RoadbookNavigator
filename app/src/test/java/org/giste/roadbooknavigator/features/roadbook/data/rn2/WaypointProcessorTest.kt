@@ -18,6 +18,7 @@
 package org.giste.roadbooknavigator.features.roadbook.data.rn2
 
 import io.mockk.mockk
+import org.giste.roadbooknavigator.core.util.AppLogger
 import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2Notes
 import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2Tulip
 import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2Waypoint
@@ -32,12 +33,13 @@ import kotlin.math.roundToLong
 class WaypointProcessorTest {
 
     private lateinit var processor: WaypointProcessor
-    private val geometryCalculator = RoadbookGeometryCalculator()
+    private val logger: AppLogger = mockk(relaxed = true)
+    private val geometryCalculator = RoadbookGeometryCalculator(logger)
     private val rn2ElementMapper: Rn2ElementMapper = mockk(relaxed = true)
 
     @Before
     fun setup() {
-        processor = WaypointProcessor(geometryCalculator, rn2ElementMapper)
+        processor = WaypointProcessor(geometryCalculator, rn2ElementMapper, logger)
     }
 
     @Test

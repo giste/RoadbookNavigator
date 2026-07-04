@@ -24,7 +24,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
-import org.giste.roadbooknavigator.core.util.logger
+import org.giste.roadbooknavigator.core.util.AppLogger
 import org.giste.roadbooknavigator.features.roadbook.data.persistence.dto.PersistentElement
 import org.giste.roadbooknavigator.features.roadbook.data.persistence.dto.PersistentIcon
 import org.giste.roadbooknavigator.features.roadbook.data.persistence.dto.PersistentRoad
@@ -38,7 +38,9 @@ import javax.inject.Inject
 /**
  * Serializer for [PersistentRoute] using kotlinx.serialization JSON.
  */
-internal class PersistenceRoadbookSerializer @Inject constructor() : Serializer<PersistentRoute> {
+internal class PersistenceRoadbookSerializer @Inject constructor(
+    private val logger: AppLogger
+) : Serializer<PersistentRoute> {
 
     private val json = Json {
         encodeDefaults = true

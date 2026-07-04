@@ -29,6 +29,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
+import org.giste.roadbooknavigator.core.util.AppLogger
 import org.giste.roadbooknavigator.features.location.domain.UserLocation
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -39,12 +40,13 @@ class GpsLocationRepositoryTest {
 
     private val context: Context = mockk()
     private val locationManager: LocationManager = mockk()
+    private val logger: AppLogger = mockk(relaxed = true)
     private lateinit var gpsLocationRepository: GpsLocationRepository
 
     @Before
     fun setup() {
         every { context.getSystemService(Context.LOCATION_SERVICE) } returns locationManager
-        gpsLocationRepository = GpsLocationRepository(context)
+        gpsLocationRepository = GpsLocationRepository(context, logger)
     }
 
     @Test

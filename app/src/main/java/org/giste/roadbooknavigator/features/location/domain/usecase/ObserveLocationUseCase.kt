@@ -22,7 +22,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
-import org.giste.roadbooknavigator.core.util.logger
+import org.giste.roadbooknavigator.core.util.AppLogger
 import org.giste.roadbooknavigator.features.location.domain.LocationRepository
 import org.giste.roadbooknavigator.features.location.domain.UserLocation
 import javax.inject.Inject
@@ -32,15 +32,15 @@ import javax.inject.Inject
  */
 class ObserveLocationUseCase @Inject constructor(
     private val repository: LocationRepository,
-    private val getLocationSettingsUseCase: GetLocationSettingsUseCase
+    private val getLocationSettingsUseCase: GetLocationSettingsUseCase,
+    private val logger: AppLogger
 ) {
     @OptIn(ExperimentalCoroutinesApi::class)
     operator fun invoke(): Flow<UserLocation> {
-        logger.d("ObserveLocationUseCase: Invoked")
         return getLocationSettingsUseCase()
             .flatMapLatest { settings ->
-                logger.d(
-                    "ObserveLocationUseCase: Settings updated, requesting locations with interval: %d ms, minDistance: %f m",
+                logger.i(
+                    "Requesting locations with interval: %d ms, minDistance: %f m",
                     settings.pollingInterval,
                     settings.minDistance
                 )
@@ -49,9 +49,8 @@ class ObserveLocationUseCase @Inject constructor(
                     minDistance = settings.minDistance
                 )
             }
-            .onStart { logger.i("ObserveLocationUseCase: Location flow started") }
             .onEach { location ->
-                logger.v("ObserveLocationUseCase: New location received: lat=%f, lon=%f", location.latitude, location.longitude)
+                logger.v("New location received: lat=%f, lon=%f", location.latitude, location.longitude)
             }
     }
 }

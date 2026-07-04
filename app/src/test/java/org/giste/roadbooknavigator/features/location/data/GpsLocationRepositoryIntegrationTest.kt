@@ -23,10 +23,12 @@ import android.content.Context
 import android.location.Location
 import android.location.LocationManager
 import androidx.test.core.app.ApplicationProvider
+import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
+import org.giste.roadbooknavigator.core.util.AppLogger
 import org.giste.roadbooknavigator.features.location.domain.UserLocation
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -46,11 +48,13 @@ class GpsLocationRepositoryIntegrationTest {
     private lateinit var context: Context
     private lateinit var locationManager: LocationManager
     private lateinit var shadowLocationManager: ShadowLocationManager
+    private lateinit var logger: AppLogger
     private lateinit var repository: GpsLocationRepository
 
     @Before
     fun setup() {
         context = ApplicationProvider.getApplicationContext()
+        logger = mockk(relaxed = true)
         
         // Grant permissions in Robolectric
         shadowOf(context as Application).grantPermissions(
@@ -64,7 +68,7 @@ class GpsLocationRepositoryIntegrationTest {
         // Ensure GPS provider is enabled in the shadow
         shadowLocationManager.setProviderEnabled(LocationManager.GPS_PROVIDER, true)
         
-        repository = GpsLocationRepository(context)
+        repository = GpsLocationRepository(context, logger)
     }
 
     @Test

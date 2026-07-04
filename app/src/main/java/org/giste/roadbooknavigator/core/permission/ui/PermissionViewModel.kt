@@ -45,7 +45,7 @@ class PermissionViewModel @Inject constructor(
             )
         }
         .onEach { state ->
-            logger.d("PermissionUiState updated: allGranted=%s", state.allGranted)
+            logger.d("PermissionViewModel: PermissionUiState updated: allGranted=%s", state.allGranted)
         }
         .stateIn(
             scope = viewModelScope,
@@ -54,12 +54,12 @@ class PermissionViewModel @Inject constructor(
         )
 
     fun refresh() {
-        logger.d("Permission refresh requested from ViewModel")
+        logger.d("PermissionViewModel: Permission refresh requested from ViewModel")
         refreshPermissionStatesUseCase()
     }
 
     fun onPermissionResults(results: Map<String, Boolean>) {
-        logger.d("Permission request results: %s", results)
+        logger.d("PermissionViewModel: Permission request results: %s", results)
     }
 }
 

@@ -26,12 +26,12 @@ class AndroidPermissionRepository @Inject constructor(
     override fun observeAllPermissions(): Flow<Map<AppPermission, PermissionState>> = _states.asStateFlow()
 
     override fun refreshPermissionStates() {
-        logger.d("Refreshing permission states in repository")
+        logger.d("AndroidPermissionRepository: Refreshing permission states in repository")
         _states.value = calculatePermissionStates()
     }
 
     private fun calculatePermissionStates(): Map<AppPermission, PermissionState> {
-        logger.v("Calculating permission states")
+        logger.v("AndroidPermissionRepository: Calculating permission states")
         val states = AppPermission.entries.associateWith { permission ->
             val androidPermission = permission.toAndroidPermission ?: return@associateWith PermissionState.Granted
 
@@ -46,7 +46,7 @@ class AndroidPermissionRepository @Inject constructor(
                 PermissionState.Denied
             }
         }
-        logger.d("New permission states calculated: %s", states)
+        logger.d("AndroidPermissionRepository: New permission states calculated: %s", states)
         return states
     }
 

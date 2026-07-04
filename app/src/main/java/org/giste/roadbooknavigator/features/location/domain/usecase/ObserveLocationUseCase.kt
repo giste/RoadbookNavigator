@@ -39,7 +39,7 @@ class ObserveLocationUseCase @Inject constructor(
         return getLocationSettingsUseCase()
             .flatMapLatest { settings ->
                 logger.i(
-                    "Requesting locations with interval: %d ms, minDistance: %f m",
+                    "ObserveLocationUseCase: Requesting locations with interval: %d ms, minDistance: %f m",
                     settings.pollingInterval,
                     settings.minDistance
                 )
@@ -49,7 +49,7 @@ class ObserveLocationUseCase @Inject constructor(
                 )
             }
             .onEach { location ->
-                logger.v("New location received: lat=%f, lon=%f", location.latitude, location.longitude)
+                logger.v("ObserveLocationUseCase: New location received: lat=%f, lon=%f", location.latitude, location.longitude)
             }
     }
 }

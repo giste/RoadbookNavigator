@@ -24,6 +24,7 @@ import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.location.domain.LocationSettings
 import org.giste.roadbooknavigator.features.location.domain.LocationSettingsRepository
 import javax.inject.Inject
@@ -34,7 +35,8 @@ import javax.inject.Singleton
  */
 @Singleton
 internal class DataStoreLocationSettingsRepository @Inject constructor(
-    @param:LocationSettingsDataStore private val dataStore: DataStore<Preferences>
+    @param:LocationSettingsDataStore private val dataStore: DataStore<Preferences>,
+    private val logger: Logger,
 ) : LocationSettingsRepository {
 
     private object Keys {
@@ -49,23 +51,26 @@ internal class DataStoreLocationSettingsRepository @Inject constructor(
             minDistance = preferences[Keys.MIN_DISTANCE]
                 ?: LocationSettings.DEFAULT_MIN_DISTANCE,
         )
-    }
+    }.also { logger.d("DataStoreLocationSettingsRepository: New location settings %s", it) }
 
     override suspend fun updatePollingInterval(interval: Long) {
         dataStore.edit { preferences ->
             preferences[Keys.POLLING_INTERVAL] = interval
         }
+        logger.d("DataStoreLocationSettingsRepository: Updated polling interval to %d", interval)
     }
 
     override suspend fun updateMinDistance(distance: Float) {
         dataStore.edit { preferences ->
             preferences[Keys.MIN_DISTANCE] = distance
         }
+        logger.d("DataStoreLocationSettingsRepository: Updated min distance to %f", distance)
     }
 
     override suspend fun restoreDefaults() {
         dataStore.edit { preferences ->
             preferences.clear()
         }
+        logger.d("DataStoreLocationSettingsRepository: Restored default settings")
     }
 }

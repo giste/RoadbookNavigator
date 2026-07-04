@@ -20,11 +20,13 @@ package org.giste.roadbooknavigator.features.location.data
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
+import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.location.domain.LocationSettings
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -43,6 +45,7 @@ class DataStoreLocationSettingsRepositoryTest {
     private lateinit var repository: DataStoreLocationSettingsRepository
     private val testDispatcher = UnconfinedTestDispatcher()
     private val testScope = TestScope(testDispatcher)
+    private val logger: Logger = mockk(relaxed = true)
 
     @Before
     fun setup() {
@@ -50,7 +53,7 @@ class DataStoreLocationSettingsRepositoryTest {
             scope = testScope,
             produceFile = { File(temporaryFolder.newFolder(), "test_location_settings.preferences_pb") }
         )
-        repository = DataStoreLocationSettingsRepository(dataStore)
+        repository = DataStoreLocationSettingsRepository(dataStore, logger)
     }
 
     @Test

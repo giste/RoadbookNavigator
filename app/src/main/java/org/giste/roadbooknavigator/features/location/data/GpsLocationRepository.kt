@@ -51,7 +51,7 @@ internal class GpsLocationRepository @Inject constructor(
         minDistance: Float
     ): Flow<UserLocation> = callbackFlow {
         logger.d(
-            "Requesting location updates (interval: %d, distance: %f)",
+            "GpsLocationRepository: Requesting location updates (interval: %d, distance: %f)",
             pollingInterval,
             minDistance
         )
@@ -59,7 +59,7 @@ internal class GpsLocationRepository @Inject constructor(
         val listener = object : LocationListener {
             override fun onLocationChanged(location: Location) {
                 logger.v(
-                    "Location changed: %f, %f (acc: %f)",
+                    "GpsLocationRepository: Location changed: %f, %f (acc: %f)",
                     location.latitude,
                     location.longitude,
                     location.accuracy
@@ -69,15 +69,15 @@ internal class GpsLocationRepository @Inject constructor(
 
             @Deprecated("Deprecated in Java")
             override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
-                logger.d("Status changed for %s: %d", provider, status)
+                logger.d("GpsLocationRepository: Status changed for %s: %d", provider, status)
             }
 
             override fun onProviderEnabled(provider: String) {
-                logger.i("Provider enabled: %s", provider)
+                logger.i("GpsLocationRepository: Provider enabled: %s", provider)
             }
 
             override fun onProviderDisabled(provider: String) {
-                logger.w("Provider disabled: %s", provider)
+                logger.w("GpsLocationRepository: Provider disabled: %s", provider)
             }
         }
 
@@ -89,12 +89,12 @@ internal class GpsLocationRepository @Inject constructor(
                 listener
             )
         } catch (e: Exception) {
-            logger.e(e, "Error requesting location updates: %s", e.message)
+            logger.e(e, "GpsLocationRepository: Error requesting location updates: %s", e.message)
             close(e)
         }
 
         awaitClose {
-            logger.d("Removing location updates")
+            logger.d("GpsLocationRepository: Removing location updates")
             locationManager.removeUpdates(listener)
         }
     }

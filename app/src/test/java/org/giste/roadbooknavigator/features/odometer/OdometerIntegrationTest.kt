@@ -29,7 +29,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import org.giste.roadbooknavigator.core.util.AppLogger
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.location.domain.UserLocation
 import org.giste.roadbooknavigator.features.location.domain.usecase.ObserveLocationUseCase
 import org.giste.roadbooknavigator.features.odometer.data.DataStoreOdometerRepository
@@ -59,7 +59,7 @@ class OdometerIntegrationTest {
     private lateinit var odometerRepository: DataStoreOdometerRepository
     private val observeLocationUseCase: ObserveLocationUseCase = mockk()
     private val odometerSettingsRepository: OdometerSettingsRepository = mockk()
-    private val logger: AppLogger = mockk(relaxed = true)
+    private val logger: Logger = mockk(relaxed = true)
     private val distanceUtils = DistanceUtils(logger)
     
     private val gpsFlow = MutableSharedFlow<UserLocation>()

@@ -17,7 +17,7 @@
 
 package org.giste.roadbooknavigator.features.settings.domain.usecase
 
-import org.giste.roadbooknavigator.core.util.AppLogger
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.settings.domain.RemoteKeys
 import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
 import javax.inject.Inject
@@ -27,7 +27,7 @@ import javax.inject.Inject
  */
 class UpdateCustomKeysUseCase @Inject constructor(
     private val repository: SettingsRepository,
-    private val logger: AppLogger
+    private val logger: Logger
 ) {
     suspend operator fun invoke(keys: RemoteKeys): Result<Unit> {
         logger.i("UpdateCustomKeysUseCase: Updating custom keys")

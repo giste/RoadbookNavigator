@@ -17,7 +17,7 @@
 
 package org.giste.roadbooknavigator.features.roadbook.data.rn2
 
-import org.giste.roadbooknavigator.core.util.AppLogger
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2Element
 import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2Icon
 import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2Road
@@ -38,7 +38,7 @@ import javax.inject.Inject
  */
 internal class Rn2ElementMapper @Inject constructor(
     private val geometryCalculator: RoadbookGeometryCalculator,
-    private val logger: AppLogger
+    private val logger: Logger
 ) {
 
     /**

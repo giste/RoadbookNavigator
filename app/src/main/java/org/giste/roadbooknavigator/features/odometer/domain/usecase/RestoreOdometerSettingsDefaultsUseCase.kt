@@ -17,7 +17,7 @@
 
 package org.giste.roadbooknavigator.features.odometer.domain.usecase
 
-import org.giste.roadbooknavigator.core.util.AppLogger
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettingsRepository
 import javax.inject.Inject
 
@@ -26,7 +26,7 @@ import javax.inject.Inject
  */
 class RestoreOdometerSettingsDefaultsUseCase @Inject constructor(
     private val repository: OdometerSettingsRepository,
-    private val logger: AppLogger
+    private val logger: Logger
 ) {
     suspend operator fun invoke(): Result<Unit> {
         logger.i("RestoreOdometerSettingsDefaultsUseCase: Restoring odometer defaults")

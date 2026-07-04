@@ -33,7 +33,7 @@ import org.giste.roadbooknavigator.core.permission.domain.AppPermission
 import org.giste.roadbooknavigator.core.permission.domain.ObserveAllPermissionsUseCase
 import org.giste.roadbooknavigator.core.permission.domain.PermissionState
 import org.giste.roadbooknavigator.core.permission.domain.RefreshPermissionStatesUseCase
-import org.giste.roadbooknavigator.core.util.AppLogger
+import org.giste.roadbooknavigator.core.util.Logger
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -45,7 +45,7 @@ class PermissionViewModelTest {
 
     private val observeAllPermissionsUseCase: ObserveAllPermissionsUseCase = mockk()
     private val refreshPermissionStatesUseCase: RefreshPermissionStatesUseCase = mockk()
-    private val logger: AppLogger = mockk(relaxed = true)
+    private val logger: Logger = mockk(relaxed = true)
     private val testDispatcher = StandardTestDispatcher()
 
     @Before

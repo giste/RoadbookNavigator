@@ -17,7 +17,7 @@
 
 package org.giste.roadbooknavigator.features.roadbook.domain.usecase
 
-import org.giste.roadbooknavigator.core.util.AppLogger
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Route
 import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookRepository
 import java.io.InputStream
@@ -29,7 +29,7 @@ import javax.inject.Inject
 class ImportRoadbookUseCase @Inject constructor(
     private val repository: RoadbookRepository,
     private val resetRoadbookPositionUseCase: ResetRoadbookPositionUseCase,
-    private val logger: AppLogger
+    private val logger: Logger
 ) {
     suspend operator fun invoke(inputStream: InputStream): Result<Route> {
         logger.i("ImportRoadbookUseCase: Starting roadbook import")

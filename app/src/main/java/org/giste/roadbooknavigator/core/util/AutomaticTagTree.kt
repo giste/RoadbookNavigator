@@ -42,7 +42,7 @@ class AutomaticTagTree : Timber.DebugTree() {
 
     private fun isLoggingInternal(className: String): Boolean {
         return className.contains(Timber::class.java.name) ||
-                className.contains(AppLogger::class.java.name) ||
+                className.contains(Logger::class.java.name) ||
                 className.contains(TimberLogger::class.java.name) ||
                 className.contains(AutomaticTagTree::class.java.name) ||
                 className.contains("DefaultImpls") || // Kotlin interface default implementation wrappers

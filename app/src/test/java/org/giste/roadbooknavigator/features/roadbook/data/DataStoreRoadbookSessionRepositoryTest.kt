@@ -32,7 +32,7 @@ import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import org.giste.roadbooknavigator.core.util.AppLogger
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookPosition
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -49,7 +49,7 @@ class DataStoreRoadbookSessionRepositoryTest {
 
     private lateinit var dataStore: DataStore<Preferences>
     private lateinit var repository: DataStoreRoadbookSessionRepository
-    private val logger: AppLogger = mockk(relaxed = true)
+    private val logger: Logger = mockk(relaxed = true)
     private val testDispatcher = UnconfinedTestDispatcher()
 
     @Before

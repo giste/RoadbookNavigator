@@ -28,7 +28,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import org.giste.roadbooknavigator.core.util.AppLogger
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.location.domain.UserLocation
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -48,7 +48,7 @@ class GpsLocationRepositoryIntegrationTest {
     private lateinit var context: Context
     private lateinit var locationManager: LocationManager
     private lateinit var shadowLocationManager: ShadowLocationManager
-    private lateinit var logger: AppLogger
+    private lateinit var logger: Logger
     private lateinit var repository: GpsLocationRepository
 
     @Before

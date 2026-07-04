@@ -26,7 +26,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import org.giste.roadbooknavigator.core.util.AppLogger
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.roadbook.data.persistence.PersistenceMapper
 import org.giste.roadbooknavigator.features.roadbook.data.persistence.PersistenceRoadbookSerializer
 import org.giste.roadbooknavigator.features.roadbook.data.rn2.Rn2ElementMapper
@@ -48,7 +48,7 @@ class RoadbookDataIntegrationTest {
     val tempFolder = TemporaryFolder()
 
     private val testDispatcher = UnconfinedTestDispatcher()
-    private val logger: AppLogger = mockk(relaxed = true)
+    private val logger: Logger = mockk(relaxed = true)
     
     private lateinit var persistenceMapper: PersistenceMapper
     private lateinit var rn2Mapper: Rn2Mapper

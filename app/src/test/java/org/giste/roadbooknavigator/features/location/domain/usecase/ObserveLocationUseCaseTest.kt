@@ -23,7 +23,7 @@ import io.mockk.verify
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import org.giste.roadbooknavigator.core.util.AppLogger
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.location.domain.LocationRepository
 import org.giste.roadbooknavigator.features.location.domain.LocationSettings
 import org.junit.Test
@@ -32,7 +32,7 @@ class ObserveLocationUseCaseTest {
 
     private val repository: LocationRepository = mockk()
     private val getLocationSettingsUseCase: GetLocationSettingsUseCase = mockk()
-    private val logger: AppLogger = mockk(relaxed = true)
+    private val logger: Logger = mockk(relaxed = true)
     private val useCase = ObserveLocationUseCase(repository, getLocationSettingsUseCase, logger)
 
     @Test

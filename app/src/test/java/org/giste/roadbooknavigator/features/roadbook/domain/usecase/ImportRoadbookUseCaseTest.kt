@@ -21,7 +21,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.giste.roadbooknavigator.core.util.AppLogger
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookRepository
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Route
 import org.junit.Assert.assertEquals
@@ -33,7 +33,7 @@ class ImportRoadbookUseCaseTest {
 
     private val repository: RoadbookRepository = mockk()
     private val resetRoadbookPositionUseCase: ResetRoadbookPositionUseCase = mockk()
-    private val logger: AppLogger = mockk(relaxed = true)
+    private val logger: Logger = mockk(relaxed = true)
     private val useCase = ImportRoadbookUseCase(repository, resetRoadbookPositionUseCase, logger)
 
     @Test

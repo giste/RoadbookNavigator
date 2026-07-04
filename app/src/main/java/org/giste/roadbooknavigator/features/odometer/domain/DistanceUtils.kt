@@ -17,7 +17,7 @@
 
 package org.giste.roadbooknavigator.features.odometer.domain
 
-import org.giste.roadbooknavigator.core.util.AppLogger
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.location.domain.UserLocation
 import javax.inject.Inject
 import kotlin.math.atan2
@@ -29,7 +29,7 @@ import kotlin.math.sqrt
  * Utility to calculate distances in a platform-independent way.
  */
 class DistanceUtils @Inject constructor(
-    private val logger: AppLogger
+    private val logger: Logger
 ) {
     private val EARTH_RADIUS_METERS = 6371000.0
 

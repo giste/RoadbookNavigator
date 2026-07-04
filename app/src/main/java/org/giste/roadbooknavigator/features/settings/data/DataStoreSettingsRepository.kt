@@ -26,7 +26,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import org.giste.roadbooknavigator.core.util.AppLogger
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.AppTheme
@@ -44,7 +44,7 @@ import javax.inject.Inject
  */
 internal class DataStoreSettingsRepository @Inject constructor(
     @param:SettingsDataStore private val dataStore: DataStore<Preferences>,
-    private val logger: AppLogger
+    private val logger: Logger
 ) : SettingsRepository {
 
     private object Keys {

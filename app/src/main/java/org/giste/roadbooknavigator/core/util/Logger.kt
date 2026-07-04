@@ -21,12 +21,12 @@ package org.giste.roadbooknavigator.core.util
  * A central logging interface for the application.
  * This allows domain logic to log without depending on Android or Timber.
  */
-interface AppLogger {
+interface Logger {
     fun v(message: String, vararg args: Any?)
     fun d(message: String, vararg args: Any?)
     fun i(message: String, vararg args: Any?)
     fun w(message: String, vararg args: Any?)
     fun e(message: String, vararg args: Any?)
     fun e(t: Throwable, message: String, vararg args: Any?)
-    fun withTag(tag: String): AppLogger
+    fun withTag(tag: String): Logger
 }

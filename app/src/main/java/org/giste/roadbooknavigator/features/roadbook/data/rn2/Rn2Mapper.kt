@@ -17,7 +17,7 @@
 
 package org.giste.roadbooknavigator.features.roadbook.data.rn2
 
-import org.giste.roadbooknavigator.core.util.AppLogger
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2RouteData
 import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2RouteResponse
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Route
@@ -29,7 +29,7 @@ import javax.inject.Inject
  */
 internal class Rn2Mapper @Inject constructor(
     private val waypointProcessor: WaypointProcessor,
-    private val logger: AppLogger
+    private val logger: Logger
 ) {
 
     /**

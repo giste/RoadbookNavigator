@@ -21,7 +21,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.giste.roadbooknavigator.core.util.AppLogger
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerRepository
 import org.junit.Before
 import org.junit.Test
@@ -29,7 +29,7 @@ import org.junit.Test
 class OdometerUseCasesTest {
 
     private val repository: OdometerRepository = mockk()
-    private val logger: AppLogger = mockk(relaxed = true)
+    private val logger: Logger = mockk(relaxed = true)
 
     @Before
     fun setup() {

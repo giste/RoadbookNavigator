@@ -17,7 +17,7 @@
 
 package org.giste.roadbooknavigator.features.roadbook.data.rn2
 
-import org.giste.roadbooknavigator.core.util.AppLogger
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2Icon
 import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2Waypoint
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Coordinates
@@ -33,7 +33,7 @@ import kotlin.math.roundToLong
 internal class WaypointProcessor @Inject constructor(
     private val geometryCalculator: RoadbookGeometryCalculator,
     private val rn2ElementMapper: Rn2ElementMapper,
-    private val logger: AppLogger
+    private val logger: Logger
 ) {
 
     private data class ProcessingState(

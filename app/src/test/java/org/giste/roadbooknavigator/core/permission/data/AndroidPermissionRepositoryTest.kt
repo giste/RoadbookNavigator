@@ -25,7 +25,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.giste.roadbooknavigator.core.permission.domain.AppPermission
 import org.giste.roadbooknavigator.core.permission.domain.PermissionState
-import org.giste.roadbooknavigator.core.util.AppLogger
+import org.giste.roadbooknavigator.core.util.Logger
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -37,7 +37,7 @@ import org.robolectric.Shadows.shadowOf
 class AndroidPermissionRepositoryTest {
 
     private lateinit var context: Application
-    private lateinit var logger: AppLogger
+    private lateinit var logger: Logger
     private lateinit var repository: AndroidPermissionRepository
 
     @Before

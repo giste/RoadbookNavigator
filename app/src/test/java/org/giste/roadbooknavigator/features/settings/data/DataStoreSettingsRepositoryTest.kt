@@ -26,9 +26,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import org.giste.roadbooknavigator.core.util.AppLogger
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
-import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.AppTheme
 import org.giste.roadbooknavigator.features.settings.domain.RemoteKeys
 import org.giste.roadbooknavigator.features.settings.domain.RemoteModel
@@ -46,7 +45,7 @@ class DataStoreSettingsRepositoryTest {
     val temporaryFolder = TemporaryFolder()
 
     private lateinit var dataStore: DataStore<Preferences>
-    private lateinit var logger: AppLogger
+    private lateinit var logger: Logger
     private lateinit var repository: DataStoreSettingsRepository
     private val testDispatcher = UnconfinedTestDispatcher()
     private val testScope = TestScope(testDispatcher)

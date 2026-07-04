@@ -21,7 +21,7 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import org.giste.roadbooknavigator.core.util.AppLogger
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.core.util.TimberLogger
 import javax.inject.Singleton
 
@@ -31,5 +31,5 @@ abstract class LoggerModule {
 
     @Binds
     @Singleton
-    abstract fun bindLogger(timberLogger: TimberLogger): AppLogger
+    abstract fun bindLogger(timberLogger: TimberLogger): Logger
 }

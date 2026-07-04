@@ -27,7 +27,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import org.giste.roadbooknavigator.core.util.AppLogger
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.location.domain.LocationRepository
 import org.giste.roadbooknavigator.features.location.domain.UserLocation
 import javax.inject.Inject
@@ -39,7 +39,7 @@ import javax.inject.Singleton
 @Singleton
 internal class GpsLocationRepository @Inject constructor(
     @param:ApplicationContext private val context: Context,
-    private val logger: AppLogger
+    private val logger: Logger
 ) : LocationRepository {
 
     private val locationManager =

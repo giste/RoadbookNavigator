@@ -30,7 +30,7 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import org.giste.roadbooknavigator.core.util.AppLogger
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.odometer.domain.Odometer
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.*
 import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookPosition
@@ -60,7 +60,7 @@ class DashboardViewModelTest {
     private val getRoadbookPositionUseCase: GetRoadbookPositionUseCase = mockk()
     private val saveRoadbookPositionUseCase: SaveRoadbookPositionUseCase = mockk()
     private val getSettingsUseCase: GetSettingsUseCase = mockk()
-    private val logger: AppLogger = mockk(relaxed = true)
+    private val logger: Logger = mockk(relaxed = true)
 
     private val activeRoadbookFlow = MutableStateFlow<Route?>(null)
     private val odometerFlow = MutableStateFlow(Odometer())

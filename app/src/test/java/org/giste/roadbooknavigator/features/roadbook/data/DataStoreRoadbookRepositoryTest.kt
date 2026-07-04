@@ -27,7 +27,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import org.giste.roadbooknavigator.core.util.AppLogger
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.roadbook.data.persistence.dto.PersistentRoute
 import org.giste.roadbooknavigator.features.roadbook.data.persistence.PersistenceMapper
 import org.giste.roadbooknavigator.features.roadbook.data.persistence.PersistenceRoadbookSerializer
@@ -52,7 +52,7 @@ class DataStoreRoadbookRepositoryTest {
     private lateinit var repository: DataStoreRoadbookRepository
     private val mapper: Rn2Mapper = mockk()
     private val persistenceMapper: PersistenceMapper = mockk()
-    private val logger: AppLogger = mockk(relaxed = true)
+    private val logger: Logger = mockk(relaxed = true)
     private val testDispatcher = UnconfinedTestDispatcher()
     private val testScope = CoroutineScope(testDispatcher + Job())
     

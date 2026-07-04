@@ -18,7 +18,7 @@
 package org.giste.roadbooknavigator.features.roadbook.data.rn2
 
 import io.mockk.mockk
-import org.giste.roadbooknavigator.core.util.AppLogger
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Icon
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Road
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Track
@@ -30,7 +30,7 @@ import org.junit.Test
 class Rn2MapperTest {
 
     private lateinit var mapper: Rn2Mapper
-    private val logger: AppLogger = mockk(relaxed = true)
+    private val logger: Logger = mockk(relaxed = true)
     private val resetId = "308c7365-bc3f-451b-9e98-531e9015024f"
 
     @Before

@@ -20,11 +20,13 @@ package org.giste.roadbooknavigator.features.settings.data
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
+import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
+import org.giste.roadbooknavigator.core.util.AppLogger
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.AppTheme
@@ -44,6 +46,7 @@ class DataStoreSettingsRepositoryTest {
     val temporaryFolder = TemporaryFolder()
 
     private lateinit var dataStore: DataStore<Preferences>
+    private lateinit var logger: AppLogger
     private lateinit var repository: DataStoreSettingsRepository
     private val testDispatcher = UnconfinedTestDispatcher()
     private val testScope = TestScope(testDispatcher)
@@ -54,7 +57,8 @@ class DataStoreSettingsRepositoryTest {
             scope = testScope,
             produceFile = { File(temporaryFolder.newFolder(), "test_settings.preferences_pb") }
         )
-        repository = DataStoreSettingsRepository(dataStore)
+        logger = mockk(relaxed = true)
+        repository = DataStoreSettingsRepository(dataStore, logger)
     }
 
     @Test
@@ -72,7 +76,7 @@ class DataStoreSettingsRepositoryTest {
         assertEquals(AppTheme.DARK, settings.theme)
 
         // Verify with new instance
-        val newRepo = DataStoreSettingsRepository(dataStore)
+        val newRepo = DataStoreSettingsRepository(dataStore, logger)
         val persisted = newRepo.getSettings().first()
         assertEquals(AppTheme.DARK, persisted.theme)
     }
@@ -85,7 +89,7 @@ class DataStoreSettingsRepositoryTest {
         assertEquals(AppOrientation.HORIZONTAL, settings.orientation)
 
         // Verify with new instance
-        val newRepo = DataStoreSettingsRepository(dataStore)
+        val newRepo = DataStoreSettingsRepository(dataStore, logger)
         val persisted = newRepo.getSettings().first()
         assertEquals(AppOrientation.HORIZONTAL, persisted.orientation)
     }

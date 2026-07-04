@@ -29,6 +29,7 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import org.giste.roadbooknavigator.core.util.AppLogger
 import org.giste.roadbooknavigator.features.location.domain.LocationSettings
 import org.giste.roadbooknavigator.features.location.domain.usecase.GetLocationSettingsUseCase
 import org.giste.roadbooknavigator.features.location.domain.usecase.RestoreLocationDefaultsUseCase
@@ -76,6 +77,7 @@ class SettingsViewModelTest {
     private val restoreLocationDefaultsUseCase: RestoreLocationDefaultsUseCase = mockk()
     private val updateRemoteModelUseCase: UpdateRemoteModelUseCase = mockk()
     private val updateCustomKeysUseCase: UpdateCustomKeysUseCase = mockk()
+    private val logger: AppLogger = mockk(relaxed = true)
 
     private val settingsFlow = MutableStateFlow(AppSettings())
     private val locationSettingsFlow = MutableStateFlow(LocationSettings())
@@ -108,6 +110,7 @@ class SettingsViewModelTest {
             restoreLocationDefaultsUseCase = restoreLocationDefaultsUseCase,
             updateRemoteModelUseCase = updateRemoteModelUseCase,
             updateCustomKeysUseCase = updateCustomKeysUseCase,
+            logger = logger
         )
     }
 

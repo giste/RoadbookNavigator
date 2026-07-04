@@ -21,6 +21,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
+import org.giste.roadbooknavigator.core.util.AppLogger
 import org.giste.roadbooknavigator.features.settings.domain.RemoteModel
 import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
 import org.junit.Assert.assertTrue
@@ -29,7 +30,8 @@ import org.junit.Test
 class UpdateRemoteModelUseCaseTest {
 
     private val repository: SettingsRepository = mockk()
-    private val useCase = UpdateRemoteModelUseCase(repository)
+    private val logger: AppLogger = mockk(relaxed = true)
+    private val useCase = UpdateRemoteModelUseCase(repository, logger)
 
     @Test
     fun `invoke should call repository`() = runTest {

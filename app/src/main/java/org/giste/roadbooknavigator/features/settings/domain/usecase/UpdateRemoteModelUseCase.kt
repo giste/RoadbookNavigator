@@ -17,7 +17,7 @@
 
 package org.giste.roadbooknavigator.features.settings.domain.usecase
 
-import org.giste.roadbooknavigator.core.util.logger
+import org.giste.roadbooknavigator.core.util.AppLogger
 import org.giste.roadbooknavigator.features.settings.domain.RemoteModel
 import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
 import javax.inject.Inject
@@ -26,7 +26,8 @@ import javax.inject.Inject
  * Use case to update the selected remote control model.
  */
 class UpdateRemoteModelUseCase @Inject constructor(
-    private val repository: SettingsRepository
+    private val repository: SettingsRepository,
+    private val logger: AppLogger
 ) {
     suspend operator fun invoke(model: RemoteModel): Result<Unit> {
         logger.i("UpdateRemoteModelUseCase: Updating remote model to %s", model)

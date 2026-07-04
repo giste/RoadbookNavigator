@@ -17,7 +17,7 @@
 
 package org.giste.roadbooknavigator.features.settings.domain.usecase
 
-import org.giste.roadbooknavigator.core.util.logger
+import org.giste.roadbooknavigator.core.util.AppLogger
 import org.giste.roadbooknavigator.features.settings.domain.AppTheme
 import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
 import javax.inject.Inject
@@ -26,7 +26,8 @@ import javax.inject.Inject
  * Use case to update the application visual theme.
  */
 class UpdateThemeUseCase @Inject constructor(
-    private val repository: SettingsRepository
+    private val repository: SettingsRepository,
+    private val logger: AppLogger
 ) {
     suspend operator fun invoke(theme: AppTheme): Result<Unit> {
         logger.i("UpdateThemeUseCase: Updating theme to %s", theme)

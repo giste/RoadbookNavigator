@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import org.giste.roadbooknavigator.core.util.logger
+import org.giste.roadbooknavigator.core.util.AppLogger
 import org.giste.roadbooknavigator.features.location.domain.LocationSettings
 import org.giste.roadbooknavigator.features.location.domain.usecase.GetLocationSettingsUseCase
 import org.giste.roadbooknavigator.features.location.domain.usecase.RestoreLocationDefaultsUseCase
@@ -70,6 +70,7 @@ class SettingsViewModel @Inject constructor(
     private val restoreLocationDefaultsUseCase: RestoreLocationDefaultsUseCase,
     private val updateRemoteModelUseCase: UpdateRemoteModelUseCase,
     private val updateCustomKeysUseCase: UpdateCustomKeysUseCase,
+    private val logger: AppLogger
 ) : ViewModel() {
 
     val uiState: StateFlow<SettingsUiState> = combine(

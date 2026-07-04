@@ -45,8 +45,6 @@ class AutomaticTagTree : Timber.DebugTree() {
                 className.contains(AppLogger::class.java.name) ||
                 className.contains(TimberLogger::class.java.name) ||
                 className.contains(AutomaticTagTree::class.java.name) ||
-                className.contains("org.giste.roadbooknavigator.core.util.Logger") ||
-                className.contains("org.giste.roadbooknavigator.core.util.TaggedLogger") ||
                 className.contains("DefaultImpls") || // Kotlin interface default implementation wrappers
                 className.contains("java.lang.reflect") ||
                 className.contains("sun.reflect")

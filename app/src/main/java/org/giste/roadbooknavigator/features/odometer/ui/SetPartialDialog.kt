@@ -67,6 +67,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import org.giste.roadbooknavigator.R
+import org.giste.roadbooknavigator.core.R as CoreR
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 
 @Composable
@@ -343,7 +344,7 @@ private fun ActionButtons(
         ) {
             Icon(
                 Icons.Default.Close,
-                contentDescription = stringResource(R.string.action_cancel),
+                contentDescription = stringResource(CoreR.string.action_cancel),
                 modifier = Modifier.size(dimensions.actionIconSize)
             )
         }
@@ -362,7 +363,7 @@ private fun ActionButtons(
         ) {
             Icon(
                 Icons.Default.Check,
-                contentDescription = stringResource(R.string.action_confirm),
+                contentDescription = stringResource(CoreR.string.action_confirm),
                 modifier = Modifier.size(dimensions.actionIconSize)
             )
         }

@@ -31,7 +31,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.platform.LocalContext
-import org.giste.roadbooknavigator.features.settings.domain.AppTheme
+import org.giste.roadbooknavigator.core.settings.domain.AppTheme
 
 private val LocalAppTheme = staticCompositionLocalOf { AppTheme.FOLLOW_SYSTEM }
 

@@ -96,6 +96,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import org.giste.roadbooknavigator.R
+import org.giste.roadbooknavigator.core.R as CoreR
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 import org.giste.roadbooknavigator.features.location.domain.LocationSettings
 import org.giste.roadbooknavigator.features.location.domain.MinDistanceThreshold
@@ -106,7 +107,7 @@ import org.giste.roadbooknavigator.features.odometer.domain.SpeedThreshold
 import org.giste.roadbooknavigator.features.odometer.domain.VerticalAccuracyThreshold
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
-import org.giste.roadbooknavigator.features.settings.domain.AppTheme
+import org.giste.roadbooknavigator.core.settings.domain.AppTheme
 import org.giste.roadbooknavigator.features.settings.domain.RemoteKeys
 import org.giste.roadbooknavigator.features.settings.domain.RemoteModel
 import org.giste.roadbooknavigator.features.settings.domain.ShortDistanceThreshold
@@ -178,7 +179,7 @@ fun SettingsContent(
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.action_back)
+                            contentDescription = stringResource(CoreR.string.action_back)
                         )
                     }
                 }
@@ -636,14 +637,14 @@ fun KeyCaptureDialog(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Button(onClick = onDismiss, colors = ButtonDefaults.textButtonColors()) {
-                        Text(stringResource(R.string.action_cancel))
+                        Text(stringResource(CoreR.string.action_cancel))
                     }
                     Spacer(modifier = Modifier.size(8.dp))
                     Button(
                         onClick = { if (detectedKeyCode != -1) onKeyCaptured(detectedKeyCode) },
                         enabled = detectedKeyCode != -1
                     ) {
-                        Text(stringResource(R.string.action_confirm))
+                        Text(stringResource(CoreR.string.action_confirm))
                     }
                 }
             }

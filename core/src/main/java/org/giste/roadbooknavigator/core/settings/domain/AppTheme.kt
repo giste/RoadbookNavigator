@@ -15,24 +15,24 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.settings.domain.usecase
-
-import org.giste.roadbooknavigator.core.util.Logger
-import org.giste.roadbooknavigator.core.settings.domain.AppTheme
-import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
-import javax.inject.Inject
+package org.giste.roadbooknavigator.core.settings.domain
 
 /**
- * Use case to update the application visual theme.
+ * Represents the available visual themes for the application.
  */
-class UpdateThemeUseCase @Inject constructor(
-    private val repository: SettingsRepository,
-    private val logger: Logger
-) {
-    suspend operator fun invoke(theme: AppTheme): Result<Unit> {
-        logger.i("UpdateThemeUseCase: Updating theme to %s", theme)
-        return runCatching {
-            repository.setTheme(theme)
-        }
-    }
+enum class AppTheme {
+    /** Light theme. */
+    LIGHT,
+
+    /** Dark theme. */
+    DARK,
+
+    /** Follows the Android system theme (Light or Dark). */
+    FOLLOW_SYSTEM,
+
+    /** Material You dynamic colors based on user wallpaper (Android 12+). */
+    DYNAMIC,
+
+    /** Specialized theme following FIA (Fédération Internationale de l'Automobile) visual standards. */
+    FIA
 }

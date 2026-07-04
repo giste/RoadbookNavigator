@@ -15,24 +15,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.settings.domain
+package org.giste.roadbooknavigator.core.test
 
-/**
- * Represents the available visual themes for the application.
- */
-enum class AppTheme {
-    /** Light theme. */
-    LIGHT,
+import androidx.activity.ComponentActivity
+import dagger.hilt.android.AndroidEntryPoint
 
-    /** Dark theme. */
-    DARK,
-
-    /** Follows the Android system theme (Light or Dark). */
-    FOLLOW_SYSTEM,
-
-    /** Material You dynamic colors based on user wallpaper (Android 12+). */
-    DYNAMIC,
-
-    /** Specialized theme following FIA (Fédération Internationale de l'Automobile) visual standards. */
-    FIA
-}
+@AndroidEntryPoint
+class HiltTestActivity : ComponentActivity()

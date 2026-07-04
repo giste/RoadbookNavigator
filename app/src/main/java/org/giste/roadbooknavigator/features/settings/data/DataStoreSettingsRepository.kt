@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.onEach
 import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
-import org.giste.roadbooknavigator.features.settings.domain.AppTheme
+import org.giste.roadbooknavigator.core.settings.domain.AppTheme
 import org.giste.roadbooknavigator.features.settings.domain.RemoteKeySettings
 import org.giste.roadbooknavigator.features.settings.domain.RemoteKeys
 import org.giste.roadbooknavigator.features.settings.domain.RemoteModel

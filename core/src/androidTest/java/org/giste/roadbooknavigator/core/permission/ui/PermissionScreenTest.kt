@@ -99,7 +99,7 @@ class PermissionScreenTest {
             intended(
                 allOf(
                     hasAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS),
-                    hasData("package:org.giste.roadbooknavigator")
+                    hasData("package:org.giste.roadbooknavigator.core.test")
                 )
             )
         } finally {

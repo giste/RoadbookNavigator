@@ -17,6 +17,8 @@
 
 package org.giste.roadbooknavigator.features.settings.domain
 
+import org.giste.roadbooknavigator.core.settings.domain.AppTheme
+
 /**
  * Aggregate Value Object representing all user-configurable settings.
  *

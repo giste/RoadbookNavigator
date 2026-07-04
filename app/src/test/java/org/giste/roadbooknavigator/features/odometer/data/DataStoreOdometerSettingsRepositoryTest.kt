@@ -20,11 +20,13 @@ package org.giste.roadbooknavigator.features.odometer.data
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
+import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
+import org.giste.roadbooknavigator.core.util.AppLogger
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettings
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -40,6 +42,7 @@ class DataStoreOdometerSettingsRepositoryTest {
     val temporaryFolder = TemporaryFolder()
 
     private lateinit var dataStore: DataStore<Preferences>
+    private lateinit var logger: AppLogger
     private lateinit var repository: DataStoreOdometerSettingsRepository
     private val testDispatcher = UnconfinedTestDispatcher()
     private val testScope = TestScope(testDispatcher)
@@ -50,7 +53,8 @@ class DataStoreOdometerSettingsRepositoryTest {
             scope = testScope,
             produceFile = { File(temporaryFolder.newFolder(), "test_odometer_settings.preferences_pb") }
         )
-        repository = DataStoreOdometerSettingsRepository(dataStore)
+        logger = mockk(relaxed = true)
+        repository = DataStoreOdometerSettingsRepository(dataStore, logger)
     }
 
     @Test
@@ -70,7 +74,7 @@ class DataStoreOdometerSettingsRepositoryTest {
         assertEquals(newValue, settings.speedThreshold)
 
         // Verify with new instance
-        val newRepo = DataStoreOdometerSettingsRepository(dataStore)
+        val newRepo = DataStoreOdometerSettingsRepository(dataStore, logger)
         val persisted = newRepo.getSettings().first()
         assertEquals(newValue, persisted.speedThreshold)
     }

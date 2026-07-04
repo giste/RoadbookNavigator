@@ -21,6 +21,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
+import org.giste.roadbooknavigator.core.util.AppLogger
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettingsRepository
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -28,7 +29,8 @@ import org.junit.Test
 class RestoreOdometerSettingsDefaultsUseCaseTest {
 
     private val repository: OdometerSettingsRepository = mockk()
-    private val useCase = RestoreOdometerSettingsDefaultsUseCase(repository)
+    private val logger: AppLogger = mockk(relaxed = true)
+    private val useCase = RestoreOdometerSettingsDefaultsUseCase(repository, logger)
 
     @Test
     fun `invoke should call repository`() = runTest {

@@ -17,7 +17,7 @@
 
 package org.giste.roadbooknavigator.features.odometer.domain.usecase
 
-import org.giste.roadbooknavigator.core.util.logger
+import org.giste.roadbooknavigator.core.util.AppLogger
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerRepository
 import javax.inject.Inject
 
@@ -25,7 +25,8 @@ import javax.inject.Inject
  * Use case to reset the partial odometer distance.
  */
 class ResetPartialDistanceUseCase @Inject constructor(
-    private val repository: OdometerRepository
+    private val repository: OdometerRepository,
+    private val logger: AppLogger
 ) {
     suspend operator fun invoke() {
         logger.d("ResetPartialDistanceUseCase: Invoked")

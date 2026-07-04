@@ -20,11 +20,13 @@ package org.giste.roadbooknavigator.features.odometer.data
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
+import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
+import org.giste.roadbooknavigator.core.util.AppLogger
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -39,6 +41,7 @@ class DataStoreOdometerRepositoryTest {
     val temporaryFolder = TemporaryFolder()
 
     private lateinit var dataStore: DataStore<Preferences>
+    private lateinit var logger: AppLogger
     private lateinit var odometerRepository: DataStoreOdometerRepository
     private val testDispatcher = UnconfinedTestDispatcher()
     private val testScope = TestScope(testDispatcher)
@@ -49,7 +52,8 @@ class DataStoreOdometerRepositoryTest {
             scope = testScope,
             produceFile = { File(temporaryFolder.newFolder(), "test.preferences_pb") }
         )
-        odometerRepository = DataStoreOdometerRepository(dataStore)
+        logger = mockk(relaxed = true)
+        odometerRepository = DataStoreOdometerRepository(dataStore, logger)
     }
 
     @Test
@@ -68,7 +72,7 @@ class DataStoreOdometerRepositoryTest {
         Assert.assertEquals(10.5, updated.partial, 0.0)
 
         // Persistence check with new instance
-        val newRepo = DataStoreOdometerRepository(dataStore)
+        val newRepo = DataStoreOdometerRepository(dataStore, logger)
         val persisted = newRepo.odometer.first()
         Assert.assertEquals(10.5, persisted.total, 0.0)
     }

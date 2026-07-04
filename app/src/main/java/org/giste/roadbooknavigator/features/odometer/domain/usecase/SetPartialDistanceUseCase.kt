@@ -17,7 +17,7 @@
 
 package org.giste.roadbooknavigator.features.odometer.domain.usecase
 
-import org.giste.roadbooknavigator.core.util.logger
+import org.giste.roadbooknavigator.core.util.AppLogger
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerRepository
 import javax.inject.Inject
 
@@ -25,7 +25,8 @@ import javax.inject.Inject
  * Use case to set the partial odometer distance to a specific value.
  */
 class SetPartialDistanceUseCase @Inject constructor(
-    private val repository: OdometerRepository
+    private val repository: OdometerRepository,
+    private val logger: AppLogger
 ) {
     suspend operator fun invoke(distance: Double) {
         logger.d("SetPartialDistanceUseCase: Invoked with distance: %f", distance)

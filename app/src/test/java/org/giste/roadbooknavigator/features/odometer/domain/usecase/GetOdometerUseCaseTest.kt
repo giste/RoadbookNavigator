@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
+import org.giste.roadbooknavigator.core.util.AppLogger
 import org.giste.roadbooknavigator.features.odometer.domain.DistanceUtils
 import org.giste.roadbooknavigator.features.odometer.domain.Odometer
 import org.giste.roadbooknavigator.features.location.domain.UserLocation
@@ -43,6 +44,8 @@ class GetOdometerUseCaseTest {
     private val odometerRepository: OdometerRepository = mockk()
     private val observeLocationUseCase: ObserveLocationUseCase = mockk()
     private val odometerSettingsRepository: OdometerSettingsRepository = mockk()
+    private val logger: AppLogger = mockk(relaxed = true)
+    private val distanceUtils = DistanceUtils(logger)
     private val gpsFlow = MutableSharedFlow<UserLocation>()
     private val settingsFlow = MutableSharedFlow<OdometerSettings>()
     private val testDispatcher = UnconfinedTestDispatcher()
@@ -56,7 +59,7 @@ class GetOdometerUseCaseTest {
         every { odometerRepository.odometer } returns flowOf(Odometer(0.0, 0.0))
         coEvery { odometerRepository.updateDistance(any()) } returns Unit
         
-        getOdometerUseCase = GetOdometerUseCase(odometerRepository, observeLocationUseCase, odometerSettingsRepository)
+        getOdometerUseCase = GetOdometerUseCase(odometerRepository, observeLocationUseCase, odometerSettingsRepository, distanceUtils, logger)
     }
 
     @Test
@@ -78,7 +81,7 @@ class GetOdometerUseCaseTest {
 
         val loc1 = createLocation(40.0, -3.0, verticalAccuracy = 5f)
         val loc2 = createLocation(40.1, -3.1, verticalAccuracy = 5f)
-        val expectedDistance = DistanceUtils.calculateDistance(loc1, loc2, settings.minVerticalAccuracy)
+        val expectedDistance = distanceUtils.calculateDistance(loc1, loc2, settings.minVerticalAccuracy)
 
         gpsFlow.emit(loc1)
         gpsFlow.emit(loc2)
@@ -109,7 +112,7 @@ class GetOdometerUseCaseTest {
         val loc2 = createLocation(40.1, -3.1, accuracy = 50f) // Ignored
         val loc3 = createLocation(40.2, -3.2, accuracy = 10f) // Valid 2
 
-        val expectedDistance = DistanceUtils.calculateDistance(loc1, loc3, settings.minVerticalAccuracy)
+        val expectedDistance = distanceUtils.calculateDistance(loc1, loc3, settings.minVerticalAccuracy)
 
         gpsFlow.emit(loc1)
         gpsFlow.emit(loc2)
@@ -131,7 +134,7 @@ class GetOdometerUseCaseTest {
         val loc2 = createLocation(40.001, -3.0, altitude = 100.0, verticalAccuracy = 5f)
         
         // Distance should include the 100m climb
-        val expectedDistance = DistanceUtils.calculateDistance(loc1, loc2, settings.minVerticalAccuracy)
+        val expectedDistance = distanceUtils.calculateDistance(loc1, loc2, settings.minVerticalAccuracy)
 
         gpsFlow.emit(loc1)
         gpsFlow.emit(loc2)
@@ -151,7 +154,7 @@ class GetOdometerUseCaseTest {
         val loc2 = createLocation(40.001, -3.0, altitude = 100.0, verticalAccuracy = 50f)
         
         // Expected distance should ignore altitude (2D)
-        val expectedDistance = DistanceUtils.calculateDistance(loc1, loc2, settings.minVerticalAccuracy)
+        val expectedDistance = distanceUtils.calculateDistance(loc1, loc2, settings.minVerticalAccuracy)
 
         gpsFlow.emit(loc1)
         gpsFlow.emit(loc2)
@@ -170,7 +173,7 @@ class GetOdometerUseCaseTest {
         val loc1 = createLocation(40.0, -3.0, altitude = 0.0, verticalAccuracy = null)
         val loc2 = createLocation(40.001, -3.0, altitude = 100.0, verticalAccuracy = null)
         
-        val expectedDistance = DistanceUtils.calculateDistance(loc1, loc2, settings.minVerticalAccuracy)
+        val expectedDistance = distanceUtils.calculateDistance(loc1, loc2, settings.minVerticalAccuracy)
 
         gpsFlow.emit(loc1)
         gpsFlow.emit(loc2)
@@ -216,7 +219,7 @@ class GetOdometerUseCaseTest {
         // Use a new point loc3. Since lastLocation is preserved across settings changes,
         // it should calculate distance between loc1 and loc3 (loc2 was valid but ignored for delta calculation)
         val loc3 = createLocation(40.2, -3.2, speed = 10f)
-        val expectedDistance = DistanceUtils.calculateDistance(loc1, loc3, settings.minVerticalAccuracy)
+        val expectedDistance = distanceUtils.calculateDistance(loc1, loc3, settings.minVerticalAccuracy)
         
         gpsFlow.emit(loc3)
         

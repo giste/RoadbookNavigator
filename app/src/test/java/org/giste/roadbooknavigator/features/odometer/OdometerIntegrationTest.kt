@@ -29,15 +29,15 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
+import org.giste.roadbooknavigator.core.util.AppLogger
 import org.giste.roadbooknavigator.features.location.domain.UserLocation
 import org.giste.roadbooknavigator.features.location.domain.usecase.ObserveLocationUseCase
 import org.giste.roadbooknavigator.features.odometer.data.DataStoreOdometerRepository
+import org.giste.roadbooknavigator.features.odometer.domain.DistanceUtils
 import org.giste.roadbooknavigator.features.odometer.domain.Odometer
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettings
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettingsRepository
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.GetOdometerUseCase
-import org.giste.roadbooknavigator.features.settings.domain.AppSettings
-import org.giste.roadbooknavigator.features.settings.domain.usecase.GetSettingsUseCase
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -58,8 +58,9 @@ class OdometerIntegrationTest {
     private lateinit var dataStore: DataStore<Preferences>
     private lateinit var odometerRepository: DataStoreOdometerRepository
     private val observeLocationUseCase: ObserveLocationUseCase = mockk()
-    private val getSettingsUseCase: GetSettingsUseCase = mockk()
     private val odometerSettingsRepository: OdometerSettingsRepository = mockk()
+    private val logger: AppLogger = mockk(relaxed = true)
+    private val distanceUtils = DistanceUtils(logger)
     
     private val gpsFlow = MutableSharedFlow<UserLocation>()
     private val settingsFlow = MutableSharedFlow<OdometerSettings>()
@@ -72,12 +73,12 @@ class OdometerIntegrationTest {
             scope = testScope,
             produceFile = { File(temporaryFolder.newFolder(), "test_odometer.preferences_pb") }
         )
-        odometerRepository = DataStoreOdometerRepository(dataStore)
+        odometerRepository = DataStoreOdometerRepository(dataStore, logger)
         
         every { observeLocationUseCase() } returns gpsFlow
         every { odometerSettingsRepository.getSettings() } returns settingsFlow
         
-        getOdometerUseCase = GetOdometerUseCase(odometerRepository, observeLocationUseCase, odometerSettingsRepository)
+        getOdometerUseCase = GetOdometerUseCase(odometerRepository, observeLocationUseCase, odometerSettingsRepository, distanceUtils, logger)
     }
 
     @Test
@@ -107,7 +108,7 @@ class OdometerIntegrationTest {
         assertEquals(lastOdometer.total, lastOdometer.partial, 0.001)
 
         // 6. Verify persistence with a fresh repository instance
-        val freshRepo = DataStoreOdometerRepository(dataStore)
+        val freshRepo = DataStoreOdometerRepository(dataStore, logger)
         val persistedState = freshRepo.odometer.first()
         assertEquals(lastOdometer.total, persistedState.total, 0.001)
 

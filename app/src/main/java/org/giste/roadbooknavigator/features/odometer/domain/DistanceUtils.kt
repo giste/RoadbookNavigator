@@ -17,8 +17,9 @@
 
 package org.giste.roadbooknavigator.features.odometer.domain
 
-import org.giste.roadbooknavigator.core.util.logger
+import org.giste.roadbooknavigator.core.util.AppLogger
 import org.giste.roadbooknavigator.features.location.domain.UserLocation
+import javax.inject.Inject
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
@@ -27,8 +28,10 @@ import kotlin.math.sqrt
 /**
  * Utility to calculate distances in a platform-independent way.
  */
-object DistanceUtils {
-    private const val EARTH_RADIUS_METERS = 6371000.0
+class DistanceUtils @Inject constructor(
+    private val logger: AppLogger
+) {
+    private val EARTH_RADIUS_METERS = 6371000.0
 
     /**
      * Calculates the horizontal 2D distance between two points.

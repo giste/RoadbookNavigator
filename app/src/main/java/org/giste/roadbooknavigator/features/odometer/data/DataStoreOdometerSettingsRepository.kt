@@ -23,7 +23,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.floatPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import org.giste.roadbooknavigator.core.util.logger
+import org.giste.roadbooknavigator.core.util.AppLogger
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettings
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettingsRepository
 import javax.inject.Inject
@@ -34,7 +34,8 @@ import javax.inject.Singleton
  */
 @Singleton
 internal class DataStoreOdometerSettingsRepository @Inject constructor(
-    @param:OdometerDataStoreQualifier private val dataStore: DataStore<Preferences>
+    @param:OdometerDataStoreQualifier private val dataStore: DataStore<Preferences>,
+    private val logger: AppLogger
 ) : OdometerSettingsRepository {
 
     private object Keys {

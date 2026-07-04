@@ -21,6 +21,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
+import org.giste.roadbooknavigator.core.util.AppLogger
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerRepository
 import org.junit.Before
 import org.junit.Test
@@ -28,6 +29,7 @@ import org.junit.Test
 class OdometerUseCasesTest {
 
     private val repository: OdometerRepository = mockk()
+    private val logger: AppLogger = mockk(relaxed = true)
 
     @Before
     fun setup() {
@@ -39,35 +41,35 @@ class OdometerUseCasesTest {
 
     @Test
     fun `IncrementPartialDistanceUseCase should call repository with +10 meters`() = runTest {
-        val useCase = IncrementPartialDistanceUseCase(repository)
+        val useCase = IncrementPartialDistanceUseCase(repository, logger)
         useCase()
         coVerify { repository.updatePartialDistance(10.0) }
     }
 
     @Test
     fun `DecrementPartialDistanceUseCase should call repository with -10 meters`() = runTest {
-        val useCase = DecrementPartialDistanceUseCase(repository)
+        val useCase = DecrementPartialDistanceUseCase(repository, logger)
         useCase()
         coVerify { repository.updatePartialDistance(-10.0) }
     }
 
     @Test
     fun `ResetPartialDistanceUseCase should call repository resetPartialDistance`() = runTest {
-        val useCase = ResetPartialDistanceUseCase(repository)
+        val useCase = ResetPartialDistanceUseCase(repository, logger)
         useCase()
         coVerify { repository.resetPartialDistance() }
     }
 
     @Test
     fun `ResetAllDistancesUseCase should call repository resetAllDistances`() = runTest {
-        val useCase = ResetAllDistancesUseCase(repository)
+        val useCase = ResetAllDistancesUseCase(repository, logger)
         useCase()
         coVerify { repository.resetAllDistances() }
     }
 
     @Test
     fun `SetPartialDistanceUseCase should call repository with specific distance`() = runTest {
-        val useCase = SetPartialDistanceUseCase(repository)
+        val useCase = SetPartialDistanceUseCase(repository, logger)
         val distance = 123.45
         useCase(distance)
         coVerify { repository.setPartialDistance(distance) }

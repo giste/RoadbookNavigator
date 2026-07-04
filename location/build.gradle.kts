@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import com.android.build.api.dsl.ApplicationExtension
+import com.android.build.api.dsl.LibraryExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -25,7 +25,7 @@ plugins {
     alias(libs.plugins.hilt.android)
 }
 
-configure<ApplicationExtension> {
+configure<LibraryExtension> {
     namespace = "org.giste.roadbooknavigator.features.location"
     compileSdk = 37
 

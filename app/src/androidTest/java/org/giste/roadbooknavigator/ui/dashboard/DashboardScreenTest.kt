@@ -61,31 +61,6 @@ class DashboardScreenTest {
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     @Test
-    fun roadbookEmpty_displaysNoRouteMessage() {
-        val uiState = DashboardUiState(
-            roadbook = RoadbookUiState.Empty,
-            odometer = Odometer(0.0, 0.0),
-        )
-
-        composeTestRule.setContent {
-            MainContent(
-                windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp)),
-                uiState = uiState,
-                listState = rememberLazyListState(),
-                onSetPartialClick = {},
-                onLongClickPartial = {},
-                onSettingsClick = {},
-                onWaypointVisible = { _, _ -> },
-                onFileSelected = {},
-            )
-        }
-
-        val expectedMessage = context.getString(RoadbookR.string.main_no_route)
-        composeTestRule.onNodeWithText(expectedMessage).assertIsDisplayed()
-    }
-
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
-    @Test
     fun displaysOdometerValues() {
         val uiState = DashboardUiState(
             roadbook = RoadbookUiState.Success(
@@ -143,56 +118,6 @@ class DashboardScreenTest {
         }
 
         assert(longClickTriggered)
-    }
-
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
-    @Test
-    fun roadbookLoading_displaysLoadingIndicator() {
-        val uiState = DashboardUiState(
-            roadbook = RoadbookUiState.Loading,
-            odometer = Odometer(0.0, 0.0),
-        )
-
-        composeTestRule.setContent {
-            MainContent(
-                windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp)),
-                uiState = uiState,
-                listState = rememberLazyListState(),
-                onSetPartialClick = {},
-                onLongClickPartial = {},
-                onSettingsClick = {},
-                onWaypointVisible = { _, _ -> },
-                onFileSelected = {},
-            )
-        }
-
-        composeTestRule.onNodeWithTag("LoadingIndicator").assertIsDisplayed()
-    }
-
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
-    @Test
-    fun roadbookError_displaysErrorMessage() {
-        val errorMessage = "Failed to load route"
-        val uiState = DashboardUiState(
-            roadbook = RoadbookUiState.Error(errorMessage),
-            odometer = Odometer(0.0, 0.0),
-        )
-
-        composeTestRule.setContent {
-            MainContent(
-                windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp)),
-                uiState = uiState,
-                listState = rememberLazyListState(),
-                onSetPartialClick = {},
-                onLongClickPartial = {},
-                onSettingsClick = {},
-                onWaypointVisible = { _, _ -> },
-                onFileSelected = {},
-            )
-        }
-
-        val expectedMessage = context.getString(RoadbookR.string.main_error_prefix, errorMessage)
-        composeTestRule.onNodeWithText(expectedMessage).assertIsDisplayed()
     }
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
@@ -532,71 +457,4 @@ class DashboardScreenTest {
         composeTestRule.onNodeWithText("1").assertIsDisplayed()
     }
 
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
-    @Test
-    fun longClickOnWaypointDistance_setsPartialDistance() {
-        val distance = 1500L
-        val waypoint = Waypoint(
-            number = 1,
-            coordinates = Coordinates(0.0, 0.0),
-            distance = Distance(distance),
-            distanceFromPrevious = Distance(distance),
-            reset = false
-        )
-        val viewModel: DashboardViewModel = mockk(relaxed = true)
-        val uiStateFlow = MutableStateFlow(
-            DashboardUiState(
-                roadbook = RoadbookUiState.Success(Route(name = "Test", waypoints = listOf(waypoint)))
-            )
-        )
-        every { viewModel.uiState } returns uiStateFlow
-
-        composeTestRule.setContent {
-            DashboardContent(
-                windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp)),
-                onSettingsClick = {},
-                viewModel = viewModel
-            )
-        }
-
-        composeTestRule.onNodeWithTag("WaypointDistanceInfo_1").performTouchInput {
-            longClick()
-        }
-
-        verify { viewModel.setPartialDistance(distance.toDouble()) }
-    }
-
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
-    @Test
-    fun longClickOnResetWaypointDistance_resetsPartialDistance() {
-        val distance = 1500L
-        val waypoint = Waypoint(
-            number = 1,
-            coordinates = Coordinates(0.0, 0.0),
-            distance = Distance(distance),
-            distanceFromPrevious = Distance(distance),
-            reset = true
-        )
-        val viewModel: DashboardViewModel = mockk(relaxed = true)
-        val uiStateFlow = MutableStateFlow(
-            DashboardUiState(
-                roadbook = RoadbookUiState.Success(Route(name = "Test", waypoints = listOf(waypoint)))
-            )
-        )
-        every { viewModel.uiState } returns uiStateFlow
-
-        composeTestRule.setContent {
-            DashboardContent(
-                windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp)),
-                onSettingsClick = {},
-                viewModel = viewModel
-            )
-        }
-
-        composeTestRule.onNodeWithTag("WaypointDistanceInfo_1").performTouchInput {
-            longClick()
-        }
-
-        verify { viewModel.setPartialDistance(0.0) }
-    }
 }

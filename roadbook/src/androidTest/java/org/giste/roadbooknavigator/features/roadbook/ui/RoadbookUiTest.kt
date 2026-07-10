@@ -25,22 +25,27 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.longClick
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTouchInput
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
 import androidx.test.platform.app.InstrumentationRegistry
 import org.giste.roadbooknavigator.features.roadbook.R
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Coordinates
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Distance
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Route
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Waypoint
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class RoadbookSectionTest {
+class RoadbookUiTest {
 
     @get:Rule
     val composeTestRule = createAndroidComposeRule<ComponentActivity>()
@@ -143,5 +148,65 @@ class RoadbookSectionTest {
 
         // Verify that the intent with ACTION_GET_CONTENT was indeed launched
         intended(hasAction(Intent.ACTION_GET_CONTENT))
+    }
+
+    @Test
+    fun longClickOnWaypointDistance_setsPartialDistance() {
+        val distance = 1500L
+        val waypoint = Waypoint(
+            number = 1,
+            coordinates = Coordinates(0.0, 0.0),
+            distance = Distance(distance),
+            distanceFromPrevious = Distance(distance),
+            reset = false
+        )
+        var capturedDistance = -1.0
+        val route = Route(name = "Test", waypoints = listOf(waypoint))
+
+        composeTestRule.setContent {
+            RoadbookSection(
+                state = RoadbookUiState.Success(route),
+                listState = rememberLazyListState(),
+                onFileSelected = {},
+                onSetPartialClick = { capturedDistance = it },
+                onWaypointVisible = { _, _ -> }
+            )
+        }
+
+        composeTestRule.onNodeWithTag("WaypointDistanceInfo_1").performTouchInput {
+            longClick()
+        }
+
+        assert(capturedDistance == distance.toDouble())
+    }
+
+    @Test
+    fun longClickOnResetWaypointDistance_resetsPartialDistance() {
+        val distance = 1500L
+        val waypoint = Waypoint(
+            number = 1,
+            coordinates = Coordinates(0.0, 0.0),
+            distance = Distance(distance),
+            distanceFromPrevious = Distance(distance),
+            reset = true
+        )
+        var capturedDistance = -1.0
+        val route = Route(name = "Test", waypoints = listOf(waypoint))
+
+        composeTestRule.setContent {
+            RoadbookSection(
+                state = RoadbookUiState.Success(route),
+                listState = rememberLazyListState(),
+                onFileSelected = {},
+                onSetPartialClick = { capturedDistance = it },
+                onWaypointVisible = { _, _ -> }
+            )
+        }
+
+        composeTestRule.onNodeWithTag("WaypointDistanceInfo_1").performTouchInput {
+            longClick()
+        }
+
+        assert(capturedDistance == 0.0)
     }
 }

@@ -20,10 +20,9 @@ package org.giste.roadbooknavigator.features.roadbook.ui
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
-import androidx.activity.ComponentActivity
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
+import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.longClick
 import androidx.compose.ui.test.onNodeWithTag
@@ -48,7 +47,7 @@ import org.junit.Test
 class RoadbookUiTest {
 
     @get:Rule
-    val composeTestRule = createAndroidComposeRule<ComponentActivity>()
+    val composeTestRule = createComposeRule()
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 

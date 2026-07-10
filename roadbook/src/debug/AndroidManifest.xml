@@ -26,8 +26,5 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="org.giste.roadbooknavigator.feature.roadbook.test.HiltTestActivity"
-            android:exported="true" />
     </application>
 </manifest>

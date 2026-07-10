@@ -34,7 +34,7 @@ private val Context.settingsDataStore: DataStore<Preferences> by preferencesData
 
 @Module
 @InstallIn(SingletonComponent::class)
-internal abstract class SettingsModule {
+abstract class SettingsModule {
 
     @Binds
     @Singleton

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.ui.settings
+package org.giste.roadbooknavigator.features.settings.ui
 
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
@@ -29,8 +29,7 @@ import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.test.platform.app.InstrumentationRegistry
-import org.giste.roadbooknavigator.R
-import org.giste.roadbooknavigator.features.roadbook.R as RoadbookR
+import org.giste.roadbooknavigator.features.settings.R
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 import org.giste.roadbooknavigator.features.location.domain.LocationSettings
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettings

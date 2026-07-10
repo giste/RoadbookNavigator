@@ -40,9 +40,9 @@ import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.usecase.GetSettingsUseCase
+import org.giste.roadbooknavigator.features.settings.ui.SettingsScreen
 import org.giste.roadbooknavigator.ui.Screen
 import org.giste.roadbooknavigator.ui.dashboard.DashboardScreen
-import org.giste.roadbooknavigator.ui.settings.SettingsScreen
 import javax.inject.Inject
 
 @AndroidEntryPoint

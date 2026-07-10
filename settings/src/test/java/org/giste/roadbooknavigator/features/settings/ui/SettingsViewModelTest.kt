@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.ui.settings
+package org.giste.roadbooknavigator.features.settings.ui
 
 import io.mockk.coEvery
 import io.mockk.coVerify

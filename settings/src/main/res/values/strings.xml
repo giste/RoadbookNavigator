@@ -1,0 +1,67 @@
+<!--
+  ~ Copyright (C) 2026  Giste
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="settings_title">Settings</string>
+    <string name="settings_theme_title">Theme</string>
+    <string name="settings_theme_light">Light</string>
+    <string name="settings_theme_dark">Dark</string>
+    <string name="settings_theme_dynamic">Dynamic (Material You)</string>
+    <string name="settings_theme_fia">FIA High Contrast</string>
+    <string name="settings_theme_system">Follow system</string>
+    <string name="settings_orientation_title">Orientation</string>
+    <string name="settings_orientation_vertical">Vertical</string>
+    <string name="settings_orientation_horizontal">Horizontal</string>
+    <string name="settings_orientation_system">Follow system</string>
+    <string name="settings_full_screen_title">Full Screen</string>
+    <string name="settings_full_screen_helper">Hide status and navigation bars for an immersive experience.</string>
+    <string name="settings_tab_user">User</string>
+    <string name="settings_tab_remote">Remote</string>
+    <string name="settings_tab_advanced">Advanced</string>
+    <string name="settings_tab_maps">Maps</string>
+
+    <string name="settings_remote_model_title">Remote Model</string>
+    <string name="settings_remote_model_dnd2">DND2</string>
+    <string name="settings_remote_model_terra_pirata">Terra Pirata</string>
+    <string name="settings_remote_model_custom">Custom Mapping</string>
+    <string name="settings_remote_keys_title">Key Mapping</string>
+    <string name="settings_remote_action_rb_up">Roadbook Up</string>
+    <string name="settings_remote_action_rb_down">Roadbook Down</string>
+    <string name="settings_remote_action_inc_partial">Increase Partial</string>
+    <string name="settings_remote_action_dec_partial">Decrease Partial</string>
+    <string name="settings_remote_action_reset_partial">Reset Partial</string>
+    <string name="settings_remote_capture_title">Capture Key</string>
+    <string name="settings_remote_capture_helper">Press a button on your remote control to map it to %1$s.</string>
+    <string name="settings_remote_capture_detected">Detected Key: %1$s</string>
+
+    <string name="settings_advanced_warning">WARNING: These settings affect GPS performance. Don\'t change them unless you know what you\'re doing.</string>
+    <string name="settings_advanced_restore_defaults">Restore GPS Defaults</string>
+    <string name="settings_advanced_speed_threshold_title">Low Speed Threshold (m/s)</string>
+    <string name="settings_advanced_speed_threshold_helper">Odometer will ignore updates below this speed.</string>
+    <string name="settings_advanced_min_accuracy_title">Min Horizontal Accuracy (m)</string>
+    <string name="settings_advanced_min_accuracy_helper">Odometer will ignore updates with accuracy worse than this.</string>
+    <string name="settings_advanced_min_vertical_accuracy_title">Min Vertical Accuracy (m)</string>
+    <string name="settings_advanced_min_vertical_accuracy_helper">3D distance will fallback to 2D if vertical accuracy is worse than this.</string>
+    <string name="settings_advanced_polling_interval_title">GPS Polling Interval (ms)</string>
+    <string name="settings_advanced_polling_interval_helper">Minimum time between GPS updates.</string>
+    <string name="settings_advanced_min_distance_title">GPS Min Distance (m)</string>
+    <string name="settings_advanced_min_distance_helper">Minimum movement distance to trigger an update.</string>
+    <string name="settings_advanced_range_error">Value must be between %1$s and %2$s</string>
+    <string name="settings_user_short_distance_title">Short distance threshold</string>
+    <string name="settings_user_short_distance_helper">Highlights waypoints closer than this distance (meters).</string>
+    <string name="settings_roadbook_restore_defaults">Restore roadbook defaults</string>
+</resources>

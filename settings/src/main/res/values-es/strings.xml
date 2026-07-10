@@ -1,0 +1,67 @@
+<!--
+  ~ Copyright (C) 2026  Giste
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="settings_title">Ajustes</string>
+    <string name="settings_theme_title">Tema</string>
+    <string name="settings_theme_light">Claro</string>
+    <string name="settings_theme_dark">Oscuro</string>
+    <string name="settings_theme_dynamic">Dinámico (Material You)</string>
+    <string name="settings_theme_fia">FIA Alto Contraste</string>
+    <string name="settings_theme_system">Seguir sistema</string>
+    <string name="settings_orientation_title">Orientación</string>
+    <string name="settings_orientation_vertical">Vertical</string>
+    <string name="settings_orientation_horizontal">Horizontal</string>
+    <string name="settings_orientation_system">Seguir sistema</string>
+    <string name="settings_full_screen_title">Pantalla completa</string>
+    <string name="settings_full_screen_helper">Ocultar barras de estado y navegación para una experiencia inmersiva.</string>
+    <string name="settings_tab_user">Usuario</string>
+    <string name="settings_tab_remote">Mando</string>
+    <string name="settings_tab_advanced">Avanzado</string>
+    <string name="settings_tab_maps">Mapas</string>
+
+    <string name="settings_remote_model_title">Modelo de mando</string>
+    <string name="settings_remote_model_dnd2">DND2</string>
+    <string name="settings_remote_model_terra_pirata">Terra Pirata</string>
+    <string name="settings_remote_model_custom">Mapeo personalizado</string>
+    <string name="settings_remote_keys_title">Mapeo de teclas</string>
+    <string name="settings_remote_action_rb_up">Roadbook arriba</string>
+    <string name="settings_remote_action_rb_down">Roadbook abajo</string>
+    <string name="settings_remote_action_inc_partial">Aumentar parcial</string>
+    <string name="settings_remote_action_dec_partial">Disminuir parcial</string>
+    <string name="settings_remote_action_reset_partial">Reset parcial</string>
+    <string name="settings_remote_capture_title">Capturar tecla</string>
+    <string name="settings_remote_capture_helper">Pulsa un botón en tu mando para asignarlo a %1$s.</string>
+    <string name="settings_remote_capture_detected">Tecla detectada: %1$s</string>
+
+    <string name="settings_advanced_warning">ADVERTENCIA: Estos ajustes afectan al rendimiento del GPS. No los cambie a menos que sepa lo que está haciendo.</string>
+    <string name="settings_advanced_restore_defaults">Restablecer GPS por defecto</string>
+    <string name="settings_advanced_speed_threshold_title">Umbral de velocidad baja (m/s)</string>
+    <string name="settings_advanced_speed_threshold_helper">El odómetro ignorará las actualizaciones por debajo de esta velocidad.</string>
+    <string name="settings_advanced_min_accuracy_title">Precisión horizontal mín. (m)</string>
+    <string name="settings_advanced_min_accuracy_helper">El odómetro ignorará las actualizaciones con precisión peor que esta.</string>
+    <string name="settings_advanced_min_vertical_accuracy_title">Precisión vertical mín. (m)</string>
+    <string name="settings_advanced_min_vertical_accuracy_helper">La distancia 3D volverá a 2D si la precisión vertical es peor que esta.</string>
+    <string name="settings_advanced_polling_interval_title">Intervalo de muestreo GPS (ms)</string>
+    <string name="settings_advanced_polling_interval_helper">Tiempo mínimo entre actualizaciones de GPS.</string>
+    <string name="settings_advanced_min_distance_title">Distancia mín. GPS (m)</string>
+    <string name="settings_advanced_min_distance_helper">Distancia de movimiento mínima para disparar una actualización.</string>
+    <string name="settings_advanced_range_error">El valor debe estar entre %1$s y %2$s</string>
+    <string name="settings_user_short_distance_title">Umbral de distancia corta</string>
+    <string name="settings_user_short_distance_helper">Resalta waypoints más cercanos a esta distancia (metros).</string>
+    <string name="settings_roadbook_restore_defaults">Restablecer valores por defecto</string>
+</resources>

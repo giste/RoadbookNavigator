@@ -20,6 +20,8 @@ androidxTestCore = "1.7.0"
 hiltNavigationCompose = "1.4.0"
 navigationCompose = "2.9.8"
 vtm = "0.25.0"
+okhttp = "5.0.0-alpha.14"
+jsoup = "1.18.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -58,6 +60,10 @@ androidx-test-core = { group = "androidx.test", name = "core", version.ref = "an
 vtm-android = { group = "org.mapsforge", name = "vtm-android", version.ref = "vtm" }
 vtm-themes = { group = "org.mapsforge", name = "vtm-themes", version.ref = "vtm" }
 vtm-jts = { group = "org.mapsforge", name = "vtm-jts", version.ref = "vtm" }
+okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
+okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
+okhttp-mockwebserver = { group = "com.squareup.okhttp3", name = "mockwebserver", version.ref = "okhttp" }
+jsoup = { group = "org.jsoup", name = "jsoup", version.ref = "jsoup" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

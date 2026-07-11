@@ -20,6 +20,7 @@ package org.giste.roadbooknavigator.features.map.data.repository
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import io.mockk.mockk
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.giste.roadbooknavigator.core.util.Logger
@@ -44,7 +45,7 @@ class FileLocalMapRepositoryTest {
     @Before
     fun setup() {
         context = ApplicationProvider.getApplicationContext()
-        repository = FileLocalMapRepository(context, logger)
+        repository = FileLocalMapRepository(context, Dispatchers.Unconfined, logger)
         mapsDir = File(context.filesDir, "maps")
         mapsDir.deleteRecursively()
     }

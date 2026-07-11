@@ -27,10 +27,15 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
+import org.giste.roadbooknavigator.features.map.data.datasource.JsoupRemoteMapDataSource
+import org.giste.roadbooknavigator.features.map.data.datasource.RemoteMapDataSource
 import org.giste.roadbooknavigator.features.map.data.repository.DataStoreMapSettingsRepository
 import org.giste.roadbooknavigator.features.map.data.repository.FileLocalMapRepository
+import org.giste.roadbooknavigator.features.map.data.repository.HttpRemoteMapRepository
 import org.giste.roadbooknavigator.features.map.domain.repository.MapRepository
 import org.giste.roadbooknavigator.features.map.domain.repository.MapSettingsRepository
+import org.giste.roadbooknavigator.features.map.domain.repository.RemoteMapRepository
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
@@ -56,7 +61,23 @@ internal abstract class MapDataModule {
         fileLocalMapRepository: FileLocalMapRepository
     ): MapRepository
 
+    @Binds
+    @Singleton
+    abstract fun bindRemoteMapRepository(
+        httpRemoteMapRepository: HttpRemoteMapRepository
+    ): RemoteMapRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindRemoteMapDataSource(
+        jsoupRemoteMapDataSource: JsoupRemoteMapDataSource
+    ): RemoteMapDataSource
+
     companion object {
+        @Provides
+        @Singleton
+        fun provideOkHttpClient(): OkHttpClient = OkHttpClient.Builder().build()
+
         @Provides
         @Singleton
         @MapSettingsDataStore

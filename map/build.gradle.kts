@@ -59,8 +59,13 @@ dependencies {
     implementation(libs.vtm.themes)
     implementation(libs.vtm.jts)
 
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging)
+    implementation(libs.jsoup)
+
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
+    testImplementation(libs.okhttp.mockwebserver)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.androidx.test.core)
     testImplementation(libs.robolectric)

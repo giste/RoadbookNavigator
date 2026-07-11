@@ -19,11 +19,12 @@ package org.giste.roadbooknavigator.features.map.data.repository
 
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flowOn
+import org.giste.roadbooknavigator.core.di.IoDispatcher
 import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.map.domain.model.MapFile
 import org.giste.roadbooknavigator.features.map.domain.repository.MapRepository
@@ -34,6 +35,7 @@ import javax.inject.Singleton
 @Singleton
 internal class FileLocalMapRepository @Inject constructor(
     @param:ApplicationContext private val context: Context,
+    @param:IoDispatcher private val ioDispatcher: CoroutineDispatcher,
     private val logger: Logger
 ) : MapRepository {
 
@@ -64,7 +66,7 @@ internal class FileLocalMapRepository @Inject constructor(
         // A more advanced implementation could use a FileObserver.
         
         awaitClose { }
-    }.flowOn(Dispatchers.IO)
+    }.flowOn(ioDispatcher)
 
     override suspend fun deleteMap(mapFile: MapFile) {
         val file = File(mapFile.path)

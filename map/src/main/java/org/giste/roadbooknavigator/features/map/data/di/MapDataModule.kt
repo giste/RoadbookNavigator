@@ -28,6 +28,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import org.giste.roadbooknavigator.features.map.data.repository.DataStoreMapSettingsRepository
+import org.giste.roadbooknavigator.features.map.data.repository.FileLocalMapRepository
+import org.giste.roadbooknavigator.features.map.domain.repository.MapRepository
 import org.giste.roadbooknavigator.features.map.domain.repository.MapSettingsRepository
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -47,6 +49,12 @@ internal abstract class MapDataModule {
     abstract fun bindMapSettingsRepository(
         dataStoreMapSettingsRepository: DataStoreMapSettingsRepository
     ): MapSettingsRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindMapRepository(
+        fileLocalMapRepository: FileLocalMapRepository
+    ): MapRepository
 
     companion object {
         @Provides

@@ -19,6 +19,7 @@ robolectric = "4.16.1"
 androidxTestCore = "1.7.0"
 hiltNavigationCompose = "1.4.0"
 navigationCompose = "2.9.8"
+vtm = "0.25.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -54,6 +55,9 @@ androidx-datastore-preferences = { group = "androidx.datastore", name = "datasto
 androidx-datastore = { group = "androidx.datastore", name = "datastore", version.ref = "datastore" }
 robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
 androidx-test-core = { group = "androidx.test", name = "core", version.ref = "androidxTestCore" }
+vtm-android = { group = "org.mapsforge", name = "vtm-android", version.ref = "vtm" }
+vtm-themes = { group = "org.mapsforge", name = "vtm-themes", version.ref = "vtm" }
+vtm-jts = { group = "org.mapsforge", name = "vtm-jts", version.ref = "vtm" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

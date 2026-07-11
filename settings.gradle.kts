@@ -26,6 +26,7 @@ rootProject.name = "Roadbook Navigator"
 include(":app")
 include(":core")
 include(":location")
+include(":map")
 include(":odometer")
 include(":roadbook")
 include(":settings")

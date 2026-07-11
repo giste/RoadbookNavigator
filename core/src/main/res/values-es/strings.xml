@@ -22,4 +22,5 @@
     <string name="action_cancel">Cancelar</string>
     <string name="action_confirm">Confirmar</string>
     <string name="action_back">Atrás</string>
+    <string name="action_delete">Borrar</string>
 </resources>

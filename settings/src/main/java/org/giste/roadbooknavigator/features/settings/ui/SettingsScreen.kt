@@ -105,6 +105,7 @@ import org.giste.roadbooknavigator.features.odometer.domain.AccuracyThreshold
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettings
 import org.giste.roadbooknavigator.features.odometer.domain.SpeedThreshold
 import org.giste.roadbooknavigator.features.odometer.domain.VerticalAccuracyThreshold
+import org.giste.roadbooknavigator.features.map.ui.management.MapManagementScreen
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.core.settings.domain.AppTheme
@@ -698,9 +699,7 @@ private fun keyCodeToName(keyCode: Int): String {
 
 @Composable
 fun MapTab() {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text("Map Management - Coming Soon", style = MaterialTheme.typography.headlineSmall)
-    }
+    MapManagementScreen()
 }
 
 @Composable

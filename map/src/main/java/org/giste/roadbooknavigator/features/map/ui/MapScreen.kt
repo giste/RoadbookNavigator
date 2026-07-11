@@ -85,17 +85,21 @@ fun MapScreen(
     LaunchedEffect(uiState.localMaps) {
         if (uiState.localMaps.isNotEmpty()) {
             val map = mapView.map()
-            map.layers().clear() // Clear existing layers
             
             val multiTileSource = MultiMapFileTileSource()
+            var hasFiles = false
             uiState.localMaps.forEach { mapFile ->
                 val tileSource = MapFileTileSource()
                 if (tileSource.setMapFile(mapFile.path)) {
                     multiTileSource.add(tileSource)
+                    hasFiles = true
                 }
             }
-            map.setBaseMap(multiTileSource)
-            map.setTheme(VtmThemes.DEFAULT)
+            
+            if (hasFiles) {
+                map.setBaseMap(multiTileSource)
+                map.setTheme(VtmThemes.DEFAULT)
+            }
         }
     }
 }

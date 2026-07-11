@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ Copyright (C) 2026  Giste
   ~
@@ -14,13 +15,11 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
-
 <resources>
-    <string name="permission_location_rationale">The GPS is required to show your position and tracks. Please grant the permission to continue.</string>
-    <string name="permission_location_request">This app needs location access to function properly. Please grant the permission.</string>
-    <string name="permission_button_grant">Grant Permissions</string>
-    <string name="action_cancel">Cancel</string>
-    <string name="action_confirm">Confirm</string>
-    <string name="action_back">Back</string>
-    <string name="action_delete">Delete</string>
+    <string name="map_management_downloaded_title">Mapas descargados</string>
+    <string name="map_management_root_folder">Carpeta principal</string>
+    <string name="map_management_status_obsolete">Obsoleto (Mapa remoto no encontrado)</string>
+    <string name="map_management_status_update_available">Actualización disponible</string>
+    <string name="map_management_action_update">Actualizar mapa</string>
+    <string name="map_management_action_download">Descargar mapa</string>
 </resources>

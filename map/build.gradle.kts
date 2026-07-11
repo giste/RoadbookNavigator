@@ -22,6 +22,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt.android)
+    alias(libs.plugins.kotlin.compose)
 }
 
 configure<LibraryExtension> {
@@ -31,6 +32,10 @@ configure<LibraryExtension> {
     defaultConfig {
         minSdk = 33
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildFeatures {
+        compose = true
     }
 
     compileOptions {
@@ -47,17 +52,30 @@ kotlin {
 
 dependencies {
     implementation(project(":core"))
+    implementation(project(":location"))
     
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.datastore)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
     
+    // Compose
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.graphics)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.hilt.navigation.compose)
+    
     // VTM
-    implementation(libs.vtm.android)
+    implementation(libs.vtm)
     implementation(libs.vtm.themes)
-    implementation(libs.vtm.jts)
+    implementation(libs.vtm.android)
+    runtimeOnly("com.github.mapsforge.vtm:vtm-android:0.25.0:natives-arm64-v8a")
+    runtimeOnly("com.github.mapsforge.vtm:vtm-android:0.25.0:natives-x86_64")
 
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging)

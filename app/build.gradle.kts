@@ -49,6 +49,7 @@ kotlin {
 dependencies {
     implementation(project(":core"))
     implementation(project(":location"))
+    implementation(project(":map"))
     implementation(project(":odometer"))
     implementation(project(":roadbook"))
     implementation(project(":settings"))

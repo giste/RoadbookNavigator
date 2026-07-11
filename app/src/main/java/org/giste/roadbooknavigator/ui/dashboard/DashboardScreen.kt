@@ -76,6 +76,7 @@ import org.giste.roadbooknavigator.features.odometer.domain.Odometer
 import org.giste.roadbooknavigator.features.odometer.ui.PartialDistance
 import org.giste.roadbooknavigator.features.odometer.ui.SetPartialDialog
 import org.giste.roadbooknavigator.features.odometer.ui.TotalDistance
+import org.giste.roadbooknavigator.features.map.ui.MapScreen
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Coordinates
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Distance
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Route
@@ -547,19 +548,7 @@ fun PortraitDistanceSection(
 fun MapSection(
     modifier: Modifier = Modifier,
 ) {
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surfaceVariant),
-        contentAlignment = Alignment.Center
-    ) {
-        Icon(
-            imageVector = Icons.Default.Place,
-            contentDescription = stringResource(RoadbookR.string.content_description_map),
-            modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.actionIconSize),
-            tint = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-    }
+    MapScreen(modifier = modifier)
 }
 
 // --- PREVIEWS ---

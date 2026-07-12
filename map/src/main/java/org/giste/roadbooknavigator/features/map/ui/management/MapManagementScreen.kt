@@ -18,6 +18,7 @@
 package org.giste.roadbooknavigator.features.map.ui.management
 
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,12 +29,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Error
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.CircularProgressIndicator
@@ -46,9 +50,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -56,14 +62,15 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 import org.giste.roadbooknavigator.features.map.R
-import org.giste.roadbooknavigator.core.R as CoreR
 import org.giste.roadbooknavigator.features.map.domain.model.DownloadStatus
 import org.giste.roadbooknavigator.features.map.domain.model.DownloadedMapInfo
 import org.giste.roadbooknavigator.features.map.domain.model.DownloadedMapStatus
 import org.giste.roadbooknavigator.features.map.domain.model.MapFile
 import org.giste.roadbooknavigator.features.map.domain.model.RemoteMapFile
 import org.giste.roadbooknavigator.features.map.domain.model.RemoteMapFolder
+import org.giste.roadbooknavigator.core.R as CoreR
 
 @Composable
 fun MapManagementScreen(
@@ -105,7 +112,7 @@ fun MapManagementContent(
                         imageVector = Icons.Default.Error,
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.size(48.dp)
+                        modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.iconSize)
                     )
                     Text(text = uiState.message, color = MaterialTheme.colorScheme.error)
                 }
@@ -134,52 +141,97 @@ fun MapList(
     onDeleteClick: (MapFile) -> Unit,
     onCancelDownloadClick: (String) -> Unit
 ) {
-    val allRemoteFolders = flattenFolders(remoteFolders)
+    var expandedSections by rememberSaveable { mutableStateOf(setOf<String>()) }
+    val rootTitle = stringResource(R.string.map_management_root_folder)
 
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         // Downloaded maps section
         if (downloadedMaps.isNotEmpty()) {
+            val sectionKey = "downloaded"
+            val isExpanded = sectionKey in expandedSections
             item {
                 SectionHeader(
                     title = stringResource(R.string.map_management_downloaded_title),
+                    isExpanded = isExpanded,
+                    onToggleExpand = {
+                        expandedSections = if (isExpanded) expandedSections - sectionKey else expandedSections + sectionKey
+                    },
                     modifier = Modifier.testTag("SectionHeader_DownloadedMaps")
                 )
             }
-            items(downloadedMaps) { info ->
-                val downloadStatus = if (info.status is DownloadedMapStatus.UpdateAvailable) {
-                    downloadingStatus[info.status.remoteMapFile.url]
-                } else null
+            if (isExpanded) {
+                items(downloadedMaps) { info ->
+                    val downloadStatus = if (info.status is DownloadedMapStatus.UpdateAvailable) {
+                        downloadingStatus[info.status.remoteMapFile.url]
+                    } else null
 
-        DownloadedMapItem(
-            info = info,
-            downloadStatus = downloadStatus,
-            onDeleteClick = { onDeleteClick(info.mapFile) },
-            onUpdateClick = {
-                if (info.status is DownloadedMapStatus.UpdateAvailable) {
-                    onDownloadClick(info.status.remoteMapFile)
+                    DownloadedMapItem(
+                        info = info,
+                        downloadStatus = downloadStatus,
+                        onDeleteClick = { onDeleteClick(info.mapFile) },
+                        onUpdateClick = {
+                            if (info.status is DownloadedMapStatus.UpdateAvailable) {
+                                onDownloadClick(info.status.remoteMapFile)
+                            }
+                        },
+                        onCancelUpdateClick = {
+                            if (info.status is DownloadedMapStatus.UpdateAvailable) {
+                                onCancelDownloadClick(info.status.remoteMapFile.url)
+                            }
+                        },
+                        deleteLabel = stringResource(CoreR.string.action_delete)
+                    )
                 }
-            },
-            onCancelUpdateClick = {
-                if (info.status is DownloadedMapStatus.UpdateAvailable) {
-                    onCancelDownloadClick(info.status.remoteMapFile.url)
-                }
-            },
-            deleteLabel = stringResource(CoreR.string.action_delete)
-        )
             }
         }
 
-        // Remote folders sections
-        allRemoteFolders.forEach { folder ->
-            if (folder.maps.isNotEmpty()) {
-                item {
-                    val title = folder.name.ifEmpty { stringResource(R.string.map_management_root_folder) }
-                    SectionHeader(
-                        title = title,
-                        modifier = Modifier.testTag("SectionHeader_${folder.name.ifEmpty { "Root" }}")
-                    )
-                }
-                items(folder.maps) { remoteMap ->
+        // Remote folders hierarchy
+        remoteFolders.subFolders.forEach {
+            renderFolder(
+                folder = it,
+                level = 0,
+                expandedSections = expandedSections,
+                onToggleExpand = { key ->
+                    expandedSections = if (key in expandedSections) expandedSections - key else expandedSections + key
+                },
+                downloadingStatus = downloadingStatus,
+                onDownloadClick = onDownloadClick,
+                onCancelDownloadClick = onCancelDownloadClick,
+                rootTitle = rootTitle
+            )
+        }
+    }
+}
+
+private fun LazyListScope.renderFolder(
+    folder: RemoteMapFolder,
+    level: Int,
+    expandedSections: Set<String>,
+    onToggleExpand: (String) -> Unit,
+    downloadingStatus: Map<String, DownloadStatus>,
+    onDownloadClick: (RemoteMapFile) -> Unit,
+    onCancelDownloadClick: (String) -> Unit,
+    rootTitle: String
+) {
+    val sectionKey = folder.path + folder.name
+    val isExpanded = sectionKey in expandedSections
+    val hasContent = folder.maps.isNotEmpty() || folder.subFolders.isNotEmpty()
+
+    if (hasContent) {
+        item {
+            val title = folder.name.ifEmpty { rootTitle }
+            SectionHeader(
+                title = title,
+                isExpanded = isExpanded,
+                onToggleExpand = { onToggleExpand(sectionKey) },
+                level = level,
+                modifier = Modifier.testTag("SectionHeader_${folder.name.ifEmpty { "Root" }}")
+            )
+        }
+
+        if (isExpanded) {
+            items(folder.maps) { remoteMap ->
+                Box(modifier = Modifier.padding(start = RoadbookNavigatorTheme.dimensions.paddingLarge.times(level))) {
                     RemoteMapItem(
                         remoteMap = remoteMap,
                         downloadStatus = downloadingStatus[remoteMap.url],
@@ -188,24 +240,62 @@ fun MapList(
                     )
                 }
             }
+
+            folder.subFolders.forEach { subFolder ->
+                renderFolder(
+                    folder = subFolder,
+                    level = level + 1,
+                    expandedSections = expandedSections,
+                    onToggleExpand = onToggleExpand,
+                    downloadingStatus = downloadingStatus,
+                    onDownloadClick = onDownloadClick,
+                    onCancelDownloadClick = onCancelDownloadClick,
+                    rootTitle = rootTitle
+                )
+            }
         }
     }
 }
 
 @Composable
-fun SectionHeader(title: String, modifier: Modifier = Modifier) {
+fun SectionHeader(
+    title: String,
+    isExpanded: Boolean,
+    onToggleExpand: () -> Unit,
+    modifier: Modifier = Modifier,
+    level: Int = 0
+) {
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .clickable { onToggleExpand() }
+            .padding(
+                start = RoadbookNavigatorTheme.dimensions.paddingLarge.times(level + 1),
+                end = RoadbookNavigatorTheme.dimensions.paddingLarge,
+                top = RoadbookNavigatorTheme.dimensions.paddingLarge,
+                bottom = RoadbookNavigatorTheme.dimensions.paddingLarge
+            )
     ) {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.primary,
-            fontWeight = FontWeight.Bold
-        )
-        HorizontalDivider(modifier = Modifier.padding(top = 4.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = title.replaceFirstChar { it.uppercase() },
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.weight(1f)
+            )
+            Icon(
+                imageVector = if (isExpanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                contentDescription = if (isExpanded) {
+                    stringResource(CoreR.string.action_collapse)
+                } else {
+                    stringResource(CoreR.string.action_expand)
+                },
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.iconSize),
+            )
+        }
+        HorizontalDivider(modifier = Modifier.padding(top = RoadbookNavigatorTheme.dimensions.paddingSmall))
     }
 }
 
@@ -224,10 +314,13 @@ fun DownloadedMapItem(
             .padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(imageVector = Icons.Default.Map, contentDescription = null, modifier = Modifier.size(24.dp))
-        Spacer(modifier = Modifier.width(16.dp))
+        Icon(imageVector = Icons.Default.Map, contentDescription = null, modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.iconSize))
+        Spacer(modifier = Modifier.width(RoadbookNavigatorTheme.dimensions.paddingLarge))
         Column(modifier = Modifier.weight(1f)) {
-            Text(text = info.mapFile.name, style = MaterialTheme.typography.bodyLarge)
+            Text(
+                text = info.mapFile.name.removeSuffix(".map").replaceFirstChar { it.uppercase() },
+                style = MaterialTheme.typography.bodyLarge,
+            )
             Text(
                 text = formatSize(info.mapFile.size),
                 style = MaterialTheme.typography.bodySmall,
@@ -245,7 +338,8 @@ fun DownloadedMapItem(
                     Text(
                         text = stringResource(R.string.map_management_status_update_available),
                         style = MaterialTheme.typography.labelSmall,
-                        color = Color(0xFFF28E1C) // Warning color
+                        //color = Color(0xFFF28E1C) // Warning color
+                        color = MaterialTheme.colorScheme.onErrorContainer
                     )
                 }
                 DownloadedMapStatus.UpToDate -> {
@@ -270,14 +364,20 @@ fun DownloadedMapItem(
 
         if (downloadStatus is DownloadStatus.Progress) {
             IconButton(onClick = onCancelUpdateClick) {
-                Icon(imageVector = Icons.Default.Close, contentDescription = "Cancel")
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = "Cancel",
+                    modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.iconSize),
+                )
             }
         } else if (info.status is DownloadedMapStatus.UpdateAvailable) {
             IconButton(onClick = onUpdateClick) {
                 Icon(
                     imageVector = Icons.Default.Refresh,
                     contentDescription = stringResource(R.string.map_management_action_update),
-                    tint = Color(0xFFF28E1C)
+                    //tint = Color(0xFFF28E1C),
+                    tint = MaterialTheme.colorScheme.onErrorContainer,
+                    modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.iconSize),
                 )
             }
         }
@@ -291,7 +391,8 @@ fun DownloadedMapItem(
             Icon(
                 imageVector = Icons.Default.Delete,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.error
+                tint = MaterialTheme.colorScheme.error,
+                modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.iconSize),
             )
         }
     }
@@ -310,10 +411,17 @@ fun RemoteMapItem(
             .padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(imageVector = Icons.Default.Map, contentDescription = null, modifier = Modifier.size(24.dp))
-        Spacer(modifier = Modifier.width(16.dp))
+        Icon(
+            imageVector = Icons.Default.Map,
+            contentDescription = null,
+            modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.iconSize),
+        )
+        Spacer(modifier = Modifier.width(RoadbookNavigatorTheme.dimensions.paddingLarge))
         Column(modifier = Modifier.weight(1f)) {
-            Text(text = remoteMap.name, style = MaterialTheme.typography.bodyLarge)
+            Text(
+                text = remoteMap.name.removeSuffix(".map").replaceFirstChar { it.uppercase() },
+                style = MaterialTheme.typography.bodyLarge,
+            )
             Text(
                 text = formatSize(remoteMap.size),
                 style = MaterialTheme.typography.bodySmall,
@@ -337,7 +445,11 @@ fun RemoteMapItem(
 
         if (downloadStatus is DownloadStatus.Progress) {
             IconButton(onClick = onCancelClick) {
-                Icon(imageVector = Icons.Default.Close, contentDescription = "Cancel")
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = "Cancel",
+                    modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.iconSize),
+                )
             }
         } else {
             val downloadLabel = stringResource(R.string.map_management_action_download)
@@ -349,7 +461,8 @@ fun RemoteMapItem(
             ) {
                 Icon(
                     imageVector = Icons.Default.Download,
-                    contentDescription = null
+                    contentDescription = null,
+                    modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.iconSize),
                 )
             }
         }

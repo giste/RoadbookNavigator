@@ -54,7 +54,7 @@ internal class JsoupRemoteMapDataSource @Inject constructor(
         val maps = mutableListOf<RemoteMapFile>()
         val subFolders = mutableListOf<RemoteMapFolder>()
 
-        // This is a generic parser for Apache/Nginx autoindex
+        // This is a generic parser for Apache/Nginx auto-index
         doc.select("tr").forEach { row ->
             val cells = row.select("td")
             if (cells.size >= 2) {

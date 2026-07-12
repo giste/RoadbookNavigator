@@ -41,7 +41,8 @@ data class AppDimensions(
     val dialogButtonHeight: Dp,
     val numpadButtonHeight: Dp,
     val numpadButtonHeightLandscape: Dp,
-    val cornerRadius: Dp
+    val cornerRadius: Dp,
+    val iconSize: Dp,
 )
 
 val compactDimensions = AppDimensions(
@@ -59,7 +60,8 @@ val compactDimensions = AppDimensions(
     dialogButtonHeight = 56.dp,
     numpadButtonHeight = 64.dp,
     numpadButtonHeightLandscape = 48.dp,
-    cornerRadius = 12.dp
+    cornerRadius = 12.dp,
+    iconSize = 24.dp
 )
 
 val expandedDimensions = AppDimensions(
@@ -77,7 +79,8 @@ val expandedDimensions = AppDimensions(
     dialogButtonHeight = 72.dp,
     numpadButtonHeight = 80.dp,
     numpadButtonHeightLandscape = 64.dp,
-    cornerRadius = 16.dp
+    cornerRadius = 16.dp,
+    iconSize = 32.dp,
 )
 
 val LocalAppDimensions = staticCompositionLocalOf { compactDimensions }

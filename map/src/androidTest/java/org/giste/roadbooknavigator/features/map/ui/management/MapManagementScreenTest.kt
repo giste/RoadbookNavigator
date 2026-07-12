@@ -100,6 +100,10 @@ class MapManagementScreenTest {
             }
         }
 
+        // Expand sections to see maps
+        composeTestRule.onNodeWithTag("SectionHeader_DownloadedMaps").performClick()
+        composeTestRule.onNodeWithTag("SectionHeader_Main Folder").performClick()
+
         composeTestRule.onNodeWithText("Spain").assertIsDisplayed()
         composeTestRule.onNodeWithText("France").assertIsDisplayed()
         composeTestRule.onNodeWithTag("SectionHeader_DownloadedMaps").assertIsDisplayed()
@@ -128,6 +132,9 @@ class MapManagementScreenTest {
             }
         }
 
+        // Expand section to see the button
+        composeTestRule.onNodeWithTag("SectionHeader_Main Folder").performClick()
+
         composeTestRule.onNodeWithTag("DownloadMapButton").performClick()
 
         assert(clickedMap == remoteMap)
@@ -155,8 +162,44 @@ class MapManagementScreenTest {
             }
         }
 
+        // Expand section to see the button
+        composeTestRule.onNodeWithTag("SectionHeader_DownloadedMaps").performClick()
+
         composeTestRule.onNodeWithTag("DeleteMapButton").performClick()
 
         assert(clickedMap == downloadedMap)
+    }
+
+    @Test
+    fun whenSectionTapped_thenItCollapsesAndExpands() {
+        val downloadedMap = MapFile("Spain", "/path/spain.map", 100L, 0L, "Europe")
+        val state = MapManagementUiState.Success(
+            downloadedMaps = listOf(DownloadedMapInfo(downloadedMap, DownloadedMapStatus.UpToDate)),
+            remoteFolders = RemoteMapFolder("Main Folder", "/")
+        )
+
+        composeTestRule.setContent {
+            MaterialTheme {
+                Surface {
+                    MapManagementContent(
+                        uiState = state,
+                        onDownloadClick = {},
+                        onDeleteClick = {},
+                        onCancelDownloadClick = {}
+                    )
+                }
+            }
+        }
+
+        // Initially collapsed (due to new behavior)
+        composeTestRule.onNodeWithText("Spain").assertDoesNotExist()
+
+        // Tap to expand
+        composeTestRule.onNodeWithTag("SectionHeader_DownloadedMaps").performClick()
+        composeTestRule.onNodeWithText("Spain").assertIsDisplayed()
+
+        // Tap to collapse
+        composeTestRule.onNodeWithTag("SectionHeader_DownloadedMaps").performClick()
+        composeTestRule.onNodeWithText("Spain").assertDoesNotExist()
     }
 }

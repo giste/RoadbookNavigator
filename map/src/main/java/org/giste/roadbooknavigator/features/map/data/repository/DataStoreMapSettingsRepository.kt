@@ -44,8 +44,8 @@ internal class DataStoreMapSettingsRepository @Inject constructor(
 
     override fun getMapSettings(): Flow<MapSettings> = dataStore.data.map { preferences ->
         MapSettings(
-            initialZoom = preferences[Keys.INITIAL_ZOOM] ?: 15,
-            initialTilt = preferences[Keys.INITIAL_TILT] ?: 0f
+            initialZoom = preferences[Keys.INITIAL_ZOOM] ?: MapSettings.DEFAULT_ZOOM,
+            initialTilt = preferences[Keys.INITIAL_TILT] ?: MapSettings.DEFAULT_TILT
         )
     }.also { logger.d("DataStoreMapSettingsRepository: New map settings emitted") }
 

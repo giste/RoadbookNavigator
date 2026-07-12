@@ -18,6 +18,11 @@
 package org.giste.roadbooknavigator.features.map.domain.model
 
 data class MapSettings(
-    val initialZoom: Int = 15,
-    val initialTilt: Float = 0f
-)
+    val initialZoom: Int = DEFAULT_ZOOM,
+    val initialTilt: Float = DEFAULT_TILT
+) {
+    companion object {
+        const val DEFAULT_ZOOM = 18
+        const val DEFAULT_TILT = 60.0f
+    }
+}

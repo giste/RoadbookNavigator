@@ -18,7 +18,6 @@
 package org.giste.roadbooknavigator.ui.dashboard
 
 import android.content.res.Configuration
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Box
@@ -34,7 +33,6 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -72,11 +70,11 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import kotlinx.coroutines.launch
 import org.giste.roadbooknavigator.R
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
+import org.giste.roadbooknavigator.features.map.ui.MapScreen
 import org.giste.roadbooknavigator.features.odometer.domain.Odometer
 import org.giste.roadbooknavigator.features.odometer.ui.PartialDistance
 import org.giste.roadbooknavigator.features.odometer.ui.SetPartialDialog
 import org.giste.roadbooknavigator.features.odometer.ui.TotalDistance
-import org.giste.roadbooknavigator.features.map.ui.MapScreen
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Coordinates
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Distance
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Route
@@ -84,7 +82,6 @@ import org.giste.roadbooknavigator.features.roadbook.domain.model.Waypoint
 import org.giste.roadbooknavigator.features.roadbook.ui.RoadbookSection
 import org.giste.roadbooknavigator.features.roadbook.ui.RoadbookUiState
 import java.io.InputStream
-import org.giste.roadbooknavigator.features.roadbook.R as RoadbookR
 
 @Composable
 fun DashboardScreen(

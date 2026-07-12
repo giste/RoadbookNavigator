@@ -23,7 +23,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.location.domain.UserLocation
 import org.giste.roadbooknavigator.features.location.domain.usecase.ObserveLocationUseCase
 import org.giste.roadbooknavigator.features.map.domain.model.MapFile
@@ -36,19 +39,22 @@ import javax.inject.Inject
 class MapViewModel @Inject constructor(
     getLocalMapsUseCase: GetLocalMapsUseCase,
     getMapSettingsUseCase: GetMapSettingsUseCase,
-    observeLocationUseCase: ObserveLocationUseCase
+    observeLocationUseCase: ObserveLocationUseCase,
+    private val logger: Logger,
 ) : ViewModel() {
 
     val uiState: StateFlow<MapUiState> = combine(
         getLocalMapsUseCase(),
         getMapSettingsUseCase(),
-        observeLocationUseCase()
+        observeLocationUseCase().map { it as UserLocation? }.onStart { emit(null) }
     ) { localMaps, settings, location ->
-        MapUiState(
+        val mapUiState = MapUiState(
             localMaps = localMaps,
             settings = settings,
             currentLocation = location
         )
+        logger.d("MapViewModel uiState: %s", mapUiState.toString())
+        mapUiState
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),

@@ -116,7 +116,7 @@ sealed interface MapManagementUiState {
     data object Loading : MapManagementUiState
     data class Success(
         val downloadedMaps: List<DownloadedMapInfo>,
-        val remoteFolders: RemoteMapFolder,
+        val remoteFolders: List<RemoteMapFolder>,
         val downloadingStatus: Map<String, DownloadStatus> = emptyMap()
     ) : MapManagementUiState
     data class Error(val message: String) : MapManagementUiState

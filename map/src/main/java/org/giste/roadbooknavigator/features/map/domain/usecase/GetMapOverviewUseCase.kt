@@ -34,9 +34,9 @@ class GetMapOverviewUseCase @Inject constructor(
         return combine(
             localRepository.getLocalMaps(),
             remoteRepository.getRemoteMaps()
-        ) { localMaps, remoteRoot ->
+        ) { localMaps, remoteFolders ->
             val downloadedInfo = localMaps.map { localMap ->
-                val remoteMap = remoteRoot.findMap(localMap.parentPath, localMap.name)
+                val remoteMap = remoteFolders.firstNotNullOfOrNull { it.findMap(localMap.parentPath, localMap.name) }
                 val status = when {
                     remoteMap == null -> DownloadedMapStatus.Obsolete
                     remoteMap.lastModified > localMap.lastModified -> DownloadedMapStatus.UpdateAvailable(remoteMap)
@@ -44,7 +44,7 @@ class GetMapOverviewUseCase @Inject constructor(
                 }
                 DownloadedMapInfo(localMap, status)
             }
-            MapOverview(downloadedInfo, remoteRoot)
+            MapOverview(downloadedInfo, remoteFolders)
         }
     }
 }

@@ -46,11 +46,11 @@ internal class HttpRemoteMapRepository @Inject constructor(
 
     private val rootUrl = "https://ftp-stud.hs-esslingen.de/pub/Mirrors/download.mapsforge.org/maps/v5/"
 
-    override fun getRemoteMaps(): Flow<RemoteMapFolder> = flow {
+    override fun getRemoteMaps(): Flow<List<RemoteMapFolder>> = flow {
         try {
             val root = dataSource.getRemoteMaps(rootUrl)
             val fullTree = fetchFolderRecursive(root)
-            emit(fullTree)
+            emit(fullTree.subFolders)
         } catch (e: Exception) {
             logger.e(e, "Error fetching remote maps")
             throw e

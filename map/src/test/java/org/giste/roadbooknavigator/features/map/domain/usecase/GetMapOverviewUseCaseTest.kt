@@ -50,7 +50,7 @@ class GetMapOverviewUseCaseTest {
         val remoteRoot = RemoteMapFolder("root", "/", maps = listOf(remoteMapUpToDate, remoteMapToUpdate))
 
         every { localRepository.getLocalMaps() } returns flowOf(listOf(localMapUpToDate, localMapObsolete, localMapToUpdate))
-        every { remoteRepository.getRemoteMaps() } returns flowOf(remoteRoot)
+        every { remoteRepository.getRemoteMaps() } returns flowOf(listOf(remoteRoot))
 
         val result = getMapOverviewUseCase().toList().first()
 
@@ -66,6 +66,6 @@ class GetMapOverviewUseCaseTest {
         assertTrue(updateInfo?.status is DownloadedMapStatus.UpdateAvailable)
         assertEquals(remoteMapToUpdate, (updateInfo?.status as DownloadedMapStatus.UpdateAvailable).remoteMapFile)
         
-        assertEquals(remoteRoot, result.remoteFolders)
+        assertEquals(listOf(remoteRoot), result.remoteFolders)
     }
 }

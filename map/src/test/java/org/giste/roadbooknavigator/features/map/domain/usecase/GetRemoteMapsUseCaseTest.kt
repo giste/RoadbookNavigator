@@ -19,8 +19,8 @@ package org.giste.roadbooknavigator.features.map.domain.usecase
 
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
 import org.giste.roadbooknavigator.features.map.domain.model.RemoteMapFolder
 import org.giste.roadbooknavigator.features.map.domain.repository.RemoteMapRepository
@@ -34,11 +34,11 @@ class GetRemoteMapsUseCaseTest {
 
     @Test
     fun `invoke should return remote maps from repository`() = runTest {
-        val expectedFolder = RemoteMapFolder("root", "/")
-        every { repository.getRemoteMaps() } returns flowOf(expectedFolder)
+        val expectedFolders = listOf(RemoteMapFolder("root", "/"))
+        every { repository.getRemoteMaps() } returns flowOf(expectedFolders)
 
-        val result = getRemoteMapsUseCase().toList()
+        val result = getRemoteMapsUseCase().first()
 
-        assertEquals(listOf(expectedFolder), result)
+        assertEquals(expectedFolders, result)
     }
 }

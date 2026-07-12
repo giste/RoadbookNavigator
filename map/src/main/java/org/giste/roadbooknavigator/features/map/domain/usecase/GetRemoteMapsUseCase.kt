@@ -25,5 +25,5 @@ import javax.inject.Inject
 class GetRemoteMapsUseCase @Inject constructor(
     private val repository: RemoteMapRepository
 ) {
-    operator fun invoke(): Flow<RemoteMapFolder> = repository.getRemoteMaps()
+    operator fun invoke(): Flow<List<RemoteMapFolder>> = repository.getRemoteMaps()
 }

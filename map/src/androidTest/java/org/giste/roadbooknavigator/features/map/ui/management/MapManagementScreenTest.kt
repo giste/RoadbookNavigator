@@ -84,7 +84,7 @@ class MapManagementScreenTest {
         
         val state = MapManagementUiState.Success(
             downloadedMaps = listOf(DownloadedMapInfo(downloadedMap, DownloadedMapStatus.UpToDate)),
-            remoteFolders = RemoteMapFolder("Main Folder", "/", maps = listOf(remoteMap))
+            remoteFolders = listOf(RemoteMapFolder("Europe", "/", maps = listOf(remoteMap)))
         )
 
         composeTestRule.setContent {
@@ -102,12 +102,12 @@ class MapManagementScreenTest {
 
         // Expand sections to see maps
         composeTestRule.onNodeWithTag("SectionHeader_DownloadedMaps").performClick()
-        composeTestRule.onNodeWithTag("SectionHeader_Main Folder").performClick()
+        composeTestRule.onNodeWithTag("SectionHeader_Europe").performClick()
 
         composeTestRule.onNodeWithText("Spain").assertIsDisplayed()
         composeTestRule.onNodeWithText("France").assertIsDisplayed()
         composeTestRule.onNodeWithTag("SectionHeader_DownloadedMaps").assertIsDisplayed()
-        composeTestRule.onNodeWithTag("SectionHeader_Main Folder").assertIsDisplayed()
+        composeTestRule.onNodeWithTag("SectionHeader_Europe").assertIsDisplayed()
     }
 
     @Test
@@ -116,7 +116,7 @@ class MapManagementScreenTest {
         val remoteMap = RemoteMapFile("France", "/", "http://france.map", 200L, 0L)
         val state = MapManagementUiState.Success(
             downloadedMaps = emptyList(),
-            remoteFolders = RemoteMapFolder("Main Folder", "/", maps = listOf(remoteMap))
+            remoteFolders = listOf(RemoteMapFolder("Europe", "/", maps = listOf(remoteMap)))
         )
 
         composeTestRule.setContent {
@@ -133,7 +133,7 @@ class MapManagementScreenTest {
         }
 
         // Expand section to see the button
-        composeTestRule.onNodeWithTag("SectionHeader_Main Folder").performClick()
+        composeTestRule.onNodeWithTag("SectionHeader_Europe").performClick()
 
         composeTestRule.onNodeWithTag("DownloadMapButton").performClick()
 
@@ -146,7 +146,7 @@ class MapManagementScreenTest {
         val downloadedMap = MapFile("Spain", "/path/spain.map", 100L, 0L, "Europe")
         val state = MapManagementUiState.Success(
             downloadedMaps = listOf(DownloadedMapInfo(downloadedMap, DownloadedMapStatus.UpToDate)),
-            remoteFolders = RemoteMapFolder("Main Folder", "/")
+            remoteFolders = emptyList()
         )
 
         composeTestRule.setContent {
@@ -175,7 +175,7 @@ class MapManagementScreenTest {
         val downloadedMap = MapFile("Spain", "/path/spain.map", 100L, 0L, "Europe")
         val state = MapManagementUiState.Success(
             downloadedMaps = listOf(DownloadedMapInfo(downloadedMap, DownloadedMapStatus.UpToDate)),
-            remoteFolders = RemoteMapFolder("Main Folder", "/")
+            remoteFolders = emptyList()
         )
 
         composeTestRule.setContent {

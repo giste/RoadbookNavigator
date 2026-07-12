@@ -23,6 +23,6 @@ import org.giste.roadbooknavigator.features.map.domain.model.RemoteMapFile
 import org.giste.roadbooknavigator.features.map.domain.model.RemoteMapFolder
 
 interface RemoteMapRepository {
-    fun getRemoteMaps(): Flow<RemoteMapFolder>
+    fun getRemoteMaps(): Flow<List<RemoteMapFolder>>
     fun downloadMap(remoteMapFile: RemoteMapFile, destinationPath: String): Flow<DownloadStatus>
 }

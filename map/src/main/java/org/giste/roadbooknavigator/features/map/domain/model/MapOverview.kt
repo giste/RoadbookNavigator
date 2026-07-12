@@ -19,7 +19,7 @@ package org.giste.roadbooknavigator.features.map.domain.model
 
 data class MapOverview(
     val downloadedMaps: List<DownloadedMapInfo>,
-    val remoteFolders: RemoteMapFolder
+    val remoteFolders: List<RemoteMapFolder>
 )
 
 data class DownloadedMapInfo(

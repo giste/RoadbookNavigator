@@ -59,7 +59,7 @@ class MapManagementViewModelTest {
 
     private val dummyOverview = MapOverview(
         downloadedMaps = emptyList(),
-        remoteFolders = RemoteMapFolder("root", "/")
+        remoteFolders = emptyList()
     )
 
     @Before

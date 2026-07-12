@@ -54,9 +54,8 @@ class HttpRemoteMapRepositoryTest {
         
         val result = repository.getRemoteMaps().first()
         
-        assertEquals("v5", result.name)
-        assertEquals(1, result.subFolders.size)
-        val europe = result.subFolders[0]
+        assertEquals(1, result.size)
+        val europe = result[0]
         assertEquals("europe", europe.name)
         assertEquals(1, europe.subFolders.size)
         val germany = europe.subFolders[0]

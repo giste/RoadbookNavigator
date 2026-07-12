@@ -135,7 +135,7 @@ fun MapManagementContent(
 @Composable
 fun MapList(
     downloadedMaps: List<DownloadedMapInfo>,
-    remoteFolders: RemoteMapFolder,
+    remoteFolders: List<RemoteMapFolder>,
     downloadingStatus: Map<String, DownloadStatus>,
     onDownloadClick: (RemoteMapFile) -> Unit,
     onDeleteClick: (MapFile) -> Unit,
@@ -186,7 +186,7 @@ fun MapList(
         }
 
         // Remote folders hierarchy
-        remoteFolders.subFolders.forEach {
+        remoteFolders.forEach {
             renderFolder(
                 folder = it,
                 level = 0,

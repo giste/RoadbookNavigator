@@ -22,6 +22,9 @@ import androidx.test.core.app.ApplicationProvider
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.map.domain.model.MapFile
@@ -34,6 +37,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import java.io.File
 
+@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
 @RunWith(RobolectricTestRunner::class)
 class FileLocalMapRepositoryTest {
 
@@ -48,6 +52,7 @@ class FileLocalMapRepositoryTest {
         repository = FileLocalMapRepository(context, Dispatchers.Unconfined, logger)
         mapsDir = File(context.filesDir, "maps")
         mapsDir.deleteRecursively()
+        mapsDir.mkdirs()
     }
 
     @Test
@@ -89,6 +94,59 @@ class FileLocalMapRepositoryTest {
         assertFalse(mapFile.exists())
         assertFalse(europeDir.exists()) // Should be deleted if empty
         assertTrue(mapsDir.exists())   // Root maps dir should remain
+    }
+
+    @Test
+    fun `getLocalMaps should be reactive to deletions`() = runTest {
+        // Given
+        val mapFile = File(mapsDir, "spain.map")
+        mapFile.writeText("dummy content")
+        val domainMapFile = MapFile("spain.map", mapFile.absolutePath, 100L, 0L, "")
+
+        val results = mutableListOf<List<MapFile>>()
+        val job = launch {
+            repository.getLocalMaps().collect { results.add(it) }
+        }
+        runCurrent()
+
+        // Initially contains the map
+        assertEquals(1, results.size)
+        assertEquals(1, results[0].size)
+
+        // When deleted
+        repository.deleteMap(domainMapFile)
+        runCurrent()
+
+        // Then it should emit again with empty list
+        assertEquals(2, results.size)
+        assertTrue(results[1].isEmpty())
+
+        job.cancel()
+    }
+
+    @Test
+    fun `getLocalMaps should be reactive to refresh`() = runTest {
+        val results = mutableListOf<List<MapFile>>()
+        val job = launch {
+            repository.getLocalMaps().collect { results.add(it) }
+        }
+        runCurrent()
+
+        assertEquals(1, results.size)
+        assertTrue(results[0].isEmpty())
+
+        // Create file manually (simulating background download)
+        val mapFile = File(mapsDir, "spain.map")
+        mapFile.writeText("dummy content")
+
+        // Trigger refresh
+        repository.refresh()
+        runCurrent()
+
+        assertEquals(2, results.size)
+        assertEquals(1, results[1].size)
+
+        job.cancel()
     }
 
     @Test

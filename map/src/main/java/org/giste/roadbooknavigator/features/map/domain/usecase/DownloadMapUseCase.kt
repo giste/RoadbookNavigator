@@ -18,6 +18,7 @@
 package org.giste.roadbooknavigator.features.map.domain.usecase
 
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.onEach
 import org.giste.roadbooknavigator.features.map.domain.model.DownloadStatus
 import org.giste.roadbooknavigator.features.map.domain.model.RemoteMapFile
 import org.giste.roadbooknavigator.features.map.domain.repository.MapRepository
@@ -32,5 +33,10 @@ class DownloadMapUseCase @Inject constructor(
         val destinationDir = localMapRepository.getMapInternalStorageDir()
         val destinationPath = "$destinationDir/${remoteMapFile.parentPath}/${remoteMapFile.name}"
         return remoteMapRepository.downloadMap(remoteMapFile, destinationPath)
+            .onEach { status ->
+                if (status is DownloadStatus.Success) {
+                    localMapRepository.refresh()
+                }
+            }
     }
 }

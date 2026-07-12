@@ -20,10 +20,11 @@ package org.giste.roadbooknavigator.features.map.data.repository
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import org.giste.roadbooknavigator.core.di.IoDispatcher
 import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.map.domain.model.MapFile
@@ -44,29 +45,27 @@ internal class FileLocalMapRepository @Inject constructor(
             if (!exists()) mkdirs()
         }
 
-    override fun getLocalMaps(): Flow<List<MapFile>> = callbackFlow {
-        val scan = {
-            val maps = mapsDir.walkTopDown()
-                .filter { it.isFile && it.extension == "map" }
-                .map { file ->
-                    MapFile(
-                        name = file.name,
-                        path = file.absolutePath,
-                        size = file.length(),
-                        lastModified = file.lastModified(),
-                        parentPath = file.parentFile?.relativeTo(mapsDir)?.path ?: ""
-                    )
-                }.toList()
-            trySend(maps)
-        }
+    private val refreshTrigger = MutableSharedFlow<Unit>(replay = 1).apply {
+        tryEmit(Unit)
+    }
 
-        scan()
+    override fun getLocalMaps(): Flow<List<MapFile>> = refreshTrigger
+        .map { scanLocalMaps() }
+        .flowOn(ioDispatcher)
 
-        // For simplicity in this first step, we just scan once.
-        // A more advanced implementation could use a FileObserver.
-        
-        awaitClose { }
-    }.flowOn(ioDispatcher)
+    private fun scanLocalMaps(): List<MapFile> {
+        return mapsDir.walkTopDown()
+            .filter { it.isFile && it.extension == "map" }
+            .map { file ->
+                MapFile(
+                    name = file.name,
+                    path = file.absolutePath,
+                    size = file.length(),
+                    lastModified = file.lastModified(),
+                    parentPath = file.parentFile?.relativeTo(mapsDir)?.path ?: ""
+                )
+            }.toList()
+    }
 
     override suspend fun deleteMap(mapFile: MapFile) {
         val file = File(mapFile.path)
@@ -80,10 +79,15 @@ internal class FileLocalMapRepository @Inject constructor(
                     parent.delete()
                     parent = parent.parentFile
                 }
+                refresh()
             } else {
                 logger.e("LocalMapRepositoryImpl: Failed to delete map %s", mapFile.name)
             }
         }
+    }
+
+    override suspend fun refresh() {
+        refreshTrigger.emit(Unit)
     }
 
     override fun getMapInternalStorageDir(): String = mapsDir.absolutePath

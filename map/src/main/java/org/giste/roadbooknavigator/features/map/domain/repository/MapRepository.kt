@@ -24,4 +24,5 @@ interface MapRepository {
     fun getLocalMaps(): Flow<List<MapFile>>
     suspend fun deleteMap(mapFile: MapFile)
     fun getMapInternalStorageDir(): String
+    suspend fun refresh()
 }

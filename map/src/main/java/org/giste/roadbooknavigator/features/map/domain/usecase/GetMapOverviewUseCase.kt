@@ -23,17 +23,15 @@ import org.giste.roadbooknavigator.features.map.domain.model.DownloadedMapInfo
 import org.giste.roadbooknavigator.features.map.domain.model.DownloadedMapStatus
 import org.giste.roadbooknavigator.features.map.domain.model.MapOverview
 import org.giste.roadbooknavigator.features.map.domain.repository.MapRepository
-import org.giste.roadbooknavigator.features.map.domain.repository.RemoteMapRepository
 import javax.inject.Inject
 
 class GetMapOverviewUseCase @Inject constructor(
-    private val localRepository: MapRepository,
-    private val remoteRepository: RemoteMapRepository
+    private val repository: MapRepository
 ) {
     operator fun invoke(): Flow<MapOverview> {
         return combine(
-            localRepository.getLocalMaps(),
-            remoteRepository.getRemoteMaps()
+            repository.getLocalMaps(),
+            repository.getRemoteMaps()
         ) { localMaps, remoteFolders ->
             val downloadedInfo = localMaps.map { localMap ->
                 val remoteMap = remoteFolders.firstNotNullOfOrNull { it.findMap(localMap.parentPath, localMap.name) }

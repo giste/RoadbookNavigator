@@ -27,16 +27,14 @@ import org.giste.roadbooknavigator.features.map.domain.model.MapFile
 import org.giste.roadbooknavigator.features.map.domain.model.RemoteMapFile
 import org.giste.roadbooknavigator.features.map.domain.model.RemoteMapFolder
 import org.giste.roadbooknavigator.features.map.domain.repository.MapRepository
-import org.giste.roadbooknavigator.features.map.domain.repository.RemoteMapRepository
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class GetMapOverviewUseCaseTest {
 
-    private val localRepository: MapRepository = mockk()
-    private val remoteRepository: RemoteMapRepository = mockk()
-    private val getMapOverviewUseCase = GetMapOverviewUseCase(localRepository, remoteRepository)
+    private val repository: MapRepository = mockk()
+    private val getMapOverviewUseCase = GetMapOverviewUseCase(repository)
 
     @Test
     fun `invoke should combine local and remote maps and identify status correctly`() = runTest {
@@ -49,8 +47,8 @@ class GetMapOverviewUseCaseTest {
 
         val remoteRoot = RemoteMapFolder("root", "/", maps = listOf(remoteMapUpToDate, remoteMapToUpdate))
 
-        every { localRepository.getLocalMaps() } returns flowOf(listOf(localMapUpToDate, localMapObsolete, localMapToUpdate))
-        every { remoteRepository.getRemoteMaps() } returns flowOf(listOf(remoteRoot))
+        every { repository.getLocalMaps() } returns flowOf(listOf(localMapUpToDate, localMapObsolete, localMapToUpdate))
+        every { repository.getRemoteMaps() } returns flowOf(listOf(remoteRoot))
 
         val result = getMapOverviewUseCase().toList().first()
 

@@ -23,13 +23,13 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.giste.roadbooknavigator.features.map.domain.model.RemoteMapFolder
-import org.giste.roadbooknavigator.features.map.domain.repository.RemoteMapRepository
+import org.giste.roadbooknavigator.features.map.domain.repository.MapRepository
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class GetRemoteMapsUseCaseTest {
 
-    private val repository: RemoteMapRepository = mockk()
+    private val repository: MapRepository = mockk()
     private val getRemoteMapsUseCase = GetRemoteMapsUseCase(repository)
 
     @Test

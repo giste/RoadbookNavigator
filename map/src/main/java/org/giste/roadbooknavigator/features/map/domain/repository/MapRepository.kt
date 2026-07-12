@@ -18,11 +18,16 @@
 package org.giste.roadbooknavigator.features.map.domain.repository
 
 import kotlinx.coroutines.flow.Flow
+import org.giste.roadbooknavigator.features.map.domain.model.DownloadStatus
 import org.giste.roadbooknavigator.features.map.domain.model.MapFile
+import org.giste.roadbooknavigator.features.map.domain.model.RemoteMapFile
+import org.giste.roadbooknavigator.features.map.domain.model.RemoteMapFolder
 
 interface MapRepository {
     fun getLocalMaps(): Flow<List<MapFile>>
     suspend fun deleteMap(mapFile: MapFile)
     fun getMapInternalStorageDir(): String
-    suspend fun refresh()
+
+    fun getRemoteMaps(): Flow<List<RemoteMapFolder>>
+    fun downloadMap(remoteMapFile: RemoteMapFile, destinationPath: String): Flow<DownloadStatus>
 }

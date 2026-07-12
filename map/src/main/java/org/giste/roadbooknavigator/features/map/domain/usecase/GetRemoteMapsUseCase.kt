@@ -19,11 +19,11 @@ package org.giste.roadbooknavigator.features.map.domain.usecase
 
 import kotlinx.coroutines.flow.Flow
 import org.giste.roadbooknavigator.features.map.domain.model.RemoteMapFolder
-import org.giste.roadbooknavigator.features.map.domain.repository.RemoteMapRepository
+import org.giste.roadbooknavigator.features.map.domain.repository.MapRepository
 import javax.inject.Inject
 
 class GetRemoteMapsUseCase @Inject constructor(
-    private val repository: RemoteMapRepository
+    private val repository: MapRepository
 ) {
     operator fun invoke(): Flow<List<RemoteMapFolder>> = repository.getRemoteMaps()
 }

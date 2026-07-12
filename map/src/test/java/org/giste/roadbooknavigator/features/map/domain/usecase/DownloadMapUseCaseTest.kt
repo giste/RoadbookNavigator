@@ -25,15 +25,13 @@ import kotlinx.coroutines.test.runTest
 import org.giste.roadbooknavigator.features.map.domain.model.DownloadStatus
 import org.giste.roadbooknavigator.features.map.domain.model.RemoteMapFile
 import org.giste.roadbooknavigator.features.map.domain.repository.MapRepository
-import org.giste.roadbooknavigator.features.map.domain.repository.RemoteMapRepository
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class DownloadMapUseCaseTest {
 
-    private val remoteRepository: RemoteMapRepository = mockk()
-    private val localRepository: MapRepository = mockk()
-    private val downloadMapUseCase = DownloadMapUseCase(remoteRepository, localRepository)
+    private val repository: MapRepository = mockk()
+    private val downloadMapUseCase = DownloadMapUseCase(repository)
 
     @Test
     fun `invoke should call downloadMap with correct destination path`() = runTest {
@@ -42,8 +40,8 @@ class DownloadMapUseCaseTest {
         val expectedPath = "/internal/maps/europe/spain.map"
         val expectedStatus = DownloadStatus.Success
 
-        every { localRepository.getMapInternalStorageDir() } returns destinationDir
-        every { remoteRepository.downloadMap(remoteMapFile, expectedPath) } returns flowOf(expectedStatus)
+        every { repository.getMapInternalStorageDir() } returns destinationDir
+        every { repository.downloadMap(remoteMapFile, expectedPath) } returns flowOf(expectedStatus)
 
         val result = downloadMapUseCase(remoteMapFile).toList()
 

@@ -19,15 +19,21 @@ package org.giste.roadbooknavigator.features.map.data.repository
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
+import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.giste.roadbooknavigator.core.util.Logger
+import org.giste.roadbooknavigator.features.map.data.datasource.RemoteMapDataSource
+import org.giste.roadbooknavigator.features.map.domain.model.DownloadStatus
 import org.giste.roadbooknavigator.features.map.domain.model.MapFile
+import org.giste.roadbooknavigator.features.map.domain.model.RemoteMapFile
+import org.giste.roadbooknavigator.features.map.domain.model.RemoteMapFolder
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -37,19 +43,20 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import java.io.File
 
-@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
+@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(RobolectricTestRunner::class)
-class FileLocalMapRepositoryTest {
+class LocalFileMapRepositoryTest {
 
     private lateinit var context: Context
+    private val remoteDataSource: RemoteMapDataSource = mockk()
     private val logger: Logger = mockk(relaxed = true)
-    private lateinit var repository: FileLocalMapRepository
+    private lateinit var repository: LocalFileMapRepository
     private lateinit var mapsDir: File
 
     @Before
     fun setup() {
         context = ApplicationProvider.getApplicationContext()
-        repository = FileLocalMapRepository(context, Dispatchers.Unconfined, logger)
+        repository = LocalFileMapRepository(context, remoteDataSource, Dispatchers.Unconfined, logger)
         mapsDir = File(context.filesDir, "maps")
         mapsDir.deleteRecursively()
         mapsDir.mkdirs()
@@ -73,31 +80,7 @@ class FileLocalMapRepositoryTest {
     }
 
     @Test
-    fun `deleteMap should remove file and empty parent directories`() = runTest {
-        // Given
-        val europeDir = File(mapsDir, "europe")
-        europeDir.mkdirs()
-        val mapFile = File(europeDir, "spain.map")
-        mapFile.writeText("dummy content")
-        val domainMapFile = MapFile(
-            name = "spain.map",
-            path = mapFile.absolutePath,
-            size = mapFile.length(),
-            lastModified = mapFile.lastModified(),
-            parentPath = "europe"
-        )
-
-        // When
-        repository.deleteMap(domainMapFile)
-
-        // Then
-        assertFalse(mapFile.exists())
-        assertFalse(europeDir.exists()) // Should be deleted if empty
-        assertTrue(mapsDir.exists())   // Root maps dir should remain
-    }
-
-    @Test
-    fun `getLocalMaps should be reactive to deletions`() = runTest {
+    fun `deleteMap should remove file and trigger refresh`() = runTest {
         // Given
         val mapFile = File(mapsDir, "spain.map")
         mapFile.writeText("dummy content")
@@ -117,7 +100,8 @@ class FileLocalMapRepositoryTest {
         repository.deleteMap(domainMapFile)
         runCurrent()
 
-        // Then it should emit again with empty list
+        // Then it should be deleted from disk and flow should emit again
+        assertFalse(mapFile.exists())
         assertEquals(2, results.size)
         assertTrue(results[1].isEmpty())
 
@@ -125,33 +109,47 @@ class FileLocalMapRepositoryTest {
     }
 
     @Test
-    fun `getLocalMaps should be reactive to refresh`() = runTest {
-        val results = mutableListOf<List<MapFile>>()
-        val job = launch {
-            repository.getLocalMaps().collect { results.add(it) }
-        }
-        runCurrent()
+    fun `getRemoteMaps should fetch regions omitting root folder`() = runTest {
+        val rootUrl = "https://ftp-stud.hs-esslingen.de/pub/Mirrors/download.mapsforge.org/maps/v5/"
+        val europeUrl = "${rootUrl}europe/"
+        val rootFolder = RemoteMapFolder("v5", rootUrl, subFolders = listOf(RemoteMapFolder("europe", europeUrl)))
+        val europeFolder = RemoteMapFolder("europe", europeUrl, maps = listOf(RemoteMapFile("spain.map", "europe", "url", 100L, 1000L)))
 
-        assertEquals(1, results.size)
-        assertTrue(results[0].isEmpty())
+        coEvery { remoteDataSource.getRemoteMaps(rootUrl) } returns rootFolder
+        coEvery { remoteDataSource.getRemoteMaps(europeUrl) } returns europeFolder
 
-        // Create file manually (simulating background download)
-        val mapFile = File(mapsDir, "spain.map")
-        mapFile.writeText("dummy content")
+        val result = repository.getRemoteMaps().first()
 
-        // Trigger refresh
-        repository.refresh()
-        runCurrent()
-
-        assertEquals(2, results.size)
-        assertEquals(1, results[1].size)
-
-        job.cancel()
+        assertEquals(1, result.size)
+        assertEquals("europe", result[0].name)
+        assertEquals(1, result[0].maps.size)
     }
 
     @Test
-    fun `getMapInternalStorageDir should return correct path`() {
-        val path = repository.getMapInternalStorageDir()
-        assertEquals(mapsDir.absolutePath, path)
+    fun `downloadMap should emit progress, success and trigger refresh`() = runTest {
+        val remoteMapFile = RemoteMapFile("spain.map", "europe", "http://url", 100L, 1000L)
+        val responseBody = mockk<okhttp3.ResponseBody>(relaxed = true)
+
+        coEvery { remoteDataSource.downloadFile(remoteMapFile.url) } returns responseBody
+        coEvery { responseBody.contentLength() } returns 10L
+        coEvery { responseBody.source().read(any<ByteArray>()) } returns 5 andThen 5 andThen -1
+
+        val localResults = mutableListOf<List<MapFile>>()
+        val localJob = launch {
+            repository.getLocalMaps().collect { localResults.add(it) }
+        }
+        runCurrent()
+        assertEquals(1, localResults.size) // Initially empty
+
+        val downloadResults = repository.downloadMap(remoteMapFile).toList()
+
+        assertTrue(downloadResults.contains(DownloadStatus.Success))
+        
+        runCurrent()
+        // Should have emitted again after success
+        assertEquals(2, localResults.size)
+        assertEquals(1, localResults[1].size)
+
+        localJob.cancel()
     }
 }

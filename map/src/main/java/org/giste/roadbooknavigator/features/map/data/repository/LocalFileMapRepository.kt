@@ -17,38 +17,97 @@
 
 package org.giste.roadbooknavigator.features.map.data.repository
 
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import okio.buffer
 import okio.sink
 import org.giste.roadbooknavigator.core.di.IoDispatcher
 import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.map.data.datasource.RemoteMapDataSource
 import org.giste.roadbooknavigator.features.map.domain.model.DownloadStatus
+import org.giste.roadbooknavigator.features.map.domain.model.MapFile
 import org.giste.roadbooknavigator.features.map.domain.model.RemoteMapFile
 import org.giste.roadbooknavigator.features.map.domain.model.RemoteMapFolder
-import org.giste.roadbooknavigator.features.map.domain.repository.RemoteMapRepository
+import org.giste.roadbooknavigator.features.map.domain.repository.MapRepository
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-internal class HttpRemoteMapRepository @Inject constructor(
-    private val dataSource: RemoteMapDataSource,
+internal class LocalFileMapRepository @Inject constructor(
+    @param:ApplicationContext private val context: Context,
+    private val remoteDataSource: RemoteMapDataSource,
     @param:IoDispatcher private val ioDispatcher: CoroutineDispatcher,
     private val logger: Logger
-) : RemoteMapRepository {
+) : MapRepository {
 
     private val rootUrl = "https://ftp-stud.hs-esslingen.de/pub/Mirrors/download.mapsforge.org/maps/v5/"
 
+    private val mapsDir: File
+        get() = File(context.filesDir, "maps").apply {
+            if (!exists()) mkdirs()
+        }
+
+    private val refreshTrigger = MutableSharedFlow<Unit>(replay = 1).apply {
+        tryEmit(Unit)
+    }
+
+    override fun getLocalMaps(): Flow<List<MapFile>> = refreshTrigger
+        .map { scanLocalMaps() }
+        .flowOn(ioDispatcher)
+
+    private fun scanLocalMaps(): List<MapFile> {
+        return mapsDir.walkTopDown()
+            .filter { it.isFile && it.extension == "map" }
+            .map { file ->
+                MapFile(
+                    name = file.name,
+                    path = file.absolutePath,
+                    size = file.length(),
+                    lastModified = file.lastModified(),
+                    parentPath = file.parentFile?.relativeTo(mapsDir)?.path ?: ""
+                )
+            }.toList()
+    }
+
+    override suspend fun deleteMap(mapFile: MapFile) {
+        val file = File(mapFile.path)
+        if (file.exists()) {
+            val deleted = file.delete()
+            if (deleted) {
+                logger.d("MapRepositoryImpl: Deleted map %s", mapFile.name)
+                // Clean up empty parent directories
+                var parent = file.parentFile
+                while (parent != null && parent != mapsDir && parent.list()?.isEmpty() == true) {
+                    parent.delete()
+                    parent = parent.parentFile
+                }
+                refresh()
+            } else {
+                logger.e("MapRepositoryImpl: Failed to delete map %s", mapFile.name)
+            }
+        }
+    }
+
+    private suspend fun refresh() {
+        refreshTrigger.emit(Unit)
+    }
+
+    private fun getMapInternalStorageDir(): String = mapsDir.absolutePath
+
     override fun getRemoteMaps(): Flow<List<RemoteMapFolder>> = flow {
         try {
-            val root = dataSource.getRemoteMaps(rootUrl)
+            val root = remoteDataSource.getRemoteMaps(rootUrl)
             val fullTree = fetchFolderRecursive(root)
             emit(fullTree.subFolders)
         } catch (e: Exception) {
@@ -61,7 +120,7 @@ internal class HttpRemoteMapRepository @Inject constructor(
         val enrichedSubfolders = folder.subFolders.map { subFolder ->
             async {
                 try {
-                    val fetched = dataSource.getRemoteMaps(subFolder.path)
+                    val fetched = remoteDataSource.getRemoteMaps(subFolder.path)
                     fetchFolderRecursive(fetched)
                 } catch (e: Exception) {
                     logger.w("Error fetching subfolder %s: %s", subFolder.path, e.message)
@@ -72,16 +131,17 @@ internal class HttpRemoteMapRepository @Inject constructor(
         folder.copy(subFolders = enrichedSubfolders)
     }
 
-    override fun downloadMap(remoteMapFile: RemoteMapFile, destinationPath: String): Flow<DownloadStatus> = flow {
+    override fun downloadMap(remoteMapFile: RemoteMapFile): Flow<DownloadStatus> = flow {
         emit(DownloadStatus.Idle)
         try {
-            val responseBody = dataSource.downloadFile(remoteMapFile.url)
+            val destinationPath = "${getMapInternalStorageDir()}/${remoteMapFile.parentPath}/${remoteMapFile.name}"
+            val responseBody = remoteDataSource.downloadFile(remoteMapFile.url)
             val file = File(destinationPath)
             file.parentFile?.mkdirs()
-            
+
             val totalSize = responseBody.contentLength()
             var bytesRead = 0L
-            
+
             responseBody.source().use { source ->
                 file.sink().buffer().use { sink ->
                     val buffer = ByteArray(8192)
@@ -95,7 +155,6 @@ internal class HttpRemoteMapRepository @Inject constructor(
                     }
                 }
             }
-            // Set the last modified date to match remote for update tracking
             if (remoteMapFile.lastModified > 0) {
                 file.setLastModified(remoteMapFile.lastModified)
             }
@@ -103,6 +162,10 @@ internal class HttpRemoteMapRepository @Inject constructor(
         } catch (e: Exception) {
             logger.e(e, "Error downloading map %s", remoteMapFile.name)
             emit(DownloadStatus.Error(e.message ?: "Unknown error"))
+        }
+    }.onEach { status ->
+        if (status is DownloadStatus.Success) {
+            refresh()
         }
     }.flowOn(ioDispatcher)
 }

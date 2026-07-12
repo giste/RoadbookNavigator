@@ -34,14 +34,11 @@ class DownloadMapUseCaseTest {
     private val downloadMapUseCase = DownloadMapUseCase(repository)
 
     @Test
-    fun `invoke should call downloadMap with correct destination path`() = runTest {
+    fun `invoke should call downloadMap in repository`() = runTest {
         val remoteMapFile = RemoteMapFile("spain.map", "europe", "http://url", 1000L, 123456L)
-        val destinationDir = "/internal/maps"
-        val expectedPath = "/internal/maps/europe/spain.map"
         val expectedStatus = DownloadStatus.Success
 
-        every { repository.getMapInternalStorageDir() } returns destinationDir
-        every { repository.downloadMap(remoteMapFile, expectedPath) } returns flowOf(expectedStatus)
+        every { repository.downloadMap(remoteMapFile) } returns flowOf(expectedStatus)
 
         val result = downloadMapUseCase(remoteMapFile).toList()
 

@@ -26,8 +26,7 @@ import org.giste.roadbooknavigator.features.map.domain.model.RemoteMapFolder
 interface MapRepository {
     fun getLocalMaps(): Flow<List<MapFile>>
     suspend fun deleteMap(mapFile: MapFile)
-    fun getMapInternalStorageDir(): String
 
     fun getRemoteMaps(): Flow<List<RemoteMapFolder>>
-    fun downloadMap(remoteMapFile: RemoteMapFile, destinationPath: String): Flow<DownloadStatus>
+    fun downloadMap(remoteMapFile: RemoteMapFile): Flow<DownloadStatus>
 }

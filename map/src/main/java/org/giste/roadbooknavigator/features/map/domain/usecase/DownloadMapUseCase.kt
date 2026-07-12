@@ -27,8 +27,6 @@ class DownloadMapUseCase @Inject constructor(
     private val repository: MapRepository
 ) {
     operator fun invoke(remoteMapFile: RemoteMapFile): Flow<DownloadStatus> {
-        val destinationDir = repository.getMapInternalStorageDir()
-        val destinationPath = "$destinationDir/${remoteMapFile.parentPath}/${remoteMapFile.name}"
-        return repository.downloadMap(remoteMapFile, destinationPath)
+        return repository.downloadMap(remoteMapFile)
     }
 }

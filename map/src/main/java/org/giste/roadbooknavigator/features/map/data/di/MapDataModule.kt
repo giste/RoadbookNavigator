@@ -31,7 +31,7 @@ import okhttp3.OkHttpClient
 import org.giste.roadbooknavigator.features.map.data.datasource.JsoupRemoteMapDataSource
 import org.giste.roadbooknavigator.features.map.data.datasource.RemoteMapDataSource
 import org.giste.roadbooknavigator.features.map.data.repository.DataStoreMapSettingsRepository
-import org.giste.roadbooknavigator.features.map.data.repository.MapRepositoryImpl
+import org.giste.roadbooknavigator.features.map.data.repository.LocalFileMapRepository
 import org.giste.roadbooknavigator.features.map.domain.repository.MapRepository
 import org.giste.roadbooknavigator.features.map.domain.repository.MapSettingsRepository
 import javax.inject.Qualifier
@@ -56,7 +56,7 @@ internal abstract class MapDataModule {
     @Binds
     @Singleton
     abstract fun bindMapRepository(
-        mapRepositoryImpl: MapRepositoryImpl
+        localFileMapRepository: LocalFileMapRepository
     ): MapRepository
 
     @Binds

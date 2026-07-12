@@ -49,7 +49,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -86,7 +89,11 @@ fun MapManagementContent(
     Box(modifier = Modifier.fillMaxSize()) {
         when (uiState) {
             is MapManagementUiState.Loading -> {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .testTag("MapManagementLoading")
+                )
             }
 
             is MapManagementUiState.Error -> {
@@ -133,28 +140,32 @@ fun MapList(
         // Downloaded maps section
         if (downloadedMaps.isNotEmpty()) {
             item {
-                SectionHeader(stringResource(R.string.map_management_downloaded_title))
+                SectionHeader(
+                    title = stringResource(R.string.map_management_downloaded_title),
+                    modifier = Modifier.testTag("SectionHeader_DownloadedMaps")
+                )
             }
             items(downloadedMaps) { info ->
                 val downloadStatus = if (info.status is DownloadedMapStatus.UpdateAvailable) {
                     downloadingStatus[info.status.remoteMapFile.url]
                 } else null
 
-                DownloadedMapItem(
-                    info = info,
-                    downloadStatus = downloadStatus,
-                    onDeleteClick = { onDeleteClick(info.mapFile) },
-                    onUpdateClick = {
-                        if (info.status is DownloadedMapStatus.UpdateAvailable) {
-                            onDownloadClick(info.status.remoteMapFile)
-                        }
-                    },
-                    onCancelUpdateClick = {
-                        if (info.status is DownloadedMapStatus.UpdateAvailable) {
-                            onCancelDownloadClick(info.status.remoteMapFile.url)
-                        }
-                    }
-                )
+        DownloadedMapItem(
+            info = info,
+            downloadStatus = downloadStatus,
+            onDeleteClick = { onDeleteClick(info.mapFile) },
+            onUpdateClick = {
+                if (info.status is DownloadedMapStatus.UpdateAvailable) {
+                    onDownloadClick(info.status.remoteMapFile)
+                }
+            },
+            onCancelUpdateClick = {
+                if (info.status is DownloadedMapStatus.UpdateAvailable) {
+                    onCancelDownloadClick(info.status.remoteMapFile.url)
+                }
+            },
+            deleteLabel = stringResource(CoreR.string.action_delete)
+        )
             }
         }
 
@@ -162,7 +173,11 @@ fun MapList(
         allRemoteFolders.forEach { folder ->
             if (folder.maps.isNotEmpty()) {
                 item {
-                    SectionHeader(folder.name.ifEmpty { stringResource(R.string.map_management_root_folder) })
+                    val title = folder.name.ifEmpty { stringResource(R.string.map_management_root_folder) }
+                    SectionHeader(
+                        title = title,
+                        modifier = Modifier.testTag("SectionHeader_${folder.name.ifEmpty { "Root" }}")
+                    )
                 }
                 items(folder.maps) { remoteMap ->
                     RemoteMapItem(
@@ -178,9 +193,9 @@ fun MapList(
 }
 
 @Composable
-fun SectionHeader(title: String) {
+fun SectionHeader(title: String, modifier: Modifier = Modifier) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(16.dp)
     ) {
@@ -200,7 +215,8 @@ fun DownloadedMapItem(
     downloadStatus: DownloadStatus?,
     onDeleteClick: () -> Unit,
     onUpdateClick: () -> Unit,
-    onCancelUpdateClick: () -> Unit
+    onCancelUpdateClick: () -> Unit,
+    deleteLabel: String
 ) {
     Row(
         modifier = Modifier
@@ -266,10 +282,15 @@ fun DownloadedMapItem(
             }
         }
 
-        IconButton(onClick = onDeleteClick) {
+        IconButton(
+            onClick = onDeleteClick,
+            modifier = Modifier
+                .semantics { contentDescription = deleteLabel }
+                .testTag("DeleteMapButton")
+        ) {
             Icon(
                 imageVector = Icons.Default.Delete,
-                contentDescription = stringResource(CoreR.string.action_delete),
+                contentDescription = null,
                 tint = MaterialTheme.colorScheme.error
             )
         }
@@ -319,8 +340,17 @@ fun RemoteMapItem(
                 Icon(imageVector = Icons.Default.Close, contentDescription = "Cancel")
             }
         } else {
-            IconButton(onClick = onDownloadClick) {
-                Icon(imageVector = Icons.Default.Download, contentDescription = stringResource(R.string.map_management_action_download))
+            val downloadLabel = stringResource(R.string.map_management_action_download)
+            IconButton(
+                onClick = onDownloadClick,
+                modifier = Modifier
+                    .semantics { contentDescription = downloadLabel }
+                    .testTag("DownloadMapButton")
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Download,
+                    contentDescription = null
+                )
             }
         }
     }

@@ -80,11 +80,13 @@ class LocalFileMapRepositoryTest {
     }
 
     @Test
-    fun `deleteMap should remove file and trigger refresh`() = runTest {
+    fun `deleteMap should remove file, clean empty parent directories and trigger refresh`() = runTest {
         // Given
-        val mapFile = File(mapsDir, "spain.map")
+        val europeDir = File(mapsDir, "europe/spain")
+        europeDir.mkdirs()
+        val mapFile = File(europeDir, "madrid.map")
         mapFile.writeText("dummy content")
-        val domainMapFile = MapFile("spain.map", mapFile.absolutePath, 100L, 0L, "")
+        val domainMapFile = MapFile("madrid.map", mapFile.absolutePath, 100L, 0L, "europe/spain")
 
         val results = mutableListOf<List<MapFile>>()
         val job = launch {
@@ -93,15 +95,20 @@ class LocalFileMapRepositoryTest {
         runCurrent()
 
         // Initially contains the map
-        assertEquals(1, results.size)
         assertEquals(1, results[0].size)
 
         // When deleted
         repository.deleteMap(domainMapFile)
         runCurrent()
 
-        // Then it should be deleted from disk and flow should emit again
+        // Then it should be deleted from disk
         assertFalse(mapFile.exists())
+        // And parent directories should be cleaned up
+        assertFalse(europeDir.exists())
+        assertFalse(File(mapsDir, "europe").exists())
+        assertTrue(mapsDir.exists()) // Root should remain
+
+        // And flow should emit again
         assertEquals(2, results.size)
         assertTrue(results[1].isEmpty())
 
@@ -109,20 +116,64 @@ class LocalFileMapRepositoryTest {
     }
 
     @Test
-    fun `getRemoteMaps should fetch regions omitting root folder`() = runTest {
+    fun `getRemoteMaps should fetch regions recursively and handle errors gracefully`() = runTest {
         val rootUrl = "https://ftp-stud.hs-esslingen.de/pub/Mirrors/download.mapsforge.org/maps/v5/"
         val europeUrl = "${rootUrl}europe/"
-        val rootFolder = RemoteMapFolder("v5", rootUrl, subFolders = listOf(RemoteMapFolder("europe", europeUrl)))
-        val europeFolder = RemoteMapFolder("europe", europeUrl, maps = listOf(RemoteMapFile("spain.map", "europe", "url", 100L, 1000L)))
+        val spainUrl = "${europeUrl}spain/"
+        val asiaUrl = "${rootUrl}asia/"
+
+        val rootFolder = RemoteMapFolder("v5", rootUrl, subFolders = listOf(
+            RemoteMapFolder("europe", europeUrl),
+            RemoteMapFolder("asia", asiaUrl)
+        ))
+        val europeFolder = RemoteMapFolder("europe", europeUrl, subFolders = listOf(
+            RemoteMapFolder("spain", spainUrl)
+        ))
+        val spainFolder = RemoteMapFolder("spain", spainUrl, maps = listOf(
+            RemoteMapFile("madrid.map", "europe/spain", "url1", 100L, 1000L)
+        ))
 
         coEvery { remoteDataSource.getRemoteMaps(rootUrl) } returns rootFolder
         coEvery { remoteDataSource.getRemoteMaps(europeUrl) } returns europeFolder
+        coEvery { remoteDataSource.getRemoteMaps(spainUrl) } returns spainFolder
+        coEvery { remoteDataSource.getRemoteMaps(asiaUrl) } throws Exception("Asia is down")
 
         val result = repository.getRemoteMaps().first()
 
-        assertEquals(1, result.size)
-        assertEquals("europe", result[0].name)
-        assertEquals(1, result[0].maps.size)
+        assertEquals(2, result.size)
+        val europe = result.find { it.name == "europe" }!!
+        val asia = result.find { it.name == "asia" }!!
+
+        // Europe should be fully enriched
+        assertEquals(1, europe.subFolders.size)
+        assertEquals("spain", europe.subFolders[0].name)
+        assertEquals(1, europe.subFolders[0].maps.size)
+
+        // Asia should remain as is due to error
+        assertTrue(asia.subFolders.isEmpty())
+        assertTrue(asia.maps.isEmpty())
+    }
+
+    @Test
+    fun `downloadMap should emit error status and NOT trigger refresh on failure`() = runTest {
+        val remoteMapFile = RemoteMapFile("error.map", "europe", "http://url", 100L, 1000L)
+        coEvery { remoteDataSource.downloadFile(any()) } throws Exception("Network timeout")
+
+        val localResults = mutableListOf<List<MapFile>>()
+        val localJob = launch {
+            repository.getLocalMaps().collect { localResults.add(it) }
+        }
+        runCurrent()
+
+        val downloadResults = repository.downloadMap(remoteMapFile).toList()
+
+        assertTrue(downloadResults.any { it is DownloadStatus.Error })
+        
+        runCurrent()
+        // Should NOT have emitted again
+        assertEquals(1, localResults.size)
+
+        localJob.cancel()
     }
 
     @Test

@@ -64,4 +64,10 @@
     <string name="settings_user_short_distance_title">Short distance threshold</string>
     <string name="settings_user_short_distance_helper">Highlights waypoints closer than this distance (meters).</string>
     <string name="settings_roadbook_restore_defaults">Restore roadbook defaults</string>
+
+    <string name="settings_map_zoom_title">Initial Zoom</string>
+    <string name="settings_map_zoom_helper">Default zoom level when opening the map.</string>
+    <string name="settings_map_tilt_title">Initial Tilt (degrees)</string>
+    <string name="settings_map_tilt_helper">Default tilt angle for 3D perspective.</string>
+    <string name="settings_map_management_title">Downloaded Maps</string>
 </resources>

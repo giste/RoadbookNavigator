@@ -17,15 +17,23 @@
 
 package org.giste.roadbooknavigator.ui.dashboard
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.key.KeyEvent
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.longClick
 import androidx.compose.ui.test.onAllNodesWithContentDescription
+import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
@@ -40,6 +48,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.flow.MutableStateFlow
+import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 import org.giste.roadbooknavigator.features.odometer.domain.Odometer
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Coordinates
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Distance
@@ -68,18 +77,22 @@ class DashboardScreenTest {
             ),
             odometer = Odometer(1200.0, 500.0),
         )
+        val windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp))
 
         composeTestRule.setContent {
-            MainContent(
-                windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp)),
-                uiState = uiState,
-                listState = rememberLazyListState(),
-                onSetPartialClick = {},
-                onLongClickPartial = {},
-                onSettingsClick = {},
-                onWaypointVisible = { _, _ -> },
-                onFileSelected = {},
-            )
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                MainContent(
+                    windowSizeClass = windowSizeClass,
+                    uiState = uiState,
+                    listState = rememberLazyListState(),
+                    onSetPartialClick = {},
+                    onLongClickPartial = {},
+                    onSettingsClick = {},
+                    onWaypointVisible = { _, _ -> },
+                    onFileSelected = {},
+                    mapContent = { modifier -> Box(modifier) }
+                )
+            }
         }
 
         // Format expectations using default locale to match production behavior
@@ -99,18 +112,22 @@ class DashboardScreenTest {
             odometer = Odometer(0.0, 500.0),
         )
         val expectedPartial = String.format(Locale.getDefault(), "%.2f", 500.0 / 1000.0)
+        val windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp))
 
         composeTestRule.setContent {
-            MainContent(
-                windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp)),
-                uiState = uiState,
-                listState = rememberLazyListState(),
-                onSetPartialClick = {},
-                onLongClickPartial = { longClickTriggered = true },
-                onSettingsClick = {},
-                onWaypointVisible = { _, _ -> },
-                onFileSelected = {},
-            )
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                MainContent(
+                    windowSizeClass = windowSizeClass,
+                    uiState = uiState,
+                    listState = rememberLazyListState(),
+                    onSetPartialClick = {},
+                    onLongClickPartial = { longClickTriggered = true },
+                    onSettingsClick = {},
+                    onWaypointVisible = { _, _ -> },
+                    onFileSelected = {},
+                    mapContent = { modifier -> Box(modifier) }
+                )
+            }
         }
 
         composeTestRule.onNodeWithText(expectedPartial).performTouchInput {
@@ -128,22 +145,34 @@ class DashboardScreenTest {
             odometer = Odometer(0.0, 0.0),
         )
 
+        val mapTag = "MapSectionTag"
+        val mapDummyText = "MAP_CONTENT_DUMMY"
+        // Medium width and Tall height
+        val size = DpSize(700.dp, 1000.dp)
+        val windowSizeClass = WindowSizeClass.calculateFromSize(size)
+
         composeTestRule.setContent {
-            MainContent(
-                // Tablet Portrait: Medium Width (686dp), Expanded Height (1097dp)
-                windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(686.dp, 1097.dp)),
-                uiState = uiState,
-                listState = rememberLazyListState(),
-                onSetPartialClick = {},
-                onLongClickPartial = {},
-                onSettingsClick = {},
-                onWaypointVisible = { _, _ -> },
-                onFileSelected = {},
-            )
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                MainContent(
+                    windowSizeClass = windowSizeClass,
+                    uiState = uiState,
+                    listState = rememberLazyListState(),
+                    onSetPartialClick = {},
+                    onLongClickPartial = {},
+                    onSettingsClick = {},
+                    onWaypointVisible = { _, _ -> },
+                    onFileSelected = {},
+                    mapContent = { _ ->
+                        Text(text = mapDummyText, modifier = Modifier.testTag(mapTag))
+                    }
+                )
+            }
         }
 
-        val mapDescription = context.getString(RoadbookR.string.content_description_map)
-        composeTestRule.onNodeWithContentDescription(mapDescription).assertIsDisplayed()
+        // Verify map is present by searching for dummy text
+        composeTestRule.onNodeWithText(mapDummyText).assertExists()
+        // verify we are in PortraitLayout
+        composeTestRule.onNodeWithTag("PortraitLayout").assertExists()
     }
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
@@ -154,22 +183,34 @@ class DashboardScreenTest {
             odometer = Odometer(0.0, 0.0),
         )
 
+        val mapTag = "MapSectionTag"
+        val mapDummyText = "MAP_CONTENT_DUMMY"
+        // Phone Portrait size
+        val size = DpSize(411.dp, 891.dp)
+        val windowSizeClass = WindowSizeClass.calculateFromSize(size)
+
         composeTestRule.setContent {
-            MainContent(
-                // Phone Portrait: Compact Width (411dp), Expanded Height (891dp)
-                windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp)),
-                uiState = uiState,
-                listState = rememberLazyListState(),
-                onSetPartialClick = {},
-                onLongClickPartial = {},
-                onSettingsClick = {},
-                onWaypointVisible = { _, _ -> },
-                onFileSelected = {},
-            )
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                MainContent(
+                    windowSizeClass = windowSizeClass,
+                    uiState = uiState,
+                    listState = rememberLazyListState(),
+                    onSetPartialClick = {},
+                    onLongClickPartial = {},
+                    onSettingsClick = {},
+                    onWaypointVisible = { _, _ -> },
+                    onFileSelected = {},
+                    mapContent = { _ ->
+                        Text(text = mapDummyText, modifier = Modifier.testTag(mapTag))
+                    }
+                )
+            }
         }
 
-        val mapDescription = context.getString(RoadbookR.string.content_description_map)
-        composeTestRule.onAllNodesWithContentDescription(mapDescription).assertCountEquals(0)
+        // Verify map is NOT present
+        composeTestRule.onAllNodesWithText(mapDummyText).assertCountEquals(0)
+        // Verify we are in CompactPortraitLayout
+        composeTestRule.onNodeWithTag("CompactPortraitLayout").assertExists()
     }
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
@@ -178,13 +219,17 @@ class DashboardScreenTest {
         val viewModel: DashboardViewModel = mockk(relaxed = true)
         val uiStateFlow = MutableStateFlow(DashboardUiState())
         every { viewModel.uiState } returns uiStateFlow
+        val windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp))
 
         composeTestRule.setContent {
-            DashboardContent(
-                windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp)),
-                onSettingsClick = {},
-                viewModel = viewModel
-            )
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                DashboardContent(
+                    windowSizeClass = windowSizeClass,
+                    onSettingsClick = {},
+                    viewModel = viewModel,
+                    mapContent = { Box(it) }
+                )
+            }
         }
 
         // Focus the main screen to receive key events
@@ -208,13 +253,17 @@ class DashboardScreenTest {
         val viewModel: DashboardViewModel = mockk(relaxed = true)
         val uiStateFlow = MutableStateFlow(DashboardUiState())
         every { viewModel.uiState } returns uiStateFlow
+        val windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp))
 
         composeTestRule.setContent {
-            DashboardContent(
-                windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp)),
-                onSettingsClick = {},
-                viewModel = viewModel
-            )
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                DashboardContent(
+                    windowSizeClass = windowSizeClass,
+                    onSettingsClick = {},
+                    viewModel = viewModel,
+                    mapContent = { Box(it) }
+                )
+            }
         }
 
         composeTestRule.onNodeWithTag("MainScreen").performClick()
@@ -237,13 +286,17 @@ class DashboardScreenTest {
         val viewModel: DashboardViewModel = mockk(relaxed = true)
         val uiStateFlow = MutableStateFlow(DashboardUiState())
         every { viewModel.uiState } returns uiStateFlow
+        val windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp))
 
         composeTestRule.setContent {
-            DashboardContent(
-                windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp)),
-                onSettingsClick = {},
-                viewModel = viewModel
-            )
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                DashboardContent(
+                    windowSizeClass = windowSizeClass,
+                    onSettingsClick = {},
+                    viewModel = viewModel,
+                    mapContent = { Box(it) }
+                )
+            }
         }
 
         composeTestRule.onNodeWithTag("MainScreen").performClick()
@@ -266,13 +319,17 @@ class DashboardScreenTest {
         val viewModel: DashboardViewModel = mockk(relaxed = true)
         val uiStateFlow = MutableStateFlow(DashboardUiState())
         every { viewModel.uiState } returns uiStateFlow
+        val windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp))
 
         composeTestRule.setContent {
-            DashboardContent(
-                windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp)),
-                onSettingsClick = {},
-                viewModel = viewModel
-            )
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                DashboardContent(
+                    windowSizeClass = windowSizeClass,
+                    onSettingsClick = {},
+                    viewModel = viewModel,
+                    mapContent = { Box(it) }
+                )
+            }
         }
 
         composeTestRule.onNodeWithTag("MainScreen").performClick()
@@ -297,13 +354,17 @@ class DashboardScreenTest {
             )
         )
         every { viewModel.uiState } returns uiStateFlow
+        val windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp))
 
         composeTestRule.setContent {
-            DashboardContent(
-                windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp)),
-                onSettingsClick = {},
-                viewModel = viewModel
-            )
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                DashboardContent(
+                    windowSizeClass = windowSizeClass,
+                    onSettingsClick = {},
+                    viewModel = viewModel,
+                    mapContent = { Box(it) }
+                )
+            }
         }
 
         val expectedMessage = context.getString(RoadbookR.string.main_no_route)
@@ -328,13 +389,17 @@ class DashboardScreenTest {
             )
         )
         every { viewModel.uiState } returns uiStateFlow
+        val windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp))
 
         composeTestRule.setContent {
-            DashboardContent(
-                windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp)),
-                onSettingsClick = {},
-                viewModel = viewModel
-            )
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                DashboardContent(
+                    windowSizeClass = windowSizeClass,
+                    onSettingsClick = {},
+                    viewModel = viewModel,
+                    mapContent = { Box(it) }
+                )
+            }
         }
 
         // Initially waypoint 1 is displayed
@@ -377,13 +442,17 @@ class DashboardScreenTest {
             )
         )
         every { viewModel.uiState } returns uiStateFlow
+        val windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp))
 
         composeTestRule.setContent {
-            DashboardContent(
-                windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp)),
-                onSettingsClick = {},
-                viewModel = viewModel
-            )
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                DashboardContent(
+                    windowSizeClass = windowSizeClass,
+                    onSettingsClick = {},
+                    viewModel = viewModel,
+                    mapContent = { Box(it) }
+                )
+            }
         }
 
         // Initially waypoint 3 is displayed
@@ -424,13 +493,17 @@ class DashboardScreenTest {
             )
         )
         every { viewModel.uiState } returns uiStateFlow
+        val windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp))
 
         composeTestRule.setContent {
-            DashboardContent(
-                windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp)),
-                onSettingsClick = {},
-                viewModel = viewModel
-            )
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                DashboardContent(
+                    windowSizeClass = windowSizeClass,
+                    onSettingsClick = {},
+                    viewModel = viewModel,
+                    mapContent = { Box(it) }
+                )
+            }
         }
 
         // Manually scroll partially

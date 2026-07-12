@@ -101,6 +101,7 @@ import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 import org.giste.roadbooknavigator.features.location.domain.LocationSettings
 import org.giste.roadbooknavigator.features.location.domain.MinDistanceThreshold
 import org.giste.roadbooknavigator.features.location.domain.PollingIntervalThreshold
+import org.giste.roadbooknavigator.features.map.domain.model.MapSettings
 import org.giste.roadbooknavigator.features.odometer.domain.AccuracyThreshold
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettings
 import org.giste.roadbooknavigator.features.odometer.domain.SpeedThreshold
@@ -133,7 +134,10 @@ fun SettingsScreen(
         onLocationMinDistanceChange = viewModel::setLocationMinDistance,
         onRestoreOdometerDefaults = viewModel::restoreOdometerDefaults,
         onRemoteModelSelected = viewModel::setRemoteModel,
-        onCustomKeysChanged = viewModel::setCustomKeys
+        onCustomKeysChanged = viewModel::setCustomKeys,
+        onMapInitialZoomChange = viewModel::setMapInitialZoom,
+        onMapInitialTiltChange = viewModel::setMapInitialTilt,
+        mapManagementContent = { MapManagementScreen() }
     )
 }
 
@@ -154,6 +158,9 @@ fun SettingsContent(
     onRestoreOdometerDefaults: () -> Unit,
     onRemoteModelSelected: (RemoteModel) -> Unit,
     onCustomKeysChanged: (RemoteKeys) -> Unit,
+    onMapInitialZoomChange: (Int) -> Unit,
+    onMapInitialTiltChange: (Float) -> Unit,
+    mapManagementContent: @Composable () -> Unit,
 ) {
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
     val tabs = listOf(
@@ -218,10 +225,13 @@ fun SettingsContent(
                         when (selectedTab) {
                             0 -> UserTab(
                                 settings = settings,
+                                mapSettings = uiState.mapSettings,
                                 onThemeSelected = onThemeSelected,
                                 onOrientationSelected = onOrientationSelected,
                                 onFullScreenChange = onFullScreenChange,
-                                onShortDistanceThresholdChange = onShortDistanceThresholdChange
+                                onShortDistanceThresholdChange = onShortDistanceThresholdChange,
+                                onMapInitialZoomChange = onMapInitialZoomChange,
+                                onMapInitialTiltChange = onMapInitialTiltChange
                             )
 
                             1 -> RemoteTab(
@@ -241,7 +251,7 @@ fun SettingsContent(
                                 onRestoreOdometerDefaults = onRestoreOdometerDefaults
                             )
 
-                            3 -> MapTab()
+                            3 -> MapTab(mapManagementContent)
                         }
                     }
                 }
@@ -253,10 +263,13 @@ fun SettingsContent(
 @Composable
 fun UserTab(
     settings: AppSettings,
+    mapSettings: MapSettings,
     onThemeSelected: (AppTheme) -> Unit,
     onOrientationSelected: (AppOrientation) -> Unit,
     onFullScreenChange: (Boolean) -> Unit,
     onShortDistanceThresholdChange: (Long) -> Unit,
+    onMapInitialZoomChange: (Int) -> Unit,
+    onMapInitialTiltChange: (Float) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -305,6 +318,31 @@ fun UserTab(
             valueRange = ShortDistanceThreshold.MIN.toFloat()..ShortDistanceThreshold.MAX.toFloat(),
             label = "${settings.shortDistanceThreshold} m",
             testTag = "ShortDistanceSlider"
+        )
+
+        HorizontalDivider()
+
+        // Map Settings
+        SettingsSectionTitle(stringResource(R.string.settings_map_zoom_title))
+        SliderSettingItem(
+            helper = stringResource(R.string.settings_map_zoom_helper),
+            value = mapSettings.initialZoom.toFloat(),
+            onValueChange = { onMapInitialZoomChange(it.toInt()) },
+            valueRange = 1f..22f,
+            label = mapSettings.initialZoom.toString(),
+            testTag = "MapZoomSlider"
+        )
+
+        HorizontalDivider()
+
+        SettingsSectionTitle(stringResource(R.string.settings_map_tilt_title))
+        SliderSettingItem(
+            helper = stringResource(R.string.settings_map_tilt_helper),
+            value = mapSettings.initialTilt,
+            onValueChange = onMapInitialTiltChange,
+            valueRange = 0f..85f,
+            label = "${mapSettings.initialTilt.toInt()}°",
+            testTag = "MapTiltSlider"
         )
     }
 }
@@ -698,8 +736,8 @@ private fun keyCodeToName(keyCode: Int): String {
 }
 
 @Composable
-fun MapTab() {
-    MapManagementScreen()
+fun MapTab(mapManagementContent: @Composable () -> Unit) {
+    mapManagementContent()
 }
 
 @Composable
@@ -951,7 +989,7 @@ fun SettingsPreviewLight() {
     val windowSizeClass = WindowSizeClass.calculateFromSize(size)
     RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
         SettingsContent(
-            uiState = SettingsUiState.Success(AppSettings(), LocationSettings(), OdometerSettings()),
+            uiState = SettingsUiState.Success(AppSettings(), LocationSettings(), OdometerSettings(), MapSettings()),
             onBackClick = {},
             onThemeSelected = {},
             onOrientationSelected = {},
@@ -964,7 +1002,10 @@ fun SettingsPreviewLight() {
             onLocationMinDistanceChange = {},
             onRestoreOdometerDefaults = {},
             onRemoteModelSelected = {},
-            onCustomKeysChanged = {}
+            onCustomKeysChanged = {},
+            onMapInitialZoomChange = {},
+            onMapInitialTiltChange = {},
+            mapManagementContent = {}
         )
     }
 }
@@ -982,7 +1023,7 @@ fun SettingsPreviewDark() {
     val windowSizeClass = WindowSizeClass.calculateFromSize(size)
     RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
         SettingsContent(
-            uiState = SettingsUiState.Success(AppSettings(), LocationSettings(), OdometerSettings()),
+            uiState = SettingsUiState.Success(AppSettings(), LocationSettings(), OdometerSettings(), MapSettings()),
             onBackClick = {},
             onThemeSelected = {},
             onOrientationSelected = {},
@@ -995,7 +1036,10 @@ fun SettingsPreviewDark() {
             onLocationMinDistanceChange = {},
             onRestoreOdometerDefaults = {},
             onRemoteModelSelected = {},
-            onCustomKeysChanged = {}
+            onCustomKeysChanged = {},
+            onMapInitialZoomChange = {},
+            onMapInitialTiltChange = {},
+            mapManagementContent = {}
         )
     }
 }
@@ -1012,7 +1056,7 @@ fun SettingsPreviewTablet() {
     val windowSizeClass = WindowSizeClass.calculateFromSize(size)
     RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
         SettingsContent(
-            uiState = SettingsUiState.Success(AppSettings(), LocationSettings(), OdometerSettings()),
+            uiState = SettingsUiState.Success(AppSettings(), LocationSettings(), OdometerSettings(), MapSettings()),
             onBackClick = {},
             onThemeSelected = {},
             onOrientationSelected = {},
@@ -1025,7 +1069,10 @@ fun SettingsPreviewTablet() {
             onLocationMinDistanceChange = {},
             onRestoreOdometerDefaults = {},
             onRemoteModelSelected = {},
-            onCustomKeysChanged = {}
+            onCustomKeysChanged = {},
+            onMapInitialZoomChange = {},
+            onMapInitialTiltChange = {},
+            mapManagementContent = {}
         )
     }
 }

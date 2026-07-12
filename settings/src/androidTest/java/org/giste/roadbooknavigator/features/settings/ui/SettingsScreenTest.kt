@@ -17,6 +17,7 @@
 
 package org.giste.roadbooknavigator.features.settings.ui
 
+import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.ui.test.assertIsDisplayed
@@ -32,6 +33,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import org.giste.roadbooknavigator.features.settings.R
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 import org.giste.roadbooknavigator.features.location.domain.LocationSettings
+import org.giste.roadbooknavigator.features.map.domain.model.MapSettings
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettings
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
@@ -56,7 +58,7 @@ class SettingsScreenTest {
         composeTestRule.setContent {
             RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
                 SettingsContent(
-                    uiState = SettingsUiState.Success(AppSettings(), LocationSettings(), OdometerSettings()),
+                    uiState = SettingsUiState.Success(AppSettings(), LocationSettings(), OdometerSettings(), MapSettings()),
                     onBackClick = {},
                     onThemeSelected = {},
                     onOrientationSelected = {},
@@ -69,7 +71,10 @@ class SettingsScreenTest {
                     onLocationMinDistanceChange = {},
                     onRestoreOdometerDefaults = {},
                     onRemoteModelSelected = {},
-                    onCustomKeysChanged = {}
+                    onCustomKeysChanged = {},
+                    onMapInitialZoomChange = {},
+                    onMapInitialTiltChange = {},
+                    mapManagementContent = { Text("Map Management Content") }
                 )
             }
         }
@@ -87,7 +92,7 @@ class SettingsScreenTest {
 
         // Switch to Maps tab
         composeTestRule.onNodeWithTag("SettingsTab_3").performClick()
-        composeTestRule.onNodeWithText("Map Management - Coming Soon").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Map Management Content").assertIsDisplayed()
     }
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
@@ -97,7 +102,7 @@ class SettingsScreenTest {
         composeTestRule.setContent {
             RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
                 SettingsContent(
-                    uiState = SettingsUiState.Success(AppSettings(theme = AppTheme.LIGHT), LocationSettings(), OdometerSettings()),
+                    uiState = SettingsUiState.Success(AppSettings(theme = AppTheme.LIGHT), LocationSettings(), OdometerSettings(), MapSettings()),
                     onBackClick = {},
                     onThemeSelected = { selectedTheme = it },
                     onOrientationSelected = {},
@@ -110,7 +115,10 @@ class SettingsScreenTest {
                     onLocationMinDistanceChange = {},
                     onRestoreOdometerDefaults = {},
                     onRemoteModelSelected = {},
-                    onCustomKeysChanged = {}
+                    onCustomKeysChanged = {},
+                    onMapInitialZoomChange = {},
+                    onMapInitialTiltChange = {},
+                    mapManagementContent = {}
                 )
             }
         }
@@ -129,7 +137,7 @@ class SettingsScreenTest {
         composeTestRule.setContent {
             RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
                 SettingsContent(
-                    uiState = SettingsUiState.Success(AppSettings(), LocationSettings(), OdometerSettings()),
+                    uiState = SettingsUiState.Success(AppSettings(), LocationSettings(), OdometerSettings(), MapSettings()),
                     onBackClick = { backClicked = true },
                     onThemeSelected = {},
                     onOrientationSelected = {},
@@ -142,7 +150,10 @@ class SettingsScreenTest {
                     onLocationMinDistanceChange = {},
                     onRestoreOdometerDefaults = {},
                     onRemoteModelSelected = {},
-                    onCustomKeysChanged = {}
+                    onCustomKeysChanged = {},
+                    onMapInitialZoomChange = {},
+                    onMapInitialTiltChange = {},
+                    mapManagementContent = {}
                 )
             }
         }
@@ -161,7 +172,8 @@ class SettingsScreenTest {
                     uiState = SettingsUiState.Success(
                         AppSettings(),
                         LocationSettings(),
-                        OdometerSettings()
+                        OdometerSettings(),
+                        MapSettings()
                     ),
                     onBackClick = {},
                     onThemeSelected = {},
@@ -175,7 +187,10 @@ class SettingsScreenTest {
                     onLocationMinDistanceChange = {},
                     onRestoreOdometerDefaults = { restoreClicked = true },
                     onRemoteModelSelected = {},
-                    onCustomKeysChanged = {}
+                    onCustomKeysChanged = {},
+                    onMapInitialZoomChange = {},
+                    onMapInitialTiltChange = {},
+                    mapManagementContent = {}
                 )
             }
         }
@@ -197,7 +212,7 @@ class SettingsScreenTest {
         composeTestRule.setContent {
             RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
                 SettingsContent(
-                    uiState = SettingsUiState.Success(AppSettings(), LocationSettings(), OdometerSettings()),
+                    uiState = SettingsUiState.Success(AppSettings(), LocationSettings(), OdometerSettings(), MapSettings()),
                     onBackClick = {},
                     onThemeSelected = {},
                     onOrientationSelected = { selectedOrientation = it },
@@ -210,7 +225,10 @@ class SettingsScreenTest {
                     onLocationMinDistanceChange = {},
                     onRestoreOdometerDefaults = {},
                     onRemoteModelSelected = {},
-                    onCustomKeysChanged = {}
+                    onCustomKeysChanged = {},
+                    onMapInitialZoomChange = {},
+                    onMapInitialTiltChange = {},
+                    mapManagementContent = {}
                 )
             }
         }
@@ -229,7 +247,7 @@ class SettingsScreenTest {
         composeTestRule.setContent {
             RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
                 SettingsContent(
-                    uiState = SettingsUiState.Success(AppSettings(fullScreen = false), LocationSettings(), OdometerSettings()),
+                    uiState = SettingsUiState.Success(AppSettings(fullScreen = false), LocationSettings(), OdometerSettings(), MapSettings()),
                     onBackClick = {},
                     onThemeSelected = {},
                     onOrientationSelected = {},
@@ -242,7 +260,10 @@ class SettingsScreenTest {
                     onLocationMinDistanceChange = {},
                     onRestoreOdometerDefaults = {},
                     onRemoteModelSelected = {},
-                    onCustomKeysChanged = {}
+                    onCustomKeysChanged = {},
+                    onMapInitialZoomChange = {},
+                    onMapInitialTiltChange = {},
+                    mapManagementContent = {}
                 )
             }
         }
@@ -260,7 +281,7 @@ class SettingsScreenTest {
         composeTestRule.setContent {
             RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
                 SettingsContent(
-                    uiState = SettingsUiState.Success(AppSettings(shortDistanceThreshold = 100L), LocationSettings(), OdometerSettings()),
+                    uiState = SettingsUiState.Success(AppSettings(shortDistanceThreshold = 100L), LocationSettings(), OdometerSettings(), MapSettings()),
                     onBackClick = {},
                     onThemeSelected = {},
                     onOrientationSelected = {},
@@ -273,7 +294,10 @@ class SettingsScreenTest {
                     onLocationMinDistanceChange = {},
                     onRestoreOdometerDefaults = {},
                     onRemoteModelSelected = {},
-                    onCustomKeysChanged = {}
+                    onCustomKeysChanged = {},
+                    onMapInitialZoomChange = {},
+                    onMapInitialTiltChange = {},
+                    mapManagementContent = {}
                 )
             }
         }
@@ -294,7 +318,7 @@ class SettingsScreenTest {
         composeTestRule.setContent {
             RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
                 SettingsContent(
-                    uiState = SettingsUiState.Success(locationSettings = LocationSettings(pollingInterval = 500L), odometerSettings = OdometerSettings()),
+                    uiState = SettingsUiState.Success(locationSettings = LocationSettings(pollingInterval = 500L), odometerSettings = OdometerSettings(), mapSettings = MapSettings()),
                     onBackClick = {},
                     onThemeSelected = {},
                     onOrientationSelected = {},
@@ -307,7 +331,10 @@ class SettingsScreenTest {
                     onLocationMinDistanceChange = {},
                     onRestoreOdometerDefaults = {},
                     onRemoteModelSelected = {},
-                    onCustomKeysChanged = {}
+                    onCustomKeysChanged = {},
+                    onMapInitialZoomChange = {},
+                    onMapInitialTiltChange = {},
+                    mapManagementContent = {}
                 )
             }
         }
@@ -332,7 +359,7 @@ class SettingsScreenTest {
         composeTestRule.setContent {
             RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
                 SettingsContent(
-                    uiState = SettingsUiState.Success(appSettings = AppSettings(), locationSettings = LocationSettings(), odometerSettings = OdometerSettings(speedThreshold = 0.5f)),
+                    uiState = SettingsUiState.Success(appSettings = AppSettings(), locationSettings = LocationSettings(), odometerSettings = OdometerSettings(speedThreshold = 0.5f), mapSettings = MapSettings()),
                     onBackClick = {},
                     onThemeSelected = {},
                     onOrientationSelected = {},
@@ -345,7 +372,10 @@ class SettingsScreenTest {
                     onLocationMinDistanceChange = {},
                     onRestoreOdometerDefaults = {},
                     onRemoteModelSelected = {},
-                    onCustomKeysChanged = {}
+                    onCustomKeysChanged = {},
+                    onMapInitialZoomChange = {},
+                    onMapInitialTiltChange = {},
+                    mapManagementContent = {}
                 )
             }
         }
@@ -370,7 +400,7 @@ class SettingsScreenTest {
         composeTestRule.setContent {
             RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
                 SettingsContent(
-                    uiState = SettingsUiState.Success(appSettings = AppSettings(), locationSettings = LocationSettings(), odometerSettings = OdometerSettings(minAccuracy = 10.0f)),
+                    uiState = SettingsUiState.Success(appSettings = AppSettings(), locationSettings = LocationSettings(), odometerSettings = OdometerSettings(minAccuracy = 10.0f), mapSettings = MapSettings()),
                     onBackClick = {},
                     onThemeSelected = {},
                     onOrientationSelected = {},
@@ -383,7 +413,10 @@ class SettingsScreenTest {
                     onLocationMinDistanceChange = {},
                     onRestoreOdometerDefaults = {},
                     onRemoteModelSelected = {},
-                    onCustomKeysChanged = {}
+                    onCustomKeysChanged = {},
+                    onMapInitialZoomChange = {},
+                    onMapInitialTiltChange = {},
+                    mapManagementContent = {}
                 )
             }
         }
@@ -408,7 +441,7 @@ class SettingsScreenTest {
         composeTestRule.setContent {
             RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
                 SettingsContent(
-                    uiState = SettingsUiState.Success(appSettings = AppSettings(), locationSettings = LocationSettings(), odometerSettings = OdometerSettings(minVerticalAccuracy = 5.0f)),
+                    uiState = SettingsUiState.Success(appSettings = AppSettings(), locationSettings = LocationSettings(), odometerSettings = OdometerSettings(minVerticalAccuracy = 5.0f), mapSettings = MapSettings()),
                     onBackClick = {},
                     onThemeSelected = {},
                     onOrientationSelected = {},
@@ -421,7 +454,10 @@ class SettingsScreenTest {
                     onLocationMinDistanceChange = {},
                     onRestoreOdometerDefaults = {},
                     onRemoteModelSelected = {},
-                    onCustomKeysChanged = {}
+                    onCustomKeysChanged = {},
+                    onMapInitialZoomChange = {},
+                    onMapInitialTiltChange = {},
+                    mapManagementContent = {}
                 )
             }
         }
@@ -449,7 +485,8 @@ class SettingsScreenTest {
                     uiState = SettingsUiState.Success(
                         locationSettings = LocationSettings(
                             minDistance = 1.0f
-                        ), odometerSettings = OdometerSettings()
+                        ), odometerSettings = OdometerSettings(),
+                        mapSettings = MapSettings()
                     ),
                     onBackClick = {},
                     onThemeSelected = {},
@@ -463,7 +500,10 @@ class SettingsScreenTest {
                     onLocationMinDistanceChange = { newValue = it },
                     onRestoreOdometerDefaults = {},
                     onRemoteModelSelected = {},
-                    onCustomKeysChanged = {}
+                    onCustomKeysChanged = {},
+                    onMapInitialZoomChange = {},
+                    onMapInitialTiltChange = {},
+                    mapManagementContent = {}
                 )
             }
         }
@@ -489,7 +529,7 @@ class SettingsScreenTest {
         restorationTester.setContent {
             RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
                 SettingsContent(
-                    uiState = SettingsUiState.Success(AppSettings(), LocationSettings(), OdometerSettings()),
+                    uiState = SettingsUiState.Success(AppSettings(), LocationSettings(), OdometerSettings(), MapSettings()),
                     onBackClick = {},
                     onThemeSelected = {},
                     onOrientationSelected = {},
@@ -502,7 +542,10 @@ class SettingsScreenTest {
                     onLocationMinDistanceChange = {},
                     onRestoreOdometerDefaults = {},
                     onRemoteModelSelected = {},
-                    onCustomKeysChanged = {}
+                    onCustomKeysChanged = {},
+                    onMapInitialZoomChange = {},
+                    onMapInitialTiltChange = {},
+                    mapManagementContent = {}
                 )
             }
         }
@@ -525,7 +568,7 @@ class SettingsScreenTest {
         composeTestRule.setContent {
             RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
                 SettingsContent(
-                    uiState = SettingsUiState.Success(AppSettings(), LocationSettings(), OdometerSettings()),
+                    uiState = SettingsUiState.Success(AppSettings(), LocationSettings(), OdometerSettings(), MapSettings()),
                     onBackClick = {},
                     onThemeSelected = {},
                     onOrientationSelected = {},
@@ -538,7 +581,10 @@ class SettingsScreenTest {
                     onLocationMinDistanceChange = {},
                     onRestoreOdometerDefaults = {},
                     onRemoteModelSelected = { selectedModel = it },
-                    onCustomKeysChanged = {}
+                    onCustomKeysChanged = {},
+                    onMapInitialZoomChange = {},
+                    onMapInitialTiltChange = {},
+                    mapManagementContent = {}
                 )
             }
         }

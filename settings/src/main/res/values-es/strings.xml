@@ -64,4 +64,10 @@
     <string name="settings_user_short_distance_title">Umbral de distancia corta</string>
     <string name="settings_user_short_distance_helper">Resalta waypoints más cercanos a esta distancia (metros).</string>
     <string name="settings_roadbook_restore_defaults">Restablecer valores por defecto</string>
+
+    <string name="settings_map_zoom_title">Zoom inicial</string>
+    <string name="settings_map_zoom_helper">Nivel de zoom por defecto al abrir el mapa.</string>
+    <string name="settings_map_tilt_title">Inclinación inicial (grados)</string>
+    <string name="settings_map_tilt_helper">Ángulo de inclinación por defecto para la perspectiva 3D.</string>
+    <string name="settings_map_management_title">Mapas descargados</string>
 </resources>

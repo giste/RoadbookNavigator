@@ -35,6 +35,9 @@ import org.giste.roadbooknavigator.features.location.domain.usecase.GetLocationS
 import org.giste.roadbooknavigator.features.location.domain.usecase.RestoreLocationDefaultsUseCase
 import org.giste.roadbooknavigator.features.location.domain.usecase.UpdateLocationMinDistanceUseCase
 import org.giste.roadbooknavigator.features.location.domain.usecase.UpdateLocationPollingIntervalUseCase
+import org.giste.roadbooknavigator.features.map.domain.model.MapSettings
+import org.giste.roadbooknavigator.features.map.domain.usecase.GetMapSettingsUseCase
+import org.giste.roadbooknavigator.features.map.domain.usecase.SaveMapSettingsUseCase
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettings
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.GetOdometerSettingsUseCase
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.RestoreOdometerSettingsDefaultsUseCase
@@ -77,11 +80,14 @@ class SettingsViewModelTest {
     private val restoreLocationDefaultsUseCase: RestoreLocationDefaultsUseCase = mockk()
     private val updateRemoteModelUseCase: UpdateRemoteModelUseCase = mockk()
     private val updateCustomKeysUseCase: UpdateCustomKeysUseCase = mockk()
+    private val getMapSettingsUseCase: GetMapSettingsUseCase = mockk()
+    private val saveMapSettingsUseCase: SaveMapSettingsUseCase = mockk()
     private val logger: Logger = mockk(relaxed = true)
 
     private val settingsFlow = MutableStateFlow(AppSettings())
     private val locationSettingsFlow = MutableStateFlow(LocationSettings())
     private val odometerSettingsFlow = MutableStateFlow(OdometerSettings())
+    private val mapSettingsFlow = MutableStateFlow(MapSettings())
     private val testDispatcher = UnconfinedTestDispatcher()
 
     private lateinit var viewModel: SettingsViewModel
@@ -92,11 +98,13 @@ class SettingsViewModelTest {
         every { getSettingsUseCase() } returns settingsFlow
         every { getLocationsUseCase() } returns locationSettingsFlow
         every { getOdometerSettingsUseCase() } returns odometerSettingsFlow
+        every { getMapSettingsUseCase() } returns mapSettingsFlow
 
         viewModel = SettingsViewModel(
             getSettingsUseCase = getSettingsUseCase,
             getLocationSettingsUseCase = getLocationsUseCase,
             getOdometerSettingsUseCase = getOdometerSettingsUseCase,
+            getMapSettingsUseCase = getMapSettingsUseCase,
             updateThemeUseCase = updateThemeUseCase,
             updateOrientationUseCase = updateOrientationUseCase,
             updateFullScreenUseCase = updateFullScreenUseCase,
@@ -110,6 +118,7 @@ class SettingsViewModelTest {
             restoreLocationDefaultsUseCase = restoreLocationDefaultsUseCase,
             updateRemoteModelUseCase = updateRemoteModelUseCase,
             updateCustomKeysUseCase = updateCustomKeysUseCase,
+            saveMapSettingsUseCase = saveMapSettingsUseCase,
             logger = logger
         )
     }
@@ -123,7 +132,7 @@ class SettingsViewModelTest {
     fun `initial state should be Success with default settings`() = runTest {
         backgroundScope.launch(testDispatcher) { viewModel.uiState.collect {} }
 
-        assertEquals(SettingsUiState.Success(AppSettings(), LocationSettings(), OdometerSettings()), viewModel.uiState.value)
+        assertEquals(SettingsUiState.Success(AppSettings(), LocationSettings(), OdometerSettings(), MapSettings()), viewModel.uiState.value)
     }
 
     @Test
@@ -213,5 +222,25 @@ class SettingsViewModelTest {
         coEvery { updateCustomKeysUseCase(any()) } returns Result.success(Unit)
         viewModel.setCustomKeys(keys)
         coVerify { updateCustomKeysUseCase(keys) }
+    }
+
+    @Test
+    fun `setMapInitialZoom should call use case`() = runTest {
+        backgroundScope.launch(testDispatcher) { viewModel.uiState.collect {} }
+        coEvery { saveMapSettingsUseCase(any()) } returns Unit
+        
+        viewModel.setMapInitialZoom(10)
+        
+        coVerify { saveMapSettingsUseCase(MapSettings(initialZoom = 10)) }
+    }
+
+    @Test
+    fun `setMapInitialTilt should call use case`() = runTest {
+        backgroundScope.launch(testDispatcher) { viewModel.uiState.collect {} }
+        coEvery { saveMapSettingsUseCase(any()) } returns Unit
+        
+        viewModel.setMapInitialTilt(45f)
+        
+        coVerify { saveMapSettingsUseCase(MapSettings(initialTilt = 45f)) }
     }
 }

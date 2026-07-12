@@ -18,6 +18,7 @@
 package org.giste.roadbooknavigator.ui.dashboard
 
 import android.content.res.Configuration
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Box
@@ -92,7 +93,8 @@ fun DashboardScreen(
     DashboardContent(
         windowSizeClass = windowSizeClass,
         onSettingsClick = onSettingsClick,
-        viewModel = viewModel
+        viewModel = viewModel,
+        mapContent = { modifier -> MapScreen(modifier = modifier) }
     )
 }
 
@@ -100,7 +102,8 @@ fun DashboardScreen(
 fun DashboardContent(
     windowSizeClass: WindowSizeClass,
     onSettingsClick: () -> Unit,
-    viewModel: DashboardViewModel
+    viewModel: DashboardViewModel,
+    mapContent: @Composable (Modifier) -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val coroutineScope = rememberCoroutineScope()
@@ -201,6 +204,7 @@ fun DashboardContent(
             onSettingsClick = onSettingsClick,
             onWaypointVisible = { index, offset -> viewModel.onWaypointVisible(index, offset) },
             onFileSelected = { viewModel.importRoute(it) },
+            mapContent = mapContent
         )
 
         if (uiState.showSetPartialDialog) {
@@ -232,12 +236,21 @@ fun MainContent(
     onSettingsClick: () -> Unit,
     onWaypointVisible: (Int, Int) -> Unit,
     onFileSelected: (InputStream) -> Unit,
+    mapContent: @Composable (Modifier) -> Unit,
 ) {
     val configuration = LocalConfiguration.current
-    val locale = configuration.locales[0]
+    val locale = if (configuration.locales.size() > 0) configuration.locales[0] else java.util.Locale.getDefault()
 
-    val totalDistanceStr = String.format(locale, "%.1f", uiState.odometer.total / 1000.0)
-    val partialDistanceStr = String.format(locale, "%.2f", uiState.odometer.partial / 1000.0)
+    val totalDistanceStr = try {
+        String.format(locale, "%.1f", uiState.odometer.total / 1000.0)
+    } catch (e: Exception) {
+        "0.0"
+    }
+    val partialDistanceStr = try {
+        String.format(locale, "%.2f", uiState.odometer.partial / 1000.0)
+    } catch (e: Exception) {
+        "0.00"
+    }
 
     val widthSizeClass = windowSizeClass.widthSizeClass
     val heightSizeClass = windowSizeClass.heightSizeClass
@@ -266,6 +279,8 @@ fun MainContent(
                     onSettingsClick = onSettingsClick,
                     onWaypointVisible = onWaypointVisible,
                     onFileSelected = onFileSelected,
+                    mapContent = mapContent,
+                    modifier = Modifier.testTag("CompactLandscapeLayout")
                 )
             }
 
@@ -281,6 +296,8 @@ fun MainContent(
                     onSettingsClick = onSettingsClick,
                     onWaypointVisible = onWaypointVisible,
                     onFileSelected = onFileSelected,
+                    mapContent = mapContent,
+                    modifier = Modifier.testTag("ExpandedLandscapeLayout")
                 )
             }
 
@@ -296,6 +313,8 @@ fun MainContent(
                     onSettingsClick = onSettingsClick,
                     onWaypointVisible = onWaypointVisible,
                     onFileSelected = onFileSelected,
+                    mapContent = mapContent,
+                    modifier = Modifier.testTag("PortraitLayout")
                 )
             }
 
@@ -311,6 +330,8 @@ fun MainContent(
                     onSettingsClick = onSettingsClick,
                     onWaypointVisible = onWaypointVisible,
                     onFileSelected = onFileSelected,
+                    mapContent = mapContent,
+                    modifier = Modifier.testTag("CompactPortraitLayout")
                 )
             }
         }
@@ -330,13 +351,16 @@ fun ExpandedLandscapeLayout(
     onSettingsClick: () -> Unit,
     onWaypointVisible: (Int, Int) -> Unit,
     onFileSelected: (InputStream) -> Unit,
+    mapContent: @Composable (Modifier) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    Row(modifier = Modifier.fillMaxSize()) {
+    Row(modifier = modifier.fillMaxSize()) {
         LandscapeDistanceSection(
             totalDistance = totalDistance,
             partialDistance = partialDistance,
             onLongClickPartial = onLongClickPartial,
             onSettingsClick = onSettingsClick,
+            mapContent = mapContent,
             modifier = Modifier.weight(2f)
         )
         RoadbookSection(
@@ -361,13 +385,16 @@ fun CompactLandscapeLayout(
     onSettingsClick: () -> Unit,
     onWaypointVisible: (Int, Int) -> Unit,
     onFileSelected: (InputStream) -> Unit,
+    mapContent: @Composable (Modifier) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    Row(modifier = Modifier.fillMaxSize()) {
+    Row(modifier = modifier.fillMaxSize()) {
         LandscapeDistanceSection(
             totalDistance = totalDistance,
             partialDistance = partialDistance,
             onLongClickPartial = onLongClickPartial,
             onSettingsClick = onSettingsClick,
+            mapContent = mapContent,
             modifier = Modifier.weight(2f)
         )
         RoadbookSection(
@@ -394,8 +421,10 @@ fun PortraitLayout(
     onSettingsClick: () -> Unit,
     onWaypointVisible: (Int, Int) -> Unit,
     onFileSelected: (InputStream) -> Unit,
+    mapContent: @Composable (Modifier) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = modifier.fillMaxSize()) {
         PortraitDistanceSection(
             totalDistance = totalDistance,
             partialDistance = partialDistance,
@@ -411,12 +440,7 @@ fun PortraitLayout(
             onWaypointVisible = onWaypointVisible,
             onFileSelected = onFileSelected,
         )
-        MapSection(
-            modifier = Modifier
-                .weight(2f)
-                .fillMaxHeight()
-        )
-
+        mapContent(Modifier.weight(2f))
     }
 }
 
@@ -431,8 +455,10 @@ fun CompactPortraitLayout(
     onSettingsClick: () -> Unit,
     onWaypointVisible: (Int, Int) -> Unit,
     onFileSelected: (InputStream) -> Unit,
+    mapContent: @Composable (Modifier) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = modifier.fillMaxSize()) {
         PortraitDistanceSection(
             totalDistance = totalDistance,
             partialDistance = partialDistance,
@@ -459,6 +485,7 @@ fun LandscapeDistanceSection(
     partialDistance: String,
     onLongClickPartial: () -> Unit,
     onSettingsClick: () -> Unit,
+    mapContent: @Composable (Modifier) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -495,7 +522,7 @@ fun LandscapeDistanceSection(
         )
 
         // Map Area (Bottom) - Fills ALL remaining space
-        MapSection(modifier = Modifier.weight(1f))
+        mapContent(Modifier.weight(1f))
     }
 }
 
@@ -542,7 +569,7 @@ fun PortraitDistanceSection(
 }
 
 @Composable
-fun MapSection(
+private fun MapSection(
     modifier: Modifier = Modifier,
 ) {
     MapScreen(modifier = modifier)
@@ -623,6 +650,7 @@ fun TabletLandPreview() {
             onSettingsClick = {},
             onWaypointVisible = { _, _ -> },
             onFileSelected = {},
+            mapContent = { modifier -> Box(modifier.background(MaterialTheme.colorScheme.tertiary)) }
         )
     }
 }
@@ -652,6 +680,7 @@ fun TabletPortPreview() {
             onSettingsClick = {},
             onWaypointVisible = { _, _ -> },
             onFileSelected = {},
+            mapContent = { modifier -> Box(modifier.background(MaterialTheme.colorScheme.tertiary)) }
         )
     }
 }
@@ -681,6 +710,7 @@ fun PhonePortPreview() {
             onSettingsClick = {},
             onWaypointVisible = { _, _ -> },
             onFileSelected = {},
+            mapContent = { modifier -> Box(modifier.background(MaterialTheme.colorScheme.tertiary)) }
         )
     }
 }
@@ -710,6 +740,7 @@ fun PhoneLandPreview() {
             onSettingsClick = {},
             onWaypointVisible = { _, _ -> },
             onFileSelected = {},
+            mapContent = { modifier -> Box(modifier.background(MaterialTheme.colorScheme.tertiary)) }
         )
     }
 }

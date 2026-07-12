@@ -59,8 +59,8 @@ class DataStoreMapSettingsRepositoryTest {
     @Test
     fun `getMapSettings should return default settings when empty`() = runTest {
         val settings = repository.getMapSettings().first()
-        assertEquals(15, settings.initialZoom)
-        assertEquals(0f, settings.initialTilt)
+        assertEquals(MapSettings.DEFAULT_ZOOM, settings.initialZoom)
+        assertEquals(MapSettings.DEFAULT_TILT, settings.initialTilt)
     }
 
     @Test

@@ -30,6 +30,7 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.location.domain.UserLocation
 import org.giste.roadbooknavigator.features.location.domain.usecase.ObserveLocationUseCase
 import org.giste.roadbooknavigator.features.map.domain.model.MapFile
@@ -48,6 +49,7 @@ class MapViewModelTest {
     private val getLocalMapsUseCase: GetLocalMapsUseCase = mockk()
     private val getMapSettingsUseCase: GetMapSettingsUseCase = mockk()
     private val observeLocationUseCase: ObserveLocationUseCase = mockk()
+    private val logger: Logger = mockk(relaxed = true)
 
     private val testDispatcher = UnconfinedTestDispatcher()
 
@@ -74,7 +76,8 @@ class MapViewModelTest {
         val viewModel = MapViewModel(
             getLocalMapsUseCase,
             getMapSettingsUseCase,
-            observeLocationUseCase
+            observeLocationUseCase,
+            logger,
         )
 
         val state = viewModel.uiState.first { it.localMaps.isNotEmpty() }
@@ -100,7 +103,8 @@ class MapViewModelTest {
         val viewModel = MapViewModel(
             getLocalMapsUseCase,
             getMapSettingsUseCase,
-            observeLocationUseCase
+            observeLocationUseCase,
+            logger,
         )
 
         val job = launch(UnconfinedTestDispatcher(testScheduler)) {
@@ -126,7 +130,8 @@ class MapViewModelTest {
         val viewModel = MapViewModel(
             getLocalMapsUseCase,
             getMapSettingsUseCase,
-            observeLocationUseCase
+            observeLocationUseCase,
+            logger,
         )
 
         val state = viewModel.uiState.first { it.currentLocation != null }
@@ -144,7 +149,8 @@ class MapViewModelTest {
         val viewModel = MapViewModel(
             getLocalMapsUseCase,
             getMapSettingsUseCase,
-            observeLocationUseCase
+            observeLocationUseCase,
+            logger,
         )
         
         assertNull(viewModel.uiState.value.currentLocation)

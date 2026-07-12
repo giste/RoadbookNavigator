@@ -74,11 +74,20 @@ class DistanceUtils @Inject constructor(
 
         return if (canUseAltitude) {
             val heightDistance = end.altitude - start.altitude
-            val distance3D = sqrt(horizontalDistance * horizontalDistance + heightDistance * heightDistance)
-            logger.d("DistanceUtils: Using 3D distance = %f (H=%f, V=%f)", distance3D, horizontalDistance, heightDistance)
+            val distance3D =
+                sqrt(horizontalDistance * horizontalDistance + heightDistance * heightDistance)
+            logger.d(
+                "DistanceUtils: Using 3D distance = %f (H=%f, V=%f)",
+                distance3D,
+                horizontalDistance,
+                heightDistance
+            )
             distance3D
         } else {
-            logger.v("DistanceUtils: Using 2D distance = %f (altitude accuracy insufficient)", horizontalDistance)
+            logger.v(
+                "DistanceUtils: Using 2D distance = %f (altitude accuracy insufficient)",
+                horizontalDistance
+            )
             horizontalDistance
         }
     }

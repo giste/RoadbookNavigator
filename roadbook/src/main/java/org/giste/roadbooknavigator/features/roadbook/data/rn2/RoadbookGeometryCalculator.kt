@@ -95,7 +95,8 @@ internal class RoadbookGeometryCalculator @Inject constructor(
             "Calculated relative exit point for wp %d: in=%f°, out=%f°",
             current.waypointId,
             Math.toDegrees(bearingIn),
-            Math.toDegrees(bearingOut))
+            Math.toDegrees(bearingOut)
+        )
         return exitPoint
     }
 

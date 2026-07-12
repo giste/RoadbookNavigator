@@ -35,8 +35,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import org.giste.roadbooknavigator.core.permission.ui.PermissionGate
-import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.usecase.GetSettingsUseCase
@@ -73,7 +73,8 @@ class MainActivity : ComponentActivity() {
 
             LaunchedEffect(settings.fullScreen) {
                 logger.d("MainActivity: Applying full screen setting: %b", settings.fullScreen)
-                val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
+                val windowInsetsController =
+                    WindowCompat.getInsetsController(window, window.decorView)
                 if (settings.fullScreen) {
                     windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
                     windowInsetsController.systemBarsBehavior =

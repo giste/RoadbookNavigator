@@ -45,7 +45,10 @@ class PermissionViewModel @Inject constructor(
             )
         }
         .onEach { state ->
-            logger.d("PermissionViewModel: PermissionUiState updated: allGranted=%s", state.allGranted)
+            logger.d(
+                "PermissionViewModel: PermissionUiState updated: allGranted=%s",
+                state.allGranted
+            )
         }
         .stateIn(
             scope = viewModelScope,
@@ -66,11 +69,13 @@ class PermissionViewModel @Inject constructor(
 data class PermissionUiState(
     val permissions: Map<org.giste.roadbooknavigator.core.permission.domain.AppPermission, PermissionState> = emptyMap()
 ) {
-    val allGranted: Boolean = permissions.isNotEmpty() && permissions.values.all { it is PermissionState.Granted }
+    val allGranted: Boolean =
+        permissions.isNotEmpty() && permissions.values.all { it is PermissionState.Granted }
 
     val deniedPermissions = permissions.filter { it.value != PermissionState.Granted }
 
-    val hasPermanentlyDenied = deniedPermissions.values.any { it is PermissionState.PermanentlyDenied }
+    val hasPermanentlyDenied =
+        deniedPermissions.values.any { it is PermissionState.PermanentlyDenied }
 
     val androidPermissionsToRequest: Array<String> = deniedPermissions.keys
         .mapNotNull { it.toAndroidPermission() }

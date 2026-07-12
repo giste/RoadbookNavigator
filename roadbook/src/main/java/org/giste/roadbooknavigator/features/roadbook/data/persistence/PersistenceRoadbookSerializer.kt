@@ -66,7 +66,10 @@ internal class PersistenceRoadbookSerializer @Inject constructor(
                 string = input.readBytes().decodeToString()
             )
         } catch (e: Exception) {
-            logger.e(e, "PersistenceRoadbookSerializer: Failed to read persistent roadbook, using default")
+            logger.e(
+                e,
+                "PersistenceRoadbookSerializer: Failed to read persistent roadbook, using default"
+            )
             defaultValue
         }
     }

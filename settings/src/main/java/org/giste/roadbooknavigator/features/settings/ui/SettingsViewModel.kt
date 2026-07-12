@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import org.giste.roadbooknavigator.core.settings.domain.AppTheme
 import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.location.domain.LocationSettings
 import org.giste.roadbooknavigator.features.location.domain.usecase.GetLocationSettingsUseCase
@@ -43,7 +44,6 @@ import org.giste.roadbooknavigator.features.odometer.domain.usecase.UpdateOdomet
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.UpdateOdometerSpeedThresholdUseCase
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
-import org.giste.roadbooknavigator.core.settings.domain.AppTheme
 import org.giste.roadbooknavigator.features.settings.domain.RemoteKeys
 import org.giste.roadbooknavigator.features.settings.domain.RemoteModel
 import org.giste.roadbooknavigator.features.settings.domain.usecase.GetSettingsUseCase
@@ -180,7 +180,8 @@ class SettingsViewModel @Inject constructor(
 
     fun setMapInitialZoom(zoom: Int) {
         logger.d("SettingsViewModel: setMapInitialZoom requested: %d", zoom)
-        val currentSettings = (uiState.value as? SettingsUiState.Success)?.mapSettings ?: MapSettings()
+        val currentSettings =
+            (uiState.value as? SettingsUiState.Success)?.mapSettings ?: MapSettings()
         viewModelScope.launch {
             saveMapSettingsUseCase(currentSettings.copy(initialZoom = zoom))
         }
@@ -188,7 +189,8 @@ class SettingsViewModel @Inject constructor(
 
     fun setMapInitialTilt(tilt: Float) {
         logger.d("SettingsViewModel: setMapInitialTilt requested: %f", tilt)
-        val currentSettings = (uiState.value as? SettingsUiState.Success)?.mapSettings ?: MapSettings()
+        val currentSettings =
+            (uiState.value as? SettingsUiState.Success)?.mapSettings ?: MapSettings()
         viewModelScope.launch {
             saveMapSettingsUseCase(currentSettings.copy(initialTilt = tilt))
         }

@@ -45,7 +45,11 @@ internal class Rn2Mapper @Inject constructor(
     }
 
     private fun mapToDomain(rn2RouteData: Rn2RouteData): Route {
-        logger.i("Mapping route: %s with %d waypoints", rn2RouteData.name, rn2RouteData.waypoints.size)
+        logger.i(
+            "Mapping route: %s with %d waypoints",
+            rn2RouteData.name,
+            rn2RouteData.waypoints.size
+        )
         return Route(
             name = rn2RouteData.name,
             description = rn2RouteData.description,

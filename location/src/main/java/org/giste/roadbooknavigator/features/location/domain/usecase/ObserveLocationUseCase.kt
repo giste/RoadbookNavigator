@@ -49,7 +49,11 @@ class ObserveLocationUseCase @Inject constructor(
                 )
             }
             .onEach { location ->
-                logger.v("ObserveLocationUseCase: New location received: lat=%f, lon=%f", location.latitude, location.longitude)
+                logger.v(
+                    "ObserveLocationUseCase: New location received: lat=%f, lon=%f",
+                    location.latitude,
+                    location.longitude
+                )
             }
     }
 }

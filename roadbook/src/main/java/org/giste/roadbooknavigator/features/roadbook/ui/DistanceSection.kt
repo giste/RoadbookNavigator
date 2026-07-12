@@ -61,7 +61,8 @@ internal fun DistanceSection(
             .testTag("WaypointDistanceInfo_${waypoint.number}")
             .combinedClickable(
                 onLongClick = {
-                    val valueToSet = if (waypoint.reset) 0.0 else waypoint.distance.meters.toDouble()
+                    val valueToSet =
+                        if (waypoint.reset) 0.0 else waypoint.distance.meters.toDouble()
                     onSetPartialClick(valueToSet)
                 },
                 onClick = {}

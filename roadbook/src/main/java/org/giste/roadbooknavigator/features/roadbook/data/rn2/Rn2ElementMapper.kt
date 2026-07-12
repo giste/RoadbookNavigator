@@ -87,7 +87,10 @@ internal class Rn2ElementMapper @Inject constructor(
                         nextWaypoint
                     )
                 } else {
-                    logger.v("No roadOut end and no next waypoint for waypoint %d, using default", currentWaypoint.waypointId)
+                    logger.v(
+                        "No roadOut end and no next waypoint for waypoint %d, using default",
+                        currentWaypoint.waypointId
+                    )
                     Point(0.0, -55.0) // Default if no next waypoint
                 }
 

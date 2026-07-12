@@ -24,8 +24,8 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.scan
 import org.giste.roadbooknavigator.core.util.Logger
-import org.giste.roadbooknavigator.features.location.domain.usecase.ObserveLocationUseCase
 import org.giste.roadbooknavigator.features.location.domain.UserLocation
+import org.giste.roadbooknavigator.features.location.domain.usecase.ObserveLocationUseCase
 import org.giste.roadbooknavigator.features.odometer.domain.DistanceUtils
 import org.giste.roadbooknavigator.features.odometer.domain.Odometer
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerRepository
@@ -69,7 +69,13 @@ class GetOdometerUseCase @Inject constructor(
             odometerRepository.odometer,
             processedLocations
         ) { odometer, _ -> odometer }
-            .onEach { logger.v("GetOdometerUseCase: New odometer state: total=%f, partial=%f", it.total, it.partial) }
+            .onEach {
+                logger.v(
+                    "GetOdometerUseCase: New odometer state: total=%f, partial=%f",
+                    it.total,
+                    it.partial
+                )
+            }
     }
 
     private suspend fun processLocation(
@@ -78,18 +84,30 @@ class GetOdometerUseCase @Inject constructor(
         settings: OdometerSettings
     ): UserLocation? {
         if (current.accuracy > settings.minAccuracy) {
-            logger.v("GetOdometerUseCase: Location ignored (poor accuracy: %f > %f)", current.accuracy, settings.minAccuracy)
+            logger.v(
+                "GetOdometerUseCase: Location ignored (poor accuracy: %f > %f)",
+                current.accuracy,
+                settings.minAccuracy
+            )
             return lastValid
         }
 
         if (lastValid == null) {
-            logger.d("GetOdometerUseCase: First valid location received: %f, %f", current.latitude, current.longitude)
+            logger.d(
+                "GetOdometerUseCase: First valid location received: %f, %f",
+                current.latitude,
+                current.longitude
+            )
             return current
         }
 
         // Ignore updates if the user is effectively stopped to avoid GPS jitter "drifting" the odometer
         if (current.speed < settings.speedThreshold) {
-            logger.v("GetOdometerUseCase: Location ignored (speed %f < threshold %f)", current.speed, settings.speedThreshold)
+            logger.v(
+                "GetOdometerUseCase: Location ignored (speed %f < threshold %f)",
+                current.speed,
+                settings.speedThreshold
+            )
             return lastValid
         }
 

@@ -28,5 +28,6 @@ sealed interface RoadbookUiState {
         val initialIndex: Int = 0,
         val initialOffset: Int = 0,
     ) : RoadbookUiState
+
     data class Error(val message: String) : RoadbookUiState
 }

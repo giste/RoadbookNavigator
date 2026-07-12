@@ -18,6 +18,7 @@
 package org.giste.roadbooknavigator.features.settings.ui
 
 import android.content.res.Configuration
+import android.view.KeyEvent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -27,7 +28,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
@@ -86,7 +86,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.nativeKeyCode
 import androidx.compose.ui.input.key.onPreviewKeyEvent
-import android.view.KeyEvent
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -95,24 +94,24 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import org.giste.roadbooknavigator.features.settings.R
-import org.giste.roadbooknavigator.core.R as CoreR
+import org.giste.roadbooknavigator.core.settings.domain.AppTheme
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 import org.giste.roadbooknavigator.features.location.domain.LocationSettings
 import org.giste.roadbooknavigator.features.location.domain.MinDistanceThreshold
 import org.giste.roadbooknavigator.features.location.domain.PollingIntervalThreshold
 import org.giste.roadbooknavigator.features.map.domain.model.MapSettings
+import org.giste.roadbooknavigator.features.map.ui.management.MapManagementScreen
 import org.giste.roadbooknavigator.features.odometer.domain.AccuracyThreshold
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettings
 import org.giste.roadbooknavigator.features.odometer.domain.SpeedThreshold
 import org.giste.roadbooknavigator.features.odometer.domain.VerticalAccuracyThreshold
-import org.giste.roadbooknavigator.features.map.ui.management.MapManagementScreen
+import org.giste.roadbooknavigator.features.settings.R
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
-import org.giste.roadbooknavigator.core.settings.domain.AppTheme
 import org.giste.roadbooknavigator.features.settings.domain.RemoteKeys
 import org.giste.roadbooknavigator.features.settings.domain.RemoteModel
 import org.giste.roadbooknavigator.features.settings.domain.ShortDistanceThreshold
+import org.giste.roadbooknavigator.core.R as CoreR
 
 @Composable
 fun SettingsScreen(
@@ -523,8 +522,18 @@ fun RemoteTab(
                 val newKeys = when (action) {
                     RemoteAction.ROADBOOK_UP -> currentKeys.copy(roadbookUp = listOf(keyCode))
                     RemoteAction.ROADBOOK_DOWN -> currentKeys.copy(roadbookDown = listOf(keyCode))
-                    RemoteAction.INCREASE_PARTIAL -> currentKeys.copy(increasePartial = listOf(keyCode))
-                    RemoteAction.DECREASE_PARTIAL -> currentKeys.copy(decreasePartial = listOf(keyCode))
+                    RemoteAction.INCREASE_PARTIAL -> currentKeys.copy(
+                        increasePartial = listOf(
+                            keyCode
+                        )
+                    )
+
+                    RemoteAction.DECREASE_PARTIAL -> currentKeys.copy(
+                        decreasePartial = listOf(
+                            keyCode
+                        )
+                    )
+
                     RemoteAction.RESET_PARTIAL -> currentKeys.copy(resetPartial = listOf(keyCode))
                 }
                 onKeysChanged(newKeys)
@@ -569,7 +578,10 @@ fun RemoteModelSelector(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(text = label, fontWeight = if (currentModel == model) FontWeight.Bold else FontWeight.Normal)
+                Text(
+                    text = label,
+                    fontWeight = if (currentModel == model) FontWeight.Bold else FontWeight.Normal
+                )
                 Icon(
                     imageVector = if (currentModel == model) Icons.Default.CheckCircle else Icons.Default.RadioButtonUnchecked,
                     contentDescription = null,
@@ -604,7 +616,9 @@ fun KeyMappingItem(
         Text(
             text = stringResource(action.labelRes),
             fontWeight = FontWeight.Medium,
-            color = if (enabled) Color.Unspecified else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+            color = if (enabled) Color.Unspecified else MaterialTheme.colorScheme.onSurface.copy(
+                alpha = 0.38f
+            )
         )
         Box(
             modifier = Modifier
@@ -657,13 +671,19 @@ fun KeyCaptureDialog(
                     style = MaterialTheme.typography.headlineSmall
                 )
                 Text(
-                    text = stringResource(R.string.settings_remote_capture_helper, stringResource(action.labelRes)),
+                    text = stringResource(
+                        R.string.settings_remote_capture_helper,
+                        stringResource(action.labelRes)
+                    ),
                     textAlign = TextAlign.Center
                 )
 
                 if (detectedKeyCode != -1) {
                     Text(
-                        text = stringResource(R.string.settings_remote_capture_detected, keyCodeToName(detectedKeyCode)),
+                        text = stringResource(
+                            R.string.settings_remote_capture_detected,
+                            keyCodeToName(detectedKeyCode)
+                        ),
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary
@@ -794,7 +814,7 @@ fun ThemePreviewCard(
     modifier: Modifier = Modifier
 ) {
     val borderColor = if (isSelected) MaterialTheme.colorScheme.primary
-        else MaterialTheme.colorScheme.outlineVariant
+    else MaterialTheme.colorScheme.outlineVariant
     val borderWidth = if (isSelected) 3.dp else 1.dp
 
     Card(
@@ -989,7 +1009,12 @@ fun SettingsPreviewLight() {
     val windowSizeClass = WindowSizeClass.calculateFromSize(size)
     RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
         SettingsContent(
-            uiState = SettingsUiState.Success(AppSettings(), LocationSettings(), OdometerSettings(), MapSettings()),
+            uiState = SettingsUiState.Success(
+                AppSettings(),
+                LocationSettings(),
+                OdometerSettings(),
+                MapSettings()
+            ),
             onBackClick = {},
             onThemeSelected = {},
             onOrientationSelected = {},
@@ -1023,7 +1048,12 @@ fun SettingsPreviewDark() {
     val windowSizeClass = WindowSizeClass.calculateFromSize(size)
     RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
         SettingsContent(
-            uiState = SettingsUiState.Success(AppSettings(), LocationSettings(), OdometerSettings(), MapSettings()),
+            uiState = SettingsUiState.Success(
+                AppSettings(),
+                LocationSettings(),
+                OdometerSettings(),
+                MapSettings()
+            ),
             onBackClick = {},
             onThemeSelected = {},
             onOrientationSelected = {},
@@ -1056,7 +1086,12 @@ fun SettingsPreviewTablet() {
     val windowSizeClass = WindowSizeClass.calculateFromSize(size)
     RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
         SettingsContent(
-            uiState = SettingsUiState.Success(AppSettings(), LocationSettings(), OdometerSettings(), MapSettings()),
+            uiState = SettingsUiState.Success(
+                AppSettings(),
+                LocationSettings(),
+                OdometerSettings(),
+                MapSettings()
+            ),
             onBackClick = {},
             onThemeSelected = {},
             onOrientationSelected = {},

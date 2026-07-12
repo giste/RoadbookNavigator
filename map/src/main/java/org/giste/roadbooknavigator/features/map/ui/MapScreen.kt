@@ -59,7 +59,7 @@ fun MapScreen(
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
-    
+
     val mapView = remember { MapView(context) }
 
     // Lifecycle management
@@ -78,7 +78,7 @@ fun MapScreen(
             lifecycle.removeObserver(observer)
         }
     }
-    
+
     Box(modifier = modifier.fillMaxSize()) {
         AndroidView(
             factory = {
@@ -120,7 +120,7 @@ fun MapScreen(
                 }
             }
         )
-        
+
         // Attribution
         Text(
             text = "Map data (c) OpenStreetMap contributors | VTM",

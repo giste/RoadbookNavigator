@@ -17,8 +17,8 @@
 
 package org.giste.roadbooknavigator.features.settings.domain.usecase
 
-import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.core.settings.domain.AppTheme
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
 import javax.inject.Inject
 

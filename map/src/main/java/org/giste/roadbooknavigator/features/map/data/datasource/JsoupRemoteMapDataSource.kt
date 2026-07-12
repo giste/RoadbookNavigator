@@ -23,9 +23,9 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.ResponseBody
 import org.giste.roadbooknavigator.core.di.IoDispatcher
-import org.jsoup.Jsoup
 import org.giste.roadbooknavigator.features.map.domain.model.RemoteMapFile
 import org.giste.roadbooknavigator.features.map.domain.model.RemoteMapFolder
+import org.jsoup.Jsoup
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -43,14 +43,14 @@ internal class JsoupRemoteMapDataSource @Inject constructor(
     override suspend fun getRemoteMaps(url: String): RemoteMapFolder = withContext(ioDispatcher) {
         val request = Request.Builder().url(url).build()
         val response = okHttpClient.newCall(request).execute()
-        
+
         if (!response.isSuccessful) throw IOException("Unexpected code $response")
-        
+
         val html = response.body.string()
         val doc = Jsoup.parse(html, url)
-        
+
         val folderName = url.removeSuffix("/").substringAfterLast("/")
-        
+
         val maps = mutableListOf<RemoteMapFile>()
         val subFolders = mutableListOf<RemoteMapFolder>()
 
@@ -61,7 +61,7 @@ internal class JsoupRemoteMapDataSource @Inject constructor(
                 val link = cells[1].select("a").first()
                 val name = link?.text() ?: ""
                 val href = link?.attr("abs:href") ?: ""
-                
+
                 if (name.isNotEmpty() && name != "Parent Directory") {
                     if (name.endsWith("/")) {
                         // It's a folder. We don't recurse here for performance, 
@@ -76,15 +76,15 @@ internal class JsoupRemoteMapDataSource @Inject constructor(
                         // [Icon] Name Last modified Size
                         val lastModStr = cells.getOrNull(2)?.text() ?: ""
                         val sizeStr = cells.getOrNull(3)?.text() ?: ""
-                        
+
                         val lastMod = try {
                             dateFormat.parse(lastModStr)?.time ?: 0L
                         } catch (_: Exception) {
                             0L
                         }
-                        
+
                         val size = parseSize(sizeStr)
-                        
+
                         val parentPath = url.substringAfter("v5/").removeSuffix("/")
 
                         maps.add(RemoteMapFile(name, parentPath, href, size, lastMod))
@@ -92,7 +92,7 @@ internal class JsoupRemoteMapDataSource @Inject constructor(
                 }
             }
         }
-        
+
         RemoteMapFolder(folderName, url, subFolders, maps)
     }
 
@@ -107,8 +107,12 @@ internal class JsoupRemoteMapDataSource @Inject constructor(
         val cleanSize = sizeStr.trim().uppercase()
         return when {
             cleanSize.endsWith("K") -> (cleanSize.removeSuffix("K").toDouble() * 1024).toLong()
-            cleanSize.endsWith("M") -> (cleanSize.removeSuffix("M").toDouble() * 1024 * 1024).toLong()
-            cleanSize.endsWith("G") -> (cleanSize.removeSuffix("G").toDouble() * 1024 * 1024 * 1024).toLong()
+            cleanSize.endsWith("M") -> (cleanSize.removeSuffix("M")
+                .toDouble() * 1024 * 1024).toLong()
+
+            cleanSize.endsWith("G") -> (cleanSize.removeSuffix("G")
+                .toDouble() * 1024 * 1024 * 1024).toLong()
+
             else -> cleanSize.toLongOrNull() ?: 0L
         }
     }

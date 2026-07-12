@@ -154,7 +154,8 @@ fun MapList(
                     title = stringResource(R.string.map_management_downloaded_title),
                     isExpanded = isExpanded,
                     onToggleExpand = {
-                        expandedSections = if (isExpanded) expandedSections - sectionKey else expandedSections + sectionKey
+                        expandedSections =
+                            if (isExpanded) expandedSections - sectionKey else expandedSections + sectionKey
                     },
                     modifier = Modifier.testTag("SectionHeader_DownloadedMaps")
                 )
@@ -192,7 +193,8 @@ fun MapList(
                 level = 0,
                 expandedSections = expandedSections,
                 onToggleExpand = { key ->
-                    expandedSections = if (key in expandedSections) expandedSections - key else expandedSections + key
+                    expandedSections =
+                        if (key in expandedSections) expandedSections - key else expandedSections + key
                 },
                 downloadingStatus = downloadingStatus,
                 onDownloadClick = onDownloadClick,
@@ -231,7 +233,13 @@ private fun LazyListScope.renderFolder(
 
         if (isExpanded) {
             items(folder.maps) { remoteMap ->
-                Box(modifier = Modifier.padding(start = RoadbookNavigatorTheme.dimensions.paddingLarge.times(level))) {
+                Box(
+                    modifier = Modifier.padding(
+                        start = RoadbookNavigatorTheme.dimensions.paddingLarge.times(
+                            level
+                        )
+                    )
+                ) {
                     RemoteMapItem(
                         remoteMap = remoteMap,
                         downloadStatus = downloadingStatus[remoteMap.url],
@@ -314,7 +322,11 @@ fun DownloadedMapItem(
             .padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(imageVector = Icons.Default.Map, contentDescription = null, modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.iconSize))
+        Icon(
+            imageVector = Icons.Default.Map,
+            contentDescription = null,
+            modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.iconSize)
+        )
         Spacer(modifier = Modifier.width(RoadbookNavigatorTheme.dimensions.paddingLarge))
         Column(modifier = Modifier.weight(1f)) {
             Text(
@@ -334,6 +346,7 @@ fun DownloadedMapItem(
                         color = MaterialTheme.colorScheme.error
                     )
                 }
+
                 is DownloadedMapStatus.UpdateAvailable -> {
                     Text(
                         text = stringResource(R.string.map_management_status_update_available),
@@ -342,16 +355,22 @@ fun DownloadedMapItem(
                         color = MaterialTheme.colorScheme.onErrorContainer
                     )
                 }
+
                 DownloadedMapStatus.UpToDate -> {
                     // Nothing
                 }
             }
 
             if (downloadStatus is DownloadStatus.Progress) {
-                val progress by animateFloatAsState(targetValue = downloadStatus.progress, label = "DownloadProgress")
+                val progress by animateFloatAsState(
+                    targetValue = downloadStatus.progress,
+                    label = "DownloadProgress"
+                )
                 LinearProgressIndicator(
                     progress = { progress },
-                    modifier = Modifier.fillMaxWidth().padding(top = 4.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 4.dp)
                 )
             } else if (downloadStatus is DownloadStatus.Error) {
                 Text(
@@ -427,12 +446,17 @@ fun RemoteMapItem(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-            
+
             if (downloadStatus is DownloadStatus.Progress) {
-                val progress by animateFloatAsState(targetValue = downloadStatus.progress, label = "DownloadProgress")
+                val progress by animateFloatAsState(
+                    targetValue = downloadStatus.progress,
+                    label = "DownloadProgress"
+                )
                 LinearProgressIndicator(
                     progress = { progress },
-                    modifier = Modifier.fillMaxWidth().padding(top = 4.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 4.dp)
                 )
             } else if (downloadStatus is DownloadStatus.Error) {
                 Text(

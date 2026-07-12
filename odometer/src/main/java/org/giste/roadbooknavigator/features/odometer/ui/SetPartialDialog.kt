@@ -1,5 +1,4 @@
 /*
- * Rn2 Viewer
  * Copyright (C) 2026  Giste
  *
  * This program is free software: you can redistribute it and/or modify
@@ -66,9 +65,9 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import org.giste.roadbooknavigator.core.R as CoreR
-import org.giste.roadbooknavigator.feature.odometer.R
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
+import org.giste.roadbooknavigator.feature.odometer.R
+import org.giste.roadbooknavigator.core.R as CoreR
 
 @Composable
 fun SetPartialDialog(

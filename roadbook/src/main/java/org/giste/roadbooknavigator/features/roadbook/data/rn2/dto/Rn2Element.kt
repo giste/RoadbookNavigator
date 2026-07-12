@@ -28,7 +28,8 @@ import kotlinx.serialization.json.JsonElement as KJsonElement
 @Serializable(with = Rn2ElementSerializer::class)
 internal sealed class Rn2Element
 
-internal object Rn2ElementSerializer : JsonContentPolymorphicSerializer<Rn2Element>(Rn2Element::class) {
+internal object Rn2ElementSerializer :
+    JsonContentPolymorphicSerializer<Rn2Element>(Rn2Element::class) {
     override fun selectDeserializer(element: KJsonElement): DeserializationStrategy<Rn2Element> {
         val jsonObject = element.jsonObject
         val type = jsonObject["type"]?.jsonPrimitive?.content

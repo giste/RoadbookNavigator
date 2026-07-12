@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2026  Giste
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package org.giste.roadbooknavigator.core.permission.data
 
 import android.Manifest
@@ -9,8 +26,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import org.giste.roadbooknavigator.core.permission.domain.AppPermission
-import org.giste.roadbooknavigator.core.permission.domain.PermissionState
 import org.giste.roadbooknavigator.core.permission.domain.PermissionRepository
+import org.giste.roadbooknavigator.core.permission.domain.PermissionState
 import org.giste.roadbooknavigator.core.util.Logger
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -23,7 +40,8 @@ class AndroidPermissionRepository @Inject constructor(
 
     private val _states = MutableStateFlow(calculatePermissionStates())
 
-    override fun observeAllPermissions(): Flow<Map<AppPermission, PermissionState>> = _states.asStateFlow()
+    override fun observeAllPermissions(): Flow<Map<AppPermission, PermissionState>> =
+        _states.asStateFlow()
 
     override fun refreshPermissionStates() {
         logger.d("AndroidPermissionRepository: Refreshing permission states in repository")
@@ -33,7 +51,8 @@ class AndroidPermissionRepository @Inject constructor(
     private fun calculatePermissionStates(): Map<AppPermission, PermissionState> {
         logger.v("AndroidPermissionRepository: Calculating permission states")
         val states = AppPermission.entries.associateWith { permission ->
-            val androidPermission = permission.toAndroidPermission ?: return@associateWith PermissionState.Granted
+            val androidPermission =
+                permission.toAndroidPermission ?: return@associateWith PermissionState.Granted
 
             val isGranted = ContextCompat.checkSelfPermission(
                 context,

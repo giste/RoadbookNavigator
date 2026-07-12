@@ -26,10 +26,10 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import org.giste.roadbooknavigator.core.settings.domain.AppTheme
 import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
-import org.giste.roadbooknavigator.core.settings.domain.AppTheme
 import org.giste.roadbooknavigator.features.settings.domain.RemoteKeySettings
 import org.giste.roadbooknavigator.features.settings.domain.RemoteKeys
 import org.giste.roadbooknavigator.features.settings.domain.RemoteModel
@@ -61,7 +61,8 @@ internal class DataStoreSettingsRepository @Inject constructor(
     }
 
     override fun getSettings(): Flow<AppSettings> = dataStore.data.map { preferences ->
-        val remoteModel = preferences[Keys.REMOTE_MODEL]?.let { safeRemoteModelOf(it) } ?: RemoteModel.DND2
+        val remoteModel =
+            preferences[Keys.REMOTE_MODEL]?.let { safeRemoteModelOf(it) } ?: RemoteModel.DND2
         AppSettings(
             theme = preferences[Keys.THEME]?.let { safeThemeOf(it) } ?: AppTheme.FOLLOW_SYSTEM,
             orientation = preferences[Keys.ORIENTATION]?.let { safeOrientationOf(it) }
@@ -72,11 +73,16 @@ internal class DataStoreSettingsRepository @Inject constructor(
             remoteKeySettings = RemoteKeySettings(
                 model = remoteModel,
                 customKeys = RemoteKeys(
-                    roadbookUp = preferences[Keys.CUSTOM_ROADBOOK_UP]?.toIntList() ?: RemoteKeys.DND2.roadbookUp,
-                    roadbookDown = preferences[Keys.CUSTOM_ROADBOOK_DOWN]?.toIntList() ?: RemoteKeys.DND2.roadbookDown,
-                    increasePartial = preferences[Keys.CUSTOM_INCREASE_PARTIAL]?.toIntList() ?: RemoteKeys.DND2.increasePartial,
-                    decreasePartial = preferences[Keys.CUSTOM_DECREASE_PARTIAL]?.toIntList() ?: RemoteKeys.DND2.decreasePartial,
-                    resetPartial = preferences[Keys.CUSTOM_RESET_PARTIAL]?.toIntList() ?: RemoteKeys.DND2.resetPartial,
+                    roadbookUp = preferences[Keys.CUSTOM_ROADBOOK_UP]?.toIntList()
+                        ?: RemoteKeys.DND2.roadbookUp,
+                    roadbookDown = preferences[Keys.CUSTOM_ROADBOOK_DOWN]?.toIntList()
+                        ?: RemoteKeys.DND2.roadbookDown,
+                    increasePartial = preferences[Keys.CUSTOM_INCREASE_PARTIAL]?.toIntList()
+                        ?: RemoteKeys.DND2.increasePartial,
+                    decreasePartial = preferences[Keys.CUSTOM_DECREASE_PARTIAL]?.toIntList()
+                        ?: RemoteKeys.DND2.decreasePartial,
+                    resetPartial = preferences[Keys.CUSTOM_RESET_PARTIAL]?.toIntList()
+                        ?: RemoteKeys.DND2.resetPartial,
                 )
             )
         )
@@ -125,8 +131,10 @@ internal class DataStoreSettingsRepository @Inject constructor(
                 keys?.let {
                     preferences[Keys.CUSTOM_ROADBOOK_UP] = it.roadbookUp.toPreferenceString()
                     preferences[Keys.CUSTOM_ROADBOOK_DOWN] = it.roadbookDown.toPreferenceString()
-                    preferences[Keys.CUSTOM_INCREASE_PARTIAL] = it.increasePartial.toPreferenceString()
-                    preferences[Keys.CUSTOM_DECREASE_PARTIAL] = it.decreasePartial.toPreferenceString()
+                    preferences[Keys.CUSTOM_INCREASE_PARTIAL] =
+                        it.increasePartial.toPreferenceString()
+                    preferences[Keys.CUSTOM_DECREASE_PARTIAL] =
+                        it.decreasePartial.toPreferenceString()
                     preferences[Keys.CUSTOM_RESET_PARTIAL] = it.resetPartial.toPreferenceString()
                 }
             }
@@ -165,5 +173,6 @@ internal class DataStoreSettingsRepository @Inject constructor(
 
     private fun List<Int>.toPreferenceString(): String = joinToString(",")
 
-    private fun String.toIntList(): List<Int> = if (isEmpty()) emptyList() else split(",").mapNotNull { it.toIntOrNull() }
+    private fun String.toIntList(): List<Int> =
+        if (isEmpty()) emptyList() else split(",").mapNotNull { it.toIntOrNull() }
 }

@@ -51,7 +51,8 @@ internal class LocalFileMapRepository @Inject constructor(
     private val logger: Logger
 ) : MapRepository {
 
-    private val rootUrl = "https://ftp-stud.hs-esslingen.de/pub/Mirrors/download.mapsforge.org/maps/v5/"
+    private val rootUrl =
+        "https://ftp-stud.hs-esslingen.de/pub/Mirrors/download.mapsforge.org/maps/v5/"
 
     private val mapsDir: File
         get() = File(context.filesDir, "maps").apply {
@@ -116,25 +117,27 @@ internal class LocalFileMapRepository @Inject constructor(
         }
     }.flowOn(ioDispatcher)
 
-    private suspend fun fetchFolderRecursive(folder: RemoteMapFolder): RemoteMapFolder = coroutineScope {
-        val enrichedSubfolders = folder.subFolders.map { subFolder ->
-            async {
-                try {
-                    val fetched = remoteDataSource.getRemoteMaps(subFolder.path)
-                    fetchFolderRecursive(fetched)
-                } catch (e: Exception) {
-                    logger.w("Error fetching subfolder %s: %s", subFolder.path, e.message)
-                    subFolder
+    private suspend fun fetchFolderRecursive(folder: RemoteMapFolder): RemoteMapFolder =
+        coroutineScope {
+            val enrichedSubfolders = folder.subFolders.map { subFolder ->
+                async {
+                    try {
+                        val fetched = remoteDataSource.getRemoteMaps(subFolder.path)
+                        fetchFolderRecursive(fetched)
+                    } catch (e: Exception) {
+                        logger.w("Error fetching subfolder %s: %s", subFolder.path, e.message)
+                        subFolder
+                    }
                 }
-            }
-        }.awaitAll()
-        folder.copy(subFolders = enrichedSubfolders)
-    }
+            }.awaitAll()
+            folder.copy(subFolders = enrichedSubfolders)
+        }
 
     override fun downloadMap(remoteMapFile: RemoteMapFile): Flow<DownloadStatus> = flow {
         emit(DownloadStatus.Idle)
         try {
-            val destinationPath = "${getMapInternalStorageDir()}/${remoteMapFile.parentPath}/${remoteMapFile.name}"
+            val destinationPath =
+                "${getMapInternalStorageDir()}/${remoteMapFile.parentPath}/${remoteMapFile.name}"
             val responseBody = remoteDataSource.downloadFile(remoteMapFile.url)
             val file = File(destinationPath)
             file.parentFile?.mkdirs()

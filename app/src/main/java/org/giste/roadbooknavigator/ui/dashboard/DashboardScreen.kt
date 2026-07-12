@@ -165,29 +165,34 @@ fun DashboardContent(
 
                         Key.MediaPrevious, Key.DirectionDown -> {
                             coroutineScope.launch {
-                                targetWaypointIndex = if (listState.firstVisibleItemScrollOffset > 0) {
-                                    // If partially scrolled, first snap to the top of current waypoint
-                                    listState.firstVisibleItemIndex
-                                } else {
-                                    // Otherwise move to the previous one
-                                    (targetWaypointIndex - 1).coerceAtLeast(0)
-                                }
+                                targetWaypointIndex =
+                                    if (listState.firstVisibleItemScrollOffset > 0) {
+                                        // If partially scrolled, first snap to the top of current waypoint
+                                        listState.firstVisibleItemIndex
+                                    } else {
+                                        // Otherwise move to the previous one
+                                        (targetWaypointIndex - 1).coerceAtLeast(0)
+                                    }
                                 listState.animateScrollToItem(targetWaypointIndex)
                             }
                             true
                         }
+
                         Key.VolumeUp, Key.DirectionRight -> {
                             viewModel.incrementPartialDistance()
                             true
                         }
+
                         Key.VolumeDown, Key.DirectionLeft -> {
                             viewModel.decrementPartialDistance()
                             true
                         }
+
                         Key.MediaPlayPause, Key.MediaPlay, Key.MediaPause, Key.F6 -> {
                             viewModel.resetPartialDistance()
                             true
                         }
+
                         else -> false
                     }
                 } else {
@@ -239,7 +244,8 @@ fun MainContent(
     mapContent: @Composable (Modifier) -> Unit,
 ) {
     val configuration = LocalConfiguration.current
-    val locale = if (configuration.locales.size() > 0) configuration.locales[0] else java.util.Locale.getDefault()
+    val locale =
+        if (configuration.locales.size() > 0) configuration.locales[0] else java.util.Locale.getDefault()
 
     val totalDistanceStr = try {
         String.format(locale, "%.1f", uiState.odometer.total / 1000.0)
@@ -491,13 +497,19 @@ fun LandscapeDistanceSection(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .border(RoadbookNavigatorTheme.dimensions.sectionBorder, MaterialTheme.colorScheme.outline)
+            .border(
+                RoadbookNavigatorTheme.dimensions.sectionBorder,
+                MaterialTheme.colorScheme.outline
+            )
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(IntrinsicSize.Min)
-                .border(RoadbookNavigatorTheme.dimensions.sectionBorder, MaterialTheme.colorScheme.outline),
+                .border(
+                    RoadbookNavigatorTheme.dimensions.sectionBorder,
+                    MaterialTheme.colorScheme.outline
+                ),
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(
@@ -512,7 +524,9 @@ fun LandscapeDistanceSection(
             }
             TotalDistance(
                 distance = totalDistance,
-                modifier = Modifier.weight(1f).fillMaxHeight()
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight()
             )
         }
 
@@ -538,7 +552,10 @@ fun PortraitDistanceSection(
         modifier = modifier
             .fillMaxWidth()
             .height(IntrinsicSize.Min)
-            .border(RoadbookNavigatorTheme.dimensions.sectionBorder, MaterialTheme.colorScheme.outline),
+            .border(
+                RoadbookNavigatorTheme.dimensions.sectionBorder,
+                MaterialTheme.colorScheme.outline
+            ),
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(
@@ -553,7 +570,7 @@ fun PortraitDistanceSection(
         }
         // Total | Partial side-by-side
         TotalDistance(
-            distance = totalDistance, 
+            distance = totalDistance,
             modifier = Modifier
                 .weight(0.55f)
                 .fillMaxHeight()
@@ -640,7 +657,14 @@ private val sampleUiState = DashboardUiState(
 @Composable
 fun TabletLandPreview() {
     val listState = rememberLazyListState()
-    RoadbookNavigatorTheme(windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(1097.dp, 686.dp))) {
+    RoadbookNavigatorTheme(
+        windowSizeClass = WindowSizeClass.calculateFromSize(
+            DpSize(
+                1097.dp,
+                686.dp
+            )
+        )
+    ) {
         MainContent(
             windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(1097.dp, 686.dp)),
             uiState = sampleUiState,
@@ -670,7 +694,14 @@ fun TabletLandPreview() {
 @Composable
 fun TabletPortPreview() {
     val listState = rememberLazyListState()
-    RoadbookNavigatorTheme(windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(686.dp, 1097.dp))) {
+    RoadbookNavigatorTheme(
+        windowSizeClass = WindowSizeClass.calculateFromSize(
+            DpSize(
+                686.dp,
+                1097.dp
+            )
+        )
+    ) {
         MainContent(
             windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(686.dp, 1097.dp)),
             uiState = sampleUiState,
@@ -700,7 +731,14 @@ fun TabletPortPreview() {
 @Composable
 fun PhonePortPreview() {
     val listState = rememberLazyListState()
-    RoadbookNavigatorTheme(windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp))) {
+    RoadbookNavigatorTheme(
+        windowSizeClass = WindowSizeClass.calculateFromSize(
+            DpSize(
+                411.dp,
+                891.dp
+            )
+        )
+    ) {
         MainContent(
             windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp)),
             uiState = sampleUiState,
@@ -730,7 +768,14 @@ fun PhonePortPreview() {
 @Composable
 fun PhoneLandPreview() {
     val listState = rememberLazyListState()
-    RoadbookNavigatorTheme(windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(891.dp, 411.dp))) {
+    RoadbookNavigatorTheme(
+        windowSizeClass = WindowSizeClass.calculateFromSize(
+            DpSize(
+                891.dp,
+                411.dp
+            )
+        )
+    ) {
         MainContent(
             windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(891.dp, 411.dp)),
             uiState = sampleUiState,

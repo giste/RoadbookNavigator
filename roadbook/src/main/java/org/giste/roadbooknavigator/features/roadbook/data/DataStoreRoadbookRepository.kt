@@ -53,7 +53,11 @@ internal class DataStoreRoadbookRepository @Inject constructor(
         }
     }.onEach { route ->
         if (route != null) {
-            logger.d("DataStoreRoadbookRepository: Loaded active roadbook: %s (%d waypoints)", route.name, route.waypoints.size)
+            logger.d(
+                "DataStoreRoadbookRepository: Loaded active roadbook: %s (%d waypoints)",
+                route.name,
+                route.waypoints.size
+            )
         } else {
             logger.v("DataStoreRoadbookRepository: No active roadbook loaded")
         }
@@ -64,14 +68,20 @@ internal class DataStoreRoadbookRepository @Inject constructor(
             logger.i("DataStoreRoadbookRepository: Processing new roadbook from input stream")
             runCatching {
                 val jsonString = inputStream.bufferedReader().use { it.readText() }
-                logger.v("DataStoreRoadbookRepository: JSON string read (size: %d bytes)", jsonString.length)
-                
+                logger.v(
+                    "DataStoreRoadbookRepository: JSON string read (size: %d bytes)",
+                    jsonString.length
+                )
+
                 val route = mapper.mapToDomain(jsonString)
                 logger.d("DataStoreRoadbookRepository: Domain mapping complete for: %s", route.name)
 
                 val persistentRoute = persistenceMapper.toPersistent(route)
                 dataStore.updateData { persistentRoute }
-                logger.i("DataStoreRoadbookRepository: Roadbook %s persisted successfully", route.name)
+                logger.i(
+                    "DataStoreRoadbookRepository: Roadbook %s persisted successfully",
+                    route.name
+                )
 
                 route
             }.onFailure { error ->

@@ -56,11 +56,19 @@ internal class DataStoreRoadbookSessionRepository @Inject constructor(
             RoadbookPosition(0, 0)
         }
     }.onEach { position ->
-        logger.v("DataStoreRoadbookSessionRepository: Current scroll position loaded: index=%d, offset=%d", position.index, position.offset)
+        logger.v(
+            "DataStoreRoadbookSessionRepository: Current scroll position loaded: index=%d, offset=%d",
+            position.index,
+            position.offset
+        )
     }
 
     override suspend fun saveScrollPosition(position: RoadbookPosition) {
-        logger.v("DataStoreRoadbookSessionRepository: Saving scroll position: index=%d, offset=%d", position.index, position.offset)
+        logger.v(
+            "DataStoreRoadbookSessionRepository: Saving scroll position: index=%d, offset=%d",
+            position.index,
+            position.offset
+        )
         dataStore.edit { preferences ->
             preferences[Keys.SCROLL_INDEX] = position.index
             preferences[Keys.SCROLL_OFFSET] = position.offset

@@ -70,7 +70,10 @@ internal class DataStoreOdometerSettingsRepository @Inject constructor(
     }
 
     override suspend fun setMinVerticalAccuracy(accuracy: Float) {
-        logger.i("DataStoreOdometerSettingsRepository: Setting min vertical accuracy to %f", accuracy)
+        logger.i(
+            "DataStoreOdometerSettingsRepository: Setting min vertical accuracy to %f",
+            accuracy
+        )
         dataStore.edit { preferences ->
             preferences[Keys.MIN_VERTICAL_ACCURACY] = accuracy
         }

@@ -39,7 +39,9 @@ class TimberLogger @Inject constructor() : Logger {
         override fun i(message: String, vararg args: Any?) = Timber.tag(tag).i(message, *args)
         override fun w(message: String, vararg args: Any?) = Timber.tag(tag).w(message, *args)
         override fun e(message: String, vararg args: Any?) = Timber.tag(tag).e(message, *args)
-        override fun e(t: Throwable, message: String, vararg args: Any?) = Timber.tag(tag).e(t, message, *args)
+        override fun e(t: Throwable, message: String, vararg args: Any?) =
+            Timber.tag(tag).e(t, message, *args)
+
         override fun withTag(tag: String): Logger = TimberTaggedLogger(tag)
     }
 }

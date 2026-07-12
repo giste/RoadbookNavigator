@@ -74,7 +74,8 @@ internal class WaypointProcessor @Inject constructor(
                 logger.v("Processing state for waypoint %d: %s", current.waypointId, current)
                 val distance = geometryCalculator.calculateDistance(acc.current, current)
                 val newAccDist = if (acc.isReset) distance else acc.accDist + distance
-                val newDistFromVisible = if (acc.current.show) distance else acc.distFromVisible + distance
+                val newDistFromVisible =
+                    if (acc.current.show) distance else acc.distFromVisible + distance
                 val newVisibleCount = if (current.show) acc.visibleCount + 1 else acc.visibleCount
 
                 val currentProcessingState = ProcessingState(

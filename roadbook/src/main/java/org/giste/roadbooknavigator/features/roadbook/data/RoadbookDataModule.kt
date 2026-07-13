@@ -35,8 +35,10 @@ import kotlinx.coroutines.SupervisorJob
 import org.giste.roadbooknavigator.core.di.IoDispatcher
 import org.giste.roadbooknavigator.features.roadbook.data.persistence.PersistenceRoadbookSerializer
 import org.giste.roadbooknavigator.features.roadbook.data.persistence.dto.PersistentRoute
+import org.giste.roadbooknavigator.features.roadbook.data.repository.DataStoreRoadbookSettingsRepository
 import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookRepository
 import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookSessionRepository
+import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookSettingsRepository
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
@@ -48,7 +50,12 @@ internal annotation class RoadbookDataStoreQualifier
 @Retention(AnnotationRetention.BINARY)
 internal annotation class RoadbookSessionDataStoreQualifier
 
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+internal annotation class RoadbookSettingsDataStoreQualifier
+
 private val Context.roadbookSessionDataStore: DataStore<Preferences> by preferencesDataStore(name = "roadbook_session_state")
+private val Context.roadbookSettingsDataStore: DataStore<Preferences> by preferencesDataStore(name = "roadbook_settings")
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -65,6 +72,12 @@ internal abstract class RoadbookDataModule {
     abstract fun bindRoadbookSessionRepository(
         dataStoreRoadbookSessionRepository: DataStoreRoadbookSessionRepository
     ): RoadbookSessionRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindRoadbookSettingsRepository(
+        dataStoreRoadbookSettingsRepository: DataStoreRoadbookSettingsRepository
+    ): RoadbookSettingsRepository
 
     companion object {
         @Volatile
@@ -93,5 +106,12 @@ internal abstract class RoadbookDataModule {
         internal fun provideRoadbookSessionDataStore(
             @ApplicationContext context: Context
         ): DataStore<Preferences> = context.roadbookSessionDataStore
+
+        @Provides
+        @Singleton
+        @RoadbookSettingsDataStoreQualifier
+        internal fun provideRoadbookSettingsDataStore(
+            @ApplicationContext context: Context
+        ): DataStore<Preferences> = context.roadbookSettingsDataStore
     }
 }

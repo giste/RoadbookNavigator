@@ -25,6 +25,7 @@ import androidx.datastore.preferences.core.longPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
+import org.giste.roadbooknavigator.features.roadbook.data.RoadbookSettingsDataStoreQualifier
 import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookSettings
 import org.giste.roadbooknavigator.features.roadbook.domain.model.ShortDistanceThreshold
 import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookSettingsRepository
@@ -35,7 +36,7 @@ import javax.inject.Inject
  * DataStore implementation of [RoadbookSettingsRepository].
  */
 class DataStoreRoadbookSettingsRepository @Inject constructor(
-    private val dataStore: DataStore<Preferences>
+    @param:RoadbookSettingsDataStoreQualifier private val dataStore: DataStore<Preferences>
 ) : RoadbookSettingsRepository {
 
     private object PreferencesKeys {

@@ -403,7 +403,7 @@ class DashboardScreenTest {
             composeTestRule.waitForIdle()
         }
 
-        // Waypoint 2 should now be visible
+        // Waypoint 8 should now be visible
         composeTestRule.onNodeWithText("8").assertIsDisplayed()
     }
 

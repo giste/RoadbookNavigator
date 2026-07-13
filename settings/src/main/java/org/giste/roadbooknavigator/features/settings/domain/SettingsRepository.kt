@@ -38,9 +38,6 @@ interface SettingsRepository {
     /** Updates the full-screen mode setting. */
     suspend fun setFullScreen(enabled: Boolean)
 
-    /** Sets the threshold for short distance warnings. */
-    suspend fun setShortDistanceThreshold(threshold: Long)
-
     /** Updates the selected remote control model. */
     suspend fun setRemoteModel(model: RemoteModel)
 

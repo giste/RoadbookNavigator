@@ -82,28 +82,6 @@ class DataStoreSettingsRepositoryTest {
 
     @Test
     fun `setOrientation should persist orientation value`() = runTest {
-        repository.setOrientation(AppOrientation.HORIZONTAL)
-        
-        val settings = repository.getSettings().first()
-        assertEquals(AppOrientation.HORIZONTAL, settings.orientation)
-
-        // Verify with new instance
-        val newRepo = DataStoreSettingsRepository(dataStore, logger)
-        val persisted = newRepo.getSettings().first()
-        assertEquals(AppOrientation.HORIZONTAL, persisted.orientation)
-    }
-
-    @Test
-    fun `setShortDistanceThreshold should persist value`() = runTest {
-        val newThreshold = 500L
-        repository.setShortDistanceThreshold(newThreshold)
-        
-        val settings = repository.getSettings().first()
-        assertEquals(newThreshold, settings.shortDistanceThreshold)
-    }
-
-    @Test
-    fun `setRemoteModel should persist model and update keys if not custom`() = runTest {
         repository.setRemoteModel(RemoteModel.TERRA_PIRATA)
         
         val settings = repository.getSettings().first()

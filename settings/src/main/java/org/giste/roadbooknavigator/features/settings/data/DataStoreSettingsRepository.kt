@@ -21,7 +21,6 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -51,7 +50,6 @@ internal class DataStoreSettingsRepository @Inject constructor(
         val THEME = stringPreferencesKey("app_theme")
         val ORIENTATION = stringPreferencesKey("app_orientation")
         val FULL_SCREEN = booleanPreferencesKey("full_screen")
-        val SHORT_DISTANCE_THRESHOLD = longPreferencesKey("short_distance_threshold")
         val REMOTE_MODEL = stringPreferencesKey("remote_model")
         val CUSTOM_ROADBOOK_UP = stringPreferencesKey("custom_roadbook_up")
         val CUSTOM_ROADBOOK_DOWN = stringPreferencesKey("custom_roadbook_down")
@@ -68,8 +66,6 @@ internal class DataStoreSettingsRepository @Inject constructor(
             orientation = preferences[Keys.ORIENTATION]?.let { safeOrientationOf(it) }
                 ?: AppOrientation.FOLLOW_SYSTEM,
             fullScreen = preferences[Keys.FULL_SCREEN] ?: true,
-            shortDistanceThreshold = preferences[Keys.SHORT_DISTANCE_THRESHOLD]
-                ?: AppSettings.DEFAULT_SHORT_DISTANCE_THRESHOLD,
             remoteKeySettings = RemoteKeySettings(
                 model = remoteModel,
                 customKeys = RemoteKeys(
@@ -108,13 +104,6 @@ internal class DataStoreSettingsRepository @Inject constructor(
         logger.i("DataStoreSettingsRepository: Setting full screen to %s", enabled)
         dataStore.edit { preferences ->
             preferences[Keys.FULL_SCREEN] = enabled
-        }
-    }
-
-    override suspend fun setShortDistanceThreshold(threshold: Long) {
-        logger.i("DataStoreSettingsRepository: Setting short distance threshold to %d", threshold)
-        dataStore.edit { preferences ->
-            preferences[Keys.SHORT_DISTANCE_THRESHOLD] = threshold
         }
     }
 

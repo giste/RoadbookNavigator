@@ -55,6 +55,7 @@ dependencies {
     implementation(project(":location"))
     implementation(project(":odometer"))
     implementation(project(":map"))
+    implementation(project(":roadbook"))
     
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.material3)

@@ -105,12 +105,13 @@ import org.giste.roadbooknavigator.features.odometer.domain.AccuracyThreshold
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettings
 import org.giste.roadbooknavigator.features.odometer.domain.SpeedThreshold
 import org.giste.roadbooknavigator.features.odometer.domain.VerticalAccuracyThreshold
+import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookSettings
+import org.giste.roadbooknavigator.features.roadbook.domain.model.ShortDistanceThreshold
 import org.giste.roadbooknavigator.features.settings.R
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.RemoteKeys
 import org.giste.roadbooknavigator.features.settings.domain.RemoteModel
-import org.giste.roadbooknavigator.features.settings.domain.ShortDistanceThreshold
 import org.giste.roadbooknavigator.core.R as CoreR
 
 @Composable
@@ -224,6 +225,7 @@ fun SettingsContent(
                         when (selectedTab) {
                             0 -> UserTab(
                                 settings = settings,
+                                roadbookSettings = uiState.roadbookSettings,
                                 mapSettings = uiState.mapSettings,
                                 onThemeSelected = onThemeSelected,
                                 onOrientationSelected = onOrientationSelected,
@@ -262,6 +264,7 @@ fun SettingsContent(
 @Composable
 fun UserTab(
     settings: AppSettings,
+    roadbookSettings: RoadbookSettings,
     mapSettings: MapSettings,
     onThemeSelected: (AppTheme) -> Unit,
     onOrientationSelected: (AppOrientation) -> Unit,
@@ -312,10 +315,10 @@ fun UserTab(
         SettingsSectionTitle(stringResource(R.string.settings_user_short_distance_title))
         SliderSettingItem(
             helper = stringResource(R.string.settings_user_short_distance_helper),
-            value = settings.shortDistanceThreshold.toFloat(),
+            value = roadbookSettings.shortDistanceThreshold.meters.toFloat(),
             onValueChange = { onShortDistanceThresholdChange(it.toLong()) },
             valueRange = ShortDistanceThreshold.MIN.toFloat()..ShortDistanceThreshold.MAX.toFloat(),
-            label = "${settings.shortDistanceThreshold} m",
+            label = "${roadbookSettings.shortDistanceThreshold.meters} m",
             testTag = "ShortDistanceSlider"
         )
 

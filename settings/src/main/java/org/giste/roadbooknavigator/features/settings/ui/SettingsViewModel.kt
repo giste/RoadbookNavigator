@@ -42,6 +42,9 @@ import org.giste.roadbooknavigator.features.odometer.domain.usecase.RestoreOdome
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.UpdateOdometerMinAccuracyUseCase
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.UpdateOdometerMinVerticalAccuracyUseCase
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.UpdateOdometerSpeedThresholdUseCase
+import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookSettings
+import org.giste.roadbooknavigator.features.roadbook.domain.usecase.GetRoadbookSettingsUseCase
+import org.giste.roadbooknavigator.features.roadbook.domain.usecase.SaveRoadbookSettingsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.RemoteKeys
@@ -51,7 +54,6 @@ import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateCustom
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateFullScreenUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateOrientationUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateRemoteModelUseCase
-import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateShortDistanceThresholdUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateThemeUseCase
 import javax.inject.Inject
 
@@ -61,10 +63,11 @@ class SettingsViewModel @Inject constructor(
     getLocationSettingsUseCase: GetLocationSettingsUseCase,
     getOdometerSettingsUseCase: GetOdometerSettingsUseCase,
     getMapSettingsUseCase: GetMapSettingsUseCase,
+    getRoadbookSettingsUseCase: GetRoadbookSettingsUseCase,
     private val updateThemeUseCase: UpdateThemeUseCase,
     private val updateOrientationUseCase: UpdateOrientationUseCase,
     private val updateFullScreenUseCase: UpdateFullScreenUseCase,
-    private val updateShortDistanceThresholdUseCase: UpdateShortDistanceThresholdUseCase,
+    private val saveRoadbookSettingsUseCase: SaveRoadbookSettingsUseCase,
     private val updateOdometerSpeedThresholdUseCase: UpdateOdometerSpeedThresholdUseCase,
     private val updateOdometerMinAccuracyUseCase: UpdateOdometerMinAccuracyUseCase,
     private val updateOdometerMinVerticalAccuracyUseCase: UpdateOdometerMinVerticalAccuracyUseCase,
@@ -82,9 +85,16 @@ class SettingsViewModel @Inject constructor(
         getSettingsUseCase(),
         getLocationSettingsUseCase(),
         getOdometerSettingsUseCase(),
-        getMapSettingsUseCase()
-    ) { settings, locationSettings, odometerSettings, mapSettings ->
-        SettingsUiState.Success(settings, locationSettings, odometerSettings, mapSettings)
+        getMapSettingsUseCase(),
+        getRoadbookSettingsUseCase()
+    ) { settings, locationSettings, odometerSettings, mapSettings, roadbookSettings ->
+        SettingsUiState.Success(
+            settings,
+            locationSettings,
+            odometerSettings,
+            mapSettings,
+            roadbookSettings
+        )
     }
         .onEach { logger.v("SettingsViewModel: Settings stream emitted: %s", it) }
         .stateIn(
@@ -117,7 +127,7 @@ class SettingsViewModel @Inject constructor(
     fun setShortDistanceThreshold(threshold: Long) {
         logger.d("SettingsViewModel: setShortDistanceThreshold requested: %d", threshold)
         viewModelScope.launch {
-            updateShortDistanceThresholdUseCase(threshold)
+            saveRoadbookSettingsUseCase(threshold)
         }
     }
 
@@ -204,5 +214,6 @@ sealed interface SettingsUiState {
         val locationSettings: LocationSettings = LocationSettings(),
         val odometerSettings: OdometerSettings = OdometerSettings(),
         val mapSettings: MapSettings = MapSettings(),
+        val roadbookSettings: RoadbookSettings = RoadbookSettings(),
     ) : SettingsUiState
 }

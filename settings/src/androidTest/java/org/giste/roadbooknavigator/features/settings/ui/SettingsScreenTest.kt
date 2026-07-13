@@ -38,6 +38,8 @@ import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettings
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.core.settings.domain.AppTheme
+import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookSettings
+import org.giste.roadbooknavigator.features.roadbook.domain.model.ShortDistanceThreshold
 import org.giste.roadbooknavigator.features.settings.domain.RemoteModel
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -281,7 +283,8 @@ class SettingsScreenTest {
         composeTestRule.setContent {
             RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
                 SettingsContent(
-                    uiState = SettingsUiState.Success(AppSettings(shortDistanceThreshold = 100L), LocationSettings(), OdometerSettings(), MapSettings()),
+                    uiState = SettingsUiState.Success(AppSettings(), LocationSettings(), OdometerSettings(), MapSettings(),
+                        RoadbookSettings(shortDistanceThreshold = ShortDistanceThreshold(100L))),
                     onBackClick = {},
                     onThemeSelected = {},
                     onOrientationSelected = {},

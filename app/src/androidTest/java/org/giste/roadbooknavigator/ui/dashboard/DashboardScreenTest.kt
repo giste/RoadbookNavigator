@@ -390,7 +390,7 @@ class DashboardScreenTest {
 
         // Press Direction Up (Forward)
         composeTestRule.onNodeWithTag("MainScreen").performClick()
-        (1..8).forEach { _ ->
+        (1..7).forEach { _ ->
             composeTestRule.onNodeWithTag("MainScreen").performKeyPress(
                 KeyEvent(
                     nativeKeyEvent = android.view.KeyEvent(
@@ -457,8 +457,9 @@ class DashboardScreenTest {
 
         composeTestRule.waitForIdle()
 
-        // Waypoint 2 should now be visible
+        // Waypoint 2 should now be visible, and 1 should be gone (not visible)
         composeTestRule.onNodeWithText("2").assertIsDisplayed()
+        composeTestRule.onNodeWithText("1").assertIsNotDisplayed()
     }
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
@@ -513,7 +514,7 @@ class DashboardScreenTest {
 
         composeTestRule.waitForIdle()
 
-        // Should still show waypoint 1 (snapped to top)
+        // Should still show waypoint 2 (snapped to top)
         composeTestRule.onNodeWithText("2").assertIsDisplayed()
         composeTestRule.onNodeWithText("1").assertIsNotDisplayed()
     }

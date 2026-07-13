@@ -21,8 +21,10 @@ import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.longClick
 import androidx.compose.ui.test.onNodeWithTag
@@ -38,6 +40,7 @@ import org.giste.roadbooknavigator.features.roadbook.R
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Coordinates
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Distance
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Route
+import org.giste.roadbooknavigator.features.roadbook.domain.model.ShortDistanceThreshold
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Waypoint
 import org.junit.After
 import org.junit.Before
@@ -207,5 +210,46 @@ class RoadbookUiTest {
         }
 
         assert(capturedDistance == 0.0)
+    }
+
+    @Test
+    fun shortDistanceThreshold_appliesHighlighting() {
+        val shortThreshold = 300L
+        val shortDistance = 250L
+        val normalDistance = 400L
+        
+        val waypointShort = Waypoint(
+            number = 1,
+            coordinates = Coordinates(0.0, 0.0),
+            distance = Distance(shortDistance),
+            distanceFromPrevious = Distance(shortDistance)
+        )
+        val waypointNormal = Waypoint(
+            number = 2,
+            coordinates = Coordinates(0.0, 0.01),
+            distance = Distance(shortDistance + normalDistance),
+            distanceFromPrevious = Distance(normalDistance)
+        )
+        
+        val route = Route(name = "Test", waypoints = listOf(waypointShort, waypointNormal))
+
+        composeTestRule.setContent {
+            RoadbookSection(
+                state = RoadbookUiState.Success(
+                    route = route,
+                    shortDistanceThreshold = ShortDistanceThreshold(shortThreshold)
+                ),
+                listState = rememberLazyListState(),
+                onFileSelected = {},
+                onSetPartialClick = {},
+                onWaypointVisible = { _, _ -> }
+            )
+        }
+
+        // Verify that the first waypoint (short) has the highlight tag
+        composeTestRule.onNodeWithTag("ShortDistanceHighlight").assertIsDisplayed()
+        
+        // Verify that there is only one node with that highlight tag
+        composeTestRule.onAllNodesWithTag("ShortDistanceHighlight").assertCountEquals(1)
     }
 }

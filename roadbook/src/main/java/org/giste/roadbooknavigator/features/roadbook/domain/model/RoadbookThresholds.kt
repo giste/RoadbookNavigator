@@ -15,20 +15,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.roadbook.ui
+package org.giste.roadbooknavigator.features.roadbook.domain.model
 
-import org.giste.roadbooknavigator.features.roadbook.domain.model.Route
-import org.giste.roadbooknavigator.features.roadbook.domain.model.ShortDistanceThreshold
+/**
+ * Value Object for short distance threshold. Waypoint with distance from previous lower than this
+ * will be marked as "short distance".
+ */
+@JvmInline
+value class ShortDistanceThreshold(val meters: Long) {
+    init {
+        require(meters.toDouble() in MIN..MAX) {
+            "Short distance threshold must be between $MIN and $MAX meters"
+        }
+    }
 
-sealed interface RoadbookUiState {
-    data object Loading : RoadbookUiState
-    data object Empty : RoadbookUiState
-    data class Success(
-        val route: Route,
-        val shortDistanceThreshold: ShortDistanceThreshold = ShortDistanceThreshold(ShortDistanceThreshold.DEFAULT),
-        val initialIndex: Int = 0,
-        val initialOffset: Int = 0,
-    ) : RoadbookUiState
-
-    data class Error(val message: String) : RoadbookUiState
+    companion object {
+        const val MIN = 100.0
+        const val MAX = 500.0
+        const val DEFAULT = 300L
+    }
 }

@@ -15,20 +15,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.roadbook.ui
+package org.giste.roadbooknavigator.features.roadbook.domain.usecase
 
-import org.giste.roadbooknavigator.features.roadbook.domain.model.Route
-import org.giste.roadbooknavigator.features.roadbook.domain.model.ShortDistanceThreshold
+import kotlinx.coroutines.flow.Flow
+import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookSettings
+import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookSettingsRepository
+import javax.inject.Inject
 
-sealed interface RoadbookUiState {
-    data object Loading : RoadbookUiState
-    data object Empty : RoadbookUiState
-    data class Success(
-        val route: Route,
-        val shortDistanceThreshold: ShortDistanceThreshold = ShortDistanceThreshold(ShortDistanceThreshold.DEFAULT),
-        val initialIndex: Int = 0,
-        val initialOffset: Int = 0,
-    ) : RoadbookUiState
-
-    data class Error(val message: String) : RoadbookUiState
+/**
+ * Use case to observe roadbook settings.
+ */
+class GetRoadbookSettingsUseCase @Inject constructor(
+    private val repository: RoadbookSettingsRepository
+) {
+    operator fun invoke(): Flow<RoadbookSettings> = repository.getSettings()
 }

@@ -62,6 +62,7 @@ import org.giste.roadbooknavigator.features.roadbook.domain.model.Distance
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Point
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Road
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Route
+import org.giste.roadbooknavigator.features.roadbook.domain.model.ShortDistanceThreshold
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Track
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Waypoint
 import java.io.InputStream
@@ -152,7 +153,7 @@ fun RoadbookSection(
                 Box(modifier = Modifier.fillMaxSize()) {
                     RoadbookList(
                         waypoints = state.route.waypoints,
-                        shortDistanceThreshold = state.shortDistanceThreshold,
+                        shortDistanceThreshold = state.shortDistanceThreshold.meters,
                         listState = listState,
                         onSetPartialClick = onSetPartialClick,
                         onWaypointVisible = onWaypointVisible

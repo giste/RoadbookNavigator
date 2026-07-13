@@ -15,20 +15,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.roadbook.ui
+package org.giste.roadbooknavigator.features.roadbook.domain.repository
 
-import org.giste.roadbooknavigator.features.roadbook.domain.model.Route
-import org.giste.roadbooknavigator.features.roadbook.domain.model.ShortDistanceThreshold
+import kotlinx.coroutines.flow.Flow
+import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookSettings
 
-sealed interface RoadbookUiState {
-    data object Loading : RoadbookUiState
-    data object Empty : RoadbookUiState
-    data class Success(
-        val route: Route,
-        val shortDistanceThreshold: ShortDistanceThreshold = ShortDistanceThreshold(ShortDistanceThreshold.DEFAULT),
-        val initialIndex: Int = 0,
-        val initialOffset: Int = 0,
-    ) : RoadbookUiState
+/**
+ * Repository interface for managing roadbook settings.
+ */
+interface RoadbookSettingsRepository {
+    /**
+     * Observes roadbook settings.
+     */
+    fun getSettings(): Flow<RoadbookSettings>
 
-    data class Error(val message: String) : RoadbookUiState
+    /**
+     * Updates the short distance threshold.
+     */
+    suspend fun saveShortDistanceThreshold(threshold: Long)
 }

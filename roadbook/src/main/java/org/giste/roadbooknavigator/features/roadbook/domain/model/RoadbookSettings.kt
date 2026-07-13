@@ -15,20 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.roadbook.ui
+package org.giste.roadbooknavigator.features.roadbook.domain.model
 
-import org.giste.roadbooknavigator.features.roadbook.domain.model.Route
-import org.giste.roadbooknavigator.features.roadbook.domain.model.ShortDistanceThreshold
-
-sealed interface RoadbookUiState {
-    data object Loading : RoadbookUiState
-    data object Empty : RoadbookUiState
-    data class Success(
-        val route: Route,
-        val shortDistanceThreshold: ShortDistanceThreshold = ShortDistanceThreshold(ShortDistanceThreshold.DEFAULT),
-        val initialIndex: Int = 0,
-        val initialOffset: Int = 0,
-    ) : RoadbookUiState
-
-    data class Error(val message: String) : RoadbookUiState
-}
+/**
+ * Domain model for roadbook-specific settings.
+ *
+ * @property shortDistanceThreshold Threshold in meters to highlight "short distance" instructions.
+ */
+data class RoadbookSettings(
+    val shortDistanceThreshold: ShortDistanceThreshold = ShortDistanceThreshold(ShortDistanceThreshold.DEFAULT)
+)

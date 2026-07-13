@@ -18,12 +18,13 @@
 package org.giste.roadbooknavigator.ui.dashboard
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.key.KeyEvent
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
@@ -45,6 +46,8 @@ import io.mockk.verify
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 import org.giste.roadbooknavigator.features.odometer.domain.Odometer
+import org.giste.roadbooknavigator.features.odometer.ui.PartialDistance
+import org.giste.roadbooknavigator.features.odometer.ui.TotalDistance
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Coordinates
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Distance
 import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookPosition
@@ -77,14 +80,21 @@ class DashboardScreenTest {
                 MainContent(
                     windowSizeClass = windowSizeClass,
                     uiState = uiState,
-                    listState = rememberLazyListState(),
-                    onSetPartialClick = {},
-                    onLongClickPartial = {},
                     onSettingsClick = {},
-                    onWaypointVisible = { _, _ -> },
-                    onFileSelected = {},
-                    mapContent = { modifier -> Box(modifier) },
-                    roadbookState = RoadbookUiState.Empty,
+                    primaryOdometerSlot = { modifier ->
+                        val configuration = LocalConfiguration.current
+                        val locale = if (configuration.locales.size() > 0) configuration.locales[0] else LocalLocale.current.platformLocale
+                        val partialDistanceStr = String.format(locale, "%.2f", uiState.odometer.partial / 1000.0)
+                        PartialDistance(distance = partialDistanceStr, modifier = modifier, onLongClick = {})
+                    },
+                    secondaryOdometerSlot = { modifier ->
+                        val configuration = LocalConfiguration.current
+                        val locale = if (configuration.locales.size() > 0) configuration.locales[0] else LocalLocale.current.platformLocale
+                        val totalDistanceStr = String.format(locale, "%.1f", uiState.odometer.total / 1000.0)
+                        TotalDistance(distance = totalDistanceStr, modifier = modifier)
+                    },
+                    roadbookSlot = { modifier -> Box(modifier) },
+                    mapSlot = { modifier -> Box(modifier) }
                 )
             }
         }
@@ -112,14 +122,15 @@ class DashboardScreenTest {
                 MainContent(
                     windowSizeClass = windowSizeClass,
                     uiState = uiState,
-                    listState = rememberLazyListState(),
-                    onSetPartialClick = {},
-                    onLongClickPartial = { longClickTriggered = true },
                     onSettingsClick = {},
-                    onWaypointVisible = { _, _ -> },
-                    onFileSelected = {},
-                    mapContent = { modifier -> Box(modifier) },
-                    roadbookState = RoadbookUiState.Empty,
+                    primaryOdometerSlot = { modifier ->
+                        PartialDistance(distance = expectedPartial, modifier = modifier, onLongClick = { longClickTriggered = true })
+                    },
+                    secondaryOdometerSlot = { modifier ->
+                        TotalDistance(distance = "0.0", modifier = modifier)
+                    },
+                    roadbookSlot = { modifier -> Box(modifier) },
+                    mapSlot = { modifier -> Box(modifier) }
                 )
             }
         }
@@ -149,16 +160,13 @@ class DashboardScreenTest {
                 MainContent(
                     windowSizeClass = windowSizeClass,
                     uiState = uiState,
-                    listState = rememberLazyListState(),
-                    onSetPartialClick = {},
-                    onLongClickPartial = {},
                     onSettingsClick = {},
-                    onWaypointVisible = { _, _ -> },
-                    onFileSelected = {},
-                    mapContent = { _ ->
-                        Text(text = mapDummyText, modifier = Modifier.testTag(mapTag))
-                    },
-                    roadbookState = RoadbookUiState.Empty,
+                    primaryOdometerSlot = { modifier -> Box(modifier) },
+                    secondaryOdometerSlot = { modifier -> Box(modifier) },
+                    roadbookSlot = { modifier -> Box(modifier) },
+                    mapSlot = { modifier ->
+                        Text(text = mapDummyText, modifier = modifier.testTag(mapTag))
+                    }
                 )
             }
         }
@@ -187,16 +195,13 @@ class DashboardScreenTest {
                 MainContent(
                     windowSizeClass = windowSizeClass,
                     uiState = uiState,
-                    listState = rememberLazyListState(),
-                    onSetPartialClick = {},
-                    onLongClickPartial = {},
                     onSettingsClick = {},
-                    onWaypointVisible = { _, _ -> },
-                    onFileSelected = {},
-                    mapContent = { _ ->
-                        Text(text = mapDummyText, modifier = Modifier.testTag(mapTag))
-                    },
-                    roadbookState = RoadbookUiState.Empty,
+                    primaryOdometerSlot = { modifier -> Box(modifier) },
+                    secondaryOdometerSlot = { modifier -> Box(modifier) },
+                    roadbookSlot = { modifier -> Box(modifier) },
+                    mapSlot = { modifier ->
+                        Text(text = mapDummyText, modifier = modifier.testTag(mapTag))
+                    }
                 )
             }
         }

@@ -84,7 +84,6 @@ import org.giste.roadbooknavigator.features.roadbook.domain.model.Waypoint
 import org.giste.roadbooknavigator.features.roadbook.ui.RoadbookSection
 import org.giste.roadbooknavigator.features.roadbook.ui.RoadbookUiState
 import org.giste.roadbooknavigator.features.roadbook.ui.RoadbookViewModel
-import java.io.InputStream
 import androidx.compose.ui.platform.LocalLocale
 
 @Composable
@@ -104,15 +103,49 @@ fun DashboardScreen(
         uiState = uiState,
         roadbookState = roadbookState,
         initialRoadbookPosition = initialRoadbookPosition,
+        primaryOdometerSlot = { modifier ->
+            val configuration = LocalConfiguration.current
+            val locale = if (configuration.locales.size() > 0) configuration.locales[0] else LocalLocale.current.platformLocale
+            val partialDistanceStr = try {
+                String.format(locale, "%.2f", uiState.odometer.partial / 1000.0)
+            } catch (_: Exception) {
+                "0.00"
+            }
+            PartialDistance(
+                distance = partialDistanceStr,
+                onLongClick = { viewModel.showSetPartialDialog() },
+                modifier = modifier
+            )
+        },
+        secondaryOdometerSlot = { modifier ->
+            val configuration = LocalConfiguration.current
+            val locale = if (configuration.locales.size() > 0) configuration.locales[0] else LocalLocale.current.platformLocale
+            val totalDistanceStr = try {
+                String.format(locale, "%.1f", uiState.odometer.total / 1000.0)
+            } catch (_: Exception) {
+                "0.0"
+            }
+            TotalDistance(
+                distance = totalDistanceStr,
+                modifier = modifier
+            )
+        },
+        roadbookSlot = { modifier, listState ->
+            RoadbookSection(
+                state = roadbookState,
+                listState = listState,
+                modifier = modifier,
+                onSetPartialClick = { viewModel.setPartialDistance(it) },
+                onWaypointVisible = { index, offset -> roadbookViewModel.onWaypointVisible(index, offset) },
+                onFileSelected = { roadbookViewModel.importRoute(it) },
+            )
+        },
+        mapSlot = { modifier -> MapScreen(modifier = modifier) },
         onIncrementPartial = { viewModel.incrementPartialDistance() },
         onDecrementPartial = { viewModel.decrementPartialDistance() },
         onResetPartial = { viewModel.resetPartialDistance() },
         onSetPartialDistance = { viewModel.setPartialDistance(it) },
-        onShowSetPartialDialog = { viewModel.showSetPartialDialog() },
         onHideSetPartialDialog = { viewModel.hideSetPartialDialog() },
-        onImportRoute = { roadbookViewModel.importRoute(it) },
-        onWaypointVisible = { index, offset -> roadbookViewModel.onWaypointVisible(index, offset) },
-        mapContent = { modifier -> MapScreen(modifier = modifier) }
     )
 }
 
@@ -123,21 +156,19 @@ fun DashboardContent(
     uiState: DashboardUiState,
     roadbookState: RoadbookUiState,
     initialRoadbookPosition: RoadbookPosition,
+    primaryOdometerSlot: @Composable (Modifier) -> Unit,
+    secondaryOdometerSlot: @Composable (Modifier) -> Unit,
+    roadbookSlot: @Composable (Modifier, LazyListState) -> Unit,
+    mapSlot: @Composable (Modifier) -> Unit,
     onIncrementPartial: () -> Unit,
     onDecrementPartial: () -> Unit,
     onResetPartial: () -> Unit,
     onSetPartialDistance: (Double) -> Unit,
-    onShowSetPartialDialog: () -> Unit,
     onHideSetPartialDialog: () -> Unit,
-    onImportRoute: (InputStream) -> Unit,
-    onWaypointVisible: (Int, Int) -> Unit,
-    mapContent: @Composable (Modifier) -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val focusRequester = remember { FocusRequester() }
 
-    // Use a stable key to ensure the scroll state is preserved across re-compositions (like theme changes).
-    // The key only changes when a DIFFERENT route is loaded.
     val routeKey = remember((roadbookState as? RoadbookUiState.Success)?.route) {
         (roadbookState as? RoadbookUiState.Success)?.let {
             "route_${it.route.name}_${it.route.waypoints.size}"
@@ -155,12 +186,10 @@ fun DashboardContent(
         }
     }
 
-    // Keep track of the waypoint we are currently aiming for to handle rapid key presses
     var targetWaypointIndex by remember(routeKey) {
         mutableIntStateOf(initialRoadbookPosition.index)
     }
 
-    // Synchronize targetWaypointIndex with the list state when manual scrolling finishes
     LaunchedEffect(listState.isScrollInProgress) {
         if (!listState.isScrollInProgress) {
             targetWaypointIndex = listState.firstVisibleItemIndex
@@ -193,10 +222,8 @@ fun DashboardContent(
                             coroutineScope.launch {
                                 targetWaypointIndex =
                                     if (listState.firstVisibleItemScrollOffset > 0) {
-                                        // If partially scrolled, first snap to the top of current waypoint
                                         listState.firstVisibleItemIndex
                                     } else {
-                                        // Otherwise move to the previous one
                                         (targetWaypointIndex - 1).coerceAtLeast(0)
                                     }
                                 listState.animateScrollToItem(targetWaypointIndex)
@@ -229,14 +256,11 @@ fun DashboardContent(
         MainContent(
             windowSizeClass = windowSizeClass,
             uiState = uiState,
-            roadbookState = roadbookState,
-            listState = listState,
-            onSetPartialClick = onSetPartialDistance,
-            onLongClickPartial = onShowSetPartialDialog,
             onSettingsClick = onSettingsClick,
-            onWaypointVisible = onWaypointVisible,
-            onFileSelected = onImportRoute,
-            mapContent = mapContent
+            primaryOdometerSlot = primaryOdometerSlot,
+            secondaryOdometerSlot = secondaryOdometerSlot,
+            roadbookSlot = { modifier -> roadbookSlot(modifier, listState) },
+            mapSlot = mapSlot
         )
 
         if (uiState.showSetPartialDialog) {
@@ -260,30 +284,12 @@ fun DashboardContent(
 fun MainContent(
     windowSizeClass: WindowSizeClass,
     uiState: DashboardUiState,
-    roadbookState: RoadbookUiState,
-    listState: LazyListState,
-    onSetPartialClick: (Double) -> Unit,
-    onLongClickPartial: () -> Unit,
     onSettingsClick: () -> Unit,
-    onWaypointVisible: (Int, Int) -> Unit,
-    onFileSelected: (InputStream) -> Unit,
-    mapContent: @Composable (Modifier) -> Unit,
+    primaryOdometerSlot: @Composable (Modifier) -> Unit,
+    secondaryOdometerSlot: @Composable (Modifier) -> Unit,
+    roadbookSlot: @Composable (Modifier) -> Unit,
+    mapSlot: @Composable (Modifier) -> Unit,
 ) {
-    val configuration = LocalConfiguration.current
-    val locale =
-        if (configuration.locales.size() > 0) configuration.locales[0] else LocalLocale.current.platformLocale
-
-    val totalDistanceStr = try {
-        String.format(locale, "%.1f", uiState.odometer.total / 1000.0)
-    } catch (e: Exception) {
-        "0.0"
-    }
-    val partialDistanceStr = try {
-        String.format(locale, "%.2f", uiState.odometer.partial / 1000.0)
-    } catch (e: Exception) {
-        "0.00"
-    }
-
     val widthSizeClass = windowSizeClass.widthSizeClass
     val heightSizeClass = windowSizeClass.heightSizeClass
 
@@ -297,70 +303,43 @@ fun MainContent(
         color = MaterialTheme.colorScheme.background
     ) {
         when {
-            // 1. "Landscape-like" on small/short screens (Phone Landscape)
             heightSizeClass == WindowHeightSizeClass.Compact -> {
                 CompactLandscapeLayout(
-                    roadbookState = roadbookState,
-                    listState = listState,
-                    totalDistance = totalDistanceStr,
-                    partialDistance = partialDistanceStr,
-                    onSetPartialClick = onSetPartialClick,
-                    onLongClickPartial = onLongClickPartial,
                     onSettingsClick = onSettingsClick,
-                    onWaypointVisible = onWaypointVisible,
-                    onFileSelected = onFileSelected,
-                    mapContent = mapContent,
+                    primaryOdometerSlot = primaryOdometerSlot,
+                    secondaryOdometerSlot = secondaryOdometerSlot,
+                    roadbookSlot = roadbookSlot,
+                    mapSlot = mapSlot,
                     modifier = Modifier.testTag("CompactLandscapeLayout")
                 )
             }
-
-            // 2. Large Tablet Landscape (Wide and not short)
             widthSizeClass == WindowWidthSizeClass.Expanded && heightSizeClass != WindowHeightSizeClass.Compact -> {
                 ExpandedLandscapeLayout(
-                    roadbookState = roadbookState,
-                    listState = listState,
-                    totalDistance = totalDistanceStr,
-                    partialDistance = partialDistanceStr,
-                    onSetPartialClick = onSetPartialClick,
-                    onLongClickPartial = onLongClickPartial,
                     onSettingsClick = onSettingsClick,
-                    onWaypointVisible = onWaypointVisible,
-                    onFileSelected = onFileSelected,
-                    mapContent = mapContent,
+                    primaryOdometerSlot = primaryOdometerSlot,
+                    secondaryOdometerSlot = secondaryOdometerSlot,
+                    roadbookSlot = roadbookSlot,
+                    mapSlot = mapSlot,
                     modifier = Modifier.testTag("ExpandedLandscapeLayout")
                 )
             }
-
-            // 3. Tablet Portrait / Medium-width windows (Medium width + Tall)
             widthSizeClass == WindowWidthSizeClass.Medium -> {
                 PortraitLayout(
-                    roadbookState = roadbookState,
-                    listState = listState,
-                    totalDistance = totalDistanceStr,
-                    partialDistance = partialDistanceStr,
-                    onSetPartialClick = onSetPartialClick,
-                    onLongClickPartial = onLongClickPartial,
                     onSettingsClick = onSettingsClick,
-                    onWaypointVisible = onWaypointVisible,
-                    onFileSelected = onFileSelected,
-                    mapContent = mapContent,
+                    primaryOdometerSlot = primaryOdometerSlot,
+                    secondaryOdometerSlot = secondaryOdometerSlot,
+                    roadbookSlot = roadbookSlot,
+                    mapSlot = mapSlot,
                     modifier = Modifier.testTag("PortraitLayout")
                 )
             }
-
-            // 4. Phone Portrait / Narrow windows (Compact width)
             else -> {
                 CompactPortraitLayout(
-                    roadbookState = roadbookState,
-                    listState = listState,
-                    totalDistance = totalDistanceStr,
-                    partialDistance = partialDistanceStr,
-                    onSetPartialClick = onSetPartialClick,
-                    onLongClickPartial = onLongClickPartial,
                     onSettingsClick = onSettingsClick,
-                    onWaypointVisible = onWaypointVisible,
-                    onFileSelected = onFileSelected,
-                    mapContent = mapContent,
+                    primaryOdometerSlot = primaryOdometerSlot,
+                    secondaryOdometerSlot = secondaryOdometerSlot,
+                    roadbookSlot = roadbookSlot,
+                    mapSlot = mapSlot,
                     modifier = Modifier.testTag("CompactPortraitLayout")
                 )
             }
@@ -372,69 +351,43 @@ fun MainContent(
 
 @Composable
 fun ExpandedLandscapeLayout(
-    roadbookState: RoadbookUiState,
-    listState: LazyListState,
-    totalDistance: String,
-    partialDistance: String,
-    onSetPartialClick: (Double) -> Unit,
-    onLongClickPartial: () -> Unit,
     onSettingsClick: () -> Unit,
-    onWaypointVisible: (Int, Int) -> Unit,
-    onFileSelected: (InputStream) -> Unit,
-    mapContent: @Composable (Modifier) -> Unit,
+    primaryOdometerSlot: @Composable (Modifier) -> Unit,
+    secondaryOdometerSlot: @Composable (Modifier) -> Unit,
+    roadbookSlot: @Composable (Modifier) -> Unit,
+    mapSlot: @Composable (Modifier) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(modifier = modifier.fillMaxSize()) {
         LandscapeDistanceSection(
-            totalDistance = totalDistance,
-            partialDistance = partialDistance,
-            onLongClickPartial = onLongClickPartial,
+            primaryOdometerSlot = primaryOdometerSlot,
+            secondaryOdometerSlot = secondaryOdometerSlot,
             onSettingsClick = onSettingsClick,
-            mapContent = mapContent,
+            mapSlot = mapSlot,
             modifier = Modifier.weight(2f)
         )
-        RoadbookSection(
-            state = roadbookState,
-            listState = listState,
-            modifier = Modifier.weight(5f),
-            onSetPartialClick = onSetPartialClick,
-            onWaypointVisible = onWaypointVisible,
-            onFileSelected = onFileSelected,
-        )
+        roadbookSlot(Modifier.weight(5f))
     }
 }
 
 @Composable
 fun CompactLandscapeLayout(
-    roadbookState: RoadbookUiState,
-    listState: LazyListState,
-    totalDistance: String,
-    partialDistance: String,
-    onSetPartialClick: (Double) -> Unit,
-    onLongClickPartial: () -> Unit,
     onSettingsClick: () -> Unit,
-    onWaypointVisible: (Int, Int) -> Unit,
-    onFileSelected: (InputStream) -> Unit,
-    mapContent: @Composable (Modifier) -> Unit,
+    primaryOdometerSlot: @Composable (Modifier) -> Unit,
+    secondaryOdometerSlot: @Composable (Modifier) -> Unit,
+    roadbookSlot: @Composable (Modifier) -> Unit,
+    mapSlot: @Composable (Modifier) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(modifier = modifier.fillMaxSize()) {
         LandscapeDistanceSection(
-            totalDistance = totalDistance,
-            partialDistance = partialDistance,
-            onLongClickPartial = onLongClickPartial,
+            primaryOdometerSlot = primaryOdometerSlot,
+            secondaryOdometerSlot = secondaryOdometerSlot,
             onSettingsClick = onSettingsClick,
-            mapContent = mapContent,
+            mapSlot = mapSlot,
             modifier = Modifier.weight(2f)
         )
-        RoadbookSection(
-            state = roadbookState,
-            listState = listState,
-            modifier = Modifier.weight(5f),
-            onSetPartialClick = onSetPartialClick,
-            onWaypointVisible = onWaypointVisible,
-            onFileSelected = onFileSelected,
-        )
+        roadbookSlot(Modifier.weight(5f))
     }
 }
 
@@ -442,68 +395,42 @@ fun CompactLandscapeLayout(
 
 @Composable
 fun PortraitLayout(
-    roadbookState: RoadbookUiState,
-    listState: LazyListState,
-    totalDistance: String,
-    partialDistance: String,
-    onSetPartialClick: (Double) -> Unit,
-    onLongClickPartial: () -> Unit,
     onSettingsClick: () -> Unit,
-    onWaypointVisible: (Int, Int) -> Unit,
-    onFileSelected: (InputStream) -> Unit,
-    mapContent: @Composable (Modifier) -> Unit,
+    primaryOdometerSlot: @Composable (Modifier) -> Unit,
+    secondaryOdometerSlot: @Composable (Modifier) -> Unit,
+    roadbookSlot: @Composable (Modifier) -> Unit,
+    mapSlot: @Composable (Modifier) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.fillMaxSize()) {
         PortraitDistanceSection(
-            totalDistance = totalDistance,
-            partialDistance = partialDistance,
-            onLongClickPartial = onLongClickPartial,
+            primaryOdometerSlot = primaryOdometerSlot,
+            secondaryOdometerSlot = secondaryOdometerSlot,
             onSettingsClick = onSettingsClick,
             modifier = Modifier.fillMaxWidth()
         )
-        RoadbookSection(
-            state = roadbookState,
-            listState = listState,
-            modifier = Modifier.weight(3f),
-            onSetPartialClick = onSetPartialClick,
-            onWaypointVisible = onWaypointVisible,
-            onFileSelected = onFileSelected,
-        )
-        mapContent(Modifier.weight(2f))
+        roadbookSlot(Modifier.weight(3f))
+        mapSlot(Modifier.weight(2f))
     }
 }
 
 @Composable
 fun CompactPortraitLayout(
-    roadbookState: RoadbookUiState,
-    listState: LazyListState,
-    totalDistance: String,
-    partialDistance: String,
-    onSetPartialClick: (Double) -> Unit,
-    onLongClickPartial: () -> Unit,
     onSettingsClick: () -> Unit,
-    onWaypointVisible: (Int, Int) -> Unit,
-    onFileSelected: (InputStream) -> Unit,
-    mapContent: @Composable (Modifier) -> Unit,
+    primaryOdometerSlot: @Composable (Modifier) -> Unit,
+    secondaryOdometerSlot: @Composable (Modifier) -> Unit,
+    roadbookSlot: @Composable (Modifier) -> Unit,
+    @Suppress("UNUSED_PARAMETER") mapSlot: @Composable (Modifier) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.fillMaxSize()) {
         PortraitDistanceSection(
-            totalDistance = totalDistance,
-            partialDistance = partialDistance,
-            onLongClickPartial = onLongClickPartial,
+            primaryOdometerSlot = primaryOdometerSlot,
+            secondaryOdometerSlot = secondaryOdometerSlot,
             onSettingsClick = onSettingsClick,
             modifier = Modifier.fillMaxWidth()
         )
-        RoadbookSection(
-            state = roadbookState,
-            listState = listState,
-            modifier = Modifier.weight(1f),
-            onSetPartialClick = onSetPartialClick,
-            onWaypointVisible = onWaypointVisible,
-            onFileSelected = onFileSelected,
-        )
+        roadbookSlot(Modifier.weight(1f))
     }
 }
 
@@ -511,11 +438,10 @@ fun CompactPortraitLayout(
 
 @Composable
 fun LandscapeDistanceSection(
-    totalDistance: String,
-    partialDistance: String,
-    onLongClickPartial: () -> Unit,
+    primaryOdometerSlot: @Composable (Modifier) -> Unit,
+    secondaryOdometerSlot: @Composable (Modifier) -> Unit,
     onSettingsClick: () -> Unit,
-    mapContent: @Composable (Modifier) -> Unit,
+    mapSlot: @Composable (Modifier) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -546,29 +472,23 @@ fun LandscapeDistanceSection(
                     tint = MaterialTheme.colorScheme.onSurface
                 )
             }
-            TotalDistance(
-                distance = totalDistance,
-                modifier = Modifier
+            secondaryOdometerSlot(
+                Modifier
                     .weight(1f)
                     .fillMaxHeight()
             )
         }
 
-        PartialDistance(
-            distance = partialDistance,
-            onLongClick = onLongClickPartial
-        )
+        primaryOdometerSlot(Modifier.fillMaxWidth())
 
-        // Map Area (Bottom) - Fills ALL remaining space
-        mapContent(Modifier.weight(1f))
+        mapSlot(Modifier.weight(1f))
     }
 }
 
 @Composable
 fun PortraitDistanceSection(
-    totalDistance: String,
-    partialDistance: String,
-    onLongClickPartial: () -> Unit,
+    primaryOdometerSlot: @Composable (Modifier) -> Unit,
+    secondaryOdometerSlot: @Composable (Modifier) -> Unit,
     onSettingsClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -592,28 +512,17 @@ fun PortraitDistanceSection(
                 tint = MaterialTheme.colorScheme.onSurface
             )
         }
-        // Total | Partial side-by-side
-        TotalDistance(
-            distance = totalDistance,
-            modifier = Modifier
+        secondaryOdometerSlot(
+            Modifier
                 .weight(0.55f)
                 .fillMaxHeight()
         )
-        PartialDistance(
-            distance = partialDistance,
-            onLongClick = onLongClickPartial,
-            modifier = Modifier
+        primaryOdometerSlot(
+            Modifier
                 .weight(0.45f)
                 .fillMaxHeight()
         )
     }
-}
-
-@Composable
-private fun MapSection(
-    modifier: Modifier = Modifier,
-) {
-    MapScreen(modifier = modifier)
 }
 
 // --- PREVIEWS ---
@@ -681,26 +590,28 @@ private val sampleRoadbookState = RoadbookUiState.Success(
 )
 @Composable
 fun TabletLandPreview() {
-    val listState = rememberLazyListState()
     RoadbookNavigatorTheme(
         windowSizeClass = WindowSizeClass.calculateFromSize(
-            DpSize(
-                1097.dp,
-                686.dp
-            )
+            DpSize(1097.dp, 686.dp)
         )
     ) {
         MainContent(
             windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(1097.dp, 686.dp)),
             uiState = sampleUiState,
-            roadbookState = sampleRoadbookState,
-            listState = listState,
-            onSetPartialClick = {},
-            onLongClickPartial = {},
             onSettingsClick = {},
-            onWaypointVisible = { _, _ -> },
-            onFileSelected = {},
-            mapContent = { modifier -> Box(modifier.background(MaterialTheme.colorScheme.tertiary)) }
+            primaryOdometerSlot = { modifier -> PartialDistance(distance = "1.15", modifier = modifier, onLongClick = {}) },
+            secondaryOdometerSlot = { modifier -> TotalDistance("2.4", modifier) },
+            roadbookSlot = { modifier -> 
+                RoadbookSection(
+                    state = sampleRoadbookState,
+                    listState = rememberLazyListState(),
+                    modifier = modifier,
+                    onSetPartialClick = {},
+                    onWaypointVisible = { _, _ -> },
+                    onFileSelected = {},
+                )
+            },
+            mapSlot = { modifier -> Box(modifier.background(MaterialTheme.colorScheme.tertiary)) }
         )
     }
 }
@@ -719,26 +630,28 @@ fun TabletLandPreview() {
 )
 @Composable
 fun TabletPortPreview() {
-    val listState = rememberLazyListState()
     RoadbookNavigatorTheme(
         windowSizeClass = WindowSizeClass.calculateFromSize(
-            DpSize(
-                686.dp,
-                1097.dp
-            )
+            DpSize(686.dp, 1097.dp)
         )
     ) {
         MainContent(
             windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(686.dp, 1097.dp)),
             uiState = sampleUiState,
-            roadbookState = sampleRoadbookState,
-            listState = listState,
-            onSetPartialClick = {},
-            onLongClickPartial = {},
             onSettingsClick = {},
-            onWaypointVisible = { _, _ -> },
-            onFileSelected = {},
-            mapContent = { modifier -> Box(modifier.background(MaterialTheme.colorScheme.tertiary)) }
+            primaryOdometerSlot = { modifier -> PartialDistance(distance = "1.15", modifier = modifier, onLongClick = {}) },
+            secondaryOdometerSlot = { modifier -> TotalDistance("2.4", modifier) },
+            roadbookSlot = { modifier -> 
+                RoadbookSection(
+                    state = sampleRoadbookState,
+                    listState = rememberLazyListState(),
+                    modifier = modifier,
+                    onSetPartialClick = {},
+                    onWaypointVisible = { _, _ -> },
+                    onFileSelected = {},
+                )
+            },
+            mapSlot = { modifier -> Box(modifier.background(MaterialTheme.colorScheme.tertiary)) }
         )
     }
 }
@@ -757,26 +670,28 @@ fun TabletPortPreview() {
 )
 @Composable
 fun PhonePortPreview() {
-    val listState = rememberLazyListState()
     RoadbookNavigatorTheme(
         windowSizeClass = WindowSizeClass.calculateFromSize(
-            DpSize(
-                411.dp,
-                891.dp
-            )
+            DpSize(411.dp, 891.dp)
         )
     ) {
         MainContent(
             windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp)),
             uiState = sampleUiState,
-            roadbookState = sampleRoadbookState,
-            listState = listState,
-            onSetPartialClick = {},
-            onLongClickPartial = {},
             onSettingsClick = {},
-            onWaypointVisible = { _, _ -> },
-            onFileSelected = {},
-            mapContent = { modifier -> Box(modifier.background(MaterialTheme.colorScheme.tertiary)) }
+            primaryOdometerSlot = { modifier -> PartialDistance(distance = "1.15", modifier = modifier, onLongClick = {}) },
+            secondaryOdometerSlot = { modifier -> TotalDistance("2.4", modifier) },
+            roadbookSlot = { modifier -> 
+                RoadbookSection(
+                    state = sampleRoadbookState,
+                    listState = rememberLazyListState(),
+                    modifier = modifier,
+                    onSetPartialClick = {},
+                    onWaypointVisible = { _, _ -> },
+                    onFileSelected = {},
+                )
+            },
+            mapSlot = { modifier -> Box(modifier.background(MaterialTheme.colorScheme.tertiary)) }
         )
     }
 }
@@ -795,26 +710,28 @@ fun PhonePortPreview() {
 )
 @Composable
 fun PhoneLandPreview() {
-    val listState = rememberLazyListState()
     RoadbookNavigatorTheme(
         windowSizeClass = WindowSizeClass.calculateFromSize(
-            DpSize(
-                891.dp,
-                411.dp
-            )
+            DpSize(891.dp, 411.dp)
         )
     ) {
         MainContent(
             windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(891.dp, 411.dp)),
             uiState = sampleUiState,
-            roadbookState = sampleRoadbookState,
-            listState = listState,
-            onSetPartialClick = {},
-            onLongClickPartial = {},
             onSettingsClick = {},
-            onWaypointVisible = { _, _ -> },
-            onFileSelected = {},
-            mapContent = { modifier -> Box(modifier.background(MaterialTheme.colorScheme.tertiary)) }
+            primaryOdometerSlot = { modifier -> PartialDistance(distance = "1.15", modifier = modifier, onLongClick = {}) },
+            secondaryOdometerSlot = { modifier -> TotalDistance("2.4", modifier) },
+            roadbookSlot = { modifier -> 
+                RoadbookSection(
+                    state = sampleRoadbookState,
+                    listState = rememberLazyListState(),
+                    modifier = modifier,
+                    onSetPartialClick = {},
+                    onWaypointVisible = { _, _ -> },
+                    onFileSelected = {},
+                )
+            },
+            mapSlot = { modifier -> Box(modifier.background(MaterialTheme.colorScheme.tertiary)) }
         )
     }
 }

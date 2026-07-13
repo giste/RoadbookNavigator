@@ -21,7 +21,6 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,10 +32,6 @@ import kotlinx.coroutines.test.setMain
 import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.odometer.domain.Odometer
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.*
-import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookPosition
-import org.giste.roadbooknavigator.features.roadbook.domain.model.Route
-import org.giste.roadbooknavigator.features.roadbook.domain.usecase.*
-import org.giste.roadbooknavigator.features.roadbook.ui.RoadbookUiState
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.usecase.GetSettingsUseCase
 import org.junit.After
@@ -44,27 +39,20 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import java.io.InputStream
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DashboardViewModelTest {
 
-    private val getActiveRoadbookUseCase: GetActiveRoadbookUseCase = mockk()
-    private val importRoadbookUseCase: ImportRoadbookUseCase = mockk()
     private val getOdometerUseCase: GetOdometerUseCase = mockk()
     private val resetPartialDistanceUseCase: ResetPartialDistanceUseCase = mockk()
     private val resetAllDistancesUseCase: ResetAllDistancesUseCase = mockk()
     private val incrementPartialDistanceUseCase: IncrementPartialDistanceUseCase = mockk()
     private val decrementPartialDistanceUseCase: DecrementPartialDistanceUseCase = mockk()
     private val setPartialDistanceUseCase: SetPartialDistanceUseCase = mockk()
-    private val getRoadbookPositionUseCase: GetRoadbookPositionUseCase = mockk()
-    private val saveRoadbookPositionUseCase: SaveRoadbookPositionUseCase = mockk()
     private val getSettingsUseCase: GetSettingsUseCase = mockk()
     private val logger: Logger = mockk(relaxed = true)
 
-    private val activeRoadbookFlow = MutableStateFlow<Route?>(null)
     private val odometerFlow = MutableStateFlow(Odometer())
-    private val scrollPositionFlow = MutableStateFlow(RoadbookPosition(0, 0))
     private val settingsFlow = MutableStateFlow(AppSettings())
     private val testDispatcher = UnconfinedTestDispatcher()
 
@@ -73,22 +61,16 @@ class DashboardViewModelTest {
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
-        every { getActiveRoadbookUseCase() } returns activeRoadbookFlow
         every { getOdometerUseCase() } returns odometerFlow
-        every { getRoadbookPositionUseCase() } returns scrollPositionFlow
         every { getSettingsUseCase() } returns settingsFlow
 
         viewModel = DashboardViewModel(
-            getActiveRoadbookUseCase,
-            importRoadbookUseCase,
             getOdometerUseCase,
             resetPartialDistanceUseCase,
             resetAllDistancesUseCase,
             incrementPartialDistanceUseCase,
             decrementPartialDistanceUseCase,
             setPartialDistanceUseCase,
-            getRoadbookPositionUseCase,
-            saveRoadbookPositionUseCase,
             getSettingsUseCase,
             logger
         )
@@ -103,10 +85,8 @@ class DashboardViewModelTest {
     fun `initial state should be correct`() = runTest {
         backgroundScope.launch(testDispatcher) { viewModel.uiState.collect {} }
 
-        assertEquals(RoadbookUiState.Empty, viewModel.uiState.value.roadbook)
         assertEquals(Odometer(), viewModel.uiState.value.odometer)
         assertEquals(false, viewModel.uiState.value.showSetPartialDialog)
-        // Default in AppSettings is now true
         assertEquals(true, viewModel.uiState.value.isFullScreen)
     }
 
@@ -119,51 +99,6 @@ class DashboardViewModelTest {
 
         settingsFlow.value = AppSettings(fullScreen = true)
         assertEquals(true, viewModel.uiState.value.isFullScreen)
-    }
-
-    @Test
-    fun `roadbook success state should be correct`() = runTest {
-        val route = mockk<Route>()
-        activeRoadbookFlow.value = route
-        scrollPositionFlow.value = RoadbookPosition(5, 10)
-        settingsFlow.value = AppSettings(shortDistanceThreshold = 250L)
-
-        backgroundScope.launch(testDispatcher) { viewModel.uiState.collect {} }
-
-        val expectedRoadbookState = RoadbookUiState.Success(
-            route,
-            shortDistanceThreshold = 250L,
-            initialIndex = 5,
-            initialOffset = 10
-        )
-        assertEquals(expectedRoadbookState, viewModel.uiState.value.roadbook)
-        assertEquals(RoadbookPosition(5, 10), viewModel.uiState.value.initialScrollPosition)
-
-        // Test settings update
-        settingsFlow.value = AppSettings(shortDistanceThreshold = 500L)
-        assertEquals(500L, (viewModel.uiState.value.roadbook as RoadbookUiState.Success).shortDistanceThreshold)
-    }
-
-    @Test
-    fun `importRoute should update state to Loading while processing and override success state`() = runTest {
-        // Start with a success state
-        activeRoadbookFlow.value = mockk<Route>()
-        backgroundScope.launch(testDispatcher) { viewModel.uiState.collect {} }
-        assertTrue(viewModel.uiState.value.roadbook is RoadbookUiState.Success)
-
-        val inputStream = mockk<InputStream>()
-        val deferred = CompletableDeferred<Result<Route>>()
-
-        coEvery { importRoadbookUseCase(any()) } coAnswers { deferred.await() }
-
-        viewModel.importRoute(inputStream)
-
-        // Loading should override Success
-        assertEquals(RoadbookUiState.Loading, viewModel.uiState.value.roadbook)
-
-        deferred.complete(Result.success(mockk()))
-        // After loading, it should return to repository state (which is still success in this test)
-        assertTrue(viewModel.uiState.value.roadbook is RoadbookUiState.Success)
     }
 
     @Test
@@ -199,14 +134,5 @@ class DashboardViewModelTest {
 
         viewModel.hideSetPartialDialog()
         assertTrue(!viewModel.uiState.value.showSetPartialDialog)
-    }
-
-    @Test
-    fun `onWaypointVisible should call saveRoadbookPositionUseCase`() = runTest {
-        coEvery { saveRoadbookPositionUseCase(any(), any()) } returns Unit
-
-        viewModel.onWaypointVisible(10, 20)
-
-        coVerify { saveRoadbookPositionUseCase(10, 20) }
     }
 }

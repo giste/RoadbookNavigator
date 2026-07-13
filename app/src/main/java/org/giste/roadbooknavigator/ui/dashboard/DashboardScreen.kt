@@ -78,22 +78,40 @@ import org.giste.roadbooknavigator.features.odometer.ui.SetPartialDialog
 import org.giste.roadbooknavigator.features.odometer.ui.TotalDistance
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Coordinates
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Distance
+import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookPosition
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Route
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Waypoint
 import org.giste.roadbooknavigator.features.roadbook.ui.RoadbookSection
 import org.giste.roadbooknavigator.features.roadbook.ui.RoadbookUiState
+import org.giste.roadbooknavigator.features.roadbook.ui.RoadbookViewModel
 import java.io.InputStream
+import androidx.compose.ui.platform.LocalLocale
 
 @Composable
 fun DashboardScreen(
     windowSizeClass: WindowSizeClass,
     onSettingsClick: () -> Unit,
-    viewModel: DashboardViewModel = hiltViewModel()
+    viewModel: DashboardViewModel = hiltViewModel(),
+    roadbookViewModel: RoadbookViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsState()
+    val roadbookState by roadbookViewModel.roadbookState.collectAsState()
+    val initialRoadbookPosition by roadbookViewModel.initialScrollPosition.collectAsState()
+
     DashboardContent(
         windowSizeClass = windowSizeClass,
         onSettingsClick = onSettingsClick,
-        viewModel = viewModel,
+        uiState = uiState,
+        roadbookState = roadbookState,
+        initialRoadbookPosition = initialRoadbookPosition,
+        onIncrementPartial = { viewModel.incrementPartialDistance() },
+        onDecrementPartial = { viewModel.decrementPartialDistance() },
+        onResetPartial = { viewModel.resetPartialDistance() },
+        onSetPartialDistance = { viewModel.setPartialDistance(it) },
+        onShowSetPartialDialog = { viewModel.showSetPartialDialog() },
+        onHideSetPartialDialog = { viewModel.hideSetPartialDialog() },
+        onImportRoute = { roadbookViewModel.importRoute(it) },
+        onWaypointVisible = { index, offset -> roadbookViewModel.onWaypointVisible(index, offset) },
         mapContent = { modifier -> MapScreen(modifier = modifier) }
     )
 }
@@ -102,16 +120,24 @@ fun DashboardScreen(
 fun DashboardContent(
     windowSizeClass: WindowSizeClass,
     onSettingsClick: () -> Unit,
-    viewModel: DashboardViewModel,
+    uiState: DashboardUiState,
+    roadbookState: RoadbookUiState,
+    initialRoadbookPosition: RoadbookPosition,
+    onIncrementPartial: () -> Unit,
+    onDecrementPartial: () -> Unit,
+    onResetPartial: () -> Unit,
+    onSetPartialDistance: (Double) -> Unit,
+    onShowSetPartialDialog: () -> Unit,
+    onHideSetPartialDialog: () -> Unit,
+    onImportRoute: (InputStream) -> Unit,
+    onWaypointVisible: (Int, Int) -> Unit,
     mapContent: @Composable (Modifier) -> Unit,
 ) {
-    val uiState by viewModel.uiState.collectAsState()
     val coroutineScope = rememberCoroutineScope()
     val focusRequester = remember { FocusRequester() }
 
     // Use a stable key to ensure the scroll state is preserved across re-compositions (like theme changes).
     // The key only changes when a DIFFERENT route is loaded.
-    val roadbookState = uiState.roadbook
     val routeKey = remember((roadbookState as? RoadbookUiState.Success)?.route) {
         (roadbookState as? RoadbookUiState.Success)?.let {
             "route_${it.route.name}_${it.route.waypoints.size}"
@@ -121,8 +147,8 @@ fun DashboardContent(
     val listState = rememberSaveable(routeKey, saver = LazyListState.Saver) {
         if (roadbookState is RoadbookUiState.Success) {
             LazyListState(
-                firstVisibleItemIndex = uiState.initialScrollPosition.index,
-                firstVisibleItemScrollOffset = uiState.initialScrollPosition.offset
+                firstVisibleItemIndex = initialRoadbookPosition.index,
+                firstVisibleItemScrollOffset = initialRoadbookPosition.offset
             )
         } else {
             LazyListState()
@@ -131,7 +157,7 @@ fun DashboardContent(
 
     // Keep track of the waypoint we are currently aiming for to handle rapid key presses
     var targetWaypointIndex by remember(routeKey) {
-        mutableIntStateOf(uiState.initialScrollPosition.index)
+        mutableIntStateOf(initialRoadbookPosition.index)
     }
 
     // Synchronize targetWaypointIndex with the list state when manual scrolling finishes
@@ -151,7 +177,7 @@ fun DashboardContent(
                 if (event.type == KeyEventType.KeyDown) {
                     when (event.key) {
                         Key.MediaNext, Key.DirectionUp -> {
-                            val waypointsCount = (uiState.roadbook as? RoadbookUiState.Success)
+                            val waypointsCount = (roadbookState as? RoadbookUiState.Success)
                                 ?.route?.waypoints?.size ?: 0
                             if (waypointsCount > 0) {
                                 coroutineScope.launch {
@@ -179,17 +205,17 @@ fun DashboardContent(
                         }
 
                         Key.VolumeUp, Key.DirectionRight -> {
-                            viewModel.incrementPartialDistance()
+                            onIncrementPartial()
                             true
                         }
 
                         Key.VolumeDown, Key.DirectionLeft -> {
-                            viewModel.decrementPartialDistance()
+                            onDecrementPartial()
                             true
                         }
 
                         Key.MediaPlayPause, Key.MediaPlay, Key.MediaPause, Key.F6 -> {
-                            viewModel.resetPartialDistance()
+                            onResetPartial()
                             true
                         }
 
@@ -203,24 +229,23 @@ fun DashboardContent(
         MainContent(
             windowSizeClass = windowSizeClass,
             uiState = uiState,
+            roadbookState = roadbookState,
             listState = listState,
-            onSetPartialClick = { viewModel.setPartialDistance(it) },
-            onLongClickPartial = { viewModel.showSetPartialDialog() },
+            onSetPartialClick = onSetPartialDistance,
+            onLongClickPartial = onShowSetPartialDialog,
             onSettingsClick = onSettingsClick,
-            onWaypointVisible = { index, offset -> viewModel.onWaypointVisible(index, offset) },
-            onFileSelected = { viewModel.importRoute(it) },
+            onWaypointVisible = onWaypointVisible,
+            onFileSelected = onImportRoute,
             mapContent = mapContent
         )
 
         if (uiState.showSetPartialDialog) {
             SetPartialDialog(
                 windowSizeClass = windowSizeClass,
-                onDismiss = {
-                    viewModel.hideSetPartialDialog()
-                },
+                onDismiss = onHideSetPartialDialog,
                 onConfirm = {
-                    viewModel.setPartialDistance(it)
-                    viewModel.hideSetPartialDialog()
+                    onSetPartialDistance(it)
+                    onHideSetPartialDialog()
                 }
             )
         }
@@ -235,6 +260,7 @@ fun DashboardContent(
 fun MainContent(
     windowSizeClass: WindowSizeClass,
     uiState: DashboardUiState,
+    roadbookState: RoadbookUiState,
     listState: LazyListState,
     onSetPartialClick: (Double) -> Unit,
     onLongClickPartial: () -> Unit,
@@ -245,7 +271,7 @@ fun MainContent(
 ) {
     val configuration = LocalConfiguration.current
     val locale =
-        if (configuration.locales.size() > 0) configuration.locales[0] else java.util.Locale.getDefault()
+        if (configuration.locales.size() > 0) configuration.locales[0] else LocalLocale.current.platformLocale
 
     val totalDistanceStr = try {
         String.format(locale, "%.1f", uiState.odometer.total / 1000.0)
@@ -270,8 +296,6 @@ fun MainContent(
             ),
         color = MaterialTheme.colorScheme.background
     ) {
-        val roadbookState = uiState.roadbook
-
         when {
             // 1. "Landscape-like" on small/short screens (Phone Landscape)
             heightSizeClass == WindowHeightSizeClass.Compact -> {
@@ -629,15 +653,16 @@ private val sampleWaypoints = listOf(
 )
 
 private val sampleUiState = DashboardUiState(
-    roadbook = RoadbookUiState.Success(
-        route = Route(
-            name = "Test Route",
-            waypoints = sampleWaypoints
-        )
-    ),
     odometer = Odometer(
         total = 2400.0,
         partial = 1150.0
+    )
+)
+
+private val sampleRoadbookState = RoadbookUiState.Success(
+    route = Route(
+        name = "Test Route",
+        waypoints = sampleWaypoints
     )
 )
 
@@ -668,6 +693,7 @@ fun TabletLandPreview() {
         MainContent(
             windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(1097.dp, 686.dp)),
             uiState = sampleUiState,
+            roadbookState = sampleRoadbookState,
             listState = listState,
             onSetPartialClick = {},
             onLongClickPartial = {},
@@ -705,6 +731,7 @@ fun TabletPortPreview() {
         MainContent(
             windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(686.dp, 1097.dp)),
             uiState = sampleUiState,
+            roadbookState = sampleRoadbookState,
             listState = listState,
             onSetPartialClick = {},
             onLongClickPartial = {},
@@ -742,6 +769,7 @@ fun PhonePortPreview() {
         MainContent(
             windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp)),
             uiState = sampleUiState,
+            roadbookState = sampleRoadbookState,
             listState = listState,
             onSetPartialClick = {},
             onLongClickPartial = {},
@@ -779,6 +807,7 @@ fun PhoneLandPreview() {
         MainContent(
             windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(891.dp, 411.dp)),
             uiState = sampleUiState,
+            roadbookState = sampleRoadbookState,
             listState = listState,
             onSetPartialClick = {},
             onLongClickPartial = {},

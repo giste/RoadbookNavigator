@@ -35,72 +35,31 @@ import org.giste.roadbooknavigator.features.odometer.domain.usecase.IncrementPar
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.ResetAllDistancesUseCase
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.ResetPartialDistanceUseCase
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.SetPartialDistanceUseCase
-import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookPosition
-import org.giste.roadbooknavigator.features.roadbook.domain.usecase.GetActiveRoadbookUseCase
-import org.giste.roadbooknavigator.features.roadbook.domain.usecase.GetRoadbookPositionUseCase
-import org.giste.roadbooknavigator.features.roadbook.domain.usecase.ImportRoadbookUseCase
-import org.giste.roadbooknavigator.features.roadbook.domain.usecase.SaveRoadbookPositionUseCase
-import org.giste.roadbooknavigator.features.roadbook.ui.RoadbookUiState
 import org.giste.roadbooknavigator.features.settings.domain.usecase.GetSettingsUseCase
-import java.io.InputStream
 import javax.inject.Inject
 
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
-    getActiveRoadbookUseCase: GetActiveRoadbookUseCase,
-    private val importRoadbookUseCase: ImportRoadbookUseCase,
     getOdometerUseCase: GetOdometerUseCase,
     private val resetPartialDistanceUseCase: ResetPartialDistanceUseCase,
     private val resetAllDistancesUseCase: ResetAllDistancesUseCase,
     private val incrementPartialDistanceUseCase: IncrementPartialDistanceUseCase,
     private val decrementPartialDistanceUseCase: DecrementPartialDistanceUseCase,
     private val setPartialDistanceUseCase: SetPartialDistanceUseCase,
-    getRoadbookPositionUseCase: GetRoadbookPositionUseCase,
-    private val saveRoadbookPositionUseCase: SaveRoadbookPositionUseCase,
     getSettingsUseCase: GetSettingsUseCase,
     private val logger: Logger
 ) : ViewModel() {
 
     private val _showSetPartialDialog = MutableStateFlow(false)
-    private val _transientState = MutableStateFlow<RoadbookUiState?>(null)
-
-    val roadbookState: StateFlow<RoadbookUiState> = combine(
-        getActiveRoadbookUseCase(),
-        getRoadbookPositionUseCase(),
-        getSettingsUseCase()
-    ) { route, position, settings ->
-        if (route != null) {
-            RoadbookUiState.Success(
-                route = route,
-                shortDistanceThreshold = settings.shortDistanceThreshold,
-                initialIndex = position.index,
-                initialOffset = position.offset
-            )
-        } else {
-            RoadbookUiState.Empty
-        }
-    }
-        .combine(_transientState) { repositoryState, transient ->
-            transient ?: repositoryState
-        }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = RoadbookUiState.Empty
-        )
 
     val uiState: StateFlow<DashboardUiState> = combine(
-        roadbookState,
         getOdometerUseCase().onStart { emit(Odometer()) },
         _showSetPartialDialog,
-        getRoadbookPositionUseCase(),
         getSettingsUseCase(),
-    ) { roadbook, odometer, showDialog, scrollPosition, settings ->
+    ) { odometer, showDialog, settings ->
         DashboardUiState(
-            roadbook = roadbook,
             odometer = odometer,
             showSetPartialDialog = showDialog,
-            initialScrollPosition = scrollPosition,
             isFullScreen = settings.fullScreen,
         )
     }.stateIn(
@@ -115,20 +74,6 @@ class DashboardViewModel @Inject constructor(
 
     fun hideSetPartialDialog() {
         _showSetPartialDialog.value = false
-    }
-
-    fun importRoute(inputStream: InputStream) {
-        viewModelScope.launch {
-            _transientState.value = RoadbookUiState.Loading
-            importRoadbookUseCase(inputStream)
-                .onSuccess {
-                    _transientState.value = null
-                }
-                .onFailure { error ->
-                    _transientState.value =
-                        RoadbookUiState.Error(error.message ?: "Failed to process file")
-                }
-        }
     }
 
     fun resetPartialDistance() {
@@ -165,21 +110,13 @@ class DashboardViewModel @Inject constructor(
             setPartialDistanceUseCase(distance)
         }
     }
-
-    fun onWaypointVisible(index: Int, offset: Int) {
-        viewModelScope.launch {
-            saveRoadbookPositionUseCase(index, offset)
-        }
-    }
 }
 
 /**
  * Represents the full screen state, composed of independent modules.
  */
 data class DashboardUiState(
-    val roadbook: RoadbookUiState = RoadbookUiState.Empty,
     val odometer: Odometer = Odometer(),
     val showSetPartialDialog: Boolean = false,
-    val initialScrollPosition: RoadbookPosition = RoadbookPosition(),
     val isFullScreen: Boolean = false,
 )

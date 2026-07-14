@@ -81,6 +81,7 @@ import org.giste.roadbooknavigator.features.roadbook.domain.model.Distance
 import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookPosition
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Route
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Waypoint
+import org.giste.roadbooknavigator.features.roadbook.ui.RoadbookContent
 import org.giste.roadbooknavigator.features.roadbook.ui.RoadbookSection
 import org.giste.roadbooknavigator.features.roadbook.ui.RoadbookUiState
 import org.giste.roadbooknavigator.features.roadbook.ui.RoadbookViewModel
@@ -132,12 +133,10 @@ fun DashboardScreen(
         },
         roadbookSlot = { modifier, listState ->
             RoadbookSection(
-                state = roadbookState,
+                viewModel = roadbookViewModel,
                 listState = listState,
                 modifier = modifier,
                 onSetPartialClick = { viewModel.setPartialDistance(it) },
-                onWaypointVisible = { index, offset -> roadbookViewModel.onWaypointVisible(index, offset) },
-                onFileSelected = { roadbookViewModel.importRoute(it) },
             )
         },
         mapSlot = { modifier -> MapScreen(modifier = modifier) },
@@ -602,7 +601,7 @@ fun TabletLandPreview() {
             primaryOdometerSlot = { modifier -> PartialDistance(distance = "1.15", modifier = modifier, onLongClick = {}) },
             secondaryOdometerSlot = { modifier -> TotalDistance("2.4", modifier) },
             roadbookSlot = { modifier -> 
-                RoadbookSection(
+                RoadbookContent(
                     state = sampleRoadbookState,
                     listState = rememberLazyListState(),
                     modifier = modifier,
@@ -642,7 +641,7 @@ fun TabletPortPreview() {
             primaryOdometerSlot = { modifier -> PartialDistance(distance = "1.15", modifier = modifier, onLongClick = {}) },
             secondaryOdometerSlot = { modifier -> TotalDistance("2.4", modifier) },
             roadbookSlot = { modifier -> 
-                RoadbookSection(
+                RoadbookContent(
                     state = sampleRoadbookState,
                     listState = rememberLazyListState(),
                     modifier = modifier,
@@ -682,7 +681,7 @@ fun PhonePortPreview() {
             primaryOdometerSlot = { modifier -> PartialDistance(distance = "1.15", modifier = modifier, onLongClick = {}) },
             secondaryOdometerSlot = { modifier -> TotalDistance("2.4", modifier) },
             roadbookSlot = { modifier -> 
-                RoadbookSection(
+                RoadbookContent(
                     state = sampleRoadbookState,
                     listState = rememberLazyListState(),
                     modifier = modifier,
@@ -722,7 +721,7 @@ fun PhoneLandPreview() {
             primaryOdometerSlot = { modifier -> PartialDistance(distance = "1.15", modifier = modifier, onLongClick = {}) },
             secondaryOdometerSlot = { modifier -> TotalDistance("2.4", modifier) },
             roadbookSlot = { modifier -> 
-                RoadbookSection(
+                RoadbookContent(
                     state = sampleRoadbookState,
                     listState = rememberLazyListState(),
                     modifier = modifier,

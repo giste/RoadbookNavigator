@@ -55,6 +55,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 import org.giste.roadbooknavigator.features.roadbook.R
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Coordinates
@@ -62,13 +64,31 @@ import org.giste.roadbooknavigator.features.roadbook.domain.model.Distance
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Point
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Road
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Route
-import org.giste.roadbooknavigator.features.roadbook.domain.model.ShortDistanceThreshold
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Track
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Waypoint
 import java.io.InputStream
 
 @Composable
 fun RoadbookSection(
+    modifier: Modifier = Modifier,
+    viewModel: RoadbookViewModel = hiltViewModel(),
+    listState: LazyListState = rememberLazyListState(),
+    onSetPartialClick: (Double) -> Unit,
+) {
+    val state by viewModel.roadbookState.collectAsStateWithLifecycle()
+
+    RoadbookContent(
+        state = state,
+        listState = listState,
+        modifier = modifier,
+        onFileSelected = viewModel::importRoute,
+        onSetPartialClick = onSetPartialClick,
+        onWaypointVisible = viewModel::onWaypointVisible
+    )
+}
+
+@Composable
+fun RoadbookContent(
     state: RoadbookUiState,
     listState: LazyListState,
     modifier: Modifier = Modifier,
@@ -232,7 +252,7 @@ fun RoadbookSectionEmptyPreview() {
         windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(1200.dp, 1920.dp)),
     ) {
         Surface {
-            RoadbookSection(
+            RoadbookContent(
                 state = RoadbookUiState.Empty,
                 listState = rememberLazyListState(),
                 onFileSelected = {},
@@ -287,7 +307,7 @@ fun RoadbookSectionSuccessPreview() {
         windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(1200.dp, 1920.dp)),
     ) {
         Surface {
-            RoadbookSection(
+            RoadbookContent(
                 state = RoadbookUiState.Success(sampleRoute),
                 listState = rememberLazyListState(),
                 onFileSelected = {},

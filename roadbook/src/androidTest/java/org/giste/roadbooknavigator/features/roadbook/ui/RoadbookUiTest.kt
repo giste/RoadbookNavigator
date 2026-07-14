@@ -67,7 +67,7 @@ class RoadbookUiTest {
     @Test
     fun loadingState_displaysLoadingIndicator() {
         composeTestRule.setContent {
-            RoadbookSection(
+            RoadbookContent(
                 state = RoadbookUiState.Loading,
                 listState = rememberLazyListState(),
                 onFileSelected = {},
@@ -82,7 +82,7 @@ class RoadbookUiTest {
     @Test
     fun emptyState_displaysImportButton() {
         composeTestRule.setContent {
-            RoadbookSection(
+            RoadbookContent(
                 state = RoadbookUiState.Empty,
                 listState = rememberLazyListState(),
                 onFileSelected = {},
@@ -99,7 +99,7 @@ class RoadbookUiTest {
     fun errorState_displaysErrorMessageAndImportButton() {
         val errorMessage = "Test Error"
         composeTestRule.setContent {
-            RoadbookSection(
+            RoadbookContent(
                 state = RoadbookUiState.Error(errorMessage),
                 listState = rememberLazyListState(),
                 onFileSelected = {},
@@ -117,7 +117,7 @@ class RoadbookUiTest {
     fun successState_displaysImportFab() {
         val route = Route(name = "Test Route", waypoints = emptyList())
         composeTestRule.setContent {
-            RoadbookSection(
+            RoadbookContent(
                 state = RoadbookUiState.Success(route),
                 listState = rememberLazyListState(),
                 onFileSelected = {},
@@ -137,7 +137,7 @@ class RoadbookUiTest {
         intending(hasAction(Intent.ACTION_GET_CONTENT)).respondWith(result)
 
         composeTestRule.setContent {
-            RoadbookSection(
+            RoadbookContent(
                 state = RoadbookUiState.Empty,
                 listState = rememberLazyListState(),
                 onFileSelected = {},
@@ -166,7 +166,7 @@ class RoadbookUiTest {
         val route = Route(name = "Test", waypoints = listOf(waypoint))
 
         composeTestRule.setContent {
-            RoadbookSection(
+            RoadbookContent(
                 state = RoadbookUiState.Success(route),
                 listState = rememberLazyListState(),
                 onFileSelected = {},
@@ -196,7 +196,7 @@ class RoadbookUiTest {
         val route = Route(name = "Test", waypoints = listOf(waypoint))
 
         composeTestRule.setContent {
-            RoadbookSection(
+            RoadbookContent(
                 state = RoadbookUiState.Success(route),
                 listState = rememberLazyListState(),
                 onFileSelected = {},
@@ -234,7 +234,7 @@ class RoadbookUiTest {
         val route = Route(name = "Test", waypoints = listOf(waypointShort, waypointNormal))
 
         composeTestRule.setContent {
-            RoadbookSection(
+            RoadbookContent(
                 state = RoadbookUiState.Success(
                     route = route,
                     shortDistanceThreshold = ShortDistanceThreshold(shortThreshold)

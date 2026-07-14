@@ -31,7 +31,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
@@ -47,10 +46,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -78,7 +74,6 @@ import org.giste.roadbooknavigator.features.odometer.ui.SetPartialDialog
 import org.giste.roadbooknavigator.features.odometer.ui.TotalDistance
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Coordinates
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Distance
-import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookPosition
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Route
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Waypoint
 import org.giste.roadbooknavigator.features.roadbook.ui.RoadbookContent
@@ -95,15 +90,11 @@ fun DashboardScreen(
     roadbookViewModel: RoadbookViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val roadbookState by roadbookViewModel.roadbookState.collectAsState()
-    val initialRoadbookPosition by roadbookViewModel.initialScrollPosition.collectAsState()
 
     DashboardContent(
         windowSizeClass = windowSizeClass,
         onSettingsClick = onSettingsClick,
         uiState = uiState,
-        roadbookState = roadbookState,
-        initialRoadbookPosition = initialRoadbookPosition,
         primaryOdometerSlot = { modifier ->
             val configuration = LocalConfiguration.current
             val locale = if (configuration.locales.size() > 0) configuration.locales[0] else LocalLocale.current.platformLocale
@@ -131,10 +122,9 @@ fun DashboardScreen(
                 modifier = modifier
             )
         },
-        roadbookSlot = { modifier, listState ->
+        roadbookSlot = { modifier ->
             RoadbookSection(
                 viewModel = roadbookViewModel,
-                listState = listState,
                 modifier = modifier,
                 onSetPartialClick = { viewModel.setPartialDistance(it) },
             )
@@ -153,11 +143,9 @@ fun DashboardContent(
     windowSizeClass: WindowSizeClass,
     onSettingsClick: () -> Unit,
     uiState: DashboardUiState,
-    roadbookState: RoadbookUiState,
-    initialRoadbookPosition: RoadbookPosition,
     primaryOdometerSlot: @Composable (Modifier) -> Unit,
     secondaryOdometerSlot: @Composable (Modifier) -> Unit,
-    roadbookSlot: @Composable (Modifier, LazyListState) -> Unit,
+    roadbookSlot: @Composable (Modifier) -> Unit,
     mapSlot: @Composable (Modifier) -> Unit,
     onIncrementPartial: () -> Unit,
     onDecrementPartial: () -> Unit,
@@ -165,35 +153,7 @@ fun DashboardContent(
     onSetPartialDistance: (Double) -> Unit,
     onHideSetPartialDialog: () -> Unit,
 ) {
-    val coroutineScope = rememberCoroutineScope()
     val focusRequester = remember { FocusRequester() }
-
-    val routeKey = remember((roadbookState as? RoadbookUiState.Success)?.route) {
-        (roadbookState as? RoadbookUiState.Success)?.let {
-            "route_${it.route.name}_${it.route.waypoints.size}"
-        }
-    }
-
-    val listState = rememberSaveable(routeKey, saver = LazyListState.Saver) {
-        if (roadbookState is RoadbookUiState.Success) {
-            LazyListState(
-                firstVisibleItemIndex = initialRoadbookPosition.index,
-                firstVisibleItemScrollOffset = initialRoadbookPosition.offset
-            )
-        } else {
-            LazyListState()
-        }
-    }
-
-    var targetWaypointIndex by remember(routeKey) {
-        mutableIntStateOf(initialRoadbookPosition.index)
-    }
-
-    LaunchedEffect(listState.isScrollInProgress) {
-        if (!listState.isScrollInProgress) {
-            targetWaypointIndex = listState.firstVisibleItemIndex
-        }
-    }
 
     Box(
         modifier = Modifier
@@ -204,32 +164,6 @@ fun DashboardContent(
             .onKeyEvent { event ->
                 if (event.type == KeyEventType.KeyDown) {
                     when (event.key) {
-                        Key.MediaNext, Key.DirectionUp -> {
-                            val waypointsCount = (roadbookState as? RoadbookUiState.Success)
-                                ?.route?.waypoints?.size ?: 0
-                            if (waypointsCount > 0) {
-                                coroutineScope.launch {
-                                    targetWaypointIndex = (targetWaypointIndex + 1)
-                                        .coerceAtMost(waypointsCount - 1)
-                                    listState.animateScrollToItem(targetWaypointIndex)
-                                }
-                            }
-                            true
-                        }
-
-                        Key.MediaPrevious, Key.DirectionDown -> {
-                            coroutineScope.launch {
-                                targetWaypointIndex =
-                                    if (listState.firstVisibleItemScrollOffset > 0) {
-                                        listState.firstVisibleItemIndex
-                                    } else {
-                                        (targetWaypointIndex - 1).coerceAtLeast(0)
-                                    }
-                                listState.animateScrollToItem(targetWaypointIndex)
-                            }
-                            true
-                        }
-
                         Key.VolumeUp, Key.DirectionRight -> {
                             onIncrementPartial()
                             true
@@ -258,7 +192,7 @@ fun DashboardContent(
             onSettingsClick = onSettingsClick,
             primaryOdometerSlot = primaryOdometerSlot,
             secondaryOdometerSlot = secondaryOdometerSlot,
-            roadbookSlot = { modifier -> roadbookSlot(modifier, listState) },
+            roadbookSlot = roadbookSlot,
             mapSlot = mapSlot
         )
 

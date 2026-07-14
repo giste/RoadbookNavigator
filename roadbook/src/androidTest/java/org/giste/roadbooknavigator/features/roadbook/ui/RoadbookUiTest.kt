@@ -30,15 +30,21 @@ import androidx.compose.ui.test.longClick
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performKeyPress
 import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.input.key.KeyEvent
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
 import androidx.test.platform.app.InstrumentationRegistry
+import io.mockk.every
+import io.mockk.mockk
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.giste.roadbooknavigator.features.roadbook.R
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Coordinates
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Distance
+import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookPosition
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Route
 import org.giste.roadbooknavigator.features.roadbook.domain.model.ShortDistanceThreshold
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Waypoint
@@ -212,6 +218,7 @@ class RoadbookUiTest {
         assert(capturedDistance == 0.0)
     }
 
+
     @Test
     fun shortDistanceThreshold_appliesHighlighting() {
         val shortThreshold = 300L
@@ -251,5 +258,51 @@ class RoadbookUiTest {
         
         // Verify that there is only one node with that highlight tag
         composeTestRule.onAllNodesWithTag("ShortDistanceHighlight").assertCountEquals(1)
+    }
+
+    @Test
+    fun directionUpKey_scrollsToNextWaypoint() {
+        val waypoints = List(10) { i ->
+            Waypoint(
+                number = i + 1,
+                coordinates = Coordinates(0.0, 0.0),
+                distance = Distance(i * 1000L),
+                distanceFromPrevious = Distance(1000L)
+            )
+        }
+        val viewModel: RoadbookViewModel = mockk(relaxed = true)
+        val stateFlow = MutableStateFlow<RoadbookUiState>(
+            RoadbookUiState.Success(Route(name = "Test", waypoints = waypoints))
+        )
+        val initialPositionFlow = MutableStateFlow(RoadbookPosition(0, 0))
+        every { viewModel.roadbookState } returns stateFlow
+        every { viewModel.initialScrollPosition } returns initialPositionFlow
+
+        composeTestRule.setContent {
+            RoadbookSection(
+                viewModel = viewModel,
+                onSetPartialClick = {}
+            )
+        }
+
+        // Initially waypoint 1 is displayed
+        composeTestRule.onNodeWithText("1").assertIsDisplayed()
+        
+        // Press Direction Up (Forward)
+        // Note: Focus is requested in LaunchedEffect(Unit), so it should be ready
+        (1..7).forEach { _ ->
+            composeTestRule.onNodeWithTag("RoadbookList").performKeyPress(
+                KeyEvent(
+                    nativeKeyEvent = android.view.KeyEvent(
+                        android.view.KeyEvent.ACTION_DOWN,
+                        android.view.KeyEvent.KEYCODE_DPAD_UP
+                    )
+                )
+            )
+            composeTestRule.waitForIdle()
+        }
+
+        // Waypoint 8 should now be visible
+        composeTestRule.onNodeWithText("8").assertIsDisplayed()
     }
 }

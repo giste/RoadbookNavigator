@@ -87,7 +87,40 @@ fun DashboardScreen(
     windowSizeClass: WindowSizeClass,
     onSettingsClick: () -> Unit,
     viewModel: DashboardViewModel = hiltViewModel(),
-    roadbookViewModel: RoadbookViewModel = hiltViewModel()
+    primaryOdometerSlot: @Composable (DashboardUiState, Modifier) -> Unit = { uiState, modifier ->
+        val configuration = LocalConfiguration.current
+        val locale = if (configuration.locales.size() > 0) configuration.locales[0] else LocalLocale.current.platformLocale
+        val partialDistanceStr = try {
+            String.format(locale, "%.2f", uiState.odometer.partial / 1000.0)
+        } catch (_: Exception) {
+            "0.00"
+        }
+        PartialDistance(
+            distance = partialDistanceStr,
+            onLongClick = { viewModel.showSetPartialDialog() },
+            modifier = modifier
+        )
+    },
+    secondaryOdometerSlot: @Composable (DashboardUiState, Modifier) -> Unit = { uiState, modifier ->
+        val configuration = LocalConfiguration.current
+        val locale = if (configuration.locales.size() > 0) configuration.locales[0] else LocalLocale.current.platformLocale
+        val totalDistanceStr = try {
+            String.format(locale, "%.1f", uiState.odometer.total / 1000.0)
+        } catch (_: Exception) {
+            "0.0"
+        }
+        TotalDistance(
+            distance = totalDistanceStr,
+            modifier = modifier
+        )
+    },
+    roadbookSlot: @Composable (Modifier) -> Unit = { modifier ->
+        RoadbookSection(
+            modifier = modifier,
+            onSetPartialClick = { viewModel.setPartialDistance(it) },
+        )
+    },
+    mapSlot: @Composable (Modifier) -> Unit = { modifier -> MapScreen(modifier = modifier) }
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -95,41 +128,10 @@ fun DashboardScreen(
         windowSizeClass = windowSizeClass,
         onSettingsClick = onSettingsClick,
         uiState = uiState,
-        primaryOdometerSlot = { modifier ->
-            val configuration = LocalConfiguration.current
-            val locale = if (configuration.locales.size() > 0) configuration.locales[0] else LocalLocale.current.platformLocale
-            val partialDistanceStr = try {
-                String.format(locale, "%.2f", uiState.odometer.partial / 1000.0)
-            } catch (_: Exception) {
-                "0.00"
-            }
-            PartialDistance(
-                distance = partialDistanceStr,
-                onLongClick = { viewModel.showSetPartialDialog() },
-                modifier = modifier
-            )
-        },
-        secondaryOdometerSlot = { modifier ->
-            val configuration = LocalConfiguration.current
-            val locale = if (configuration.locales.size() > 0) configuration.locales[0] else LocalLocale.current.platformLocale
-            val totalDistanceStr = try {
-                String.format(locale, "%.1f", uiState.odometer.total / 1000.0)
-            } catch (_: Exception) {
-                "0.0"
-            }
-            TotalDistance(
-                distance = totalDistanceStr,
-                modifier = modifier
-            )
-        },
-        roadbookSlot = { modifier ->
-            RoadbookSection(
-                viewModel = roadbookViewModel,
-                modifier = modifier,
-                onSetPartialClick = { viewModel.setPartialDistance(it) },
-            )
-        },
-        mapSlot = { modifier -> MapScreen(modifier = modifier) },
+        primaryOdometerSlot = { modifier -> primaryOdometerSlot(uiState, modifier) },
+        secondaryOdometerSlot = { modifier -> secondaryOdometerSlot(uiState, modifier) },
+        roadbookSlot = roadbookSlot,
+        mapSlot = mapSlot,
         onIncrementPartial = { viewModel.incrementPartialDistance() },
         onDecrementPartial = { viewModel.decrementPartialDistance() },
         onResetPartial = { viewModel.resetPartialDistance() },

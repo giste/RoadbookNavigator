@@ -17,13 +17,18 @@
 
 package org.giste.roadbooknavigator.ui.dashboard
 
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.key.KeyEvent
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
@@ -44,13 +49,12 @@ import io.mockk.verify
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 import org.giste.roadbooknavigator.features.odometer.domain.Odometer
-import org.giste.roadbooknavigator.features.odometer.ui.PartialDistance
-import org.giste.roadbooknavigator.features.odometer.ui.TotalDistance
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Coordinates
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Distance
 import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookPosition
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Route
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Waypoint
+import org.giste.roadbooknavigator.features.roadbook.ui.RoadbookSection
 import org.giste.roadbooknavigator.features.roadbook.ui.RoadbookUiState
 import org.giste.roadbooknavigator.features.roadbook.ui.RoadbookViewModel
 import org.junit.Rule
@@ -65,34 +69,39 @@ class DashboardScreenTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
+    @Composable
+    private fun FocusedRoadbookStub(modifier: Modifier = Modifier) {
+        val focusRequester = remember { FocusRequester() }
+        Box(
+            modifier = modifier
+                .testTag("RoadbookStub")
+                .focusRequester(focusRequester)
+                .focusable()
+        )
+        LaunchedEffect(Unit) {
+            focusRequester.requestFocus()
+        }
+    }
+
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     @Test
     fun displaysOdometerValues() {
         val uiState = DashboardUiState(
             odometer = Odometer(1200.0, 500.0),
         )
+        val viewModel: DashboardViewModel = mockk(relaxed = true)
+        every { viewModel.uiState } returns MutableStateFlow(uiState)
+        
         val windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp))
 
         composeTestRule.setContent {
             RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
-                MainContent(
+                DashboardScreen(
                     windowSizeClass = windowSizeClass,
-                    uiState = uiState,
                     onSettingsClick = {},
-                    primaryOdometerSlot = { modifier ->
-                        val configuration = LocalConfiguration.current
-                        val locale = if (configuration.locales.size() > 0) configuration.locales[0] else LocalLocale.current.platformLocale
-                        val partialDistanceStr = String.format(locale, "%.2f", uiState.odometer.partial / 1000.0)
-                        PartialDistance(distance = partialDistanceStr, modifier = modifier, onLongClick = {})
-                    },
-                    secondaryOdometerSlot = { modifier ->
-                        val configuration = LocalConfiguration.current
-                        val locale = if (configuration.locales.size() > 0) configuration.locales[0] else LocalLocale.current.platformLocale
-                        val totalDistanceStr = String.format(locale, "%.1f", uiState.odometer.total / 1000.0)
-                        TotalDistance(distance = totalDistanceStr, modifier = modifier)
-                    },
-                    roadbookSlot = { modifier -> Box(modifier) },
-                    mapSlot = { modifier -> Box(modifier) }
+                    viewModel = viewModel,
+                    roadbookSlot = { modifier -> FocusedRoadbookStub(modifier) },
+                    mapSlot = { Box(it) }
                 )
             }
         }
@@ -108,27 +117,23 @@ class DashboardScreenTest {
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     @Test
     fun longClickOnPartialDistance_triggersOnLongClickPartial() {
-        var longClickTriggered = false
         val uiState = DashboardUiState(
             odometer = Odometer(0.0, 500.0),
         )
+        val viewModel: DashboardViewModel = mockk(relaxed = true)
+        every { viewModel.uiState } returns MutableStateFlow(uiState)
+        
         val expectedPartial = String.format(Locale.getDefault(), "%.2f", 500.0 / 1000.0)
         val windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp))
 
         composeTestRule.setContent {
             RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
-                MainContent(
+                DashboardScreen(
                     windowSizeClass = windowSizeClass,
-                    uiState = uiState,
                     onSettingsClick = {},
-                    primaryOdometerSlot = { modifier ->
-                        PartialDistance(distance = expectedPartial, modifier = modifier, onLongClick = { longClickTriggered = true })
-                    },
-                    secondaryOdometerSlot = { modifier ->
-                        TotalDistance(distance = "0.0", modifier = modifier)
-                    },
-                    roadbookSlot = { modifier -> Box(modifier) },
-                    mapSlot = { modifier -> Box(modifier) }
+                    viewModel = viewModel,
+                    roadbookSlot = { modifier -> FocusedRoadbookStub(modifier) },
+                    mapSlot = { Box(it) }
                 )
             }
         }
@@ -137,16 +142,15 @@ class DashboardScreenTest {
             longClick()
         }
 
-        assert(longClickTriggered)
+        verify { viewModel.showSetPartialDialog() }
     }
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     @Test
     fun tabletPortrait_displaysMapSection() {
-        val uiState = DashboardUiState(
-            odometer = Odometer(0.0, 0.0),
-        )
-
+        val viewModel: DashboardViewModel = mockk(relaxed = true)
+        every { viewModel.uiState } returns MutableStateFlow(DashboardUiState())
+        
         val mapTag = "MapSectionTag"
         val mapDummyText = "MAP_CONTENT_DUMMY"
         // Medium width and Tall height
@@ -155,13 +159,11 @@ class DashboardScreenTest {
 
         composeTestRule.setContent {
             RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
-                MainContent(
+                DashboardScreen(
                     windowSizeClass = windowSizeClass,
-                    uiState = uiState,
                     onSettingsClick = {},
-                    primaryOdometerSlot = { modifier -> Box(modifier) },
-                    secondaryOdometerSlot = { modifier -> Box(modifier) },
-                    roadbookSlot = { modifier -> Box(modifier) },
+                    viewModel = viewModel,
+                    roadbookSlot = { modifier -> FocusedRoadbookStub(modifier) },
                     mapSlot = { modifier ->
                         Text(text = mapDummyText, modifier = modifier.testTag(mapTag))
                     }
@@ -178,10 +180,9 @@ class DashboardScreenTest {
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     @Test
     fun phonePortrait_doesNotDisplayMapSection() {
-        val uiState = DashboardUiState(
-            odometer = Odometer(0.0, 0.0),
-        )
-
+        val viewModel: DashboardViewModel = mockk(relaxed = true)
+        every { viewModel.uiState } returns MutableStateFlow(DashboardUiState())
+        
         val mapTag = "MapSectionTag"
         val mapDummyText = "MAP_CONTENT_DUMMY"
         // Phone Portrait size
@@ -190,13 +191,11 @@ class DashboardScreenTest {
 
         composeTestRule.setContent {
             RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
-                MainContent(
+                DashboardScreen(
                     windowSizeClass = windowSizeClass,
-                    uiState = uiState,
                     onSettingsClick = {},
-                    primaryOdometerSlot = { modifier -> Box(modifier) },
-                    secondaryOdometerSlot = { modifier -> Box(modifier) },
-                    roadbookSlot = { modifier -> Box(modifier) },
+                    viewModel = viewModel,
+                    roadbookSlot = { modifier -> FocusedRoadbookStub(modifier) },
                     mapSlot = { modifier ->
                         Text(text = mapDummyText, modifier = modifier.testTag(mapTag))
                     }
@@ -214,13 +213,9 @@ class DashboardScreenTest {
     @Test
     fun volumeUpKey_triggersIncrementPartialDistance() {
         val viewModel: DashboardViewModel = mockk(relaxed = true)
-        val roadbookViewModel: RoadbookViewModel = mockk(relaxed = true)
         val uiStateFlow = MutableStateFlow(DashboardUiState())
-        val roadbookStateFlow = MutableStateFlow<RoadbookUiState>(RoadbookUiState.Empty)
-        val scrollPositionFlow = MutableStateFlow(RoadbookPosition(0, 0))
         every { viewModel.uiState } returns uiStateFlow
-        every { roadbookViewModel.roadbookState } returns roadbookStateFlow
-        every { roadbookViewModel.initialScrollPosition } returns scrollPositionFlow
+        
         val windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp))
 
         composeTestRule.setContent {
@@ -229,7 +224,7 @@ class DashboardScreenTest {
                     windowSizeClass = windowSizeClass,
                     onSettingsClick = {},
                     viewModel = viewModel,
-                    roadbookViewModel = roadbookViewModel,
+                    roadbookSlot = { modifier -> FocusedRoadbookStub(modifier) },
                 )
             }
         }
@@ -253,13 +248,9 @@ class DashboardScreenTest {
     @Test
     fun f6Key_triggersResetPartialDistance() {
         val viewModel: DashboardViewModel = mockk(relaxed = true)
-        val roadbookViewModel: RoadbookViewModel = mockk(relaxed = true)
         val uiStateFlow = MutableStateFlow(DashboardUiState())
-        val roadbookStateFlow = MutableStateFlow<RoadbookUiState>(RoadbookUiState.Empty)
-        val scrollPositionFlow = MutableStateFlow(RoadbookPosition(0, 0))
         every { viewModel.uiState } returns uiStateFlow
-        every { roadbookViewModel.roadbookState } returns roadbookStateFlow
-        every { roadbookViewModel.initialScrollPosition } returns scrollPositionFlow
+        
         val windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp))
 
         composeTestRule.setContent {
@@ -268,7 +259,7 @@ class DashboardScreenTest {
                     windowSizeClass = windowSizeClass,
                     onSettingsClick = {},
                     viewModel = viewModel,
-                    roadbookViewModel = roadbookViewModel,
+                    roadbookSlot = { modifier -> FocusedRoadbookStub(modifier) },
                 )
             }
         }
@@ -291,13 +282,9 @@ class DashboardScreenTest {
     @Test
     fun volumeDownKey_triggersDecrementPartialDistance() {
         val viewModel: DashboardViewModel = mockk(relaxed = true)
-        val roadbookViewModel: RoadbookViewModel = mockk(relaxed = true)
         val uiStateFlow = MutableStateFlow(DashboardUiState())
-        val roadbookStateFlow = MutableStateFlow<RoadbookUiState>(RoadbookUiState.Empty)
-        val scrollPositionFlow = MutableStateFlow(RoadbookPosition(0, 0))
         every { viewModel.uiState } returns uiStateFlow
-        every { roadbookViewModel.roadbookState } returns roadbookStateFlow
-        every { roadbookViewModel.initialScrollPosition } returns scrollPositionFlow
+        
         val windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp))
 
         composeTestRule.setContent {
@@ -306,7 +293,7 @@ class DashboardScreenTest {
                     windowSizeClass = windowSizeClass,
                     onSettingsClick = {},
                     viewModel = viewModel,
-                    roadbookViewModel = roadbookViewModel,
+                    roadbookSlot = { modifier -> FocusedRoadbookStub(modifier) },
                 )
             }
         }
@@ -329,13 +316,9 @@ class DashboardScreenTest {
     @Test
     fun dashboardContent_displaysMainContent() {
         val viewModel: DashboardViewModel = mockk(relaxed = true)
-        val roadbookViewModel: RoadbookViewModel = mockk(relaxed = true)
         val uiStateFlow = MutableStateFlow(DashboardUiState())
-        val roadbookStateFlow = MutableStateFlow<RoadbookUiState>(RoadbookUiState.Empty)
-        val scrollPositionFlow = MutableStateFlow(RoadbookPosition(0, 0))
         every { viewModel.uiState } returns uiStateFlow
-        every { roadbookViewModel.roadbookState } returns roadbookStateFlow
-        every { roadbookViewModel.initialScrollPosition } returns scrollPositionFlow
+        
         val windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp))
 
         composeTestRule.setContent {
@@ -344,7 +327,9 @@ class DashboardScreenTest {
                     windowSizeClass = windowSizeClass,
                     onSettingsClick = {},
                     viewModel = viewModel,
-                    roadbookViewModel = roadbookViewModel,
+                    roadbookSlot = { modifier ->
+                        Text(text = context.getString(RoadbookR.string.main_no_route), modifier = modifier)
+                    }
                 )
             }
         }
@@ -385,7 +370,13 @@ class DashboardScreenTest {
                     windowSizeClass = windowSizeClass,
                     onSettingsClick = {},
                     viewModel = viewModel,
-                    roadbookViewModel = roadbookViewModel,
+                    roadbookSlot = { modifier ->
+                        RoadbookSection(
+                            viewModel = roadbookViewModel,
+                            modifier = modifier,
+                            onSetPartialClick = {}
+                        )
+                    }
                 )
             }
         }
@@ -429,13 +420,9 @@ class DashboardScreenTest {
     @Test
     fun directionalKeys_triggerOdometerActions() {
         val viewModel: DashboardViewModel = mockk(relaxed = true)
-        val roadbookViewModel: RoadbookViewModel = mockk(relaxed = true)
         val uiStateFlow = MutableStateFlow(DashboardUiState())
-        val roadbookStateFlow = MutableStateFlow<RoadbookUiState>(RoadbookUiState.Empty)
-        val scrollPositionFlow = MutableStateFlow(RoadbookPosition(0, 0))
         every { viewModel.uiState } returns uiStateFlow
-        every { roadbookViewModel.roadbookState } returns roadbookStateFlow
-        every { roadbookViewModel.initialScrollPosition } returns scrollPositionFlow
+        
         val windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp))
 
         composeTestRule.setContent {
@@ -444,7 +431,7 @@ class DashboardScreenTest {
                     windowSizeClass = windowSizeClass,
                     onSettingsClick = {},
                     viewModel = viewModel,
-                    roadbookViewModel = roadbookViewModel,
+                    roadbookSlot = { modifier -> FocusedRoadbookStub(modifier) },
                 )
             }
         }
@@ -478,13 +465,9 @@ class DashboardScreenTest {
     @Test
     fun mediaKeys_triggerOdometerActions() {
         val viewModel: DashboardViewModel = mockk(relaxed = true)
-        val roadbookViewModel: RoadbookViewModel = mockk(relaxed = true)
         val uiStateFlow = MutableStateFlow(DashboardUiState())
-        val roadbookStateFlow = MutableStateFlow<RoadbookUiState>(RoadbookUiState.Empty)
-        val scrollPositionFlow = MutableStateFlow(RoadbookPosition(0, 0))
         every { viewModel.uiState } returns uiStateFlow
-        every { roadbookViewModel.roadbookState } returns roadbookStateFlow
-        every { roadbookViewModel.initialScrollPosition } returns scrollPositionFlow
+        
         val windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp))
 
         composeTestRule.setContent {
@@ -493,7 +476,7 @@ class DashboardScreenTest {
                     windowSizeClass = windowSizeClass,
                     onSettingsClick = {},
                     viewModel = viewModel,
-                    roadbookViewModel = roadbookViewModel,
+                    roadbookSlot = { modifier -> FocusedRoadbookStub(modifier) },
                 )
             }
         }
@@ -552,7 +535,13 @@ class DashboardScreenTest {
                     windowSizeClass = windowSizeClass,
                     onSettingsClick = {},
                     viewModel = viewModel,
-                    roadbookViewModel = roadbookViewModel,
+                    roadbookSlot = { modifier ->
+                        RoadbookSection(
+                            viewModel = roadbookViewModel,
+                            modifier = modifier,
+                            onSetPartialClick = {}
+                        )
+                    }
                 )
             }
         }
@@ -572,8 +561,6 @@ class DashboardScreenTest {
         composeTestRule.onNodeWithText("2").assertIsDisplayed()
         
         // Verify it did NOT reach the dashboard's Odometer logic (even if it were mapped there)
-        // Since DPAD_UP isn't mapped in DashboardScreen, this is more about verification that
-        // Roadbook handles its keys correctly.
         verify(exactly = 0) { viewModel.incrementPartialDistance() }
         verify(exactly = 0) { viewModel.decrementPartialDistance() }
         verify(exactly = 0) { viewModel.resetPartialDistance() }

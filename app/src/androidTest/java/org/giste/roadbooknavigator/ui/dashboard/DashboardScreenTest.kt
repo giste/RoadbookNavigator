@@ -355,4 +355,76 @@ class DashboardScreenTest {
         composeTestRule.onNodeWithText(expectedMessage).assertIsDisplayed()
     }
 
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+    @Test
+    fun roadbookAndOdometerKeys_areCorrectlyRouted() {
+        val waypoints = List(10) { i ->
+            Waypoint(
+                number = i + 1,
+                coordinates = Coordinates(0.0, 0.0),
+                distance = Distance(i * 1000L),
+                distanceFromPrevious = Distance(1000L)
+            )
+        }
+        val route = Route(name = "Integration Test", waypoints = waypoints)
+        
+        val viewModel: DashboardViewModel = mockk(relaxed = true)
+        val roadbookViewModel: RoadbookViewModel = mockk(relaxed = true)
+        
+        val uiStateFlow = MutableStateFlow(DashboardUiState())
+        val roadbookStateFlow = MutableStateFlow<RoadbookUiState>(RoadbookUiState.Success(route))
+        val scrollPositionFlow = MutableStateFlow(RoadbookPosition(0, 0))
+        
+        every { viewModel.uiState } returns uiStateFlow
+        every { roadbookViewModel.roadbookState } returns roadbookStateFlow
+        every { roadbookViewModel.initialScrollPosition } returns scrollPositionFlow
+        
+        val windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp))
+
+        composeTestRule.setContent {
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                DashboardScreen(
+                    windowSizeClass = windowSizeClass,
+                    onSettingsClick = {},
+                    viewModel = viewModel,
+                    roadbookViewModel = roadbookViewModel,
+                )
+            }
+        }
+
+        // --- Step 1 & 2: Roadbook Navigation (DPAD_UP) ---
+        // Initially waypoint 1 is displayed
+        composeTestRule.onNodeWithText("1").assertIsDisplayed()
+        
+        // Press DPAD_UP. The roadbook component (focused by default) should handle it.
+        composeTestRule.onNodeWithTag("RoadbookList").performKeyPress(
+            KeyEvent(
+                nativeKeyEvent = android.view.KeyEvent(
+                    android.view.KeyEvent.ACTION_DOWN,
+                    android.view.KeyEvent.KEYCODE_DPAD_UP
+                )
+            )
+        )
+        composeTestRule.waitForIdle()
+
+        // Waypoint 2 should now be visible (scrolled to)
+        composeTestRule.onNodeWithText("2").assertIsDisplayed()
+        // Waypoint 1 should be scrolled out and not exist in the semantics tree
+        composeTestRule.onNodeWithText("1").assertDoesNotExist()
+        
+        // --- Step 3: Odometer Integration (VOLUME_UP) ---
+        // The roadbook doesn't handle VOLUME_UP, so it should bubble up to the dashboard.
+        composeTestRule.onNodeWithTag("RoadbookList").performKeyPress(
+            KeyEvent(
+                nativeKeyEvent = android.view.KeyEvent(
+                    android.view.KeyEvent.ACTION_DOWN,
+                    android.view.KeyEvent.KEYCODE_VOLUME_UP
+                )
+            )
+        )
+        
+        // Verify dashboard logic was triggered exactly once (bubbled up)
+        verify(exactly = 1) { viewModel.incrementPartialDistance() }
+    }
+
 }

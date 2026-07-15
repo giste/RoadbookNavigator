@@ -207,10 +207,6 @@ fun DashboardContent(
             )
         }
     }
-
-    LaunchedEffect(Unit) {
-        focusRequester.requestFocus()
-    }
 }
 
 @Composable

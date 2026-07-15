@@ -21,14 +21,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.key.KeyEvent
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.longClick
 import androidx.compose.ui.test.onAllNodesWithText
@@ -427,4 +425,157 @@ class DashboardScreenTest {
         verify(exactly = 1) { viewModel.incrementPartialDistance() }
     }
 
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+    @Test
+    fun directionalKeys_triggerOdometerActions() {
+        val viewModel: DashboardViewModel = mockk(relaxed = true)
+        val roadbookViewModel: RoadbookViewModel = mockk(relaxed = true)
+        val uiStateFlow = MutableStateFlow(DashboardUiState())
+        val roadbookStateFlow = MutableStateFlow<RoadbookUiState>(RoadbookUiState.Empty)
+        val scrollPositionFlow = MutableStateFlow(RoadbookPosition(0, 0))
+        every { viewModel.uiState } returns uiStateFlow
+        every { roadbookViewModel.roadbookState } returns roadbookStateFlow
+        every { roadbookViewModel.initialScrollPosition } returns scrollPositionFlow
+        val windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp))
+
+        composeTestRule.setContent {
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                DashboardScreen(
+                    windowSizeClass = windowSizeClass,
+                    onSettingsClick = {},
+                    viewModel = viewModel,
+                    roadbookViewModel = roadbookViewModel,
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag("MainScreen").performClick()
+
+        // Test DPAD_RIGHT
+        composeTestRule.onNodeWithTag("MainScreen").performKeyPress(
+            KeyEvent(
+                nativeKeyEvent = android.view.KeyEvent(
+                    android.view.KeyEvent.ACTION_DOWN,
+                    android.view.KeyEvent.KEYCODE_DPAD_RIGHT
+                )
+            )
+        )
+        verify { viewModel.incrementPartialDistance() }
+
+        // Test DPAD_LEFT
+        composeTestRule.onNodeWithTag("MainScreen").performKeyPress(
+            KeyEvent(
+                nativeKeyEvent = android.view.KeyEvent(
+                    android.view.KeyEvent.ACTION_DOWN,
+                    android.view.KeyEvent.KEYCODE_DPAD_LEFT
+                )
+            )
+        )
+        verify { viewModel.decrementPartialDistance() }
+    }
+
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+    @Test
+    fun mediaKeys_triggerOdometerActions() {
+        val viewModel: DashboardViewModel = mockk(relaxed = true)
+        val roadbookViewModel: RoadbookViewModel = mockk(relaxed = true)
+        val uiStateFlow = MutableStateFlow(DashboardUiState())
+        val roadbookStateFlow = MutableStateFlow<RoadbookUiState>(RoadbookUiState.Empty)
+        val scrollPositionFlow = MutableStateFlow(RoadbookPosition(0, 0))
+        every { viewModel.uiState } returns uiStateFlow
+        every { roadbookViewModel.roadbookState } returns roadbookStateFlow
+        every { roadbookViewModel.initialScrollPosition } returns scrollPositionFlow
+        val windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp))
+
+        composeTestRule.setContent {
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                DashboardScreen(
+                    windowSizeClass = windowSizeClass,
+                    onSettingsClick = {},
+                    viewModel = viewModel,
+                    roadbookViewModel = roadbookViewModel,
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag("MainScreen").performClick()
+
+        val mediaKeys = listOf(
+            android.view.KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE,
+            android.view.KeyEvent.KEYCODE_MEDIA_PLAY,
+            android.view.KeyEvent.KEYCODE_MEDIA_PAUSE
+        )
+
+        mediaKeys.forEach { keyCode ->
+            composeTestRule.onNodeWithTag("MainScreen").performKeyPress(
+                KeyEvent(
+                    nativeKeyEvent = android.view.KeyEvent(
+                        android.view.KeyEvent.ACTION_DOWN,
+                        keyCode
+                    )
+                )
+            )
+        }
+
+        verify(exactly = 3) { viewModel.resetPartialDistance() }
+    }
+
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+    @Test
+    fun focus_verifiesRoadbookRetainsPriorityForDirectionalKeys() {
+        val waypoints = List(5) { i ->
+            Waypoint(
+                number = i + 1,
+                coordinates = Coordinates(0.0, 0.0),
+                distance = Distance(i * 1000L),
+                distanceFromPrevious = Distance(1000L)
+            )
+        }
+        val route = Route(name = "Focus Test", waypoints = waypoints)
+        
+        val viewModel: DashboardViewModel = mockk(relaxed = true)
+        val roadbookViewModel: RoadbookViewModel = mockk(relaxed = true)
+        
+        val uiStateFlow = MutableStateFlow(DashboardUiState())
+        val roadbookStateFlow = MutableStateFlow<RoadbookUiState>(RoadbookUiState.Success(route))
+        val scrollPositionFlow = MutableStateFlow(RoadbookPosition(0, 0))
+        
+        every { viewModel.uiState } returns uiStateFlow
+        every { roadbookViewModel.roadbookState } returns roadbookStateFlow
+        every { roadbookViewModel.initialScrollPosition } returns scrollPositionFlow
+        
+        val windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp))
+
+        composeTestRule.setContent {
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                DashboardScreen(
+                    windowSizeClass = windowSizeClass,
+                    onSettingsClick = {},
+                    viewModel = viewModel,
+                    roadbookViewModel = roadbookViewModel,
+                )
+            }
+        }
+
+        // Send DPAD_UP to RoadbookList
+        composeTestRule.onNodeWithTag("RoadbookList").performKeyPress(
+            KeyEvent(
+                nativeKeyEvent = android.view.KeyEvent(
+                    android.view.KeyEvent.ACTION_DOWN,
+                    android.view.KeyEvent.KEYCODE_DPAD_UP
+                )
+            )
+        )
+        composeTestRule.waitForIdle()
+
+        // Verify Waypoint 2 is displayed (handled by Roadbook)
+        composeTestRule.onNodeWithText("2").assertIsDisplayed()
+        
+        // Verify it did NOT reach the dashboard's Odometer logic (even if it were mapped there)
+        // Since DPAD_UP isn't mapped in DashboardScreen, this is more about verification that
+        // Roadbook handles its keys correctly.
+        verify(exactly = 0) { viewModel.incrementPartialDistance() }
+        verify(exactly = 0) { viewModel.decrementPartialDistance() }
+        verify(exactly = 0) { viewModel.resetPartialDistance() }
+    }
 }

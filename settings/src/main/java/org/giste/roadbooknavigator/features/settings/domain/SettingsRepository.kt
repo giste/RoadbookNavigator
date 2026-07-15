@@ -40,7 +40,4 @@ interface SettingsRepository {
 
     /** Updates the selected remote control model. */
     suspend fun setRemoteModel(model: RemoteModel)
-
-    /** Updates the custom key mappings. */
-    suspend fun setCustomKeys(keys: RemoteKeys)
 }

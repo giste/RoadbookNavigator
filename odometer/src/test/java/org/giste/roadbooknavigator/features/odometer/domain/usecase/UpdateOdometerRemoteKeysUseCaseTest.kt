@@ -15,35 +15,36 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.settings.domain.usecase
+package org.giste.roadbooknavigator.features.odometer.domain.usecase
 
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.giste.roadbooknavigator.core.util.Logger
-import org.giste.roadbooknavigator.features.settings.domain.RemoteKeys
-import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
+import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettingsRepository
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-class UpdateCustomKeysUseCaseTest {
+class UpdateOdometerRemoteKeysUseCaseTest {
 
-    private val repository: SettingsRepository = mockk()
+    private val repository: OdometerSettingsRepository = mockk()
     private val logger: Logger = mockk(relaxed = true)
-    private val useCase = UpdateCustomKeysUseCase(repository, logger)
+    private val useCase = UpdateOdometerRemoteKeysUseCase(repository, logger)
 
     @Test
     fun `invoke should call repository`() = runTest {
         // Given
-        val keys = RemoteKeys.DND2
-        coEvery { repository.setCustomKeys(keys) } returns Unit
+        val increase = listOf(1)
+        val decrease = listOf(2)
+        val reset = listOf(3)
+        coEvery { repository.setRemoteKeys(increase, decrease, reset) } returns Unit
 
         // When
-        val result = useCase(keys)
+        val result = useCase(increase, decrease, reset)
 
         // Then
         assertTrue(result.isSuccess)
-        coVerify { repository.setCustomKeys(keys) }
+        coVerify { repository.setRemoteKeys(increase, decrease, reset) }
     }
 }

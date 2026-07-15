@@ -73,7 +73,8 @@ class SettingsScreenTest {
                     onLocationMinDistanceChange = {},
                     onRestoreOdometerDefaults = {},
                     onRemoteModelSelected = {},
-                    onCustomKeysChanged = {},
+                    onOdometerKeysChanged = { _, _, _ -> },
+                    onRoadbookKeysChanged = { _, _ -> },
                     onMapInitialZoomChange = {},
                     onMapInitialTiltChange = {},
                     mapManagementContent = { Text("Map Management Content") }
@@ -117,7 +118,8 @@ class SettingsScreenTest {
                     onLocationMinDistanceChange = {},
                     onRestoreOdometerDefaults = {},
                     onRemoteModelSelected = {},
-                    onCustomKeysChanged = {},
+                    onOdometerKeysChanged = { _, _, _ -> },
+                    onRoadbookKeysChanged = { _, _ -> },
                     onMapInitialZoomChange = {},
                     onMapInitialTiltChange = {},
                     mapManagementContent = {}
@@ -152,7 +154,8 @@ class SettingsScreenTest {
                     onLocationMinDistanceChange = {},
                     onRestoreOdometerDefaults = {},
                     onRemoteModelSelected = {},
-                    onCustomKeysChanged = {},
+                    onOdometerKeysChanged = { _, _, _ -> },
+                    onRoadbookKeysChanged = { _, _ -> },
                     onMapInitialZoomChange = {},
                     onMapInitialTiltChange = {},
                     mapManagementContent = {}
@@ -189,7 +192,8 @@ class SettingsScreenTest {
                     onLocationMinDistanceChange = {},
                     onRestoreOdometerDefaults = { restoreClicked = true },
                     onRemoteModelSelected = {},
-                    onCustomKeysChanged = {},
+                    onOdometerKeysChanged = { _, _, _ -> },
+                    onRoadbookKeysChanged = { _, _ -> },
                     onMapInitialZoomChange = {},
                     onMapInitialTiltChange = {},
                     mapManagementContent = {}
@@ -227,7 +231,8 @@ class SettingsScreenTest {
                     onLocationMinDistanceChange = {},
                     onRestoreOdometerDefaults = {},
                     onRemoteModelSelected = {},
-                    onCustomKeysChanged = {},
+                    onOdometerKeysChanged = { _, _, _ -> },
+                    onRoadbookKeysChanged = { _, _ -> },
                     onMapInitialZoomChange = {},
                     onMapInitialTiltChange = {},
                     mapManagementContent = {}
@@ -262,7 +267,8 @@ class SettingsScreenTest {
                     onLocationMinDistanceChange = {},
                     onRestoreOdometerDefaults = {},
                     onRemoteModelSelected = {},
-                    onCustomKeysChanged = {},
+                    onOdometerKeysChanged = { _, _, _ -> },
+                    onRoadbookKeysChanged = { _, _ -> },
                     onMapInitialZoomChange = {},
                     onMapInitialTiltChange = {},
                     mapManagementContent = {}
@@ -297,7 +303,8 @@ class SettingsScreenTest {
                     onLocationMinDistanceChange = {},
                     onRestoreOdometerDefaults = {},
                     onRemoteModelSelected = {},
-                    onCustomKeysChanged = {},
+                    onOdometerKeysChanged = { _, _, _ -> },
+                    onRoadbookKeysChanged = { _, _ -> },
                     onMapInitialZoomChange = {},
                     onMapInitialTiltChange = {},
                     mapManagementContent = {}
@@ -334,7 +341,8 @@ class SettingsScreenTest {
                     onLocationMinDistanceChange = {},
                     onRestoreOdometerDefaults = {},
                     onRemoteModelSelected = {},
-                    onCustomKeysChanged = {},
+                    onOdometerKeysChanged = { _, _, _ -> },
+                    onRoadbookKeysChanged = { _, _ -> },
                     onMapInitialZoomChange = {},
                     onMapInitialTiltChange = {},
                     mapManagementContent = {}
@@ -375,7 +383,8 @@ class SettingsScreenTest {
                     onLocationMinDistanceChange = {},
                     onRestoreOdometerDefaults = {},
                     onRemoteModelSelected = {},
-                    onCustomKeysChanged = {},
+                    onOdometerKeysChanged = { _, _, _ -> },
+                    onRoadbookKeysChanged = { _, _ -> },
                     onMapInitialZoomChange = {},
                     onMapInitialTiltChange = {},
                     mapManagementContent = {}
@@ -416,7 +425,8 @@ class SettingsScreenTest {
                     onLocationMinDistanceChange = {},
                     onRestoreOdometerDefaults = {},
                     onRemoteModelSelected = {},
-                    onCustomKeysChanged = {},
+                    onOdometerKeysChanged = { _, _, _ -> },
+                    onRoadbookKeysChanged = { _, _ -> },
                     onMapInitialZoomChange = {},
                     onMapInitialTiltChange = {},
                     mapManagementContent = {}
@@ -457,7 +467,8 @@ class SettingsScreenTest {
                     onLocationMinDistanceChange = {},
                     onRestoreOdometerDefaults = {},
                     onRemoteModelSelected = {},
-                    onCustomKeysChanged = {},
+                    onOdometerKeysChanged = { _, _, _ -> },
+                    onRoadbookKeysChanged = { _, _ -> },
                     onMapInitialZoomChange = {},
                     onMapInitialTiltChange = {},
                     mapManagementContent = {}
@@ -503,7 +514,8 @@ class SettingsScreenTest {
                     onLocationMinDistanceChange = { newValue = it },
                     onRestoreOdometerDefaults = {},
                     onRemoteModelSelected = {},
-                    onCustomKeysChanged = {},
+                    onOdometerKeysChanged = { _, _, _ -> },
+                    onRoadbookKeysChanged = { _, _ -> },
                     onMapInitialZoomChange = {},
                     onMapInitialTiltChange = {},
                     mapManagementContent = {}
@@ -545,7 +557,8 @@ class SettingsScreenTest {
                     onLocationMinDistanceChange = {},
                     onRestoreOdometerDefaults = {},
                     onRemoteModelSelected = {},
-                    onCustomKeysChanged = {},
+                    onOdometerKeysChanged = { _, _, _ -> },
+                    onRoadbookKeysChanged = { _, _ -> },
                     onMapInitialZoomChange = {},
                     onMapInitialTiltChange = {},
                     mapManagementContent = {}
@@ -584,7 +597,8 @@ class SettingsScreenTest {
                     onLocationMinDistanceChange = {},
                     onRestoreOdometerDefaults = {},
                     onRemoteModelSelected = { selectedModel = it },
-                    onCustomKeysChanged = {},
+                    onOdometerKeysChanged = { _, _, _ -> },
+                    onRoadbookKeysChanged = { _, _ -> },
                     onMapInitialZoomChange = {},
                     onMapInitialTiltChange = {},
                     mapManagementContent = {}

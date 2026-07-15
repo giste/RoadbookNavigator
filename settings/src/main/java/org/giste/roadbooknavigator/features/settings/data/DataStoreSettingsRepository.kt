@@ -30,7 +30,6 @@ import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.RemoteKeySettings
-import org.giste.roadbooknavigator.features.settings.domain.RemoteKeys
 import org.giste.roadbooknavigator.features.settings.domain.RemoteModel
 import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
 import javax.inject.Inject
@@ -51,9 +50,6 @@ internal class DataStoreSettingsRepository @Inject constructor(
         val ORIENTATION = stringPreferencesKey("app_orientation")
         val FULL_SCREEN = booleanPreferencesKey("full_screen")
         val REMOTE_MODEL = stringPreferencesKey("remote_model")
-        val CUSTOM_INCREASE_PARTIAL = stringPreferencesKey("custom_increase_partial")
-        val CUSTOM_DECREASE_PARTIAL = stringPreferencesKey("custom_decrease_partial")
-        val CUSTOM_RESET_PARTIAL = stringPreferencesKey("custom_reset_partial")
     }
 
     override fun getSettings(): Flow<AppSettings> = dataStore.data.map { preferences ->
@@ -65,15 +61,7 @@ internal class DataStoreSettingsRepository @Inject constructor(
                 ?: AppOrientation.FOLLOW_SYSTEM,
             fullScreen = preferences[Keys.FULL_SCREEN] ?: true,
             remoteKeySettings = RemoteKeySettings(
-                model = remoteModel,
-                customKeys = RemoteKeys(
-                    increasePartial = preferences[Keys.CUSTOM_INCREASE_PARTIAL]?.toIntList()
-                        ?: RemoteKeys.DND2.increasePartial,
-                    decreasePartial = preferences[Keys.CUSTOM_DECREASE_PARTIAL]?.toIntList()
-                        ?: RemoteKeys.DND2.decreasePartial,
-                    resetPartial = preferences[Keys.CUSTOM_RESET_PARTIAL]?.toIntList()
-                        ?: RemoteKeys.DND2.resetPartial,
-                )
+                model = remoteModel
             )
         )
     }.onEach {
@@ -105,30 +93,6 @@ internal class DataStoreSettingsRepository @Inject constructor(
         logger.i("DataStoreSettingsRepository: Setting remote model to %s", model)
         dataStore.edit { preferences ->
             preferences[Keys.REMOTE_MODEL] = model.name
-            if (model != RemoteModel.CUSTOM) {
-                val keys = when (model) {
-                    RemoteModel.DND2 -> RemoteKeys.DND2
-                    RemoteModel.TERRA_PIRATA -> RemoteKeys.TERRA_PIRATA
-                    RemoteModel.CUSTOM -> null
-                }
-                keys?.let {
-                    preferences[Keys.CUSTOM_INCREASE_PARTIAL] =
-                        it.increasePartial.toPreferenceString()
-                    preferences[Keys.CUSTOM_DECREASE_PARTIAL] =
-                        it.decreasePartial.toPreferenceString()
-                    preferences[Keys.CUSTOM_RESET_PARTIAL] = it.resetPartial.toPreferenceString()
-                }
-            }
-        }
-    }
-
-    override suspend fun setCustomKeys(keys: RemoteKeys) {
-        logger.i("DataStoreSettingsRepository: Setting custom keys")
-        dataStore.edit { preferences ->
-            preferences[Keys.REMOTE_MODEL] = RemoteModel.CUSTOM.name
-            preferences[Keys.CUSTOM_INCREASE_PARTIAL] = keys.increasePartial.toPreferenceString()
-            preferences[Keys.CUSTOM_DECREASE_PARTIAL] = keys.decreasePartial.toPreferenceString()
-            preferences[Keys.CUSTOM_RESET_PARTIAL] = keys.resetPartial.toPreferenceString()
         }
     }
 
@@ -149,9 +113,4 @@ internal class DataStoreSettingsRepository @Inject constructor(
     } catch (_: IllegalArgumentException) {
         RemoteModel.DND2
     }
-
-    private fun List<Int>.toPreferenceString(): String = joinToString(",")
-
-    private fun String.toIntList(): List<Int> =
-        if (isEmpty()) emptyList() else split(",").mapNotNull { it.toIntOrNull() }
 }

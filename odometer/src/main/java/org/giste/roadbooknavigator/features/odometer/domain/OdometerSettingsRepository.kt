@@ -37,6 +37,9 @@ interface OdometerSettingsRepository {
     /** Sets the minimum vertical accuracy required for altitude-related odometer logic. */
     suspend fun setMinVerticalAccuracy(accuracy: Float)
 
+    /** Sets the remote control keys for odometer actions. */
+    suspend fun setRemoteKeys(increase: List<Int>, decrease: List<Int>, reset: List<Int>)
+
     /** Resets all odometer-related parameters to their default values. */
     suspend fun restoreSettingsDefaults()
 }

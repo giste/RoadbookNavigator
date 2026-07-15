@@ -21,6 +21,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.floatPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.giste.roadbooknavigator.core.util.Logger
@@ -42,6 +43,9 @@ internal class DataStoreOdometerSettingsRepository @Inject constructor(
         val SPEED_THRESHOLD = floatPreferencesKey("odometer_speed_threshold")
         val MIN_ACCURACY = floatPreferencesKey("odometer_min_accuracy")
         val MIN_VERTICAL_ACCURACY = floatPreferencesKey("odometer_min_vertical_accuracy")
+        val INCREASE_KEYS = stringPreferencesKey("odometer_keys_increase")
+        val DECREASE_KEYS = stringPreferencesKey("odometer_keys_decrease")
+        val RESET_KEYS = stringPreferencesKey("odometer_keys_reset")
     }
 
     override fun getSettings(): Flow<OdometerSettings> = dataStore.data.map { preferences ->
@@ -52,6 +56,12 @@ internal class DataStoreOdometerSettingsRepository @Inject constructor(
                 ?: OdometerSettings.DEFAULT_MIN_ACCURACY,
             minVerticalAccuracy = preferences[Keys.MIN_VERTICAL_ACCURACY]
                 ?: OdometerSettings.DEFAULT_MIN_VERTICAL_ACCURACY,
+            increasePartial = preferences[Keys.INCREASE_KEYS]?.toIntList()
+                ?: OdometerSettings.DEFAULT_INCREASE_KEYS,
+            decreasePartial = preferences[Keys.DECREASE_KEYS]?.toIntList()
+                ?: OdometerSettings.DEFAULT_DECREASE_KEYS,
+            resetPartial = preferences[Keys.RESET_KEYS]?.toIntList()
+                ?: OdometerSettings.DEFAULT_RESET_KEYS,
         )
     }
 
@@ -79,12 +89,33 @@ internal class DataStoreOdometerSettingsRepository @Inject constructor(
         }
     }
 
+    override suspend fun setRemoteKeys(
+        increase: List<Int>,
+        decrease: List<Int>,
+        reset: List<Int>
+    ) {
+        logger.i("DataStoreOdometerSettingsRepository: Setting remote keys")
+        dataStore.edit { preferences ->
+            preferences[Keys.INCREASE_KEYS] = increase.toPreferenceString()
+            preferences[Keys.DECREASE_KEYS] = decrease.toPreferenceString()
+            preferences[Keys.RESET_KEYS] = reset.toPreferenceString()
+        }
+    }
+
     override suspend fun restoreSettingsDefaults() {
         logger.i("DataStoreOdometerSettingsRepository: Restoring settings defaults")
         dataStore.edit { preferences ->
             preferences.remove(Keys.SPEED_THRESHOLD)
             preferences.remove(Keys.MIN_ACCURACY)
             preferences.remove(Keys.MIN_VERTICAL_ACCURACY)
+            preferences.remove(Keys.INCREASE_KEYS)
+            preferences.remove(Keys.DECREASE_KEYS)
+            preferences.remove(Keys.RESET_KEYS)
         }
     }
+
+    private fun List<Int>.toPreferenceString(): String = joinToString(",")
+
+    private fun String.toIntList(): List<Int> =
+        if (isEmpty()) emptyList() else split(",").mapNotNull { it.toIntOrNull() }
 }

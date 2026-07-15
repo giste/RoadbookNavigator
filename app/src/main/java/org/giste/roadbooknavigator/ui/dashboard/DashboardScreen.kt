@@ -55,6 +55,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.nativeKeyCode
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.platform.LocalConfiguration
@@ -165,18 +166,19 @@ fun DashboardContent(
             .focusable()
             .onKeyEvent { event ->
                 if (event.type == KeyEventType.KeyDown) {
-                    when (event.key) {
-                        Key.VolumeUp, Key.DirectionRight -> {
+                    val keyCode = event.key.nativeKeyCode
+                    when {
+                        uiState.increasePartialKeys.contains(keyCode) -> {
                             onIncrementPartial()
                             true
                         }
 
-                        Key.VolumeDown, Key.DirectionLeft -> {
+                        uiState.decreasePartialKeys.contains(keyCode) -> {
                             onDecrementPartial()
                             true
                         }
 
-                        Key.MediaPlayPause, Key.MediaPlay, Key.MediaPause, Key.F6 -> {
+                        uiState.resetPartialKeys.contains(keyCode) -> {
                             onResetPartial()
                             true
                         }

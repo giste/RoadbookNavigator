@@ -110,7 +110,6 @@ import org.giste.roadbooknavigator.features.roadbook.domain.model.ShortDistanceT
 import org.giste.roadbooknavigator.features.settings.R
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
-import org.giste.roadbooknavigator.features.settings.domain.RemoteKeys
 import org.giste.roadbooknavigator.features.settings.domain.RemoteModel
 import org.giste.roadbooknavigator.core.R as CoreR
 
@@ -134,7 +133,7 @@ fun SettingsScreen(
         onLocationMinDistanceChange = viewModel::setLocationMinDistance,
         onRestoreOdometerDefaults = viewModel::restoreOdometerDefaults,
         onRemoteModelSelected = viewModel::setRemoteModel,
-        onCustomKeysChanged = viewModel::setCustomKeys,
+        onOdometerKeysChanged = viewModel::setOdometerKeys,
         onRoadbookKeysChanged = viewModel::setRoadbookKeys,
         onMapInitialZoomChange = viewModel::setMapInitialZoom,
         onMapInitialTiltChange = viewModel::setMapInitialTilt,
@@ -158,7 +157,7 @@ fun SettingsContent(
     onLocationMinDistanceChange: (Float) -> Unit,
     onRestoreOdometerDefaults: () -> Unit,
     onRemoteModelSelected: (RemoteModel) -> Unit,
-    onCustomKeysChanged: (RemoteKeys) -> Unit,
+    onOdometerKeysChanged: (List<Int>, List<Int>, List<Int>) -> Unit,
     onRoadbookKeysChanged: (List<Int>, List<Int>) -> Unit,
     onMapInitialZoomChange: (Int) -> Unit,
     onMapInitialTiltChange: (Float) -> Unit,
@@ -240,8 +239,9 @@ fun SettingsContent(
                             1 -> RemoteTab(
                                 settings = settings.remoteKeySettings,
                                 roadbookSettings = uiState.roadbookSettings,
+                                odometerSettings = uiState.odometerSettings,
                                 onModelSelected = onRemoteModelSelected,
-                                onKeysChanged = onCustomKeysChanged,
+                                onOdometerKeysChanged = onOdometerKeysChanged,
                                 onRoadbookKeysChanged = onRoadbookKeysChanged
                             )
 
@@ -484,8 +484,9 @@ fun SliderSettingItem(
 fun RemoteTab(
     settings: org.giste.roadbooknavigator.features.settings.domain.RemoteKeySettings,
     roadbookSettings: RoadbookSettings,
+    odometerSettings: OdometerSettings,
     onModelSelected: (RemoteModel) -> Unit,
-    onKeysChanged: (RemoteKeys) -> Unit,
+    onOdometerKeysChanged: (List<Int>, List<Int>, List<Int>) -> Unit,
     onRoadbookKeysChanged: (List<Int>, List<Int>) -> Unit
 ) {
     var capturingAction by remember { mutableStateOf<RemoteAction?>(null) }
@@ -509,9 +510,9 @@ fun RemoteTab(
             val keyCodes = when (action) {
                 RemoteAction.ROADBOOK_UP -> roadbookSettings.roadbookUp
                 RemoteAction.ROADBOOK_DOWN -> roadbookSettings.roadbookDown
-                RemoteAction.INCREASE_PARTIAL -> settings.customKeys.increasePartial
-                RemoteAction.DECREASE_PARTIAL -> settings.customKeys.decreasePartial
-                RemoteAction.RESET_PARTIAL -> settings.customKeys.resetPartial
+                RemoteAction.INCREASE_PARTIAL -> odometerSettings.increasePartial
+                RemoteAction.DECREASE_PARTIAL -> odometerSettings.decreasePartial
+                RemoteAction.RESET_PARTIAL -> odometerSettings.resetPartial
             }
 
             KeyMappingItem(
@@ -538,16 +539,22 @@ fun RemoteTab(
                         listOf(keyCode)
                     )
 
-                    RemoteAction.INCREASE_PARTIAL -> onKeysChanged(
-                        settings.customKeys.copy(increasePartial = listOf(keyCode))
+                    RemoteAction.INCREASE_PARTIAL -> onOdometerKeysChanged(
+                        listOf(keyCode),
+                        odometerSettings.decreasePartial,
+                        odometerSettings.resetPartial
                     )
 
-                    RemoteAction.DECREASE_PARTIAL -> onKeysChanged(
-                        settings.customKeys.copy(decreasePartial = listOf(keyCode))
+                    RemoteAction.DECREASE_PARTIAL -> onOdometerKeysChanged(
+                        odometerSettings.increasePartial,
+                        listOf(keyCode),
+                        odometerSettings.resetPartial
                     )
 
-                    RemoteAction.RESET_PARTIAL -> onKeysChanged(
-                        settings.customKeys.copy(resetPartial = listOf(keyCode))
+                    RemoteAction.RESET_PARTIAL -> onOdometerKeysChanged(
+                        odometerSettings.increasePartial,
+                        odometerSettings.decreasePartial,
+                        listOf(keyCode)
                     )
                 }
                 capturingAction = null
@@ -1040,7 +1047,7 @@ fun SettingsPreviewLight() {
             onLocationMinDistanceChange = {},
             onRestoreOdometerDefaults = {},
             onRemoteModelSelected = {},
-            onCustomKeysChanged = {},
+            onOdometerKeysChanged = { _, _, _ -> },
             onRoadbookKeysChanged = { _, _ -> },
             onMapInitialZoomChange = {},
             onMapInitialTiltChange = {},
@@ -1080,7 +1087,7 @@ fun SettingsPreviewDark() {
             onLocationMinDistanceChange = {},
             onRestoreOdometerDefaults = {},
             onRemoteModelSelected = {},
-            onCustomKeysChanged = {},
+            onOdometerKeysChanged = { _, _, _ -> },
             onRoadbookKeysChanged = { _, _ -> },
             onMapInitialZoomChange = {},
             onMapInitialTiltChange = {},
@@ -1119,7 +1126,7 @@ fun SettingsPreviewTablet() {
             onLocationMinDistanceChange = {},
             onRestoreOdometerDefaults = {},
             onRemoteModelSelected = {},
-            onCustomKeysChanged = {},
+            onOdometerKeysChanged = { _, _, _ -> },
             onRoadbookKeysChanged = { _, _ -> },
             onMapInitialZoomChange = {},
             onMapInitialTiltChange = {},

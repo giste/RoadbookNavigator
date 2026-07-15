@@ -29,7 +29,9 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.odometer.domain.Odometer
+import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettings
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.DecrementPartialDistanceUseCase
+import org.giste.roadbooknavigator.features.odometer.domain.usecase.GetOdometerSettingsUseCase
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.GetOdometerUseCase
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.IncrementPartialDistanceUseCase
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.ResetAllDistancesUseCase
@@ -47,6 +49,7 @@ class DashboardViewModel @Inject constructor(
     private val decrementPartialDistanceUseCase: DecrementPartialDistanceUseCase,
     private val setPartialDistanceUseCase: SetPartialDistanceUseCase,
     getSettingsUseCase: GetSettingsUseCase,
+    getOdometerSettingsUseCase: GetOdometerSettingsUseCase,
     private val logger: Logger
 ) : ViewModel() {
 
@@ -56,11 +59,15 @@ class DashboardViewModel @Inject constructor(
         getOdometerUseCase().onStart { emit(Odometer()) },
         _showSetPartialDialog,
         getSettingsUseCase(),
-    ) { odometer, showDialog, settings ->
+        getOdometerSettingsUseCase()
+    ) { odometer, showDialog, settings, odometerSettings ->
         DashboardUiState(
             odometer = odometer,
             showSetPartialDialog = showDialog,
             isFullScreen = settings.fullScreen,
+            increasePartialKeys = odometerSettings.increasePartial,
+            decreasePartialKeys = odometerSettings.decreasePartial,
+            resetPartialKeys = odometerSettings.resetPartial
         )
     }.stateIn(
         scope = viewModelScope,
@@ -119,4 +126,7 @@ data class DashboardUiState(
     val odometer: Odometer = Odometer(),
     val showSetPartialDialog: Boolean = false,
     val isFullScreen: Boolean = false,
+    val increasePartialKeys: List<Int> = OdometerSettings.DEFAULT_INCREASE_KEYS,
+    val decreasePartialKeys: List<Int> = OdometerSettings.DEFAULT_DECREASE_KEYS,
+    val resetPartialKeys: List<Int> = OdometerSettings.DEFAULT_RESET_KEYS
 )

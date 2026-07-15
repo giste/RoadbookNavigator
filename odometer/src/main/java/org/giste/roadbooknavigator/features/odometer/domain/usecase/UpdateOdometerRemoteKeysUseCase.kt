@@ -15,24 +15,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.settings.domain.usecase
+package org.giste.roadbooknavigator.features.odometer.domain.usecase
 
 import org.giste.roadbooknavigator.core.util.Logger
-import org.giste.roadbooknavigator.features.settings.domain.RemoteKeys
-import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
+import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettingsRepository
 import javax.inject.Inject
 
 /**
- * Use case to update the custom remote control key mappings.
+ * Use case to update the remote control keys for odometer actions.
  */
-class UpdateCustomKeysUseCase @Inject constructor(
-    private val repository: SettingsRepository,
+class UpdateOdometerRemoteKeysUseCase @Inject constructor(
+    private val repository: OdometerSettingsRepository,
     private val logger: Logger
 ) {
-    suspend operator fun invoke(keys: RemoteKeys): Result<Unit> {
-        logger.i("UpdateCustomKeysUseCase: Updating custom keys")
+    suspend operator fun invoke(increase: List<Int>, decrease: List<Int>, reset: List<Int>): Result<Unit> {
+        logger.i("UpdateOdometerRemoteKeysUseCase: Updating odometer remote keys")
         return runCatching {
-            repository.setCustomKeys(keys)
+            repository.setRemoteKeys(increase, decrease, reset)
         }
     }
 }

@@ -41,16 +41,15 @@ import org.giste.roadbooknavigator.features.odometer.domain.usecase.GetOdometerS
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.RestoreOdometerSettingsDefaultsUseCase
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.UpdateOdometerMinAccuracyUseCase
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.UpdateOdometerMinVerticalAccuracyUseCase
+import org.giste.roadbooknavigator.features.odometer.domain.usecase.UpdateOdometerRemoteKeysUseCase
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.UpdateOdometerSpeedThresholdUseCase
 import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookSettings
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.GetRoadbookSettingsUseCase
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.SaveRoadbookSettingsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
-import org.giste.roadbooknavigator.features.settings.domain.RemoteKeys
 import org.giste.roadbooknavigator.features.settings.domain.RemoteModel
 import org.giste.roadbooknavigator.features.settings.domain.usecase.GetSettingsUseCase
-import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateCustomKeysUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateFullScreenUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateOrientationUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateRemoteModelUseCase
@@ -76,7 +75,7 @@ class SettingsViewModel @Inject constructor(
     private val updateLocationMinDistanceUseCase: UpdateLocationMinDistanceUseCase,
     private val restoreLocationDefaultsUseCase: RestoreLocationDefaultsUseCase,
     private val updateRemoteModelUseCase: UpdateRemoteModelUseCase,
-    private val updateCustomKeysUseCase: UpdateCustomKeysUseCase,
+    private val updateOdometerRemoteKeysUseCase: UpdateOdometerRemoteKeysUseCase,
     private val saveMapSettingsUseCase: SaveMapSettingsUseCase,
     private val logger: Logger
 ) : ViewModel() {
@@ -179,20 +178,34 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             updateRemoteModelUseCase(model)
             if (model != RemoteModel.CUSTOM) {
-                val (up, down) = when (model) {
+                // Update Roadbook keys
+                val (rbUp, rbDown) = when (model) {
                     RemoteModel.DND2 -> listOf(19) to listOf(20) // KEYCODE_DPAD_UP/DOWN
                     RemoteModel.TERRA_PIRATA -> listOf(87) to listOf(88) // KEYCODE_MEDIA_NEXT/PREVIOUS
                     RemoteModel.CUSTOM -> return@launch
                 }
-                saveRoadbookSettingsUseCase.updateRemoteKeys(up, down)
+                saveRoadbookSettingsUseCase.updateRemoteKeys(rbUp, rbDown)
+
+                // Update Odometer keys
+                val (odoInc, odoDec, odoRes) = when (model) {
+                    RemoteModel.DND2 -> Triple(listOf(22), listOf(21), listOf(136)) // DPAD_RIGHT/LEFT, F6
+                    RemoteModel.TERRA_PIRATA -> Triple(
+                        listOf(24),
+                        listOf(25),
+                        listOf(85, 126)
+                    ) // VOL_UP/DOWN, PLAY_PAUSE/PLAY
+                    RemoteModel.CUSTOM -> return@launch
+                }
+                updateOdometerRemoteKeysUseCase(odoInc, odoDec, odoRes)
             }
         }
     }
 
-    fun setCustomKeys(keys: RemoteKeys) {
-        logger.d("SettingsViewModel: setCustomKeys requested")
+    fun setOdometerKeys(increase: List<Int>, decrease: List<Int>, reset: List<Int>) {
+        logger.d("SettingsViewModel: setOdometerKeys requested")
         viewModelScope.launch {
-            updateCustomKeysUseCase(keys)
+            updateRemoteModelUseCase(RemoteModel.CUSTOM)
+            updateOdometerRemoteKeysUseCase(increase, decrease, reset)
         }
     }
 

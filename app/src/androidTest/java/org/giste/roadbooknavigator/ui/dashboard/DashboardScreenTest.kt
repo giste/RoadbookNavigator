@@ -213,7 +213,11 @@ class DashboardScreenTest {
     @Test
     fun volumeUpKey_triggersIncrementPartialDistance() {
         val viewModel: DashboardViewModel = mockk(relaxed = true)
-        val uiStateFlow = MutableStateFlow(DashboardUiState())
+        val uiStateFlow = MutableStateFlow(
+            DashboardUiState(
+                increasePartialKeys = listOf(android.view.KeyEvent.KEYCODE_VOLUME_UP)
+            )
+        )
         every { viewModel.uiState } returns uiStateFlow
         
         val windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp))
@@ -248,7 +252,11 @@ class DashboardScreenTest {
     @Test
     fun f6Key_triggersResetPartialDistance() {
         val viewModel: DashboardViewModel = mockk(relaxed = true)
-        val uiStateFlow = MutableStateFlow(DashboardUiState())
+        val uiStateFlow = MutableStateFlow(
+            DashboardUiState(
+                resetPartialKeys = listOf(android.view.KeyEvent.KEYCODE_F6)
+            )
+        )
         every { viewModel.uiState } returns uiStateFlow
         
         val windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp))
@@ -282,7 +290,11 @@ class DashboardScreenTest {
     @Test
     fun volumeDownKey_triggersDecrementPartialDistance() {
         val viewModel: DashboardViewModel = mockk(relaxed = true)
-        val uiStateFlow = MutableStateFlow(DashboardUiState())
+        val uiStateFlow = MutableStateFlow(
+            DashboardUiState(
+                decreasePartialKeys = listOf(android.view.KeyEvent.KEYCODE_VOLUME_DOWN)
+            )
+        )
         every { viewModel.uiState } returns uiStateFlow
         
         val windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp))
@@ -354,8 +366,17 @@ class DashboardScreenTest {
         val viewModel: DashboardViewModel = mockk(relaxed = true)
         val roadbookViewModel: RoadbookViewModel = mockk(relaxed = true)
         
-        val uiStateFlow = MutableStateFlow(DashboardUiState())
-        val roadbookStateFlow = MutableStateFlow<RoadbookUiState>(RoadbookUiState.Success(route))
+        val uiStateFlow = MutableStateFlow(
+            DashboardUiState(
+                increasePartialKeys = listOf(android.view.KeyEvent.KEYCODE_VOLUME_UP)
+            )
+        )
+        val roadbookStateFlow = MutableStateFlow<RoadbookUiState>(
+            RoadbookUiState.Success(
+                route = route,
+                roadbookUp = listOf(android.view.KeyEvent.KEYCODE_DPAD_UP)
+            )
+        )
         val scrollPositionFlow = MutableStateFlow(RoadbookPosition(0, 0))
         
         every { viewModel.uiState } returns uiStateFlow
@@ -420,7 +441,12 @@ class DashboardScreenTest {
     @Test
     fun directionalKeys_triggerOdometerActions() {
         val viewModel: DashboardViewModel = mockk(relaxed = true)
-        val uiStateFlow = MutableStateFlow(DashboardUiState())
+        val uiStateFlow = MutableStateFlow(
+            DashboardUiState(
+                increasePartialKeys = listOf(android.view.KeyEvent.KEYCODE_DPAD_RIGHT),
+                decreasePartialKeys = listOf(android.view.KeyEvent.KEYCODE_DPAD_LEFT)
+            )
+        )
         every { viewModel.uiState } returns uiStateFlow
         
         val windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp))
@@ -465,7 +491,16 @@ class DashboardScreenTest {
     @Test
     fun mediaKeys_triggerOdometerActions() {
         val viewModel: DashboardViewModel = mockk(relaxed = true)
-        val uiStateFlow = MutableStateFlow(DashboardUiState())
+        val mediaKeys = listOf(
+            android.view.KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE,
+            android.view.KeyEvent.KEYCODE_MEDIA_PLAY,
+            android.view.KeyEvent.KEYCODE_MEDIA_PAUSE
+        )
+        val uiStateFlow = MutableStateFlow(
+            DashboardUiState(
+                resetPartialKeys = mediaKeys
+            )
+        )
         every { viewModel.uiState } returns uiStateFlow
         
         val windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp))
@@ -482,12 +517,6 @@ class DashboardScreenTest {
         }
 
         composeTestRule.onNodeWithTag("MainScreen").performClick()
-
-        val mediaKeys = listOf(
-            android.view.KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE,
-            android.view.KeyEvent.KEYCODE_MEDIA_PLAY,
-            android.view.KeyEvent.KEYCODE_MEDIA_PAUSE
-        )
 
         mediaKeys.forEach { keyCode ->
             composeTestRule.onNodeWithTag("MainScreen").performKeyPress(

@@ -31,6 +31,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.odometer.domain.Odometer
+import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettings
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.*
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.usecase.GetSettingsUseCase
@@ -50,10 +51,12 @@ class DashboardViewModelTest {
     private val decrementPartialDistanceUseCase: DecrementPartialDistanceUseCase = mockk()
     private val setPartialDistanceUseCase: SetPartialDistanceUseCase = mockk()
     private val getSettingsUseCase: GetSettingsUseCase = mockk()
+    private val getOdometerSettingsUseCase: GetOdometerSettingsUseCase = mockk()
     private val logger: Logger = mockk(relaxed = true)
 
     private val odometerFlow = MutableStateFlow(Odometer())
     private val settingsFlow = MutableStateFlow(AppSettings())
+    private val odometerSettingsFlow = MutableStateFlow(OdometerSettings())
     private val testDispatcher = UnconfinedTestDispatcher()
 
     private lateinit var viewModel: DashboardViewModel
@@ -63,6 +66,7 @@ class DashboardViewModelTest {
         Dispatchers.setMain(testDispatcher)
         every { getOdometerUseCase() } returns odometerFlow
         every { getSettingsUseCase() } returns settingsFlow
+        every { getOdometerSettingsUseCase() } returns odometerSettingsFlow
 
         viewModel = DashboardViewModel(
             getOdometerUseCase,
@@ -72,6 +76,7 @@ class DashboardViewModelTest {
             decrementPartialDistanceUseCase,
             setPartialDistanceUseCase,
             getSettingsUseCase,
+            getOdometerSettingsUseCase,
             logger
         )
     }
@@ -88,6 +93,7 @@ class DashboardViewModelTest {
         assertEquals(Odometer(), viewModel.uiState.value.odometer)
         assertEquals(false, viewModel.uiState.value.showSetPartialDialog)
         assertEquals(true, viewModel.uiState.value.isFullScreen)
+        assertEquals(OdometerSettings.DEFAULT_INCREASE_KEYS, viewModel.uiState.value.increasePartialKeys)
     }
 
     @Test

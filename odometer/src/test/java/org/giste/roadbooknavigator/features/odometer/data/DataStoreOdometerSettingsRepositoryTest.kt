@@ -98,11 +98,26 @@ class DataStoreOdometerSettingsRepositoryTest {
     }
 
     @Test
+    fun `setRemoteKeys should persist values`() = runTest {
+        val increase = listOf(1, 2)
+        val decrease = listOf(3, 4)
+        val reset = listOf(5, 6)
+        
+        repository.setRemoteKeys(increase, decrease, reset)
+        
+        val settings = repository.getSettings().first()
+        assertEquals(increase, settings.increasePartial)
+        assertEquals(decrease, settings.decreasePartial)
+        assertEquals(reset, settings.resetPartial)
+    }
+
+    @Test
     fun `restoreSettingsDefaults should reset values`() = runTest {
         // Given
         repository.setSpeedThreshold(2.0f)
         repository.setMinAccuracy(50f)
         repository.setMinVerticalAccuracy(30f)
+        repository.setRemoteKeys(listOf(1), listOf(2), listOf(3))
         
         // When
         repository.restoreSettingsDefaults()
@@ -112,5 +127,8 @@ class DataStoreOdometerSettingsRepositoryTest {
         assertEquals(OdometerSettings.DEFAULT_SPEED_THRESHOLD, settings.speedThreshold)
         assertEquals(OdometerSettings.DEFAULT_MIN_ACCURACY, settings.minAccuracy)
         assertEquals(OdometerSettings.DEFAULT_MIN_VERTICAL_ACCURACY, settings.minVerticalAccuracy)
+        assertEquals(OdometerSettings.DEFAULT_INCREASE_KEYS, settings.increasePartial)
+        assertEquals(OdometerSettings.DEFAULT_DECREASE_KEYS, settings.decreasePartial)
+        assertEquals(OdometerSettings.DEFAULT_RESET_KEYS, settings.resetPartial)
     }
 }

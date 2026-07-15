@@ -43,6 +43,7 @@ import org.giste.roadbooknavigator.features.odometer.domain.usecase.GetOdometerS
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.RestoreOdometerSettingsDefaultsUseCase
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.UpdateOdometerMinAccuracyUseCase
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.UpdateOdometerMinVerticalAccuracyUseCase
+import org.giste.roadbooknavigator.features.odometer.domain.usecase.UpdateOdometerRemoteKeysUseCase
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.UpdateOdometerSpeedThresholdUseCase
 import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookSettings
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.GetRoadbookSettingsUseCase
@@ -50,10 +51,8 @@ import org.giste.roadbooknavigator.features.roadbook.domain.usecase.SaveRoadbook
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.core.settings.domain.AppTheme
-import org.giste.roadbooknavigator.features.settings.domain.RemoteKeys
 import org.giste.roadbooknavigator.features.settings.domain.RemoteModel
 import org.giste.roadbooknavigator.features.settings.domain.usecase.GetSettingsUseCase
-import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateCustomKeysUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateFullScreenUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateOrientationUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateRemoteModelUseCase
@@ -82,7 +81,7 @@ class SettingsViewModelTest {
     private val updateLocationMinDistanceUseCase: UpdateLocationMinDistanceUseCase = mockk()
     private val restoreLocationDefaultsUseCase: RestoreLocationDefaultsUseCase = mockk()
     private val updateRemoteModelUseCase: UpdateRemoteModelUseCase = mockk()
-    private val updateCustomKeysUseCase: UpdateCustomKeysUseCase = mockk()
+    private val updateOdometerRemoteKeysUseCase: UpdateOdometerRemoteKeysUseCase = mockk()
     private val getMapSettingsUseCase: GetMapSettingsUseCase = mockk()
     private val saveMapSettingsUseCase: SaveMapSettingsUseCase = mockk()
     private val logger: Logger = mockk(relaxed = true)
@@ -123,7 +122,7 @@ class SettingsViewModelTest {
             updateLocationMinDistanceUseCase = updateLocationMinDistanceUseCase,
             restoreLocationDefaultsUseCase = restoreLocationDefaultsUseCase,
             updateRemoteModelUseCase = updateRemoteModelUseCase,
-            updateCustomKeysUseCase = updateCustomKeysUseCase,
+            updateOdometerRemoteKeysUseCase = updateOdometerRemoteKeysUseCase,
             saveMapSettingsUseCase = saveMapSettingsUseCase,
             logger = logger
         )
@@ -224,22 +223,27 @@ class SettingsViewModelTest {
     }
 
     @Test
-    fun `setRemoteModel should call use cases for settings and roadbook`() = runTest {
+    fun `setRemoteModel should call use cases for settings, roadbook and odometer`() = runTest {
         coEvery { updateRemoteModelUseCase(any()) } returns Result.success(Unit)
         coEvery { saveRoadbookSettingsUseCase.updateRemoteKeys(any(), any()) } returns Unit
+        coEvery { updateOdometerRemoteKeysUseCase(any(), any(), any()) } returns Result.success(Unit)
 
         viewModel.setRemoteModel(RemoteModel.TERRA_PIRATA)
 
         coVerify { updateRemoteModelUseCase(RemoteModel.TERRA_PIRATA) }
         coVerify { saveRoadbookSettingsUseCase.updateRemoteKeys(listOf(87), listOf(88)) }
+        coVerify { updateOdometerRemoteKeysUseCase(listOf(24), listOf(25), listOf(85, 126)) }
     }
 
     @Test
-    fun `setCustomKeys should call use case`() = runTest {
-        val keys = RemoteKeys.DND2
-        coEvery { updateCustomKeysUseCase(any()) } returns Result.success(Unit)
-        viewModel.setCustomKeys(keys)
-        coVerify { updateCustomKeysUseCase(keys) }
+    fun `setOdometerKeys should update model and odometer keys`() = runTest {
+        coEvery { updateRemoteModelUseCase(any()) } returns Result.success(Unit)
+        coEvery { updateOdometerRemoteKeysUseCase(any(), any(), any()) } returns Result.success(Unit)
+
+        viewModel.setOdometerKeys(listOf(1), listOf(2), listOf(3))
+
+        coVerify { updateRemoteModelUseCase(RemoteModel.CUSTOM) }
+        coVerify { updateOdometerRemoteKeysUseCase(listOf(1), listOf(2), listOf(3)) }
     }
 
     @Test

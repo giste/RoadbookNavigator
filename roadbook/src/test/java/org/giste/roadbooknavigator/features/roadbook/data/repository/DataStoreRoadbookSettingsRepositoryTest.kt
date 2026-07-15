@@ -68,4 +68,16 @@ class DataStoreRoadbookSettingsRepositoryTest {
         val savedSettings = repository.getSettings().first()
         assertEquals(newThreshold, savedSettings.shortDistanceThreshold.meters)
     }
+
+    @Test
+    fun `saveRemoteKeys should persist keys`() = runTest {
+        val upKeys = listOf(1, 2)
+        val downKeys = listOf(3, 4)
+
+        repository.saveRemoteKeys(upKeys, downKeys)
+
+        val savedSettings = repository.getSettings().first()
+        assertEquals(upKeys, savedSettings.roadbookUp)
+        assertEquals(downKeys, savedSettings.roadbookDown)
+    }
 }

@@ -224,10 +224,14 @@ class SettingsViewModelTest {
     }
 
     @Test
-    fun `setRemoteModel should call use case`() = runTest {
+    fun `setRemoteModel should call use cases for settings and roadbook`() = runTest {
         coEvery { updateRemoteModelUseCase(any()) } returns Result.success(Unit)
+        coEvery { saveRoadbookSettingsUseCase.updateRemoteKeys(any(), any()) } returns Unit
+
         viewModel.setRemoteModel(RemoteModel.TERRA_PIRATA)
+
         coVerify { updateRemoteModelUseCase(RemoteModel.TERRA_PIRATA) }
+        coVerify { saveRoadbookSettingsUseCase.updateRemoteKeys(listOf(87), listOf(88)) }
     }
 
     @Test
@@ -236,6 +240,17 @@ class SettingsViewModelTest {
         coEvery { updateCustomKeysUseCase(any()) } returns Result.success(Unit)
         viewModel.setCustomKeys(keys)
         coVerify { updateCustomKeysUseCase(keys) }
+    }
+
+    @Test
+    fun `setRoadbookKeys should update model and roadbook keys`() = runTest {
+        coEvery { updateRemoteModelUseCase(any()) } returns Result.success(Unit)
+        coEvery { saveRoadbookSettingsUseCase.updateRemoteKeys(any(), any()) } returns Unit
+
+        viewModel.setRoadbookKeys(listOf(1), listOf(2))
+
+        coVerify { updateRemoteModelUseCase(RemoteModel.CUSTOM) }
+        coVerify { saveRoadbookSettingsUseCase.updateRemoteKeys(listOf(1), listOf(2)) }
     }
 
     @Test

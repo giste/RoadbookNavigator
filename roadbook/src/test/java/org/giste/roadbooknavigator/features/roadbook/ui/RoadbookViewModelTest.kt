@@ -97,7 +97,11 @@ class RoadbookViewModelTest {
         val route = mockk<Route>()
         activeRoadbookFlow.value = route
         scrollPositionFlow.value = RoadbookPosition(5, 10)
-        settingsFlow.value = RoadbookSettings(ShortDistanceThreshold(250L))
+        settingsFlow.value = RoadbookSettings(
+            shortDistanceThreshold = ShortDistanceThreshold(250L),
+            roadbookUp = listOf(1, 2),
+            roadbookDown = listOf(3, 4)
+        )
 
         backgroundScope.launch(testDispatcher) { viewModel.roadbookState.collect {} }
 
@@ -105,7 +109,9 @@ class RoadbookViewModelTest {
             route = route,
             shortDistanceThreshold = ShortDistanceThreshold(250L),
             initialIndex = 5,
-            initialOffset = 10
+            initialOffset = 10,
+            roadbookUp = listOf(1, 2),
+            roadbookDown = listOf(3, 4)
         )
         assertEquals(expectedState, viewModel.roadbookState.value)
     }

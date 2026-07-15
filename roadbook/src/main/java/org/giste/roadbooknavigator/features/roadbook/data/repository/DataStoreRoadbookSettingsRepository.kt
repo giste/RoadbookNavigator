@@ -22,6 +22,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.longPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -41,6 +42,8 @@ class DataStoreRoadbookSettingsRepository @Inject constructor(
 
     private object PreferencesKeys {
         val SHORT_DISTANCE_THRESHOLD = longPreferencesKey("roadbook_short_distance_threshold")
+        val ROADBOOK_UP = stringPreferencesKey("roadbook_keys_up")
+        val ROADBOOK_DOWN = stringPreferencesKey("roadbook_keys_down")
     }
 
     override fun getSettings(): Flow<RoadbookSettings> = dataStore.data
@@ -56,7 +59,11 @@ class DataStoreRoadbookSettingsRepository @Inject constructor(
                 shortDistanceThreshold = ShortDistanceThreshold(
                     preferences[PreferencesKeys.SHORT_DISTANCE_THRESHOLD]
                         ?: ShortDistanceThreshold.DEFAULT
-                )
+                ),
+                roadbookUp = preferences[PreferencesKeys.ROADBOOK_UP]?.toIntList()
+                    ?: RoadbookSettings.DEFAULT_UP_KEYS,
+                roadbookDown = preferences[PreferencesKeys.ROADBOOK_DOWN]?.toIntList()
+                    ?: RoadbookSettings.DEFAULT_DOWN_KEYS
             )
         }
 
@@ -65,4 +72,16 @@ class DataStoreRoadbookSettingsRepository @Inject constructor(
             preferences[PreferencesKeys.SHORT_DISTANCE_THRESHOLD] = threshold
         }
     }
+
+    override suspend fun saveRemoteKeys(up: List<Int>, down: List<Int>) {
+        dataStore.edit { preferences ->
+            preferences[PreferencesKeys.ROADBOOK_UP] = up.toPreferenceString()
+            preferences[PreferencesKeys.ROADBOOK_DOWN] = down.toPreferenceString()
+        }
+    }
+
+    private fun List<Int>.toPreferenceString(): String = joinToString(",")
+
+    private fun String.toIntList(): List<Int> =
+        if (isEmpty()) emptyList() else split(",").mapNotNull { it.toIntOrNull() }
 }

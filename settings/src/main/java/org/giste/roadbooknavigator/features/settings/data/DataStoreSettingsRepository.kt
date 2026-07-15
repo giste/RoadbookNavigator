@@ -51,8 +51,6 @@ internal class DataStoreSettingsRepository @Inject constructor(
         val ORIENTATION = stringPreferencesKey("app_orientation")
         val FULL_SCREEN = booleanPreferencesKey("full_screen")
         val REMOTE_MODEL = stringPreferencesKey("remote_model")
-        val CUSTOM_ROADBOOK_UP = stringPreferencesKey("custom_roadbook_up")
-        val CUSTOM_ROADBOOK_DOWN = stringPreferencesKey("custom_roadbook_down")
         val CUSTOM_INCREASE_PARTIAL = stringPreferencesKey("custom_increase_partial")
         val CUSTOM_DECREASE_PARTIAL = stringPreferencesKey("custom_decrease_partial")
         val CUSTOM_RESET_PARTIAL = stringPreferencesKey("custom_reset_partial")
@@ -69,10 +67,6 @@ internal class DataStoreSettingsRepository @Inject constructor(
             remoteKeySettings = RemoteKeySettings(
                 model = remoteModel,
                 customKeys = RemoteKeys(
-                    roadbookUp = preferences[Keys.CUSTOM_ROADBOOK_UP]?.toIntList()
-                        ?: RemoteKeys.DND2.roadbookUp,
-                    roadbookDown = preferences[Keys.CUSTOM_ROADBOOK_DOWN]?.toIntList()
-                        ?: RemoteKeys.DND2.roadbookDown,
                     increasePartial = preferences[Keys.CUSTOM_INCREASE_PARTIAL]?.toIntList()
                         ?: RemoteKeys.DND2.increasePartial,
                     decreasePartial = preferences[Keys.CUSTOM_DECREASE_PARTIAL]?.toIntList()
@@ -118,8 +112,6 @@ internal class DataStoreSettingsRepository @Inject constructor(
                     RemoteModel.CUSTOM -> null
                 }
                 keys?.let {
-                    preferences[Keys.CUSTOM_ROADBOOK_UP] = it.roadbookUp.toPreferenceString()
-                    preferences[Keys.CUSTOM_ROADBOOK_DOWN] = it.roadbookDown.toPreferenceString()
                     preferences[Keys.CUSTOM_INCREASE_PARTIAL] =
                         it.increasePartial.toPreferenceString()
                     preferences[Keys.CUSTOM_DECREASE_PARTIAL] =
@@ -134,8 +126,6 @@ internal class DataStoreSettingsRepository @Inject constructor(
         logger.i("DataStoreSettingsRepository: Setting custom keys")
         dataStore.edit { preferences ->
             preferences[Keys.REMOTE_MODEL] = RemoteModel.CUSTOM.name
-            preferences[Keys.CUSTOM_ROADBOOK_UP] = keys.roadbookUp.toPreferenceString()
-            preferences[Keys.CUSTOM_ROADBOOK_DOWN] = keys.roadbookDown.toPreferenceString()
             preferences[Keys.CUSTOM_INCREASE_PARTIAL] = keys.increasePartial.toPreferenceString()
             preferences[Keys.CUSTOM_DECREASE_PARTIAL] = keys.decreasePartial.toPreferenceString()
             preferences[Keys.CUSTOM_RESET_PARTIAL] = keys.resetPartial.toPreferenceString()

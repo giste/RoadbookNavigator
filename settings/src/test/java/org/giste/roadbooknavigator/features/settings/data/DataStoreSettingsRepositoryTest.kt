@@ -92,8 +92,6 @@ class DataStoreSettingsRepositoryTest {
     @Test
     fun `setCustomKeys should persist keys and set model to CUSTOM`() = runTest {
         val customKeys = RemoteKeys(
-            roadbookUp = listOf(1),
-            roadbookDown = listOf(2),
             increasePartial = listOf(3),
             decreasePartial = listOf(4),
             resetPartial = listOf(5)

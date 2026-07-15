@@ -21,7 +21,19 @@ package org.giste.roadbooknavigator.features.roadbook.domain.model
  * Domain model for roadbook-specific settings.
  *
  * @property shortDistanceThreshold Threshold in meters to highlight "short distance" instructions.
+ * @property roadbookUp Keys to navigate up in the roadbook.
+ * @property roadbookDown Keys to navigate down in the roadbook.
  */
 data class RoadbookSettings(
-    val shortDistanceThreshold: ShortDistanceThreshold = ShortDistanceThreshold(ShortDistanceThreshold.DEFAULT)
-)
+    val shortDistanceThreshold: ShortDistanceThreshold = ShortDistanceThreshold(ShortDistanceThreshold.DEFAULT),
+    val roadbookUp: List<Int> = DEFAULT_UP_KEYS,
+    val roadbookDown: List<Int> = DEFAULT_DOWN_KEYS,
+) {
+    companion object {
+        /** Default keys for roadbook up (DPAD_UP). */
+        val DEFAULT_UP_KEYS = listOf(19)
+
+        /** Default keys for roadbook down (DPAD_DOWN). */
+        val DEFAULT_DOWN_KEYS = listOf(20)
+    }
+}

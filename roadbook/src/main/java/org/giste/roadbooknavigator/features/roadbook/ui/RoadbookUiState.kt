@@ -17,6 +17,7 @@
 
 package org.giste.roadbooknavigator.features.roadbook.ui
 
+import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookSettings
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Route
 import org.giste.roadbooknavigator.features.roadbook.domain.model.ShortDistanceThreshold
 
@@ -28,6 +29,8 @@ sealed interface RoadbookUiState {
         val shortDistanceThreshold: ShortDistanceThreshold = ShortDistanceThreshold(ShortDistanceThreshold.DEFAULT),
         val initialIndex: Int = 0,
         val initialOffset: Int = 0,
+        val roadbookUp: List<Int> = RoadbookSettings.DEFAULT_UP_KEYS,
+        val roadbookDown: List<Int> = RoadbookSettings.DEFAULT_DOWN_KEYS,
     ) : RoadbookUiState
 
     data class Error(val message: String) : RoadbookUiState

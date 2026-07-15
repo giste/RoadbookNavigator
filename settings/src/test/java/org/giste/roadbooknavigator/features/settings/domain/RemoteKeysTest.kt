@@ -26,8 +26,6 @@ class RemoteKeysTest {
     @Test
     fun `DND2 preset has correct key codes`() {
         val keys = RemoteKeys.DND2
-        assertEquals(listOf(19), keys.roadbookUp)        // DPAD_UP
-        assertEquals(listOf(20), keys.roadbookDown)      // DPAD_DOWN
         assertEquals(listOf(22), keys.increasePartial)   // DPAD_RIGHT
         assertEquals(listOf(21), keys.decreasePartial)   // DPAD_LEFT
         assertEquals(listOf(136), keys.resetPartial)     // F6
@@ -36,8 +34,6 @@ class RemoteKeysTest {
     @Test
     fun `Terra Pirata preset has correct key codes`() {
         val keys = RemoteKeys.TERRA_PIRATA
-        assertEquals(listOf(87), keys.roadbookUp)        // MEDIA_NEXT
-        assertEquals(listOf(88), keys.roadbookDown)      // MEDIA_PREVIOUS
         assertEquals(listOf(24), keys.increasePartial)   // VOLUME_UP
         assertEquals(listOf(25), keys.decreasePartial)   // VOLUME_DOWN
         assertTrue(keys.resetPartial.contains(85))       // MEDIA_PLAY_PAUSE

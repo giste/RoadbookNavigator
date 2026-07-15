@@ -362,7 +362,11 @@ class RoadbookUiTest {
         }
         val viewModel: RoadbookViewModel = mockk(relaxed = true)
         val stateFlow = MutableStateFlow<RoadbookUiState>(
-            RoadbookUiState.Success(Route(name = "Test", waypoints = waypoints))
+            RoadbookUiState.Success(
+                route = Route(name = "Test", waypoints = waypoints),
+                roadbookUp = listOf(android.view.KeyEvent.KEYCODE_MEDIA_NEXT),
+                roadbookDown = listOf(android.view.KeyEvent.KEYCODE_MEDIA_PREVIOUS)
+            )
         )
         val initialPositionFlow = MutableStateFlow(RoadbookPosition(0, 0))
         every { viewModel.roadbookState } returns stateFlow

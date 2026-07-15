@@ -29,4 +29,11 @@ class SaveRoadbookSettingsUseCase @Inject constructor(
     suspend operator fun invoke(shortDistanceThreshold: Long) {
         repository.saveShortDistanceThreshold(shortDistanceThreshold)
     }
+
+    /**
+     * Updates the remote control keys for the roadbook.
+     */
+    suspend fun updateRemoteKeys(up: List<Int>, down: List<Int>) {
+        repository.saveRemoteKeys(up, down)
+    }
 }

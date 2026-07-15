@@ -135,6 +135,7 @@ fun SettingsScreen(
         onRestoreOdometerDefaults = viewModel::restoreOdometerDefaults,
         onRemoteModelSelected = viewModel::setRemoteModel,
         onCustomKeysChanged = viewModel::setCustomKeys,
+        onRoadbookKeysChanged = viewModel::setRoadbookKeys,
         onMapInitialZoomChange = viewModel::setMapInitialZoom,
         onMapInitialTiltChange = viewModel::setMapInitialTilt,
         mapManagementContent = { MapManagementScreen() }
@@ -158,6 +159,7 @@ fun SettingsContent(
     onRestoreOdometerDefaults: () -> Unit,
     onRemoteModelSelected: (RemoteModel) -> Unit,
     onCustomKeysChanged: (RemoteKeys) -> Unit,
+    onRoadbookKeysChanged: (List<Int>, List<Int>) -> Unit,
     onMapInitialZoomChange: (Int) -> Unit,
     onMapInitialTiltChange: (Float) -> Unit,
     mapManagementContent: @Composable () -> Unit,
@@ -237,8 +239,10 @@ fun SettingsContent(
 
                             1 -> RemoteTab(
                                 settings = settings.remoteKeySettings,
+                                roadbookSettings = uiState.roadbookSettings,
                                 onModelSelected = onRemoteModelSelected,
-                                onKeysChanged = onCustomKeysChanged
+                                onKeysChanged = onCustomKeysChanged,
+                                onRoadbookKeysChanged = onRoadbookKeysChanged
                             )
 
                             2 -> AdvancedTab(
@@ -479,8 +483,10 @@ fun SliderSettingItem(
 @Composable
 fun RemoteTab(
     settings: org.giste.roadbooknavigator.features.settings.domain.RemoteKeySettings,
+    roadbookSettings: RoadbookSettings,
     onModelSelected: (RemoteModel) -> Unit,
-    onKeysChanged: (RemoteKeys) -> Unit
+    onKeysChanged: (RemoteKeys) -> Unit,
+    onRoadbookKeysChanged: (List<Int>, List<Int>) -> Unit
 ) {
     var capturingAction by remember { mutableStateOf<RemoteAction?>(null) }
 
@@ -501,8 +507,8 @@ fun RemoteTab(
         val isCustom = settings.model == RemoteModel.CUSTOM
         RemoteAction.entries.forEach { action ->
             val keyCodes = when (action) {
-                RemoteAction.ROADBOOK_UP -> settings.customKeys.roadbookUp
-                RemoteAction.ROADBOOK_DOWN -> settings.customKeys.roadbookDown
+                RemoteAction.ROADBOOK_UP -> roadbookSettings.roadbookUp
+                RemoteAction.ROADBOOK_DOWN -> roadbookSettings.roadbookDown
                 RemoteAction.INCREASE_PARTIAL -> settings.customKeys.increasePartial
                 RemoteAction.DECREASE_PARTIAL -> settings.customKeys.decreasePartial
                 RemoteAction.RESET_PARTIAL -> settings.customKeys.resetPartial
@@ -521,25 +527,29 @@ fun RemoteTab(
         KeyCaptureDialog(
             action = action,
             onKeyCaptured = { keyCode ->
-                val currentKeys = settings.customKeys
-                val newKeys = when (action) {
-                    RemoteAction.ROADBOOK_UP -> currentKeys.copy(roadbookUp = listOf(keyCode))
-                    RemoteAction.ROADBOOK_DOWN -> currentKeys.copy(roadbookDown = listOf(keyCode))
-                    RemoteAction.INCREASE_PARTIAL -> currentKeys.copy(
-                        increasePartial = listOf(
-                            keyCode
-                        )
+                when (action) {
+                    RemoteAction.ROADBOOK_UP -> onRoadbookKeysChanged(
+                        listOf(keyCode),
+                        roadbookSettings.roadbookDown
                     )
 
-                    RemoteAction.DECREASE_PARTIAL -> currentKeys.copy(
-                        decreasePartial = listOf(
-                            keyCode
-                        )
+                    RemoteAction.ROADBOOK_DOWN -> onRoadbookKeysChanged(
+                        roadbookSettings.roadbookUp,
+                        listOf(keyCode)
                     )
 
-                    RemoteAction.RESET_PARTIAL -> currentKeys.copy(resetPartial = listOf(keyCode))
+                    RemoteAction.INCREASE_PARTIAL -> onKeysChanged(
+                        settings.customKeys.copy(increasePartial = listOf(keyCode))
+                    )
+
+                    RemoteAction.DECREASE_PARTIAL -> onKeysChanged(
+                        settings.customKeys.copy(decreasePartial = listOf(keyCode))
+                    )
+
+                    RemoteAction.RESET_PARTIAL -> onKeysChanged(
+                        settings.customKeys.copy(resetPartial = listOf(keyCode))
+                    )
                 }
-                onKeysChanged(newKeys)
                 capturingAction = null
             },
             onDismiss = { capturingAction = null }
@@ -1031,6 +1041,7 @@ fun SettingsPreviewLight() {
             onRestoreOdometerDefaults = {},
             onRemoteModelSelected = {},
             onCustomKeysChanged = {},
+            onRoadbookKeysChanged = { _, _ -> },
             onMapInitialZoomChange = {},
             onMapInitialTiltChange = {},
             mapManagementContent = {}
@@ -1070,6 +1081,7 @@ fun SettingsPreviewDark() {
             onRestoreOdometerDefaults = {},
             onRemoteModelSelected = {},
             onCustomKeysChanged = {},
+            onRoadbookKeysChanged = { _, _ -> },
             onMapInitialZoomChange = {},
             onMapInitialTiltChange = {},
             mapManagementContent = {}
@@ -1108,6 +1120,7 @@ fun SettingsPreviewTablet() {
             onRestoreOdometerDefaults = {},
             onRemoteModelSelected = {},
             onCustomKeysChanged = {},
+            onRoadbookKeysChanged = { _, _ -> },
             onMapInitialZoomChange = {},
             onMapInitialTiltChange = {},
             mapManagementContent = {}

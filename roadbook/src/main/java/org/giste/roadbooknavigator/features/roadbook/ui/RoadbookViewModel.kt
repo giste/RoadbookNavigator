@@ -58,7 +58,9 @@ class RoadbookViewModel @Inject constructor(
                 route = route,
                 shortDistanceThreshold = settings.shortDistanceThreshold,
                 initialIndex = position.index,
-                initialOffset = position.offset
+                initialOffset = position.offset,
+                roadbookUp = settings.roadbookUp,
+                roadbookDown = settings.roadbookDown
             )
         } else {
             RoadbookUiState.Empty

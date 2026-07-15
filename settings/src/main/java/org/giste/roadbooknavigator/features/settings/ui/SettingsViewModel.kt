@@ -178,6 +178,14 @@ class SettingsViewModel @Inject constructor(
         logger.d("SettingsViewModel: setRemoteModel requested: %s", model)
         viewModelScope.launch {
             updateRemoteModelUseCase(model)
+            if (model != RemoteModel.CUSTOM) {
+                val (up, down) = when (model) {
+                    RemoteModel.DND2 -> listOf(19) to listOf(20) // KEYCODE_DPAD_UP/DOWN
+                    RemoteModel.TERRA_PIRATA -> listOf(87) to listOf(88) // KEYCODE_MEDIA_NEXT/PREVIOUS
+                    RemoteModel.CUSTOM -> return@launch
+                }
+                saveRoadbookSettingsUseCase.updateRemoteKeys(up, down)
+            }
         }
     }
 
@@ -185,6 +193,14 @@ class SettingsViewModel @Inject constructor(
         logger.d("SettingsViewModel: setCustomKeys requested")
         viewModelScope.launch {
             updateCustomKeysUseCase(keys)
+        }
+    }
+
+    fun setRoadbookKeys(up: List<Int>, down: List<Int>) {
+        logger.d("SettingsViewModel: setRoadbookKeys requested")
+        viewModelScope.launch {
+            updateRemoteModelUseCase(RemoteModel.CUSTOM)
+            saveRoadbookSettingsUseCase.updateRemoteKeys(up, down)
         }
     }
 

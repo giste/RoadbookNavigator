@@ -305,4 +305,190 @@ class RoadbookUiTest {
         // Waypoint 8 should now be visible
         composeTestRule.onNodeWithText("8").assertIsDisplayed()
     }
+
+    @Test
+    fun directionDownKey_scrollsToPreviousWaypoint() {
+        val waypoints = List(10) { i ->
+            Waypoint(
+                number = i + 1,
+                coordinates = Coordinates(0.0, 0.0),
+                distance = Distance(i * 1000L),
+                distanceFromPrevious = Distance(1000L)
+            )
+        }
+        val viewModel: RoadbookViewModel = mockk(relaxed = true)
+        val stateFlow = MutableStateFlow<RoadbookUiState>(
+            RoadbookUiState.Success(Route(name = "Test", waypoints = waypoints))
+        )
+        // Start at waypoint 5
+        val initialPositionFlow = MutableStateFlow(RoadbookPosition(4, 0))
+        every { viewModel.roadbookState } returns stateFlow
+        every { viewModel.initialScrollPosition } returns initialPositionFlow
+
+        composeTestRule.setContent {
+            RoadbookSection(
+                viewModel = viewModel,
+                onSetPartialClick = {}
+            )
+        }
+
+        // Initially waypoint 5 is displayed
+        composeTestRule.onNodeWithText("5").assertIsDisplayed()
+
+        // Press Direction Down (Backward)
+        composeTestRule.onNodeWithTag("RoadbookList").performKeyPress(
+            KeyEvent(
+                nativeKeyEvent = android.view.KeyEvent(
+                    android.view.KeyEvent.ACTION_DOWN,
+                    android.view.KeyEvent.KEYCODE_DPAD_DOWN
+                )
+            )
+        )
+        composeTestRule.waitForIdle()
+
+        // Waypoint 4 should now be visible
+        composeTestRule.onNodeWithText("4").assertIsDisplayed()
+    }
+
+    @Test
+    fun mediaKeys_scrollWaypoints() {
+        val waypoints = List(10) { i ->
+            Waypoint(
+                number = i + 1,
+                coordinates = Coordinates(0.0, 0.0),
+                distance = Distance(i * 1000L),
+                distanceFromPrevious = Distance(1000L)
+            )
+        }
+        val viewModel: RoadbookViewModel = mockk(relaxed = true)
+        val stateFlow = MutableStateFlow<RoadbookUiState>(
+            RoadbookUiState.Success(Route(name = "Test", waypoints = waypoints))
+        )
+        val initialPositionFlow = MutableStateFlow(RoadbookPosition(0, 0))
+        every { viewModel.roadbookState } returns stateFlow
+        every { viewModel.initialScrollPosition } returns initialPositionFlow
+
+        composeTestRule.setContent {
+            RoadbookSection(
+                viewModel = viewModel,
+                onSetPartialClick = {}
+            )
+        }
+
+        // Test MEDIA_NEXT
+        composeTestRule.onNodeWithTag("RoadbookList").performKeyPress(
+            KeyEvent(
+                nativeKeyEvent = android.view.KeyEvent(
+                    android.view.KeyEvent.ACTION_DOWN,
+                    android.view.KeyEvent.KEYCODE_MEDIA_NEXT
+                )
+            )
+        )
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithText("2").assertIsDisplayed()
+
+        // Test MEDIA_PREVIOUS
+        composeTestRule.onNodeWithTag("RoadbookList").performKeyPress(
+            KeyEvent(
+                nativeKeyEvent = android.view.KeyEvent(
+                    android.view.KeyEvent.ACTION_DOWN,
+                    android.view.KeyEvent.KEYCODE_MEDIA_PREVIOUS
+                )
+            )
+        )
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithText("1").assertIsDisplayed()
+    }
+
+    @Test
+    fun navigationKeys_respectBoundaries() {
+        val waypoints = List(2) { i ->
+            Waypoint(
+                number = i + 1,
+                coordinates = Coordinates(0.0, 0.0),
+                distance = Distance(i * 1000L),
+                distanceFromPrevious = Distance(1000L)
+            )
+        }
+        val viewModel: RoadbookViewModel = mockk(relaxed = true)
+        val stateFlow = MutableStateFlow<RoadbookUiState>(
+            RoadbookUiState.Success(Route(name = "Test", waypoints = waypoints))
+        )
+        val initialPositionFlow = MutableStateFlow(RoadbookPosition(0, 0))
+        every { viewModel.roadbookState } returns stateFlow
+        every { viewModel.initialScrollPosition } returns initialPositionFlow
+
+        composeTestRule.setContent {
+            RoadbookSection(
+                viewModel = viewModel,
+                onSetPartialClick = {}
+            )
+        }
+
+        // Try to go back from first waypoint
+        composeTestRule.onNodeWithTag("RoadbookList").performKeyPress(
+            KeyEvent(
+                nativeKeyEvent = android.view.KeyEvent(
+                    android.view.KeyEvent.ACTION_DOWN,
+                    android.view.KeyEvent.KEYCODE_DPAD_DOWN
+                )
+            )
+        )
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithText("1").assertIsDisplayed()
+
+        // Go to second waypoint
+        composeTestRule.onNodeWithTag("RoadbookList").performKeyPress(
+            KeyEvent(
+                nativeKeyEvent = android.view.KeyEvent(
+                    android.view.KeyEvent.ACTION_DOWN,
+                    android.view.KeyEvent.KEYCODE_DPAD_UP
+                )
+            )
+        )
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithText("2").assertIsDisplayed()
+
+        // Try to go forward from last waypoint
+        composeTestRule.onNodeWithTag("RoadbookList").performKeyPress(
+            KeyEvent(
+                nativeKeyEvent = android.view.KeyEvent(
+                    android.view.KeyEvent.ACTION_DOWN,
+                    android.view.KeyEvent.KEYCODE_DPAD_UP
+                )
+            )
+        )
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithText("2").assertIsDisplayed()
+    }
+
+    @Test
+    fun navigationKeys_handleEmptyState() {
+        val viewModel: RoadbookViewModel = mockk(relaxed = true)
+        val stateFlow = MutableStateFlow<RoadbookUiState>(RoadbookUiState.Empty)
+        val initialPositionFlow = MutableStateFlow(RoadbookPosition(0, 0))
+        every { viewModel.roadbookState } returns stateFlow
+        every { viewModel.initialScrollPosition } returns initialPositionFlow
+
+        composeTestRule.setContent {
+            RoadbookSection(
+                viewModel = viewModel,
+                onSetPartialClick = {}
+            )
+        }
+
+        // Verify it doesn't crash when pressing keys in empty state
+        // In empty state, RoadbookList doesn't exist, so we send the key to the main container
+        composeTestRule.onNodeWithText(context.getString(R.string.main_no_route)).performKeyPress(
+            KeyEvent(
+                nativeKeyEvent = android.view.KeyEvent(
+                    android.view.KeyEvent.ACTION_DOWN,
+                    android.view.KeyEvent.KEYCODE_DPAD_UP
+                )
+            )
+        )
+        composeTestRule.waitForIdle()
+        
+        composeTestRule.onNodeWithText(context.getString(R.string.main_no_route)).assertIsDisplayed()
+    }
 }

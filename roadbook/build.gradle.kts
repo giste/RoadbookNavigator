@@ -83,4 +83,5 @@ dependencies {
     androidTestImplementation(libs.mockkAndroid)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.espresso.intents)
+    debugImplementation(libs.androidx.compose.ui.tooling)
 }

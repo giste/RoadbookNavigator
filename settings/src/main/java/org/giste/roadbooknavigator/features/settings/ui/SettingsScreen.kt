@@ -1027,14 +1027,6 @@ fun OrientationSelector(
     }
 }
 
-//@Composable
-//fun titleStyle(): TextStyle = MaterialTheme.typography.titleMedium
-//
-//@Composable
-//fun labelStyle(): TextStyle = MaterialTheme.typography.bodyLarge
-
-// --- PREVIEWS ---
-
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Preview(
     name = "Light Theme - Phone",
@@ -1048,10 +1040,11 @@ fun SettingsPreviewLight() {
     RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
         SettingsContent(
             uiState = SettingsUiState.Success(
-                AppSettings(),
-                LocationSettings(),
-                OdometerSettings(),
-                MapSettings()
+                appSettings = AppSettings(),
+                locationSettings = LocationSettings(),
+                odometerSettings = OdometerSettings(),
+                mapSettings = MapSettings(),
+                roadbookSettings = RoadbookSettings()
             ),
             onBackClick = {},
             onThemeSelected = {},
@@ -1089,10 +1082,11 @@ fun SettingsPreviewDark() {
     RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
         SettingsContent(
             uiState = SettingsUiState.Success(
-                AppSettings(),
-                LocationSettings(),
-                OdometerSettings(),
-                MapSettings()
+                appSettings = AppSettings(),
+                locationSettings = LocationSettings(),
+                odometerSettings = OdometerSettings(),
+                mapSettings = MapSettings(),
+                roadbookSettings = RoadbookSettings()
             ),
             onBackClick = {},
             onThemeSelected = {},
@@ -1129,10 +1123,11 @@ fun SettingsPreviewTablet() {
     RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
         SettingsContent(
             uiState = SettingsUiState.Success(
-                AppSettings(),
-                LocationSettings(),
-                OdometerSettings(),
-                MapSettings()
+                appSettings = AppSettings(),
+                locationSettings = LocationSettings(),
+                odometerSettings = OdometerSettings(),
+                mapSettings = MapSettings(),
+                roadbookSettings = RoadbookSettings()
             ),
             onBackClick = {},
             onThemeSelected = {},

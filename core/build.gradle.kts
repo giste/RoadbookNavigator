@@ -79,4 +79,5 @@ dependencies {
     androidTestImplementation(libs.androidx.lifecycle.runtime.testing)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.espresso.intents)
+    debugImplementation(libs.androidx.compose.ui.tooling)
 }

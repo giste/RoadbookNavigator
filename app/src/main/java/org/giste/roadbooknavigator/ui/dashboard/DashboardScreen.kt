@@ -335,10 +335,10 @@ fun PortraitLayout(
             primaryOdometerSlot = primaryOdometerSlot,
             secondaryOdometerSlot = secondaryOdometerSlot,
             onSettingsClick = onSettingsClick,
-            modifier = Modifier.fillMaxWidth()
+            mapSlot = mapSlot,
+            modifier = Modifier.weight(2f)
         )
         roadbookSlot(Modifier.weight(3f))
-        mapSlot(Modifier.weight(2f))
     }
 }
 
@@ -348,7 +348,7 @@ fun CompactPortraitLayout(
     primaryOdometerSlot: @Composable (Modifier) -> Unit,
     secondaryOdometerSlot: @Composable (Modifier) -> Unit,
     roadbookSlot: @Composable (Modifier) -> Unit,
-    @Suppress("UNUSED_PARAMETER") mapSlot: @Composable (Modifier) -> Unit,
+    mapSlot: @Composable (Modifier) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.fillMaxSize()) {
@@ -356,9 +356,10 @@ fun CompactPortraitLayout(
             primaryOdometerSlot = primaryOdometerSlot,
             secondaryOdometerSlot = secondaryOdometerSlot,
             onSettingsClick = onSettingsClick,
-            modifier = Modifier.fillMaxWidth()
+            mapSlot = mapSlot,
+            modifier = Modifier.weight(2f)
         )
-        roadbookSlot(Modifier.weight(1f))
+        roadbookSlot(Modifier.weight(3f))
     }
 }
 
@@ -383,11 +384,7 @@ fun LandscapeDistanceSection(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(IntrinsicSize.Min)
-                .border(
-                    RoadbookNavigatorTheme.dimensions.sectionBorder,
-                    MaterialTheme.colorScheme.outline
-                ),
+                .height(IntrinsicSize.Min),
             verticalAlignment = Alignment.CenterVertically
         ) {
             SettingsButton(onClick = onSettingsClick)
@@ -409,29 +406,36 @@ fun PortraitDistanceSection(
     primaryOdometerSlot: @Composable (Modifier) -> Unit,
     secondaryOdometerSlot: @Composable (Modifier) -> Unit,
     onSettingsClick: () -> Unit,
+    mapSlot: @Composable (Modifier) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Row(
+    Column(
         modifier = modifier
             .fillMaxWidth()
-            .height(IntrinsicSize.Min)
             .border(
                 RoadbookNavigatorTheme.dimensions.sectionBorder,
                 MaterialTheme.colorScheme.outline
-            ),
-        verticalAlignment = Alignment.CenterVertically
+            )
     ) {
-        SettingsButton(onClick = onSettingsClick)
-        secondaryOdometerSlot(
-            Modifier
-                .weight(0.55f)
-                .fillMaxHeight()
-        )
-        primaryOdometerSlot(
-            Modifier
-                .weight(0.45f)
-                .fillMaxHeight()
-        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(IntrinsicSize.Min),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            SettingsButton(onClick = onSettingsClick)
+            secondaryOdometerSlot(
+                Modifier
+                    .weight(0.55f)
+                    .fillMaxHeight()
+            )
+            primaryOdometerSlot(
+                Modifier
+                    .weight(0.45f)
+                    .fillMaxHeight()
+            )
+        }
+        mapSlot(Modifier.weight(1f))
     }
 }
 

@@ -30,7 +30,6 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.key.KeyEvent
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.longClick
@@ -179,7 +178,7 @@ class DashboardScreenTest {
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     @Test
-    fun phonePortrait_doesNotDisplayMapSection() {
+    fun phonePortrait_displaysMapSection() {
         val viewModel: DashboardViewModel = mockk(relaxed = true)
         every { viewModel.uiState } returns MutableStateFlow(DashboardUiState())
         
@@ -203,8 +202,8 @@ class DashboardScreenTest {
             }
         }
 
-        // Verify map is NOT present
-        composeTestRule.onAllNodesWithText(mapDummyText).assertCountEquals(0)
+        // Verify map IS present
+        composeTestRule.onNodeWithText(mapDummyText).assertExists()
         // Verify we are in CompactPortraitLayout
         composeTestRule.onNodeWithTag("CompactPortraitLayout").assertExists()
     }
@@ -229,6 +228,7 @@ class DashboardScreenTest {
                     onSettingsClick = {},
                     viewModel = viewModel,
                     roadbookSlot = { modifier -> FocusedRoadbookStub(modifier) },
+                    mapSlot = { Box(it) }
                 )
             }
         }
@@ -268,6 +268,7 @@ class DashboardScreenTest {
                     onSettingsClick = {},
                     viewModel = viewModel,
                     roadbookSlot = { modifier -> FocusedRoadbookStub(modifier) },
+                    mapSlot = { Box(it) }
                 )
             }
         }
@@ -306,6 +307,7 @@ class DashboardScreenTest {
                     onSettingsClick = {},
                     viewModel = viewModel,
                     roadbookSlot = { modifier -> FocusedRoadbookStub(modifier) },
+                    mapSlot = { Box(it) }
                 )
             }
         }
@@ -341,7 +343,8 @@ class DashboardScreenTest {
                     viewModel = viewModel,
                     roadbookSlot = { modifier ->
                         Text(text = context.getString(RoadbookR.string.main_no_route), modifier = modifier)
-                    }
+                    },
+                    mapSlot = { Box(it) }
                 )
             }
         }
@@ -397,7 +400,8 @@ class DashboardScreenTest {
                             modifier = modifier,
                             onSetPartialClick = {}
                         )
-                    }
+                    },
+                    mapSlot = { Box(it) }
                 )
             }
         }
@@ -458,6 +462,7 @@ class DashboardScreenTest {
                     onSettingsClick = {},
                     viewModel = viewModel,
                     roadbookSlot = { modifier -> FocusedRoadbookStub(modifier) },
+                    mapSlot = { Box(it) }
                 )
             }
         }
@@ -512,6 +517,7 @@ class DashboardScreenTest {
                     onSettingsClick = {},
                     viewModel = viewModel,
                     roadbookSlot = { modifier -> FocusedRoadbookStub(modifier) },
+                    mapSlot = { Box(it) }
                 )
             }
         }
@@ -570,7 +576,8 @@ class DashboardScreenTest {
                             modifier = modifier,
                             onSetPartialClick = {}
                         )
-                    }
+                    },
+                    mapSlot = { Box(it) }
                 )
             }
         }

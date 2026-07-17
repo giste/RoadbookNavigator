@@ -43,29 +43,26 @@ import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.nativeKeyCode
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import kotlinx.coroutines.launch
 import org.giste.roadbooknavigator.R
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 import org.giste.roadbooknavigator.features.map.ui.MapScreen
@@ -80,8 +77,6 @@ import org.giste.roadbooknavigator.features.roadbook.domain.model.Waypoint
 import org.giste.roadbooknavigator.features.roadbook.ui.RoadbookContent
 import org.giste.roadbooknavigator.features.roadbook.ui.RoadbookSection
 import org.giste.roadbooknavigator.features.roadbook.ui.RoadbookUiState
-import org.giste.roadbooknavigator.features.roadbook.ui.RoadbookViewModel
-import androidx.compose.ui.platform.LocalLocale
 
 @Composable
 fun DashboardScreen(
@@ -395,16 +390,7 @@ fun LandscapeDistanceSection(
                 ),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(
-                onClick = onSettingsClick,
-                modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.actionIconSize)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Settings,
-                    contentDescription = stringResource(R.string.action_settings),
-                    tint = MaterialTheme.colorScheme.onSurface
-                )
-            }
+            SettingsButton(onClick = onSettingsClick)
             secondaryOdometerSlot(
                 Modifier
                     .weight(1f)
@@ -435,16 +421,7 @@ fun PortraitDistanceSection(
             ),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        IconButton(
-            onClick = onSettingsClick,
-            modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.actionIconSize)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Settings,
-                contentDescription = stringResource(R.string.action_settings),
-                tint = MaterialTheme.colorScheme.onSurface
-            )
-        }
+        SettingsButton(onClick = onSettingsClick)
         secondaryOdometerSlot(
             Modifier
                 .weight(0.55f)
@@ -454,6 +431,23 @@ fun PortraitDistanceSection(
             Modifier
                 .weight(0.45f)
                 .fillMaxHeight()
+        )
+    }
+}
+
+@Composable
+fun SettingsButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    IconButton(
+        onClick = onClick,
+        modifier = modifier.size(RoadbookNavigatorTheme.dimensions.actionIconSize)
+    ) {
+        Icon(
+            imageVector = Icons.Default.Settings,
+            contentDescription = stringResource(R.string.action_settings),
+            tint = MaterialTheme.colorScheme.onSurface
         )
     }
 }

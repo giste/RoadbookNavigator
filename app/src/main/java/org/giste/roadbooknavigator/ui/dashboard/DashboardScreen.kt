@@ -232,7 +232,7 @@ fun MainContent(
     ) {
         when {
             heightSizeClass == WindowHeightSizeClass.Compact -> {
-                CompactLandscapeLayout(
+                LandscapeLayout(
                     onSettingsClick = onSettingsClick,
                     primaryOdometerSlot = primaryOdometerSlot,
                     secondaryOdometerSlot = secondaryOdometerSlot,
@@ -241,8 +241,8 @@ fun MainContent(
                     modifier = Modifier.testTag("CompactLandscapeLayout")
                 )
             }
-            widthSizeClass == WindowWidthSizeClass.Expanded && heightSizeClass != WindowHeightSizeClass.Compact -> {
-                ExpandedLandscapeLayout(
+            widthSizeClass == WindowWidthSizeClass.Expanded -> {
+                LandscapeLayout(
                     onSettingsClick = onSettingsClick,
                     primaryOdometerSlot = primaryOdometerSlot,
                     secondaryOdometerSlot = secondaryOdometerSlot,
@@ -251,55 +251,27 @@ fun MainContent(
                     modifier = Modifier.testTag("ExpandedLandscapeLayout")
                 )
             }
-            widthSizeClass == WindowWidthSizeClass.Medium -> {
+            else -> {
                 PortraitLayout(
                     onSettingsClick = onSettingsClick,
                     primaryOdometerSlot = primaryOdometerSlot,
                     secondaryOdometerSlot = secondaryOdometerSlot,
                     roadbookSlot = roadbookSlot,
                     mapSlot = mapSlot,
-                    modifier = Modifier.testTag("PortraitLayout")
-                )
-            }
-            else -> {
-                CompactPortraitLayout(
-                    onSettingsClick = onSettingsClick,
-                    primaryOdometerSlot = primaryOdometerSlot,
-                    secondaryOdometerSlot = secondaryOdometerSlot,
-                    roadbookSlot = roadbookSlot,
-                    mapSlot = mapSlot,
-                    modifier = Modifier.testTag("CompactPortraitLayout")
+                    modifier = Modifier.testTag(
+                        if (widthSizeClass == WindowWidthSizeClass.Medium) "PortraitLayout" 
+                        else "CompactPortraitLayout"
+                    )
                 )
             }
         }
     }
 }
 
-// --- LANDSCAPE LAYOUTS ---
+// --- LANDSCAPE LAYOUT ---
 
 @Composable
-fun ExpandedLandscapeLayout(
-    onSettingsClick: () -> Unit,
-    primaryOdometerSlot: @Composable (Modifier) -> Unit,
-    secondaryOdometerSlot: @Composable (Modifier) -> Unit,
-    roadbookSlot: @Composable (Modifier) -> Unit,
-    mapSlot: @Composable (Modifier) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(modifier = modifier.fillMaxSize()) {
-        LandscapeDistanceSection(
-            primaryOdometerSlot = primaryOdometerSlot,
-            secondaryOdometerSlot = secondaryOdometerSlot,
-            onSettingsClick = onSettingsClick,
-            mapSlot = mapSlot,
-            modifier = Modifier.weight(2f)
-        )
-        roadbookSlot(Modifier.weight(5f))
-    }
-}
-
-@Composable
-fun CompactLandscapeLayout(
+fun LandscapeLayout(
     onSettingsClick: () -> Unit,
     primaryOdometerSlot: @Composable (Modifier) -> Unit,
     secondaryOdometerSlot: @Composable (Modifier) -> Unit,
@@ -323,27 +295,6 @@ fun CompactLandscapeLayout(
 
 @Composable
 fun PortraitLayout(
-    onSettingsClick: () -> Unit,
-    primaryOdometerSlot: @Composable (Modifier) -> Unit,
-    secondaryOdometerSlot: @Composable (Modifier) -> Unit,
-    roadbookSlot: @Composable (Modifier) -> Unit,
-    mapSlot: @Composable (Modifier) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Column(modifier = modifier.fillMaxSize()) {
-        PortraitDistanceSection(
-            primaryOdometerSlot = primaryOdometerSlot,
-            secondaryOdometerSlot = secondaryOdometerSlot,
-            onSettingsClick = onSettingsClick,
-            mapSlot = mapSlot,
-            modifier = Modifier.weight(2f)
-        )
-        roadbookSlot(Modifier.weight(3f))
-    }
-}
-
-@Composable
-fun CompactPortraitLayout(
     onSettingsClick: () -> Unit,
     primaryOdometerSlot: @Composable (Modifier) -> Unit,
     secondaryOdometerSlot: @Composable (Modifier) -> Unit,

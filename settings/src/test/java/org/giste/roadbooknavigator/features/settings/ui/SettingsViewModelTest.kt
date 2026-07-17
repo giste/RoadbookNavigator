@@ -54,6 +54,7 @@ import org.giste.roadbooknavigator.core.settings.domain.AppTheme
 import org.giste.roadbooknavigator.features.settings.domain.RemoteModel
 import org.giste.roadbooknavigator.features.settings.domain.usecase.GetSettingsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateFullScreenUseCase
+import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateLandscapeDistanceSectionWeightUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateOrientationUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateRemoteModelUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateThemeUseCase
@@ -84,6 +85,7 @@ class SettingsViewModelTest {
     private val updateOdometerRemoteKeysUseCase: UpdateOdometerRemoteKeysUseCase = mockk()
     private val getMapSettingsUseCase: GetMapSettingsUseCase = mockk()
     private val saveMapSettingsUseCase: SaveMapSettingsUseCase = mockk()
+    private val updateLandscapeDistanceSectionWeightUseCase: UpdateLandscapeDistanceSectionWeightUseCase = mockk()
     private val logger: Logger = mockk(relaxed = true)
 
     private val settingsFlow = MutableStateFlow(AppSettings())
@@ -124,6 +126,7 @@ class SettingsViewModelTest {
             updateRemoteModelUseCase = updateRemoteModelUseCase,
             updateOdometerRemoteKeysUseCase = updateOdometerRemoteKeysUseCase,
             saveMapSettingsUseCase = saveMapSettingsUseCase,
+            updateLandscapeDistanceSectionWeightUseCase = updateLandscapeDistanceSectionWeightUseCase,
             logger = logger
         )
     }
@@ -275,5 +278,12 @@ class SettingsViewModelTest {
         viewModel.setMapInitialTilt(45f)
         
         coVerify { saveMapSettingsUseCase(MapSettings(initialTilt = 45f)) }
+    }
+
+    @Test
+    fun `setLandscapeDistanceSectionWeight should call use case`() = runTest {
+        coEvery { updateLandscapeDistanceSectionWeightUseCase(any()) } returns Result.success(Unit)
+        viewModel.setLandscapeDistanceSectionWeight(0.35f)
+        coVerify { updateLandscapeDistanceSectionWeightUseCase(0.35f) }
     }
 }

@@ -133,6 +133,7 @@ fun DashboardScreen(
         onResetPartial = { viewModel.resetPartialDistance() },
         onSetPartialDistance = { viewModel.setPartialDistance(it) },
         onHideSetPartialDialog = { viewModel.hideSetPartialDialog() },
+        landscapeDistanceSectionWeight = uiState.landscapeDistanceSectionWeight
     )
 }
 
@@ -150,6 +151,7 @@ fun DashboardContent(
     onResetPartial: () -> Unit,
     onSetPartialDistance: (Double) -> Unit,
     onHideSetPartialDialog: () -> Unit,
+    landscapeDistanceSectionWeight: Float,
 ) {
     val focusRequester = remember { FocusRequester() }
 
@@ -192,7 +194,8 @@ fun DashboardContent(
             primaryOdometerSlot = primaryOdometerSlot,
             secondaryOdometerSlot = secondaryOdometerSlot,
             roadbookSlot = roadbookSlot,
-            mapSlot = mapSlot
+            mapSlot = mapSlot,
+            landscapeDistanceSectionWeight = landscapeDistanceSectionWeight
         )
 
         if (uiState.showSetPartialDialog) {
@@ -217,6 +220,7 @@ fun MainContent(
     secondaryOdometerSlot: @Composable (Modifier) -> Unit,
     roadbookSlot: @Composable (Modifier) -> Unit,
     mapSlot: @Composable (Modifier) -> Unit,
+    landscapeDistanceSectionWeight: Float,
 ) {
     val widthSizeClass = windowSizeClass.widthSizeClass
     val heightSizeClass = windowSizeClass.heightSizeClass
@@ -238,6 +242,7 @@ fun MainContent(
                     secondaryOdometerSlot = secondaryOdometerSlot,
                     roadbookSlot = roadbookSlot,
                     mapSlot = mapSlot,
+                    distanceSectionWeight = landscapeDistanceSectionWeight,
                     modifier = Modifier.testTag("CompactLandscapeLayout")
                 )
             }
@@ -248,6 +253,7 @@ fun MainContent(
                     secondaryOdometerSlot = secondaryOdometerSlot,
                     roadbookSlot = roadbookSlot,
                     mapSlot = mapSlot,
+                    distanceSectionWeight = landscapeDistanceSectionWeight,
                     modifier = Modifier.testTag("ExpandedLandscapeLayout")
                 )
             }
@@ -277,6 +283,7 @@ fun LandscapeLayout(
     secondaryOdometerSlot: @Composable (Modifier) -> Unit,
     roadbookSlot: @Composable (Modifier) -> Unit,
     mapSlot: @Composable (Modifier) -> Unit,
+    distanceSectionWeight: Float,
     modifier: Modifier = Modifier
 ) {
     Row(modifier = modifier.fillMaxSize()) {
@@ -285,9 +292,9 @@ fun LandscapeLayout(
             secondaryOdometerSlot = secondaryOdometerSlot,
             onSettingsClick = onSettingsClick,
             mapSlot = mapSlot,
-            modifier = Modifier.weight(3f)
+            modifier = Modifier.weight(distanceSectionWeight)
         )
-        roadbookSlot(Modifier.weight(7f))
+        roadbookSlot(Modifier.weight(1f - distanceSectionWeight))
     }
 }
 
@@ -493,7 +500,8 @@ fun TabletLandPreview() {
                     onFileSelected = {},
                 )
             },
-            mapSlot = { modifier -> Box(modifier.background(MaterialTheme.colorScheme.tertiary)) }
+            mapSlot = { modifier -> Box(modifier.background(MaterialTheme.colorScheme.tertiary)) },
+            landscapeDistanceSectionWeight = 0.3f
         )
     }
 }
@@ -533,7 +541,8 @@ fun TabletPortPreview() {
                     onFileSelected = {},
                 )
             },
-            mapSlot = { modifier -> Box(modifier.background(MaterialTheme.colorScheme.tertiary)) }
+            mapSlot = { modifier -> Box(modifier.background(MaterialTheme.colorScheme.tertiary)) },
+            landscapeDistanceSectionWeight = 0.3f
         )
     }
 }
@@ -573,7 +582,8 @@ fun PhonePortPreview() {
                     onFileSelected = {},
                 )
             },
-            mapSlot = { modifier -> Box(modifier.background(MaterialTheme.colorScheme.tertiary)) }
+            mapSlot = { modifier -> Box(modifier.background(MaterialTheme.colorScheme.tertiary)) },
+            landscapeDistanceSectionWeight = 0.3f
         )
     }
 }
@@ -613,7 +623,8 @@ fun PhoneLandPreview() {
                     onFileSelected = {},
                 )
             },
-            mapSlot = { modifier -> Box(modifier.background(MaterialTheme.colorScheme.tertiary)) }
+            mapSlot = { modifier -> Box(modifier.background(MaterialTheme.colorScheme.tertiary)) },
+            landscapeDistanceSectionWeight = 0.3f
         )
     }
 }

@@ -51,6 +51,7 @@ import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.RemoteModel
 import org.giste.roadbooknavigator.features.settings.domain.usecase.GetSettingsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateFullScreenUseCase
+import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateLandscapeDistanceSectionWeightUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateOrientationUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateRemoteModelUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateThemeUseCase
@@ -77,6 +78,7 @@ class SettingsViewModel @Inject constructor(
     private val updateRemoteModelUseCase: UpdateRemoteModelUseCase,
     private val updateOdometerRemoteKeysUseCase: UpdateOdometerRemoteKeysUseCase,
     private val saveMapSettingsUseCase: SaveMapSettingsUseCase,
+    private val updateLandscapeDistanceSectionWeightUseCase: UpdateLandscapeDistanceSectionWeightUseCase,
     private val logger: Logger
 ) : ViewModel() {
 
@@ -232,6 +234,13 @@ class SettingsViewModel @Inject constructor(
             (uiState.value as? SettingsUiState.Success)?.mapSettings ?: MapSettings()
         viewModelScope.launch {
             saveMapSettingsUseCase(currentSettings.copy(initialTilt = tilt))
+        }
+    }
+
+    fun setLandscapeDistanceSectionWeight(weight: Float) {
+        logger.d("SettingsViewModel: setLandscapeDistanceSectionWeight requested: %f", weight)
+        viewModelScope.launch {
+            updateLandscapeDistanceSectionWeightUseCase(weight)
         }
     }
 }

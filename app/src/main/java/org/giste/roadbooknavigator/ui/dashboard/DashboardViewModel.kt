@@ -65,6 +65,7 @@ class DashboardViewModel @Inject constructor(
             odometer = odometer,
             showSetPartialDialog = showDialog,
             isFullScreen = settings.fullScreen,
+            landscapeDistanceSectionWeight = settings.landscapeDistanceSectionWeight,
             increasePartialKeys = odometerSettings.increasePartial,
             decreasePartialKeys = odometerSettings.decreasePartial,
             resetPartialKeys = odometerSettings.resetPartial
@@ -126,6 +127,7 @@ data class DashboardUiState(
     val odometer: Odometer = Odometer(),
     val showSetPartialDialog: Boolean = false,
     val isFullScreen: Boolean = false,
+    val landscapeDistanceSectionWeight: Float = 0.3f,
     val increasePartialKeys: List<Int> = OdometerSettings.DEFAULT_INCREASE_KEYS,
     val decreasePartialKeys: List<Int> = OdometerSettings.DEFAULT_DECREASE_KEYS,
     val resetPartialKeys: List<Int> = OdometerSettings.DEFAULT_RESET_KEYS

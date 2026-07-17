@@ -111,6 +111,7 @@ import org.giste.roadbooknavigator.features.settings.R
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.RemoteModel
+import kotlin.math.roundToInt
 import org.giste.roadbooknavigator.core.R as CoreR
 
 @Composable
@@ -137,6 +138,7 @@ fun SettingsScreen(
         onRoadbookKeysChanged = viewModel::setRoadbookKeys,
         onMapInitialZoomChange = viewModel::setMapInitialZoom,
         onMapInitialTiltChange = viewModel::setMapInitialTilt,
+        onLandscapeWeightChange = viewModel::setLandscapeDistanceSectionWeight,
         mapManagementContent = { MapManagementScreen() }
     )
 }
@@ -161,6 +163,7 @@ fun SettingsContent(
     onRoadbookKeysChanged: (List<Int>, List<Int>) -> Unit,
     onMapInitialZoomChange: (Int) -> Unit,
     onMapInitialTiltChange: (Float) -> Unit,
+    onLandscapeWeightChange: (Float) -> Unit,
     mapManagementContent: @Composable () -> Unit,
 ) {
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
@@ -233,7 +236,8 @@ fun SettingsContent(
                                 onFullScreenChange = onFullScreenChange,
                                 onShortDistanceThresholdChange = onShortDistanceThresholdChange,
                                 onMapInitialZoomChange = onMapInitialZoomChange,
-                                onMapInitialTiltChange = onMapInitialTiltChange
+                                onMapInitialTiltChange = onMapInitialTiltChange,
+                                onLandscapeWeightChange = onLandscapeWeightChange
                             )
 
                             1 -> RemoteTab(
@@ -276,6 +280,7 @@ fun UserTab(
     onShortDistanceThresholdChange: (Long) -> Unit,
     onMapInitialZoomChange: (Int) -> Unit,
     onMapInitialTiltChange: (Float) -> Unit,
+    onLandscapeWeightChange: (Float) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -349,6 +354,19 @@ fun UserTab(
             valueRange = 0f..85f,
             label = "${mapSettings.initialTilt.toInt()}°",
             testTag = "MapTiltSlider"
+        )
+
+        HorizontalDivider()
+
+        // Landscape Weight split
+        SettingsSectionTitle(stringResource(R.string.settings_landscape_weight_title))
+        SliderSettingItem(
+            helper = stringResource(R.string.settings_landscape_weight_helper),
+            value = settings.landscapeDistanceSectionWeight,
+            onValueChange = onLandscapeWeightChange,
+            valueRange = AppSettings.MIN_LANDSCAPE_WEIGHT..AppSettings.MAX_LANDSCAPE_WEIGHT,
+            label = "${(settings.landscapeDistanceSectionWeight * 100).roundToInt()}% / ${(100 - settings.landscapeDistanceSectionWeight * 100).roundToInt()}%",
+            testTag = "LandscapeWeightSlider"
         )
     }
 }
@@ -1051,6 +1069,7 @@ fun SettingsPreviewLight() {
             onRoadbookKeysChanged = { _, _ -> },
             onMapInitialZoomChange = {},
             onMapInitialTiltChange = {},
+            onLandscapeWeightChange = {},
             mapManagementContent = {}
         )
     }
@@ -1091,6 +1110,7 @@ fun SettingsPreviewDark() {
             onRoadbookKeysChanged = { _, _ -> },
             onMapInitialZoomChange = {},
             onMapInitialTiltChange = {},
+            onLandscapeWeightChange = {},
             mapManagementContent = {}
         )
     }
@@ -1130,6 +1150,7 @@ fun SettingsPreviewTablet() {
             onRoadbookKeysChanged = { _, _ -> },
             onMapInitialZoomChange = {},
             onMapInitialTiltChange = {},
+            onLandscapeWeightChange = {},
             mapManagementContent = {}
         )
     }

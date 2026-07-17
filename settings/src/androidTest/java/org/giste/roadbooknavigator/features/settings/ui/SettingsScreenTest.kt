@@ -77,6 +77,7 @@ class SettingsScreenTest {
                     onRoadbookKeysChanged = { _, _ -> },
                     onMapInitialZoomChange = {},
                     onMapInitialTiltChange = {},
+                    onLandscapeWeightChange = {},
                     mapManagementContent = { Text("Map Management Content") }
                 )
             }
@@ -122,6 +123,7 @@ class SettingsScreenTest {
                     onRoadbookKeysChanged = { _, _ -> },
                     onMapInitialZoomChange = {},
                     onMapInitialTiltChange = {},
+                    onLandscapeWeightChange = {},
                     mapManagementContent = {}
                 )
             }
@@ -158,6 +160,7 @@ class SettingsScreenTest {
                     onRoadbookKeysChanged = { _, _ -> },
                     onMapInitialZoomChange = {},
                     onMapInitialTiltChange = {},
+                    onLandscapeWeightChange = {},
                     mapManagementContent = {}
                 )
             }
@@ -196,6 +199,7 @@ class SettingsScreenTest {
                     onRoadbookKeysChanged = { _, _ -> },
                     onMapInitialZoomChange = {},
                     onMapInitialTiltChange = {},
+                    onLandscapeWeightChange = {},
                     mapManagementContent = {}
                 )
             }
@@ -235,6 +239,7 @@ class SettingsScreenTest {
                     onRoadbookKeysChanged = { _, _ -> },
                     onMapInitialZoomChange = {},
                     onMapInitialTiltChange = {},
+                    onLandscapeWeightChange = {},
                     mapManagementContent = {}
                 )
             }
@@ -271,6 +276,7 @@ class SettingsScreenTest {
                     onRoadbookKeysChanged = { _, _ -> },
                     onMapInitialZoomChange = {},
                     onMapInitialTiltChange = {},
+                    onLandscapeWeightChange = {},
                     mapManagementContent = {}
                 )
             }
@@ -307,6 +313,7 @@ class SettingsScreenTest {
                     onRoadbookKeysChanged = { _, _ -> },
                     onMapInitialZoomChange = {},
                     onMapInitialTiltChange = {},
+                    onLandscapeWeightChange = {},
                     mapManagementContent = {}
                 )
             }
@@ -345,6 +352,7 @@ class SettingsScreenTest {
                     onRoadbookKeysChanged = { _, _ -> },
                     onMapInitialZoomChange = {},
                     onMapInitialTiltChange = {},
+                    onLandscapeWeightChange = {},
                     mapManagementContent = {}
                 )
             }
@@ -387,6 +395,7 @@ class SettingsScreenTest {
                     onRoadbookKeysChanged = { _, _ -> },
                     onMapInitialZoomChange = {},
                     onMapInitialTiltChange = {},
+                    onLandscapeWeightChange = {},
                     mapManagementContent = {}
                 )
             }
@@ -429,6 +438,7 @@ class SettingsScreenTest {
                     onRoadbookKeysChanged = { _, _ -> },
                     onMapInitialZoomChange = {},
                     onMapInitialTiltChange = {},
+                    onLandscapeWeightChange = {},
                     mapManagementContent = {}
                 )
             }
@@ -471,6 +481,7 @@ class SettingsScreenTest {
                     onRoadbookKeysChanged = { _, _ -> },
                     onMapInitialZoomChange = {},
                     onMapInitialTiltChange = {},
+                    onLandscapeWeightChange = {},
                     mapManagementContent = {}
                 )
             }
@@ -518,6 +529,7 @@ class SettingsScreenTest {
                     onRoadbookKeysChanged = { _, _ -> },
                     onMapInitialZoomChange = {},
                     onMapInitialTiltChange = {},
+                    onLandscapeWeightChange = {},
                     mapManagementContent = {}
                 )
             }
@@ -561,6 +573,7 @@ class SettingsScreenTest {
                     onRoadbookKeysChanged = { _, _ -> },
                     onMapInitialZoomChange = {},
                     onMapInitialTiltChange = {},
+                    onLandscapeWeightChange = {},
                     mapManagementContent = {}
                 )
             }
@@ -601,6 +614,7 @@ class SettingsScreenTest {
                     onRoadbookKeysChanged = { _, _ -> },
                     onMapInitialZoomChange = {},
                     onMapInitialTiltChange = {},
+                    onLandscapeWeightChange = {},
                     mapManagementContent = {}
                 )
             }

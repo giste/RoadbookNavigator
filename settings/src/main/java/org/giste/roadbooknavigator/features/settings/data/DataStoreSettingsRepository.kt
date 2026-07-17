@@ -21,6 +21,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -50,6 +51,7 @@ internal class DataStoreSettingsRepository @Inject constructor(
         val ORIENTATION = stringPreferencesKey("app_orientation")
         val FULL_SCREEN = booleanPreferencesKey("full_screen")
         val REMOTE_MODEL = stringPreferencesKey("remote_model")
+        val LANDSCAPE_WEIGHT = floatPreferencesKey("landscape_weight")
     }
 
     override fun getSettings(): Flow<AppSettings> = dataStore.data.map { preferences ->
@@ -60,6 +62,7 @@ internal class DataStoreSettingsRepository @Inject constructor(
             orientation = preferences[Keys.ORIENTATION]?.let { safeOrientationOf(it) }
                 ?: AppOrientation.FOLLOW_SYSTEM,
             fullScreen = preferences[Keys.FULL_SCREEN] ?: true,
+            landscapeDistanceSectionWeight = preferences[Keys.LANDSCAPE_WEIGHT] ?: 0.3f,
             remoteKeySettings = RemoteKeySettings(
                 model = remoteModel
             )
@@ -93,6 +96,13 @@ internal class DataStoreSettingsRepository @Inject constructor(
         logger.i("DataStoreSettingsRepository: Setting remote model to %s", model)
         dataStore.edit { preferences ->
             preferences[Keys.REMOTE_MODEL] = model.name
+        }
+    }
+
+    override suspend fun setLandscapeDistanceSectionWeight(weight: Float) {
+        logger.i("DataStoreSettingsRepository: Setting landscape weight to %f", weight)
+        dataStore.edit { preferences ->
+            preferences[Keys.LANDSCAPE_WEIGHT] = weight
         }
     }
 

@@ -40,4 +40,7 @@ interface SettingsRepository {
 
     /** Updates the selected remote control model. */
     suspend fun setRemoteModel(model: RemoteModel)
+
+    /** Updates the weight of the distance section in landscape layout. */
+    suspend fun setLandscapeDistanceSectionWeight(weight: Float)
 }

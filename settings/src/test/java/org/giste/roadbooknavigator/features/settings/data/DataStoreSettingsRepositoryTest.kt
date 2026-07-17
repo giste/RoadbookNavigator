@@ -88,6 +88,20 @@ class DataStoreSettingsRepositoryTest {
     }
 
     @Test
+    fun `setLandscapeDistanceSectionWeight should persist weight value`() = runTest {
+        val testWeight = 0.35f
+        repository.setLandscapeDistanceSectionWeight(testWeight)
+
+        val settings = repository.getSettings().first()
+        assertEquals(testWeight, settings.landscapeDistanceSectionWeight)
+
+        // Verify with new instance
+        val newRepo = DataStoreSettingsRepository(dataStore, logger)
+        val persisted = newRepo.getSettings().first()
+        assertEquals(testWeight, persisted.landscapeDistanceSectionWeight)
+    }
+
+    @Test
     fun `safe parsing should fallback to default for unknown theme string`() = runTest {
         // We need to bypass the public API to inject a corrupted string directly into DataStore
         // But since safeThemeOf is private, we verify it implicitly by ensuring it doesn't crash 

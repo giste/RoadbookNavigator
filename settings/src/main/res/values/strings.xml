@@ -70,4 +70,6 @@
     <string name="settings_map_tilt_title">Initial Tilt (degrees)</string>
     <string name="settings_map_tilt_helper">Default tilt angle for 3D perspective.</string>
     <string name="settings_map_management_title">Downloaded Maps</string>
+    <string name="settings_landscape_weight_title">Landscape screen partition</string>
+    <string name="settings_landscape_weight_helper">Adjust the relative width of the distance section and the roadbook in landscape mode.</string>
 </resources>

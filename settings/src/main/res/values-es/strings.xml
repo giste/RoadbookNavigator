@@ -70,4 +70,6 @@
     <string name="settings_map_tilt_title">Inclinación inicial (grados)</string>
     <string name="settings_map_tilt_helper">Ángulo de inclinación por defecto para la perspectiva 3D.</string>
     <string name="settings_map_management_title">Mapas descargados</string>
+    <string name="settings_landscape_weight_title">Partición de pantalla horizontal</string>
+    <string name="settings_landscape_weight_helper">Ajusta el ancho relativo de la sección de distancia y el roadbook en modo horizontal.</string>
 </resources>

@@ -285,9 +285,9 @@ fun LandscapeLayout(
             secondaryOdometerSlot = secondaryOdometerSlot,
             onSettingsClick = onSettingsClick,
             mapSlot = mapSlot,
-            modifier = Modifier.weight(2f)
+            modifier = Modifier.weight(3f)
         )
-        roadbookSlot(Modifier.weight(5f))
+        roadbookSlot(Modifier.weight(7f))
     }
 }
 
@@ -377,12 +377,12 @@ fun PortraitDistanceSection(
             SettingsButton(onClick = onSettingsClick)
             secondaryOdometerSlot(
                 Modifier
-                    .weight(0.55f)
+                    .weight(0.45f)
                     .fillMaxHeight()
             )
             primaryOdometerSlot(
                 Modifier
-                    .weight(0.45f)
+                    .weight(0.55f)
                     .fillMaxHeight()
             )
         }
@@ -481,8 +481,8 @@ fun TabletLandPreview() {
             windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(1097.dp, 686.dp)),
             uiState = sampleUiState,
             onSettingsClick = {},
-            primaryOdometerSlot = { modifier -> PartialDistance(distance = "1.15", modifier = modifier, onLongClick = {}) },
-            secondaryOdometerSlot = { modifier -> TotalDistance("2.4", modifier) },
+            primaryOdometerSlot = { modifier -> PartialDistance(distance = "999.99", modifier = modifier, onLongClick = {}) },
+            secondaryOdometerSlot = { modifier -> TotalDistance("9,999.9", modifier) },
             roadbookSlot = { modifier -> 
                 RoadbookContent(
                     state = sampleRoadbookState,
@@ -521,8 +521,8 @@ fun TabletPortPreview() {
             windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(686.dp, 1097.dp)),
             uiState = sampleUiState,
             onSettingsClick = {},
-            primaryOdometerSlot = { modifier -> PartialDistance(distance = "1.15", modifier = modifier, onLongClick = {}) },
-            secondaryOdometerSlot = { modifier -> TotalDistance("2.4", modifier) },
+            primaryOdometerSlot = { modifier -> PartialDistance(distance = "999.99", modifier = modifier, onLongClick = {}) },
+            secondaryOdometerSlot = { modifier -> TotalDistance("9,999.9", modifier) },
             roadbookSlot = { modifier -> 
                 RoadbookContent(
                     state = sampleRoadbookState,
@@ -561,8 +561,8 @@ fun PhonePortPreview() {
             windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp)),
             uiState = sampleUiState,
             onSettingsClick = {},
-            primaryOdometerSlot = { modifier -> PartialDistance(distance = "1.15", modifier = modifier, onLongClick = {}) },
-            secondaryOdometerSlot = { modifier -> TotalDistance("2.4", modifier) },
+            primaryOdometerSlot = { modifier -> PartialDistance(distance = "999.99", modifier = modifier, onLongClick = {}) },
+            secondaryOdometerSlot = { modifier -> TotalDistance("9,999.9", modifier) },
             roadbookSlot = { modifier -> 
                 RoadbookContent(
                     state = sampleRoadbookState,
@@ -601,8 +601,8 @@ fun PhoneLandPreview() {
             windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(891.dp, 411.dp)),
             uiState = sampleUiState,
             onSettingsClick = {},
-            primaryOdometerSlot = { modifier -> PartialDistance(distance = "1.15", modifier = modifier, onLongClick = {}) },
-            secondaryOdometerSlot = { modifier -> TotalDistance("2.4", modifier) },
+            primaryOdometerSlot = { modifier -> PartialDistance(distance = "999.99", modifier = modifier, onLongClick = {}) },
+            secondaryOdometerSlot = { modifier -> TotalDistance("9,999.9", modifier) },
             roadbookSlot = { modifier -> 
                 RoadbookContent(
                     state = sampleRoadbookState,

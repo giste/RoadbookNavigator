@@ -20,11 +20,13 @@ package org.giste.roadbooknavigator.features.roadbook.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -44,7 +46,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import org.giste.roadbooknavigator.core.ui.components.RoadbookAutoSizeText
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Coordinates
@@ -65,6 +66,11 @@ internal fun DistanceSection(
     } else {
         MaterialTheme.colorScheme.onSurface
     }
+    val surfaceColor = if (isShortDistance) {
+        MaterialTheme.colorScheme.tertiaryContainer
+    } else {
+        MaterialTheme.colorScheme.surface
+    }
 
     Column(
         modifier = modifier
@@ -82,43 +88,60 @@ internal fun DistanceSection(
         // Accumulated distance (large)
         RoadbookAutoSizeText(
             text = String.format(locale, "%.2f", waypoint.distance.meters / 1000.0),
-            modifier = Modifier.align(Alignment.CenterHorizontally),
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .weight(0.33f),
             color = contentColor,
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.displaySmall,
-            maxFontSize = 36.sp
         )
 
-        if (waypoint.reset) {
-            HorizontalDivider(
-                modifier = Modifier.padding(horizontal = RoadbookNavigatorTheme.dimensions.paddingLarge),
-                thickness = RoadbookNavigatorTheme.dimensions.resetDividerThickness,
-                color = contentColor,
-            )
-        }
+        // Reset divider
+        Box(
+            modifier = Modifier
+                .padding(horizontal = RoadbookNavigatorTheme.dimensions.paddingLarge)
+                .weight(0.02f)
+                .fillMaxWidth()
+                .background(color = if (waypoint.reset) contentColor else surfaceColor)
+        )
 
-        if (waypoint.dangerLevel == Waypoint.DangerLevel.MEDIUM) {
-            HorizontalDivider(
-                modifier = Modifier.padding(horizontal = RoadbookNavigatorTheme.dimensions.paddingMedium),
-                thickness = RoadbookNavigatorTheme.dimensions.dangerMediumThickness,
-                color = MaterialTheme.colorScheme.error,
-            )
-        }
+        // Medium danger divider
+        Box(
+            modifier = Modifier
+                .padding(horizontal = RoadbookNavigatorTheme.dimensions.paddingMedium)
+                .weight(0.05f)
+                .fillMaxWidth()
+                .background(
+                    color = if (waypoint.dangerLevel == Waypoint.DangerLevel.MEDIUM) {
+                        MaterialTheme.colorScheme.error
+                    } else {
+                        surfaceColor
+                    }
+                )
+        )
 
         // Reset
-        if (waypoint.reset) {
-            RoadbookAutoSizeText(
-                text = String.format(locale, "%.2f", 0.0),
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                color = contentColor,
-                fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.headlineLarge,
-                maxFontSize = 32.sp
-            )
-        }
+        RoadbookAutoSizeText(
+            text = if (waypoint.reset) String.format(locale, "%.2f", 0.0) else "",
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .weight(0.28f),
+            color = contentColor,
+            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.headlineLarge,
+        )
+
+        HorizontalDivider(
+            modifier = Modifier
+                .weight(0.12f)
+                .width(IntrinsicSize.Min),
+            color = surfaceColor
+        )
 
         Row(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .weight(0.2f),
             verticalAlignment = Alignment.Bottom
         ) {
             // Partial distance (small)
@@ -134,7 +157,6 @@ internal fun DistanceSection(
                 color = contentColor,
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.titleLarge,
-                maxFontSize = 22.sp
             )
 
             VerticalDivider(
@@ -144,18 +166,23 @@ internal fun DistanceSection(
                 color = contentColor
             )
 
-            // Waypoint number
-            RoadbookAutoSizeText(
-                text = waypoint.number.toString(),
-                modifier = Modifier
-                    .background(color = MaterialTheme.colorScheme.inverseSurface)
-                    .weight(0.25f)
-                    .padding(horizontal = RoadbookNavigatorTheme.dimensions.paddingMinimal),
-                color = MaterialTheme.colorScheme.inverseOnSurface,
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.titleMedium,
-                maxFontSize = 16.sp
-            )
+            Column(modifier = Modifier.weight(0.25f)) {
+                Box(modifier = Modifier.weight(0.3f))
+
+                // Waypoint number
+                RoadbookAutoSizeText(
+                    text = waypoint.number.toString(),
+                    modifier = Modifier
+                        .background(color = MaterialTheme.colorScheme.inverseSurface)
+                        .weight(0.7f)
+                        .padding(horizontal = RoadbookNavigatorTheme.dimensions.paddingMinimal)
+                        .fillMaxWidth(),
+                    color = MaterialTheme.colorScheme.inverseOnSurface,
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.titleMedium,
+                )
+
+            }
         }
     }
 }

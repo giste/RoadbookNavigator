@@ -342,7 +342,8 @@ fun LandscapeDistanceSection(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(IntrinsicSize.Min),
+                .height(IntrinsicSize.Min)
+                .weight(1.2f),
             verticalAlignment = Alignment.CenterVertically
         ) {
             SettingsButton(onClick = onSettingsClick)
@@ -353,9 +354,9 @@ fun LandscapeDistanceSection(
             )
         }
 
-        primaryOdometerSlot(Modifier.fillMaxWidth())
+        primaryOdometerSlot(Modifier.fillMaxWidth().weight(1.4f))
 
-        mapSlot(Modifier.weight(1f))
+        mapSlot(Modifier.weight(7.4f))
     }
 }
 
@@ -378,7 +379,8 @@ fun PortraitDistanceSection(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(IntrinsicSize.Min),
+                .height(IntrinsicSize.Min)
+                .weight(2f),
             verticalAlignment = Alignment.CenterVertically
         ) {
             SettingsButton(onClick = onSettingsClick)
@@ -393,7 +395,7 @@ fun PortraitDistanceSection(
                     .fillMaxHeight()
             )
         }
-        mapSlot(Modifier.weight(1f))
+        mapSlot(Modifier.weight(8f))
     }
 }
 

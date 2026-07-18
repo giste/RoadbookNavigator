@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.TextAutoSize
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -51,7 +52,7 @@ fun TotalDistance(
         Text(
             text = distance,
             modifier = Modifier.testTag("TotalOdometerValue"),
-            style = MaterialTheme.typography.displaySmall.copy(
+            style = LocalTextStyle.current.copy(
                 fontFeatureSettings = "tnum"
             ),
             autoSize = TextAutoSize.StepBased(
@@ -91,7 +92,7 @@ fun PartialDistance(
         Text(
             text = distance,
             modifier = Modifier.testTag("PartialOdometerValue"),
-            style = MaterialTheme.typography.displayLarge.copy(
+            style = LocalTextStyle.current.copy(
                 fontWeight = FontWeight.Bold,
                 fontFeatureSettings = "tnum"
             ),

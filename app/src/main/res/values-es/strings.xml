@@ -16,7 +16,7 @@
   -->
 
 <resources>
-    <string name="app_name">Rn2 Viewer</string>
+    <string name="app_name">Roadbook Navigator</string>
     <string name="permission_location_rationale">Se requiere el GPS para mostrar su posición y rutas. Por favor, conceda el permiso para continuar.</string>
     <string name="permission_location_request">Esta aplicación necesita acceso a la ubicación para funcionar correctamente. Por favor, conceda el permiso.</string>
     <string name="permission_button_grant">Conceder permisos</string>

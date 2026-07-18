@@ -46,11 +46,18 @@ private val DarkColorScheme = darkColorScheme(
     onSecondaryContainer = BeerDarkOnSecondaryContainer,
     tertiary = BeerDarkTertiary,
     onTertiary = BeerDarkOnTertiary,
+    tertiaryContainer = BeerDarkTertiaryContainer,
+    onTertiaryContainer = BeerDarkOnTertiaryContainer,
+    error = BeerDarkError,
+    onError = BeerDarkOnError,
+    errorContainer = BeerDarkErrorContainer,
+    onErrorContainer = BeerDarkOnErrorContainer,
     surface = BeerDarkSurface,
     onSurface = BeerDarkOnSurface,
     surfaceVariant = BeerDarkSurfaceVariant,
     onSurfaceVariant = BeerDarkOnSurfaceVariant,
     outline = BeerDarkOutline,
+    outlineVariant = BeerDarkOutlineVariant,
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -64,11 +71,18 @@ private val LightColorScheme = lightColorScheme(
     onSecondaryContainer = BeerLightOnSecondaryContainer,
     tertiary = BeerLightTertiary,
     onTertiary = BeerLightOnTertiary,
+    tertiaryContainer = BeerLightTertiaryContainer,
+    onTertiaryContainer = BeerLightOnTertiaryContainer,
+    error = BeerLightError,
+    onError = BeerLightOnError,
+    errorContainer = BeerLightErrorContainer,
+    onErrorContainer = BeerLightOnErrorContainer,
     surface = BeerLightSurface,
     onSurface = BeerLightOnSurface,
     surfaceVariant = BeerLightSurfaceVariant,
     onSurfaceVariant = BeerLightOnSurfaceVariant,
     outline = BeerLightOutline,
+    outlineVariant = BeerLightOutlineVariant,
 )
 
 private val FiaColorScheme = lightColorScheme(

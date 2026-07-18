@@ -75,12 +75,20 @@ val BeerLightOnSecondaryContainer = Color(0xFF3E2723)
 
 val BeerLightTertiary = Color(0xFF8D6E63)
 val BeerLightOnTertiary = Color(0xFFFFFFFF)
+val BeerLightTertiaryContainer = Color(0xFFFFDBCF)
+val BeerLightOnTertiaryContainer = Color(0xFF391D15)
+
+val BeerLightError = Color(0xFFBA1A1A)
+val BeerLightOnError = Color(0xFFFFFFFF)
+val BeerLightErrorContainer = Color(0xFFFFDAD6)
+val BeerLightOnErrorContainer = Color(0xFF410002)
 
 val BeerLightSurface = Color(0xFFFFFBF0) // Foam white
 val BeerLightOnSurface = Color(0xFF212121)
 val BeerLightSurfaceVariant = Color(0xFFF5F5F5)
 val BeerLightOnSurfaceVariant = Color(0xFF424242)
 val BeerLightOutline = Color(0xFF757575)
+val BeerLightOutlineVariant = Color(0xFFD3C2B1)
 
 // Beer Dark Color Scheme
 val BeerDarkPrimary = Color(0xFFFFB300) // Amber glow
@@ -95,9 +103,17 @@ val BeerDarkOnSecondaryContainer = Color(0xFFD7CCC8)
 
 val BeerDarkTertiary = Color(0xFFD7CCC8)
 val BeerDarkOnTertiary = Color(0xFF1B120F)
+val BeerDarkTertiaryContainer = Color(0xFF51443B)
+val BeerDarkOnTertiaryContainer = Color(0xFFD7CCC8)
+
+val BeerDarkError = Color(0xFFFFB4AB)
+val BeerDarkOnError = Color(0xFF690005)
+val BeerDarkErrorContainer = Color(0xFF93000A)
+val BeerDarkOnErrorContainer = Color(0xFFFFDAD6)
 
 val BeerDarkSurface = Color(0xFF0F0908) // Deep Stout black
 val BeerDarkOnSurface = Color(0xFFF5EFE0) // Light foam cream
 val BeerDarkSurfaceVariant = Color(0xFF1B120F)
 val BeerDarkOnSurfaceVariant = Color(0xFFD7CCC8)
 val BeerDarkOutline = Color(0xFF3E2723)
+val BeerDarkOutlineVariant = Color(0xFF4D4639)

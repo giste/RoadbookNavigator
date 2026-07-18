@@ -23,12 +23,17 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.VerticalDivider
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,9 +41,14 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.giste.roadbooknavigator.core.ui.components.RoadbookAutoSizeText
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Coordinates
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Distance
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Waypoint
 
 @Composable
@@ -145,6 +155,160 @@ internal fun DistanceSection(
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.titleMedium,
                 maxFontSize = 16.sp
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+@Preview(showBackground = true, name = "Standard Waypoint")
+@Composable
+private fun DistanceSectionStandardPreview() {
+    RoadbookNavigatorTheme(
+        windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(400.dp, 800.dp))
+    ) {
+        Surface {
+            DistanceSection(
+                waypoint = Waypoint(
+                    number = 1,
+                    coordinates = Coordinates(0.0, 0.0),
+                    distance = Distance(1250),
+                    distanceFromPrevious = Distance(1250)
+                ),
+                shortDistanceThreshold = 300L,
+                onSetPartialClick = {},
+                modifier = Modifier
+                    .width(100.dp)
+                    .aspectRatio(1f)
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+@Preview(showBackground = true, name = "Reset Waypoint")
+@Composable
+private fun DistanceSectionResetPreview() {
+    RoadbookNavigatorTheme(
+        windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(400.dp, 800.dp))
+    ) {
+        Surface {
+            DistanceSection(
+                waypoint = Waypoint(
+                    number = 2,
+                    coordinates = Coordinates(0.0, 0.0),
+                    distance = Distance(2500),
+                    distanceFromPrevious = Distance(1250),
+                    reset = true
+                ),
+                shortDistanceThreshold = 300L,
+                onSetPartialClick = {},
+                modifier = Modifier
+                    .width(100.dp)
+                    .aspectRatio(1f)
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+@Preview(showBackground = true, name = "Danger Medium")
+@Composable
+private fun DistanceSectionDangerPreview() {
+    RoadbookNavigatorTheme(
+        windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(400.dp, 800.dp))
+    ) {
+        Surface {
+            DistanceSection(
+                waypoint = Waypoint(
+                    number = 3,
+                    coordinates = Coordinates(0.0, 0.0),
+                    distance = Distance(3750),
+                    distanceFromPrevious = Distance(1250),
+                    dangerLevel = Waypoint.DangerLevel.MEDIUM
+                ),
+                shortDistanceThreshold = 300L,
+                onSetPartialClick = {},
+                modifier = Modifier
+                    .width(100.dp)
+                    .aspectRatio(1f)
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+@Preview(showBackground = true, name = "Short Distance")
+@Composable
+private fun DistanceSectionShortDistancePreview() {
+    RoadbookNavigatorTheme(
+        windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(400.dp, 800.dp))
+    ) {
+        Surface {
+            DistanceSection(
+                waypoint = Waypoint(
+                    number = 4,
+                    coordinates = Coordinates(0.0, 0.0),
+                    distance = Distance(3950),
+                    distanceFromPrevious = Distance(200)
+                ),
+                shortDistanceThreshold = 300L,
+                onSetPartialClick = {},
+                modifier = Modifier
+                    .width(100.dp)
+                    .aspectRatio(1f)
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+@Preview(showBackground = true, name = "Reset + Danger Medium")
+@Composable
+private fun DistanceSectionResetDangerPreview() {
+    RoadbookNavigatorTheme(
+        windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(400.dp, 800.dp))
+    ) {
+        Surface {
+            DistanceSection(
+                waypoint = Waypoint(
+                    number = 2,
+                    coordinates = Coordinates(0.0, 0.0),
+                    distance = Distance(2500),
+                    distanceFromPrevious = Distance(1250),
+                    reset = true,
+                    dangerLevel = Waypoint.DangerLevel.MEDIUM
+                ),
+                shortDistanceThreshold = 300L,
+                onSetPartialClick = {},
+                modifier = Modifier
+                    .width(100.dp)
+                    .aspectRatio(1f)
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+@Preview(showBackground = true, name = "Large Distance Auto-size")
+@Composable
+private fun DistanceSectionLargeDistancePreview() {
+    RoadbookNavigatorTheme(
+        windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(400.dp, 800.dp))
+    ) {
+        Surface {
+            DistanceSection(
+                waypoint = Waypoint(
+                    number = 999,
+                    coordinates = Coordinates(0.0, 0.0),
+                    distance = Distance(125430),
+                    distanceFromPrevious = Distance(15430)
+                ),
+                shortDistanceThreshold = 300L,
+                onSetPartialClick = {},
+                modifier = Modifier
+                    .width(100.dp)
+                    .aspectRatio(1f)
             )
         }
     }

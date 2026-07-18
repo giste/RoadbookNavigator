@@ -28,7 +28,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -37,6 +36,8 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.sp
+import org.giste.roadbooknavigator.core.ui.components.RoadbookAutoSizeText
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Waypoint
 
@@ -69,12 +70,13 @@ internal fun DistanceSection(
             ),
     ) {
         // Accumulated distance (large)
-        Text(
+        RoadbookAutoSizeText(
             text = String.format(locale, "%.2f", waypoint.distance.meters / 1000.0),
             modifier = Modifier.align(Alignment.CenterHorizontally),
             color = contentColor,
             fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.displaySmall
+            style = MaterialTheme.typography.displaySmall,
+            maxFontSize = 36.sp
         )
 
         if (waypoint.reset) {
@@ -95,12 +97,13 @@ internal fun DistanceSection(
 
         // Reset
         if (waypoint.reset) {
-            Text(
+            RoadbookAutoSizeText(
                 text = String.format(locale, "%.2f", 0.0),
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 color = contentColor,
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.headlineLarge,
+                maxFontSize = 32.sp
             )
         }
 
@@ -109,7 +112,7 @@ internal fun DistanceSection(
             verticalAlignment = Alignment.Bottom
         ) {
             // Partial distance (small)
-            Text(
+            RoadbookAutoSizeText(
                 text = String.format(locale, "%.2f", waypoint.distanceFromPrevious.meters / 1000.0),
                 modifier = Modifier
                     .weight(0.5f)
@@ -121,6 +124,7 @@ internal fun DistanceSection(
                 color = contentColor,
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.titleLarge,
+                maxFontSize = 22.sp
             )
 
             VerticalDivider(
@@ -131,7 +135,7 @@ internal fun DistanceSection(
             )
 
             // Waypoint number
-            Text(
+            RoadbookAutoSizeText(
                 text = waypoint.number.toString(),
                 modifier = Modifier
                     .background(color = MaterialTheme.colorScheme.inverseSurface)
@@ -140,6 +144,7 @@ internal fun DistanceSection(
                 color = MaterialTheme.colorScheme.inverseOnSurface,
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.titleMedium,
+                maxFontSize = 16.sp
             )
         }
     }

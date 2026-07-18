@@ -70,6 +70,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.launch
+import org.giste.roadbooknavigator.core.settings.domain.AppTheme
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 import org.giste.roadbooknavigator.features.roadbook.R
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Coordinates
@@ -334,6 +335,7 @@ fun RoadbookList(
 fun RoadbookSectionEmptyPreview() {
     RoadbookNavigatorTheme(
         windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(1200.dp, 1920.dp)),
+        appTheme = AppTheme.LIGHT
     ) {
         Surface {
             RoadbookContent(
@@ -389,6 +391,63 @@ fun RoadbookSectionSuccessPreview() {
 
     RoadbookNavigatorTheme(
         windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(1200.dp, 1920.dp)),
+        appTheme = AppTheme.LIGHT
+    ) {
+        Surface {
+            RoadbookContent(
+                state = RoadbookUiState.Success(sampleRoute),
+                listState = rememberLazyListState(),
+                onFileSelected = {},
+                onSetPartialClick = {},
+                onWaypointVisible = { _, _ -> }
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+@Preview(
+    name = "Success State Dark",
+    device = "spec:width=1920px,height=1200px,dpi=280,orientation=portrait",
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true,
+)
+@Composable
+fun RoadbookSectionSuccessDarkPreview() {
+    val sampleRoute = Route(
+        name = "Sample Route",
+        waypoints = listOf(
+            Waypoint(
+                number = 1,
+                coordinates = Coordinates(40.0, -3.0),
+                distance = Distance(1200),
+                distanceFromPrevious = Distance(1200),
+                tulipElements = listOf(
+                    Track(
+                        roadIn = Road(null, Point(0.0, 35.0)),
+                        roadOut = Road(null, Point(0.0, -55.0))
+                    )
+                )
+            ),
+            Waypoint(
+                number = 2,
+                coordinates = Coordinates(40.1, -3.1),
+                distance = Distance(2500),
+                distanceFromPrevious = Distance(1300),
+                dangerLevel = Waypoint.DangerLevel.MEDIUM,
+                tulipElements = listOf(
+                    Track(
+                        roadIn = Road(null, Point(0.0, 35.0)),
+                        roadOut = Road(null, Point(50.0, 0.0))
+                    )
+                )
+            )
+        )
+    )
+
+    RoadbookNavigatorTheme(
+        windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(1200.dp, 1920.dp)),
+        appTheme = AppTheme.DARK
     ) {
         Surface {
             RoadbookContent(

@@ -27,6 +27,8 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.click
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.test.platform.app.InstrumentationRegistry
@@ -977,5 +979,340 @@ class SettingsScreenTest {
             .performClick()
 
         assertEquals(LocationSettings.DEFAULT_MIN_DISTANCE, restoredValue!!, 0.01f)
+    }
+
+    @Test
+    fun shortDistanceSlider_snapsTo50m() {
+        var newValue: Long? = null
+        composeTestRule.setContent {
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                SettingsContent(
+                    uiState = SettingsUiState.Success(roadbookSettings = RoadbookSettings(shortDistanceThreshold = ShortDistanceThreshold(100L))),
+                    onBackClick = {},
+                    onThemeSelected = {},
+                    onOrientationSelected = {},
+                    onFullScreenChange = {},
+                    onShortDistanceThresholdChange = { newValue = it },
+                    onOdometerSpeedThresholdChange = {},
+                    onOdometerMinAccuracyChange = {},
+                    onOdometerMinVerticalAccuracyChange = {},
+                    onLocationPollingIntervalChange = {},
+                    onLocationMinDistanceChange = {},
+                    onRestoreOdometerDefaults = {},
+                    onRemoteModelSelected = {},
+                    onOdometerKeysChanged = { _, _, _ -> },
+                    onRoadbookKeysChanged = { _, _ -> },
+                    onMapInitialZoomChange = {},
+                    onMapInitialTiltChange = {},
+                    onLandscapeWeightChange = {},
+                    mapManagementContent = {}
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag("ShortDistanceSlider")
+            .performTouchInput { click(percentOffset(0.33f, 0.5f)) }
+        
+        assertTrue("Value $newValue should be a multiple of 50", newValue != null && newValue % 50 == 0L)
+    }
+
+    @Test
+    fun mapZoomSlider_snapsToIntegers() {
+        var newValue: Int? = null
+        composeTestRule.setContent {
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                SettingsContent(
+                    uiState = SettingsUiState.Success(mapSettings = MapSettings(initialZoom = 10)),
+                    onBackClick = {},
+                    onThemeSelected = {},
+                    onOrientationSelected = {},
+                    onFullScreenChange = {},
+                    onShortDistanceThresholdChange = {},
+                    onOdometerSpeedThresholdChange = {},
+                    onOdometerMinAccuracyChange = {},
+                    onOdometerMinVerticalAccuracyChange = {},
+                    onLocationPollingIntervalChange = {},
+                    onLocationMinDistanceChange = {},
+                    onRestoreOdometerDefaults = {},
+                    onRemoteModelSelected = {},
+                    onOdometerKeysChanged = { _, _, _ -> },
+                    onRoadbookKeysChanged = { _, _ -> },
+                    onMapInitialZoomChange = { newValue = it },
+                    onMapInitialTiltChange = {},
+                    onLandscapeWeightChange = {},
+                    mapManagementContent = {}
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag("MapZoomSlider")
+            .performScrollTo()
+            .performTouchInput { click(percentOffset(0.2f, 0.5f)) }
+        
+        // Since it's Int, it naturally snaps, but verifying it was called
+        assertTrue("Value $newValue should not be null", newValue != null)
+    }
+
+    @Test
+    fun mapTiltSlider_snapsTo5Deg() {
+        var newValue: Float? = null
+        composeTestRule.setContent {
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                SettingsContent(
+                    uiState = SettingsUiState.Success(mapSettings = MapSettings(initialTilt = 0f)),
+                    onBackClick = {},
+                    onThemeSelected = {},
+                    onOrientationSelected = {},
+                    onFullScreenChange = {},
+                    onShortDistanceThresholdChange = {},
+                    onOdometerSpeedThresholdChange = {},
+                    onOdometerMinAccuracyChange = {},
+                    onOdometerMinVerticalAccuracyChange = {},
+                    onLocationPollingIntervalChange = {},
+                    onLocationMinDistanceChange = {},
+                    onRestoreOdometerDefaults = {},
+                    onRemoteModelSelected = {},
+                    onOdometerKeysChanged = { _, _, _ -> },
+                    onRoadbookKeysChanged = { _, _ -> },
+                    onMapInitialZoomChange = {},
+                    onMapInitialTiltChange = { newValue = it },
+                    onLandscapeWeightChange = {},
+                    mapManagementContent = {}
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag("MapTiltSlider")
+            .performScrollTo()
+            .performTouchInput { click(percentOffset(0.77f, 0.5f)) }
+        
+        assertTrue("Value $newValue should be multiple of 5", newValue != null && (newValue % 5f == 0f || newValue % 5f == 5f))
+    }
+
+    @Test
+    fun speedThresholdSlider_snapsTo01ms() {
+        var newValue: Float? = null
+        composeTestRule.setContent {
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                SettingsContent(
+                    uiState = SettingsUiState.Success(odometerSettings = OdometerSettings(speedThreshold = 0f)),
+                    onBackClick = {},
+                    onThemeSelected = {},
+                    onOrientationSelected = {},
+                    onFullScreenChange = {},
+                    onShortDistanceThresholdChange = {},
+                    onOdometerSpeedThresholdChange = { newValue = it },
+                    onOdometerMinAccuracyChange = {},
+                    onOdometerMinVerticalAccuracyChange = {},
+                    onLocationPollingIntervalChange = {},
+                    onLocationMinDistanceChange = {},
+                    onRestoreOdometerDefaults = {},
+                    onRemoteModelSelected = {},
+                    onOdometerKeysChanged = { _, _, _ -> },
+                    onRoadbookKeysChanged = { _, _ -> },
+                    onMapInitialZoomChange = {},
+                    onMapInitialTiltChange = {},
+                    onLandscapeWeightChange = {},
+                    mapManagementContent = {}
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag("SettingsTab_2").performClick()
+        composeTestRule.onNodeWithTag("SpeedThresholdSlider")
+            .performScrollTo()
+            .performTouchInput { click(percentOffset(0.123f, 0.5f)) }
+        
+        // Check if value is multiple of 0.1 (accounting for float precision)
+        val remainder = (newValue!! * 10f) % 1f
+        assertTrue("Value $newValue should be multiple of 0.1", remainder < 0.01f || remainder > 0.99f)
+    }
+
+    @Test
+    fun pollingIntervalSlider_snapsTo100ms() {
+        var newValue: Long? = null
+        composeTestRule.setContent {
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                SettingsContent(
+                    uiState = SettingsUiState.Success(locationSettings = LocationSettings(pollingInterval = 100L)),
+                    onBackClick = {},
+                    onThemeSelected = {},
+                    onOrientationSelected = {},
+                    onFullScreenChange = {},
+                    onShortDistanceThresholdChange = {},
+                    onOdometerSpeedThresholdChange = {},
+                    onOdometerMinAccuracyChange = {},
+                    onOdometerMinVerticalAccuracyChange = {},
+                    onLocationPollingIntervalChange = { newValue = it },
+                    onLocationMinDistanceChange = {},
+                    onRestoreOdometerDefaults = {},
+                    onRemoteModelSelected = {},
+                    onOdometerKeysChanged = { _, _, _ -> },
+                    onRoadbookKeysChanged = { _, _ -> },
+                    onMapInitialZoomChange = {},
+                    onMapInitialTiltChange = {},
+                    onLandscapeWeightChange = {},
+                    mapManagementContent = {}
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag("SettingsTab_2").performClick()
+        composeTestRule.onNodeWithTag("PollingIntervalSlider")
+            .performScrollTo()
+            .performTouchInput { click(percentOffset(0.45f, 0.5f)) }
+        
+        assertTrue("Value $newValue should be multiple of 100", newValue != null && newValue % 100 == 0L)
+    }
+
+    @Test
+    fun landscapeWeightSlider_snapsTo001() {
+        var newValue: Float? = null
+        composeTestRule.setContent {
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                SettingsContent(
+                    uiState = SettingsUiState.Success(appSettings = AppSettings(landscapeDistanceSectionWeight = 0.3f)),
+                    onBackClick = {},
+                    onThemeSelected = {},
+                    onOrientationSelected = {},
+                    onFullScreenChange = {},
+                    onShortDistanceThresholdChange = {},
+                    onOdometerSpeedThresholdChange = {},
+                    onOdometerMinAccuracyChange = {},
+                    onOdometerMinVerticalAccuracyChange = {},
+                    onLocationPollingIntervalChange = {},
+                    onLocationMinDistanceChange = {},
+                    onRestoreOdometerDefaults = {},
+                    onRemoteModelSelected = {},
+                    onOdometerKeysChanged = { _, _, _ -> },
+                    onRoadbookKeysChanged = { _, _ -> },
+                    onMapInitialZoomChange = {},
+                    onMapInitialTiltChange = {},
+                    onLandscapeWeightChange = { newValue = it },
+                    mapManagementContent = {}
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag("LandscapeWeightSlider")
+            .performScrollTo()
+            .performTouchInput { click(percentOffset(0.66f, 0.5f)) }
+        
+        val remainder = (newValue!! * 100f) % 1f
+        assertTrue("Value $newValue should be multiple of 0.01", remainder < 0.01f || remainder > 0.99f)
+    }
+
+    @Test
+    fun minAccuracySlider_snapsTo5m() {
+        var newValue: Float? = null
+        composeTestRule.setContent {
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                SettingsContent(
+                    uiState = SettingsUiState.Success(odometerSettings = OdometerSettings(minAccuracy = 20f)),
+                    onBackClick = {},
+                    onThemeSelected = {},
+                    onOrientationSelected = {},
+                    onFullScreenChange = {},
+                    onShortDistanceThresholdChange = {},
+                    onOdometerSpeedThresholdChange = {},
+                    onOdometerMinAccuracyChange = { newValue = it },
+                    onOdometerMinVerticalAccuracyChange = {},
+                    onLocationPollingIntervalChange = {},
+                    onLocationMinDistanceChange = {},
+                    onRestoreOdometerDefaults = {},
+                    onRemoteModelSelected = {},
+                    onOdometerKeysChanged = { _, _, _ -> },
+                    onRoadbookKeysChanged = { _, _ -> },
+                    onMapInitialZoomChange = {},
+                    onMapInitialTiltChange = {},
+                    onLandscapeWeightChange = {},
+                    mapManagementContent = {}
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag("SettingsTab_2").performClick()
+        composeTestRule.onNodeWithTag("MinAccuracySlider")
+            .performScrollTo()
+            .performTouchInput { click(percentOffset(0.88f, 0.5f)) }
+        
+        val remainder = newValue!! % 5f
+        assertTrue("Value $newValue should be multiple of 5", remainder < 0.01f || remainder > 4.99f)
+    }
+
+    @Test
+    fun minVerticalAccuracySlider_snapsTo5m() {
+        var newValue: Float? = null
+        composeTestRule.setContent {
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                SettingsContent(
+                    uiState = SettingsUiState.Success(odometerSettings = OdometerSettings(minVerticalAccuracy = 10f)),
+                    onBackClick = {},
+                    onThemeSelected = {},
+                    onOrientationSelected = {},
+                    onFullScreenChange = {},
+                    onShortDistanceThresholdChange = {},
+                    onOdometerSpeedThresholdChange = {},
+                    onOdometerMinAccuracyChange = {},
+                    onOdometerMinVerticalAccuracyChange = { newValue = it },
+                    onLocationPollingIntervalChange = {},
+                    onLocationMinDistanceChange = {},
+                    onRestoreOdometerDefaults = {},
+                    onRemoteModelSelected = {},
+                    onOdometerKeysChanged = { _, _, _ -> },
+                    onRoadbookKeysChanged = { _, _ -> },
+                    onMapInitialZoomChange = {},
+                    onMapInitialTiltChange = {},
+                    onLandscapeWeightChange = {},
+                    mapManagementContent = {}
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag("SettingsTab_2").performClick()
+        composeTestRule.onNodeWithTag("MinVerticalAccuracySlider")
+            .performScrollTo()
+            .performTouchInput { click(percentOffset(0.17f, 0.5f)) }
+        
+        val remainder = newValue!! % 5f
+        assertTrue("Value $newValue should be multiple of 5", remainder < 0.01f || remainder > 4.99f)
+    }
+
+    @Test
+    fun minDistanceSlider_snapsTo05m() {
+        var newValue: Float? = null
+        composeTestRule.setContent {
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                SettingsContent(
+                    uiState = SettingsUiState.Success(locationSettings = LocationSettings(minDistance = 1f)),
+                    onBackClick = {},
+                    onThemeSelected = {},
+                    onOrientationSelected = {},
+                    onFullScreenChange = {},
+                    onShortDistanceThresholdChange = {},
+                    onOdometerSpeedThresholdChange = {},
+                    onOdometerMinAccuracyChange = {},
+                    onOdometerMinVerticalAccuracyChange = {},
+                    onLocationPollingIntervalChange = {},
+                    onLocationMinDistanceChange = { newValue = it },
+                    onRestoreOdometerDefaults = {},
+                    onRemoteModelSelected = {},
+                    onOdometerKeysChanged = { _, _, _ -> },
+                    onRoadbookKeysChanged = { _, _ -> },
+                    onMapInitialZoomChange = {},
+                    onMapInitialTiltChange = {},
+                    onLandscapeWeightChange = {},
+                    mapManagementContent = {}
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag("SettingsTab_2").performClick()
+        composeTestRule.onNodeWithTag("MinDistanceSlider")
+            .performScrollTo()
+            .performTouchInput { click(percentOffset(0.55f, 0.5f)) }
+        
+        val remainder = (newValue!! * 2f) % 1f
+        assertTrue("Value $newValue should be multiple of 0.5", remainder < 0.01f || remainder > 0.99f)
     }
 }

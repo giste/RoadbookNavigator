@@ -1241,8 +1241,8 @@ fun AdvancedTabPreview() {
     val windowSizeClass = WindowSizeClass.calculateFromSize(size)
     RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
         AdvancedTab(
-            locationSettings = LocationSettings(),
-            odometerSettings = OdometerSettings(),
+            locationSettings = LocationSettings(pollingInterval = 1000L),
+            odometerSettings = OdometerSettings(speedThreshold = 1.0f),
             onOdometerSpeedThresholdChange = {},
             onOdometerMinAccuracyChange = {},
             onOdometerMinVerticalAccuracyChange = {},

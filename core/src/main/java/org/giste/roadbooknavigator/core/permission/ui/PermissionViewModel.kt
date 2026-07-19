@@ -69,6 +69,8 @@ class PermissionViewModel @Inject constructor(
 data class PermissionUiState(
     val permissions: Map<org.giste.roadbooknavigator.core.permission.domain.AppPermission, PermissionState> = emptyMap()
 ) {
+    val isLoading: Boolean = permissions.isEmpty()
+
     val allGranted: Boolean =
         permissions.isNotEmpty() && permissions.values.all { it is PermissionState.Granted }
 

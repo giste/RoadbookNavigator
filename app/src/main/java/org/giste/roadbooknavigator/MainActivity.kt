@@ -23,11 +23,13 @@ import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -36,6 +38,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import org.giste.roadbooknavigator.core.permission.ui.PermissionGate
+import org.giste.roadbooknavigator.core.permission.ui.PermissionViewModel
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
@@ -55,8 +58,13 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var logger: Logger
 
+    private val permissionViewModel: PermissionViewModel by viewModels()
+
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen().setKeepOnScreenCondition {
+            permissionViewModel.uiState.value.isLoading
+        }
         super.onCreate(savedInstanceState)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         logger.i("MainActivity: onCreate")
@@ -93,7 +101,7 @@ class MainActivity : ComponentActivity() {
                 windowSizeClass = windowSizeClass,
                 appTheme = settings.theme
             ) {
-                PermissionGate {
+                PermissionGate(viewModel = permissionViewModel) {
                     NavHost(
                         navController = navController,
                         startDestination = Screen.Dashboard

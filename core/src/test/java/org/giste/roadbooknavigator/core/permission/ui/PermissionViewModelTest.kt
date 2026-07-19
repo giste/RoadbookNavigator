@@ -88,7 +88,7 @@ class PermissionViewModelTest {
     }
 
     @Test
-    fun `when permissions map is empty then allGranted is false`() = runTest {
+    fun `when permissions map is empty then allGranted is false and isLoading is true`() = runTest {
         // Given
         val states = emptyMap<AppPermission, PermissionState>()
         every { observeAllPermissionsUseCase() } returns flowOf(states)
@@ -98,6 +98,23 @@ class PermissionViewModelTest {
 
         // Then
         assertFalse(viewModel.uiState.value.allGranted)
+        assertTrue(viewModel.uiState.value.isLoading)
+    }
+
+    @Test
+    fun `when permissions are loaded then isLoading is false`() = runTest {
+        // Given
+        val states = mapOf(
+            AppPermission.FINE_LOCATION to PermissionState.Granted
+        )
+        every { observeAllPermissionsUseCase() } returns flowOf(states)
+
+        // When
+        val viewModel = PermissionViewModel(observeAllPermissionsUseCase, refreshPermissionStatesUseCase, logger)
+
+        // Then
+        viewModel.uiState.first { it.permissions.isNotEmpty() }
+        assertFalse(viewModel.uiState.value.isLoading)
     }
 
     @Test

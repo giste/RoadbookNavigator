@@ -30,7 +30,7 @@ value class SpeedThreshold(val metersPerSecond: Float) {
 
     companion object {
         const val MIN = 0.0f
-        const val MAX = 5.0f
+        const val MAX = 2.0f
     }
 }
 

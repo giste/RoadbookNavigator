@@ -47,6 +47,6 @@ value class MinDistanceThreshold(val meters: Float) {
 
     companion object {
         const val MIN = 0.0f
-        const val MAX = 50.0f
+        const val MAX = 10.0f
     }
 }

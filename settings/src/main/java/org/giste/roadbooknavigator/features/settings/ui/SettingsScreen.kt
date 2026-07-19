@@ -473,8 +473,8 @@ fun AdvancedTab(
             value = locationSettings.minDistance,
             onValueChange = onOdometerMinDistanceChange,
             valueRange = MinDistanceThreshold.MIN..MinDistanceThreshold.MAX,
-            label = "${"%.1f".format(locationSettings.minDistance)} m",
-            stepSize = 0.5f,
+            label = "${"%.0f".format(locationSettings.minDistance)} m",
+            stepSize = 1.0f,
             defaultValue = LocationSettings.DEFAULT_MIN_DISTANCE,
             onRestore = { onOdometerMinDistanceChange(LocationSettings.DEFAULT_MIN_DISTANCE) },
             testTag = "MinDistanceSlider"
@@ -544,7 +544,8 @@ fun SliderSettingItem(
             value = value,
             onValueChange = { newValue ->
                 if (stepSize != null && stepSize > 0f) {
-                    val snappedValue = ((newValue / stepSize).roundToInt() * stepSize)
+                    val offset = newValue - valueRange.start
+                    val snappedValue = valueRange.start + (offset / stepSize).roundToInt() * stepSize
                     onValueChange(snappedValue)
                 } else {
                     onValueChange(newValue)

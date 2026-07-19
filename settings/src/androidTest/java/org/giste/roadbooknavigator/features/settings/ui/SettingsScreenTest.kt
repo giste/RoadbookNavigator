@@ -1011,6 +1011,7 @@ class SettingsScreenTest {
         }
 
         composeTestRule.onNodeWithTag("ShortDistanceSlider")
+            .performScrollTo()
             .performTouchInput { click(percentOffset(0.33f, 0.5f)) }
         
         assertTrue("Value $newValue should be a multiple of 50", newValue != null && newValue % 50 == 0L)
@@ -1236,8 +1237,8 @@ class SettingsScreenTest {
             .performScrollTo()
             .performTouchInput { click(percentOffset(0.88f, 0.5f)) }
         
-        val remainder = newValue!! % 5f
-        assertTrue("Value $newValue should be multiple of 5", remainder < 0.01f || remainder > 4.99f)
+        val remainder = (newValue!! - 1f) % 5f
+        assertTrue("Value $newValue should be an increment of 5 starting from 1.0", remainder < 0.01f || remainder > 4.99f)
     }
 
     @Test
@@ -1274,17 +1275,17 @@ class SettingsScreenTest {
             .performScrollTo()
             .performTouchInput { click(percentOffset(0.17f, 0.5f)) }
         
-        val remainder = newValue!! % 5f
-        assertTrue("Value $newValue should be multiple of 5", remainder < 0.01f || remainder > 4.99f)
+        val remainder = (newValue!! - 1f) % 5f
+        assertTrue("Value $newValue should be an increment of 5 starting from 1.0", remainder < 0.01f || remainder > 4.99f)
     }
 
     @Test
-    fun minDistanceSlider_snapsTo05m() {
+    fun minDistanceSlider_snapsTo1m() {
         var newValue: Float? = null
         composeTestRule.setContent {
             RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
                 SettingsContent(
-                    uiState = SettingsUiState.Success(locationSettings = LocationSettings(minDistance = 1f)),
+                    uiState = SettingsUiState.Success(locationSettings = LocationSettings(minDistance = 2f)),
                     onBackClick = {},
                     onThemeSelected = {},
                     onOrientationSelected = {},
@@ -1312,7 +1313,7 @@ class SettingsScreenTest {
             .performScrollTo()
             .performTouchInput { click(percentOffset(0.55f, 0.5f)) }
         
-        val remainder = (newValue!! * 2f) % 1f
-        assertTrue("Value $newValue should be multiple of 0.5", remainder < 0.01f || remainder > 0.99f)
+        val remainder = newValue!! % 1f
+        assertTrue("Value $newValue should be multiple of 1.0", remainder < 0.01f || remainder > 0.99f)
     }
 }

@@ -29,6 +29,6 @@ data class LocationSettings(
 ) {
     companion object {
         const val DEFAULT_POLLING_INTERVAL = 500L // ms
-        const val DEFAULT_MIN_DISTANCE = 1.0f // m
+        const val DEFAULT_MIN_DISTANCE = 2.0f // m
     }
 }

@@ -1150,3 +1150,63 @@ fun SettingsPreviewTablet() {
         )
     }
 }
+
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+@Preview(name = "User Tab", showBackground = true)
+@Composable
+fun UserTabPreview() {
+    val size = androidx.compose.ui.unit.DpSize(411.dp, 891.dp)
+    val windowSizeClass = WindowSizeClass.calculateFromSize(size)
+    RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+        UserTab(
+            settings = AppSettings(),
+            roadbookSettings = RoadbookSettings(),
+            mapSettings = MapSettings(),
+            onThemeSelected = {},
+            onOrientationSelected = {},
+            onFullScreenChange = {},
+            onShortDistanceThresholdChange = {},
+            onMapInitialZoomChange = {},
+            onMapInitialTiltChange = {},
+            onLandscapeWeightChange = {}
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+@Preview(name = "Remote Tab", showBackground = true)
+@Composable
+fun RemoteTabPreview() {
+    val size = androidx.compose.ui.unit.DpSize(411.dp, 891.dp)
+    val windowSizeClass = WindowSizeClass.calculateFromSize(size)
+    RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+        RemoteTab(
+            settings = org.giste.roadbooknavigator.features.settings.domain.RemoteKeySettings(),
+            roadbookSettings = RoadbookSettings(),
+            odometerSettings = OdometerSettings(),
+            onModelSelected = {},
+            onOdometerKeysChanged = { _, _, _ -> },
+            onRoadbookKeysChanged = { _, _ -> }
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+@Preview(name = "Advanced Tab", showBackground = true)
+@Composable
+fun AdvancedTabPreview() {
+    val size = androidx.compose.ui.unit.DpSize(411.dp, 891.dp)
+    val windowSizeClass = WindowSizeClass.calculateFromSize(size)
+    RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+        AdvancedTab(
+            locationSettings = LocationSettings(),
+            odometerSettings = OdometerSettings(),
+            onOdometerSpeedThresholdChange = {},
+            onOdometerMinAccuracyChange = {},
+            onOdometerMinVerticalAccuracyChange = {},
+            onOdometerPollingIntervalChange = {},
+            onOdometerMinDistanceChange = {},
+            onRestoreOdometerDefaults = {}
+        )
+    }
+}

@@ -30,7 +30,7 @@ value class PollingIntervalThreshold(val milliseconds: Long) {
 
     companion object {
         const val MIN = 100.0
-        const val MAX = 5000.0
+        const val MAX = 2000.0
     }
 }
 

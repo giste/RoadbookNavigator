@@ -629,4 +629,353 @@ class SettingsScreenTest {
             .performClick()
         assertEquals(RemoteModel.TERRA_PIRATA, selectedModel)
     }
+
+    @Test
+    fun shortDistanceRestore_triggersCallback() {
+        var restoredValue: Long? = null
+        composeTestRule.setContent {
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                SettingsContent(
+                    uiState = SettingsUiState.Success(
+                        roadbookSettings = RoadbookSettings(
+                            shortDistanceThreshold = ShortDistanceThreshold(100L)
+                        )
+                    ),
+                    onBackClick = {},
+                    onThemeSelected = {},
+                    onOrientationSelected = {},
+                    onFullScreenChange = {},
+                    onShortDistanceThresholdChange = { restoredValue = it },
+                    onOdometerSpeedThresholdChange = {},
+                    onOdometerMinAccuracyChange = {},
+                    onOdometerMinVerticalAccuracyChange = {},
+                    onLocationPollingIntervalChange = {},
+                    onLocationMinDistanceChange = {},
+                    onRestoreOdometerDefaults = {},
+                    onRemoteModelSelected = {},
+                    onOdometerKeysChanged = { _, _, _ -> },
+                    onRoadbookKeysChanged = { _, _ -> },
+                    onMapInitialZoomChange = {},
+                    onMapInitialTiltChange = {},
+                    onLandscapeWeightChange = {},
+                    mapManagementContent = {}
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag("ShortDistanceSlider_Restore")
+            .performScrollTo()
+            .performClick()
+
+        assertEquals(ShortDistanceThreshold.DEFAULT, restoredValue)
+    }
+
+    @Test
+    fun mapZoomRestore_triggersCallback() {
+        var restoredValue: Int? = null
+        composeTestRule.setContent {
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                SettingsContent(
+                    uiState = SettingsUiState.Success(
+                        mapSettings = MapSettings(initialZoom = 10)
+                    ),
+                    onBackClick = {},
+                    onThemeSelected = {},
+                    onOrientationSelected = {},
+                    onFullScreenChange = {},
+                    onShortDistanceThresholdChange = {},
+                    onOdometerSpeedThresholdChange = {},
+                    onOdometerMinAccuracyChange = {},
+                    onOdometerMinVerticalAccuracyChange = {},
+                    onLocationPollingIntervalChange = {},
+                    onLocationMinDistanceChange = {},
+                    onRestoreOdometerDefaults = {},
+                    onRemoteModelSelected = {},
+                    onOdometerKeysChanged = { _, _, _ -> },
+                    onRoadbookKeysChanged = { _, _ -> },
+                    onMapInitialZoomChange = { restoredValue = it },
+                    onMapInitialTiltChange = {},
+                    onLandscapeWeightChange = {},
+                    mapManagementContent = {}
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag("MapZoomSlider_Restore")
+            .performScrollTo()
+            .performClick()
+
+        assertEquals(MapSettings.DEFAULT_ZOOM, restoredValue)
+    }
+
+    @Test
+    fun mapTiltRestore_triggersCallback() {
+        var restoredValue: Float? = null
+        composeTestRule.setContent {
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                SettingsContent(
+                    uiState = SettingsUiState.Success(
+                        mapSettings = MapSettings(initialTilt = 30f)
+                    ),
+                    onBackClick = {},
+                    onThemeSelected = {},
+                    onOrientationSelected = {},
+                    onFullScreenChange = {},
+                    onShortDistanceThresholdChange = {},
+                    onOdometerSpeedThresholdChange = {},
+                    onOdometerMinAccuracyChange = {},
+                    onOdometerMinVerticalAccuracyChange = {},
+                    onLocationPollingIntervalChange = {},
+                    onLocationMinDistanceChange = {},
+                    onRestoreOdometerDefaults = {},
+                    onRemoteModelSelected = {},
+                    onOdometerKeysChanged = { _, _, _ -> },
+                    onRoadbookKeysChanged = { _, _ -> },
+                    onMapInitialZoomChange = {},
+                    onMapInitialTiltChange = { restoredValue = it },
+                    onLandscapeWeightChange = {},
+                    mapManagementContent = {}
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag("MapTiltSlider_Restore")
+            .performScrollTo()
+            .performClick()
+
+        assertEquals(MapSettings.DEFAULT_TILT, restoredValue!!, 0.01f)
+    }
+
+    @Test
+    fun landscapeWeightRestore_triggersCallback() {
+        var restoredValue: Float? = null
+        composeTestRule.setContent {
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                SettingsContent(
+                    uiState = SettingsUiState.Success(
+                        appSettings = AppSettings(landscapeDistanceSectionWeight = 0.4f)
+                    ),
+                    onBackClick = {},
+                    onThemeSelected = {},
+                    onOrientationSelected = {},
+                    onFullScreenChange = {},
+                    onShortDistanceThresholdChange = {},
+                    onOdometerSpeedThresholdChange = {},
+                    onOdometerMinAccuracyChange = {},
+                    onOdometerMinVerticalAccuracyChange = {},
+                    onLocationPollingIntervalChange = {},
+                    onLocationMinDistanceChange = {},
+                    onRestoreOdometerDefaults = {},
+                    onRemoteModelSelected = {},
+                    onOdometerKeysChanged = { _, _, _ -> },
+                    onRoadbookKeysChanged = { _, _ -> },
+                    onMapInitialZoomChange = {},
+                    onMapInitialTiltChange = {},
+                    onLandscapeWeightChange = { restoredValue = it },
+                    mapManagementContent = {}
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag("LandscapeWeightSlider_Restore")
+            .performScrollTo()
+            .performClick()
+
+        assertEquals(0.3f, restoredValue!!, 0.01f)
+    }
+
+    @Test
+    fun speedThresholdRestore_triggersCallback() {
+        var restoredValue: Float? = null
+        composeTestRule.setContent {
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                SettingsContent(
+                    uiState = SettingsUiState.Success(
+                        odometerSettings = OdometerSettings(speedThreshold = 1.0f)
+                    ),
+                    onBackClick = {},
+                    onThemeSelected = {},
+                    onOrientationSelected = {},
+                    onFullScreenChange = {},
+                    onShortDistanceThresholdChange = {},
+                    onOdometerSpeedThresholdChange = { restoredValue = it },
+                    onOdometerMinAccuracyChange = {},
+                    onOdometerMinVerticalAccuracyChange = {},
+                    onLocationPollingIntervalChange = {},
+                    onLocationMinDistanceChange = {},
+                    onRestoreOdometerDefaults = {},
+                    onRemoteModelSelected = {},
+                    onOdometerKeysChanged = { _, _, _ -> },
+                    onRoadbookKeysChanged = { _, _ -> },
+                    onMapInitialZoomChange = {},
+                    onMapInitialTiltChange = {},
+                    onLandscapeWeightChange = {},
+                    mapManagementContent = {}
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag("SettingsTab_2").performClick()
+        composeTestRule.onNodeWithTag("SpeedThresholdSlider_Restore")
+            .performScrollTo()
+            .performClick()
+
+        assertEquals(OdometerSettings.DEFAULT_SPEED_THRESHOLD, restoredValue!!, 0.01f)
+    }
+
+    @Test
+    fun minAccuracyRestore_triggersCallback() {
+        var restoredValue: Float? = null
+        composeTestRule.setContent {
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                SettingsContent(
+                    uiState = SettingsUiState.Success(
+                        odometerSettings = OdometerSettings(minAccuracy = 10.0f)
+                    ),
+                    onBackClick = {},
+                    onThemeSelected = {},
+                    onOrientationSelected = {},
+                    onFullScreenChange = {},
+                    onShortDistanceThresholdChange = {},
+                    onOdometerSpeedThresholdChange = {},
+                    onOdometerMinAccuracyChange = { restoredValue = it },
+                    onOdometerMinVerticalAccuracyChange = {},
+                    onLocationPollingIntervalChange = {},
+                    onLocationMinDistanceChange = {},
+                    onRestoreOdometerDefaults = {},
+                    onRemoteModelSelected = {},
+                    onOdometerKeysChanged = { _, _, _ -> },
+                    onRoadbookKeysChanged = { _, _ -> },
+                    onMapInitialZoomChange = {},
+                    onMapInitialTiltChange = {},
+                    onLandscapeWeightChange = {},
+                    mapManagementContent = {}
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag("SettingsTab_2").performClick()
+        composeTestRule.onNodeWithTag("MinAccuracySlider_Restore")
+            .performScrollTo()
+            .performClick()
+
+        assertEquals(OdometerSettings.DEFAULT_MIN_ACCURACY, restoredValue!!, 0.01f)
+    }
+
+    @Test
+    fun minVerticalAccuracyRestore_triggersCallback() {
+        var restoredValue: Float? = null
+        composeTestRule.setContent {
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                SettingsContent(
+                    uiState = SettingsUiState.Success(
+                        odometerSettings = OdometerSettings(minVerticalAccuracy = 5.0f)
+                    ),
+                    onBackClick = {},
+                    onThemeSelected = {},
+                    onOrientationSelected = {},
+                    onFullScreenChange = {},
+                    onShortDistanceThresholdChange = {},
+                    onOdometerSpeedThresholdChange = {},
+                    onOdometerMinAccuracyChange = {},
+                    onOdometerMinVerticalAccuracyChange = { restoredValue = it },
+                    onLocationPollingIntervalChange = {},
+                    onLocationMinDistanceChange = {},
+                    onRestoreOdometerDefaults = {},
+                    onRemoteModelSelected = {},
+                    onOdometerKeysChanged = { _, _, _ -> },
+                    onRoadbookKeysChanged = { _, _ -> },
+                    onMapInitialZoomChange = {},
+                    onMapInitialTiltChange = {},
+                    onLandscapeWeightChange = {},
+                    mapManagementContent = {}
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag("SettingsTab_2").performClick()
+        composeTestRule.onNodeWithTag("MinVerticalAccuracySlider_Restore")
+            .performScrollTo()
+            .performClick()
+
+        assertEquals(OdometerSettings.DEFAULT_MIN_VERTICAL_ACCURACY, restoredValue!!, 0.01f)
+    }
+
+    @Test
+    fun pollingIntervalRestore_triggersCallback() {
+        var restoredValue: Long? = null
+        composeTestRule.setContent {
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                SettingsContent(
+                    uiState = SettingsUiState.Success(
+                        locationSettings = LocationSettings(pollingInterval = 1000L)
+                    ),
+                    onBackClick = {},
+                    onThemeSelected = {},
+                    onOrientationSelected = {},
+                    onFullScreenChange = {},
+                    onShortDistanceThresholdChange = {},
+                    onOdometerSpeedThresholdChange = {},
+                    onOdometerMinAccuracyChange = {},
+                    onOdometerMinVerticalAccuracyChange = {},
+                    onLocationPollingIntervalChange = { restoredValue = it },
+                    onLocationMinDistanceChange = {},
+                    onRestoreOdometerDefaults = {},
+                    onRemoteModelSelected = {},
+                    onOdometerKeysChanged = { _, _, _ -> },
+                    onRoadbookKeysChanged = { _, _ -> },
+                    onMapInitialZoomChange = {},
+                    onMapInitialTiltChange = {},
+                    onLandscapeWeightChange = {},
+                    mapManagementContent = {}
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag("SettingsTab_2").performClick()
+        composeTestRule.onNodeWithTag("PollingIntervalSlider_Restore")
+            .performScrollTo()
+            .performClick()
+
+        assertEquals(LocationSettings.DEFAULT_POLLING_INTERVAL, restoredValue)
+    }
+
+    @Test
+    fun minDistanceRestore_triggersCallback() {
+        var restoredValue: Float? = null
+        composeTestRule.setContent {
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                SettingsContent(
+                    uiState = SettingsUiState.Success(
+                        locationSettings = LocationSettings(minDistance = 5.0f)
+                    ),
+                    onBackClick = {},
+                    onThemeSelected = {},
+                    onOrientationSelected = {},
+                    onFullScreenChange = {},
+                    onShortDistanceThresholdChange = {},
+                    onOdometerSpeedThresholdChange = {},
+                    onOdometerMinAccuracyChange = {},
+                    onOdometerMinVerticalAccuracyChange = {},
+                    onLocationPollingIntervalChange = {},
+                    onLocationMinDistanceChange = { restoredValue = it },
+                    onRestoreOdometerDefaults = {},
+                    onRemoteModelSelected = {},
+                    onOdometerKeysChanged = { _, _, _ -> },
+                    onRoadbookKeysChanged = { _, _ -> },
+                    onMapInitialZoomChange = {},
+                    onMapInitialTiltChange = {},
+                    onLandscapeWeightChange = {},
+                    mapManagementContent = {}
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag("SettingsTab_2").performClick()
+        composeTestRule.onNodeWithTag("MinDistanceSlider_Restore")
+            .performScrollTo()
+            .performClick()
+
+        assertEquals(LocationSettings.DEFAULT_MIN_DISTANCE, restoredValue!!, 0.01f)
+    }
 }

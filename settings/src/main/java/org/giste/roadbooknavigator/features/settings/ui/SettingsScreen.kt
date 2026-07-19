@@ -44,6 +44,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.RadioButtonUnchecked
 import androidx.compose.material.icons.filled.ScreenRotation
+import androidx.compose.material.icons.filled.SettingsBackupRestore
 import androidx.compose.material.icons.filled.StayCurrentLandscape
 import androidx.compose.material.icons.filled.StayCurrentPortrait
 import androidx.compose.material3.Button
@@ -321,51 +322,59 @@ fun UserTab(
         HorizontalDivider()
 
         // Short Distance Threshold
-        SettingsSectionTitle(stringResource(R.string.settings_user_short_distance_title))
         SliderSettingItem(
+            title = stringResource(R.string.settings_user_short_distance_title),
             helper = stringResource(R.string.settings_user_short_distance_helper),
             value = roadbookSettings.shortDistanceThreshold.meters.toFloat(),
             onValueChange = { onShortDistanceThresholdChange(it.toLong()) },
             valueRange = ShortDistanceThreshold.MIN.toFloat()..ShortDistanceThreshold.MAX.toFloat(),
             label = "${roadbookSettings.shortDistanceThreshold.meters} m",
+            defaultValue = ShortDistanceThreshold.DEFAULT.toFloat(),
+            onRestore = { onShortDistanceThresholdChange(ShortDistanceThreshold.DEFAULT) },
             testTag = "ShortDistanceSlider"
         )
 
         HorizontalDivider()
 
         // Map Settings
-        SettingsSectionTitle(stringResource(R.string.settings_map_zoom_title))
         SliderSettingItem(
+            title = stringResource(R.string.settings_map_zoom_title),
             helper = stringResource(R.string.settings_map_zoom_helper),
             value = mapSettings.initialZoom.toFloat(),
             onValueChange = { onMapInitialZoomChange(it.toInt()) },
             valueRange = 1f..22f,
             label = mapSettings.initialZoom.toString(),
+            defaultValue = MapSettings.DEFAULT_ZOOM.toFloat(),
+            onRestore = { onMapInitialZoomChange(MapSettings.DEFAULT_ZOOM) },
             testTag = "MapZoomSlider"
         )
 
         HorizontalDivider()
 
-        SettingsSectionTitle(stringResource(R.string.settings_map_tilt_title))
         SliderSettingItem(
+            title = stringResource(R.string.settings_map_tilt_title),
             helper = stringResource(R.string.settings_map_tilt_helper),
             value = mapSettings.initialTilt,
             onValueChange = onMapInitialTiltChange,
             valueRange = 0f..85f,
             label = "${mapSettings.initialTilt.toInt()}°",
+            defaultValue = MapSettings.DEFAULT_TILT,
+            onRestore = { onMapInitialTiltChange(MapSettings.DEFAULT_TILT) },
             testTag = "MapTiltSlider"
         )
 
         HorizontalDivider()
 
         // Landscape Weight split
-        SettingsSectionTitle(stringResource(R.string.settings_landscape_weight_title))
         SliderSettingItem(
+            title = stringResource(R.string.settings_landscape_weight_title),
             helper = stringResource(R.string.settings_landscape_weight_helper),
             value = settings.landscapeDistanceSectionWeight,
             onValueChange = onLandscapeWeightChange,
             valueRange = AppSettings.MIN_LANDSCAPE_WEIGHT..AppSettings.MAX_LANDSCAPE_WEIGHT,
             label = "${(settings.landscapeDistanceSectionWeight * 100).roundToInt()}% / ${(100 - settings.landscapeDistanceSectionWeight * 100).roundToInt()}%",
+            defaultValue = 0.3f,
+            onRestore = { onLandscapeWeightChange(0.3f) },
             testTag = "LandscapeWeightSlider"
         )
     }
@@ -409,6 +418,8 @@ fun AdvancedTab(
             onValueChange = onOdometerSpeedThresholdChange,
             valueRange = SpeedThreshold.MIN..SpeedThreshold.MAX,
             label = "${"%.1f".format(odometerSettings.speedThreshold)} m/s",
+            defaultValue = OdometerSettings.DEFAULT_SPEED_THRESHOLD,
+            onRestore = { onOdometerSpeedThresholdChange(OdometerSettings.DEFAULT_SPEED_THRESHOLD) },
             testTag = "SpeedThresholdSlider"
         )
 
@@ -419,6 +430,8 @@ fun AdvancedTab(
             onValueChange = onOdometerMinAccuracyChange,
             valueRange = AccuracyThreshold.MIN..AccuracyThreshold.MAX,
             label = "${"%.0f".format(odometerSettings.minAccuracy)} m",
+            defaultValue = OdometerSettings.DEFAULT_MIN_ACCURACY,
+            onRestore = { onOdometerMinAccuracyChange(OdometerSettings.DEFAULT_MIN_ACCURACY) },
             testTag = "MinAccuracySlider"
         )
 
@@ -429,6 +442,8 @@ fun AdvancedTab(
             onValueChange = onOdometerMinVerticalAccuracyChange,
             valueRange = VerticalAccuracyThreshold.MIN..VerticalAccuracyThreshold.MAX,
             label = "${"%.0f".format(odometerSettings.minVerticalAccuracy)} m",
+            defaultValue = OdometerSettings.DEFAULT_MIN_VERTICAL_ACCURACY,
+            onRestore = { onOdometerMinVerticalAccuracyChange(OdometerSettings.DEFAULT_MIN_VERTICAL_ACCURACY) },
             testTag = "MinVerticalAccuracySlider"
         )
 
@@ -439,6 +454,8 @@ fun AdvancedTab(
             onValueChange = { onOdometerPollingIntervalChange(it.toLong()) },
             valueRange = PollingIntervalThreshold.MIN.toFloat()..PollingIntervalThreshold.MAX.toFloat(),
             label = "${locationSettings.pollingInterval} ms",
+            defaultValue = LocationSettings.DEFAULT_POLLING_INTERVAL.toFloat(),
+            onRestore = { onOdometerPollingIntervalChange(LocationSettings.DEFAULT_POLLING_INTERVAL) },
             testTag = "PollingIntervalSlider"
         )
 
@@ -449,6 +466,8 @@ fun AdvancedTab(
             onValueChange = onOdometerMinDistanceChange,
             valueRange = MinDistanceThreshold.MIN..MinDistanceThreshold.MAX,
             label = "${"%.1f".format(locationSettings.minDistance)} m",
+            defaultValue = LocationSettings.DEFAULT_MIN_DISTANCE,
+            onRestore = { onOdometerMinDistanceChange(LocationSettings.DEFAULT_MIN_DISTANCE) },
             testTag = "MinDistanceSlider"
         )
 
@@ -475,11 +494,34 @@ fun SliderSettingItem(
     onValueChange: (Float) -> Unit,
     valueRange: ClosedFloatingPointRange<Float>,
     label: String,
+    defaultValue: Float? = null,
+    onRestore: (() -> Unit)? = null,
     testTag: String? = null
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         title?.let {
-            SettingsSectionTitle(it)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                SettingsSectionTitle(it)
+                if (defaultValue != null && onRestore != null && value != defaultValue) {
+                    IconButton(
+                        onClick = onRestore,
+                        modifier = Modifier
+                            .size(24.dp)
+                            .testTag("${testTag}_Restore")
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.SettingsBackupRestore,
+                            contentDescription = stringResource(CoreR.string.action_restore),
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.actionIconSize)
+                        )
+                    }
+                }
+            }
         }
         Text(text = helper)
         Slider(

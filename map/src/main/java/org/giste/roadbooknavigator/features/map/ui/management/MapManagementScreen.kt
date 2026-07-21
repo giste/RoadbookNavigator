@@ -112,7 +112,7 @@ fun MapManagementContent(
                         imageVector = Icons.Default.Error,
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.iconSize)
+                        modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.actionIconSize)
                     )
                     Text(text = uiState.message, color = MaterialTheme.colorScheme.error)
                 }
@@ -182,6 +182,10 @@ fun MapList(
                         },
                         deleteLabel = stringResource(CoreR.string.action_delete)
                     )
+                    HorizontalDivider(
+                        modifier = Modifier
+                            .padding(horizontal = RoadbookNavigatorTheme.dimensions.paddingLarge)
+                    )
                 }
             }
         }
@@ -246,6 +250,11 @@ private fun LazyListScope.renderFolder(
                         onDownloadClick = { onDownloadClick(remoteMap) },
                         onCancelClick = { onCancelDownloadClick(remoteMap.url) }
                     )
+                    HorizontalDivider(
+                        modifier = Modifier
+                            .align(Alignment.BottomCenter)
+                            .padding(horizontal = RoadbookNavigatorTheme.dimensions.paddingLarge)
+                    )
                 }
             }
 
@@ -280,8 +289,8 @@ fun SectionHeader(
             .padding(
                 start = RoadbookNavigatorTheme.dimensions.paddingLarge.times(level + 1),
                 end = RoadbookNavigatorTheme.dimensions.paddingLarge,
-                top = RoadbookNavigatorTheme.dimensions.paddingLarge,
-                bottom = RoadbookNavigatorTheme.dimensions.paddingLarge
+                top = RoadbookNavigatorTheme.dimensions.paddingMedium,
+                //bottom = RoadbookNavigatorTheme.dimensions.paddingMedium
             )
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -300,7 +309,7 @@ fun SectionHeader(
                     stringResource(CoreR.string.action_expand)
                 },
                 tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.iconSize),
+                modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.actionIconSize),
             )
         }
         HorizontalDivider(modifier = Modifier.padding(top = RoadbookNavigatorTheme.dimensions.paddingSmall))
@@ -386,7 +395,7 @@ fun DownloadedMapItem(
                 Icon(
                     imageVector = Icons.Default.Close,
                     contentDescription = "Cancel",
-                    modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.iconSize),
+                    modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.actionIconSize),
                 )
             }
         } else if (info.status is DownloadedMapStatus.UpdateAvailable) {
@@ -396,7 +405,7 @@ fun DownloadedMapItem(
                     contentDescription = stringResource(R.string.map_management_action_update),
                     //tint = Color(0xFFF28E1C),
                     tint = MaterialTheme.colorScheme.onErrorContainer,
-                    modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.iconSize),
+                    modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.actionIconSize),
                 )
             }
         }
@@ -411,7 +420,7 @@ fun DownloadedMapItem(
                 imageVector = Icons.Default.Delete,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.error,
-                modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.iconSize),
+                modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.actionIconSize),
             )
         }
     }
@@ -427,7 +436,10 @@ fun RemoteMapItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .padding(
+                horizontal = RoadbookNavigatorTheme.dimensions.paddingLarge,
+                vertical = RoadbookNavigatorTheme.dimensions.paddingMedium,
+            ),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
@@ -472,7 +484,7 @@ fun RemoteMapItem(
                 Icon(
                     imageVector = Icons.Default.Close,
                     contentDescription = "Cancel",
-                    modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.iconSize),
+                    modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.actionIconSize),
                 )
             }
         } else {
@@ -486,7 +498,7 @@ fun RemoteMapItem(
                 Icon(
                     imageVector = Icons.Default.Download,
                     contentDescription = null,
-                    modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.iconSize),
+                    modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.actionIconSize),
                 )
             }
         }

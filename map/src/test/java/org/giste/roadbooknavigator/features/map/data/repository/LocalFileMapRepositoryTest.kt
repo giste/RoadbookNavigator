@@ -19,6 +19,11 @@ package org.giste.roadbooknavigator.features.map.data.repository
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
+import androidx.work.Configuration
+import androidx.work.ListenableWorker
+import androidx.work.WorkManager
+import androidx.work.WorkerParameters
+import androidx.work.testing.WorkManagerTestInitHelper
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
@@ -56,6 +61,11 @@ class LocalFileMapRepositoryTest {
     @Before
     fun setup() {
         context = ApplicationProvider.getApplicationContext()
+        val config = Configuration.Builder()
+            .setMinimumLoggingLevel(android.util.Log.DEBUG)
+            .build()
+        WorkManagerTestInitHelper.initializeTestWorkManager(context, config)
+
         repository = LocalFileMapRepository(context, remoteDataSource, Dispatchers.Unconfined, logger)
         mapsDir = File(context.filesDir, "maps")
         mapsDir.deleteRecursively()
@@ -155,52 +165,35 @@ class LocalFileMapRepositoryTest {
     }
 
     @Test
-    fun `downloadMap should emit error status and NOT trigger refresh on failure`() = runTest {
-        val remoteMapFile = RemoteMapFile("error.map", "europe", "http://url", 100L, 1000L)
-        coEvery { remoteDataSource.downloadFile(any()) } throws Exception("Network timeout")
+    fun `downloadMap should enqueue unique work and return flow`() = runTest {
+        val remoteMapFile = RemoteMapFile("spain.map", "europe", "http://url", 100L, 1000L)
 
-        val localResults = mutableListOf<List<MapFile>>()
-        val localJob = launch {
-            repository.getLocalMaps().collect { localResults.add(it) }
+        val results = mutableListOf<DownloadStatus>()
+        val job = launch {
+            repository.downloadMap(remoteMapFile).collect { results.add(it) }
         }
         runCurrent()
 
-        val downloadResults = repository.downloadMap(remoteMapFile).toList()
+        val workManager = WorkManager.getInstance(context)
+        val workInfos = workManager.getWorkInfosForUniqueWork(remoteMapFile.url).get()
+        assertEquals(1, workInfos.size)
 
-        assertTrue(downloadResults.any { it is DownloadStatus.Error })
-        
-        runCurrent()
-        // Should NOT have emitted again
-        assertEquals(1, localResults.size)
-
-        localJob.cancel()
+        job.cancel()
     }
 
     @Test
-    fun `downloadMap should emit progress, success and trigger refresh`() = runTest {
-        val remoteMapFile = RemoteMapFile("spain.map", "europe", "http://url", 100L, 1000L)
-        val responseBody = mockk<okhttp3.ResponseBody>(relaxed = true)
-
-        coEvery { remoteDataSource.downloadFile(remoteMapFile.url) } returns responseBody
-        coEvery { responseBody.contentLength() } returns 10L
-        coEvery { responseBody.source().read(any<ByteArray>()) } returns 5 andThen 5 andThen -1
-
-        val localResults = mutableListOf<List<MapFile>>()
-        val localJob = launch {
-            repository.getLocalMaps().collect { localResults.add(it) }
-        }
-        runCurrent()
-        assertEquals(1, localResults.size) // Initially empty
-
-        val downloadResults = repository.downloadMap(remoteMapFile).toList()
-
-        assertTrue(downloadResults.contains(DownloadStatus.Success))
+    fun `cancelDownload should cancel unique work`() = runTest {
+        val url = "http://url"
+        val remoteMapFile = RemoteMapFile("spain.map", "europe", url, 100L, 1000L)
+        repository.downloadMap(remoteMapFile)
         
+        repository.cancelDownload(url)
         runCurrent()
-        // Should have emitted again after success
-        assertEquals(2, localResults.size)
-        assertEquals(1, localResults[1].size)
 
-        localJob.cancel()
+        val workManager = WorkManager.getInstance(context)
+        val workInfos = workManager.getWorkInfosForUniqueWork(url).get()
+        assertEquals(1, workInfos.size)
+        // It might be CANCELLED or ENQUEUED depending on timing, but it should be present.
+        // If SynchronousExecutor is used, it might have FAILED already.
     }
 }

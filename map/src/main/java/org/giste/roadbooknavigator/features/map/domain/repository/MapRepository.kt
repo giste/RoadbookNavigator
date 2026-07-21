@@ -29,4 +29,5 @@ interface MapRepository {
 
     fun getRemoteMaps(): Flow<List<RemoteMapFolder>>
     fun downloadMap(remoteMapFile: RemoteMapFile): Flow<DownloadStatus>
+    fun cancelDownload(url: String)
 }

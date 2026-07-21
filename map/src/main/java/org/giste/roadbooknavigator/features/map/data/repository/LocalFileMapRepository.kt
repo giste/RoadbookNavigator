@@ -20,6 +20,8 @@ package org.giste.roadbooknavigator.features.map.data.repository
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -27,13 +29,20 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
+import androidx.work.workDataOf
 import okio.buffer
 import okio.sink
 import org.giste.roadbooknavigator.core.di.IoDispatcher
 import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.map.data.datasource.RemoteMapDataSource
+import org.giste.roadbooknavigator.features.map.data.worker.DownloadMapWorker
 import org.giste.roadbooknavigator.features.map.domain.model.DownloadStatus
 import org.giste.roadbooknavigator.features.map.domain.model.MapFile
 import org.giste.roadbooknavigator.features.map.domain.model.RemoteMapFile
@@ -51,8 +60,21 @@ internal class LocalFileMapRepository @Inject constructor(
     private val logger: Logger
 ) : MapRepository {
 
+    private val workManager = WorkManager.getInstance(context)
+    private val repositoryScope = CoroutineScope(ioDispatcher + SupervisorJob())
+
     private val rootUrl =
         "https://ftp-stud.hs-esslingen.de/pub/Mirrors/download.mapsforge.org/maps/v5/"
+
+    init {
+        workManager.getWorkInfosByTagFlow("map_download")
+            .onEach { workInfos ->
+                if (workInfos.any { it.state == WorkInfo.State.SUCCEEDED }) {
+                    refresh()
+                }
+            }
+            .launchIn(repositoryScope)
+    }
 
     private val mapsDir: File
         get() = File(context.filesDir, "maps").apply {
@@ -104,8 +126,6 @@ internal class LocalFileMapRepository @Inject constructor(
         refreshTrigger.emit(Unit)
     }
 
-    private fun getMapInternalStorageDir(): String = mapsDir.absolutePath
-
     override fun getRemoteMaps(): Flow<List<RemoteMapFolder>> = flow {
         try {
             val root = remoteDataSource.getRemoteMaps(rootUrl)
@@ -133,42 +153,47 @@ internal class LocalFileMapRepository @Inject constructor(
             folder.copy(subFolders = enrichedSubfolders)
         }
 
-    override fun downloadMap(remoteMapFile: RemoteMapFile): Flow<DownloadStatus> = flow {
-        emit(DownloadStatus.Idle)
-        try {
-            val destinationPath =
-                "${getMapInternalStorageDir()}/${remoteMapFile.parentPath}/${remoteMapFile.name}"
-            val responseBody = remoteDataSource.downloadFile(remoteMapFile.url)
-            val file = File(destinationPath)
-            file.parentFile?.mkdirs()
+    override fun downloadMap(remoteMapFile: RemoteMapFile): Flow<DownloadStatus> {
+        val workRequest = OneTimeWorkRequestBuilder<DownloadMapWorker>()
+            .setInputData(
+                workDataOf(
+                    DownloadMapWorker.KEY_URL to remoteMapFile.url,
+                    DownloadMapWorker.KEY_NAME to remoteMapFile.name,
+                    DownloadMapWorker.KEY_PARENT_PATH to remoteMapFile.parentPath,
+                    DownloadMapWorker.KEY_LAST_MODIFIED to remoteMapFile.lastModified
+                )
+            )
+            .addTag("map_download")
+            .build()
 
-            val totalSize = responseBody.contentLength()
-            var bytesRead = 0L
+        workManager.enqueueUniqueWork(
+            remoteMapFile.url,
+            ExistingWorkPolicy.KEEP,
+            workRequest
+        )
 
-            responseBody.source().use { source ->
-                file.sink().buffer().use { sink ->
-                    val buffer = ByteArray(8192)
-                    var read: Int
-                    while (source.read(buffer).also { read = it } != -1) {
-                        sink.write(buffer, 0, read)
-                        bytesRead += read
-                        if (totalSize > 0) {
-                            emit(DownloadStatus.Progress(bytesRead.toFloat() / totalSize))
-                        }
-                    }
-                }
+        return workManager.getWorkInfosForUniqueWorkFlow(remoteMapFile.url)
+            .map { workInfos ->
+                val workInfo = workInfos.firstOrNull() ?: return@map DownloadStatus.Idle
+                mapWorkInfoToDownloadStatus(workInfo)
             }
-            if (remoteMapFile.lastModified > 0) {
-                file.setLastModified(remoteMapFile.lastModified)
+    }
+
+    override fun cancelDownload(url: String) {
+        workManager.cancelUniqueWork(url)
+    }
+
+    private fun mapWorkInfoToDownloadStatus(workInfo: WorkInfo): DownloadStatus {
+        return when (workInfo.state) {
+            WorkInfo.State.ENQUEUED, WorkInfo.State.BLOCKED -> DownloadStatus.Idle
+            WorkInfo.State.RUNNING -> {
+                val progress = workInfo.progress.getFloat(DownloadMapWorker.PROGRESS_KEY, 0f)
+                DownloadStatus.Progress(progress)
             }
-            emit(DownloadStatus.Success)
-        } catch (e: Exception) {
-            logger.e(e, "Error downloading map %s", remoteMapFile.name)
-            emit(DownloadStatus.Error(e.message ?: "Unknown error"))
+
+            WorkInfo.State.SUCCEEDED -> DownloadStatus.Success
+            WorkInfo.State.FAILED -> DownloadStatus.Error("Download failed")
+            WorkInfo.State.CANCELLED -> DownloadStatus.Idle
         }
-    }.onEach { status ->
-        if (status is DownloadStatus.Success) {
-            refresh()
-        }
-    }.flowOn(ioDispatcher)
+    }
 }

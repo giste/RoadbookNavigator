@@ -208,6 +208,7 @@ class MapManagementViewModelTest {
 
         assertTrue((viewModel.uiState.value as MapManagementUiState.Success).downloadingStatus.containsKey(remoteMap.url))
 
+        every { downloadMapUseCase.cancelDownload(remoteMap.url) } returns Unit
         viewModel.cancelDownload(remoteMap.url)
         runCurrent()
 

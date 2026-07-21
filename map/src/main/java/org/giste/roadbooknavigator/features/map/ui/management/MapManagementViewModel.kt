@@ -20,7 +20,6 @@ package org.giste.roadbooknavigator.features.map.ui.management
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -52,8 +51,6 @@ class MapManagementViewModel @Inject constructor(
     private val _downloadingMaps = MutableStateFlow<Map<String, DownloadStatus>>(emptyMap())
     private val downloadingMaps = _downloadingMaps.asStateFlow()
 
-    private val downloadJobs = mutableMapOf<String, Job>()
-
     val uiState: StateFlow<MapManagementUiState> = combine(
         getMapOverviewUseCase(),
         downloadingMaps
@@ -75,20 +72,12 @@ class MapManagementViewModel @Inject constructor(
         )
 
     fun downloadMap(remoteMapFile: RemoteMapFile) {
-        if (downloadJobs.containsKey(remoteMapFile.url)) return
-
-        val job = viewModelScope.launch {
+        viewModelScope.launch {
             downloadMapUseCase(remoteMapFile)
                 .collect { status ->
                     _downloadingMaps.update { it + (remoteMapFile.url to status) }
-                    if (status is DownloadStatus.Success || status is DownloadStatus.Error) {
-                        downloadJobs.remove(remoteMapFile.url)
-                        // After some time, remove from downloading list if success?
-                        // Or let the UI handle it.
-                    }
                 }
         }
-        downloadJobs[remoteMapFile.url] = job
     }
 
     fun deleteMap(mapFile: MapFile) {
@@ -102,13 +91,12 @@ class MapManagementViewModel @Inject constructor(
     }
 
     fun cancelDownload(url: String) {
-        downloadJobs[url]?.cancel()
-        downloadJobs.remove(url)
+        downloadMapUseCase.cancelDownload(url)
         _downloadingMaps.update { it - url }
     }
 
     override fun onCleared() {
-        downloadJobs.values.forEach { it.cancel() }
+        // No longer cancelling jobs here as they are managed by WorkManager
     }
 }
 

@@ -29,4 +29,8 @@ class DownloadMapUseCase @Inject constructor(
     operator fun invoke(remoteMapFile: RemoteMapFile): Flow<DownloadStatus> {
         return repository.downloadMap(remoteMapFile)
     }
+
+    fun cancelDownload(url: String) {
+        repository.cancelDownload(url)
+    }
 }

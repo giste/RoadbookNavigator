@@ -21,6 +21,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -40,6 +41,7 @@ import org.giste.roadbooknavigator.features.map.domain.model.RemoteMapFile
 import org.giste.roadbooknavigator.features.map.domain.model.RemoteMapFolder
 import org.giste.roadbooknavigator.features.map.domain.usecase.DeleteMapUseCase
 import org.giste.roadbooknavigator.features.map.domain.usecase.DownloadMapUseCase
+import org.giste.roadbooknavigator.features.map.domain.usecase.GetDownloadingMapsUseCase
 import org.giste.roadbooknavigator.features.map.domain.usecase.GetMapOverviewUseCase
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -52,6 +54,7 @@ class MapManagementViewModelTest {
 
     private val getMapOverviewUseCase: GetMapOverviewUseCase = mockk()
     private val downloadMapUseCase: DownloadMapUseCase = mockk()
+    private val getDownloadingMapsUseCase: GetDownloadingMapsUseCase = mockk()
     private val deleteMapUseCase: DeleteMapUseCase = mockk()
     private val logger: Logger = mockk(relaxed = true)
 
@@ -65,6 +68,7 @@ class MapManagementViewModelTest {
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
+        every { getDownloadingMapsUseCase() } returns flowOf(emptyMap())
     }
 
     @After
@@ -79,6 +83,7 @@ class MapManagementViewModelTest {
         val viewModel = MapManagementViewModel(
             getMapOverviewUseCase,
             downloadMapUseCase,
+            getDownloadingMapsUseCase,
             deleteMapUseCase,
             logger
         )
@@ -94,6 +99,7 @@ class MapManagementViewModelTest {
         val viewModel = MapManagementViewModel(
             getMapOverviewUseCase,
             downloadMapUseCase,
+            getDownloadingMapsUseCase,
             deleteMapUseCase,
             logger
         )
@@ -119,6 +125,7 @@ class MapManagementViewModelTest {
         val viewModel = MapManagementViewModel(
             getMapOverviewUseCase,
             downloadMapUseCase,
+            getDownloadingMapsUseCase,
             deleteMapUseCase,
             logger
         )
@@ -135,33 +142,23 @@ class MapManagementViewModelTest {
     }
 
     @Test
-    fun `downloadMap should call downloadMapUseCase and update status`() = runTest {
+    fun `downloadMap should call downloadMapUseCase`() = runTest {
         val remoteMap = RemoteMapFile("spain", "/", "http://spain.map", 100L, 0L)
         every { getMapOverviewUseCase() } returns flowOf(dummyOverview)
-        every { downloadMapUseCase(remoteMap) } returns flowOf(
-            DownloadStatus.Progress(0.5f),
-            DownloadStatus.Success
-        )
+        every { downloadMapUseCase(remoteMap) } returns flowOf(DownloadStatus.Idle)
 
         val viewModel = MapManagementViewModel(
             getMapOverviewUseCase,
             downloadMapUseCase,
+            getDownloadingMapsUseCase,
             deleteMapUseCase,
             logger
         )
 
-        val job = launch(testDispatcher) {
-            viewModel.uiState.collect {}
-        }
-        runCurrent()
-
         viewModel.downloadMap(remoteMap)
         runCurrent()
 
-        val state = viewModel.uiState.value as MapManagementUiState.Success
-        assertEquals(DownloadStatus.Success, state.downloadingStatus[remoteMap.url])
-
-        job.cancel()
+        verify { downloadMapUseCase(remoteMap) }
     }
 
     @Test
@@ -173,6 +170,7 @@ class MapManagementViewModelTest {
         val viewModel = MapManagementViewModel(
             getMapOverviewUseCase,
             downloadMapUseCase,
+            getDownloadingMapsUseCase,
             deleteMapUseCase,
             logger
         )
@@ -184,36 +182,22 @@ class MapManagementViewModelTest {
     }
 
     @Test
-    fun `cancelDownload should cancel job and remove from status`() = runTest {
-        val remoteMap = RemoteMapFile("spain", "/", "http://spain.map", 100L, 0L)
+    fun `cancelDownload should call cancelDownload on usecase`() = runTest {
+        val url = "http://spain.map"
         every { getMapOverviewUseCase() } returns flowOf(dummyOverview)
-        // A flow that doesn't complete immediately
-        val downloadFlow = MutableStateFlow<DownloadStatus>(DownloadStatus.Progress(0.1f))
-        every { downloadMapUseCase(remoteMap) } returns downloadFlow
+        every { downloadMapUseCase.cancelDownload(url) } returns Unit
 
         val viewModel = MapManagementViewModel(
             getMapOverviewUseCase,
             downloadMapUseCase,
+            getDownloadingMapsUseCase,
             deleteMapUseCase,
             logger
         )
 
-        val job = launch(testDispatcher) {
-            viewModel.uiState.collect {}
-        }
+        viewModel.cancelDownload(url)
         runCurrent()
 
-        viewModel.downloadMap(remoteMap)
-        runCurrent()
-
-        assertTrue((viewModel.uiState.value as MapManagementUiState.Success).downloadingStatus.containsKey(remoteMap.url))
-
-        every { downloadMapUseCase.cancelDownload(remoteMap.url) } returns Unit
-        viewModel.cancelDownload(remoteMap.url)
-        runCurrent()
-
-        assertTrue((viewModel.uiState.value as MapManagementUiState.Success).downloadingStatus.isEmpty())
-
-        job.cancel()
+        coVerify { downloadMapUseCase.cancelDownload(url) }
     }
 }

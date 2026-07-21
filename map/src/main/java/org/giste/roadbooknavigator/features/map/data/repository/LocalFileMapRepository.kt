@@ -164,6 +164,7 @@ internal class LocalFileMapRepository @Inject constructor(
                 )
             )
             .addTag("map_download")
+            .addTag("url:${remoteMapFile.url}")
             .build()
 
         workManager.enqueueUniqueWork(
@@ -181,6 +182,19 @@ internal class LocalFileMapRepository @Inject constructor(
 
     override fun cancelDownload(url: String) {
         workManager.cancelUniqueWork(url)
+    }
+
+    override fun getDownloadingMaps(): Flow<Map<String, DownloadStatus>> {
+        return workManager.getWorkInfosByTagFlow("map_download")
+            .map { workInfos ->
+                workInfos
+                    .filter { !it.state.isFinished || it.state == WorkInfo.State.SUCCEEDED || it.state == WorkInfo.State.FAILED }
+                    .associate { info ->
+                        val url = info.tags.find { it.startsWith("url:") }?.removePrefix("url:") ?: ""
+                        url to mapWorkInfoToDownloadStatus(info)
+                    }
+                    .filterKeys { it.isNotEmpty() }
+            }
     }
 
     private fun mapWorkInfoToDownloadStatus(workInfo: WorkInfo): DownloadStatus {

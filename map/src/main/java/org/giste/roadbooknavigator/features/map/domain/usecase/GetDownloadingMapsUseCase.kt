@@ -15,20 +15,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.map.domain.repository
+package org.giste.roadbooknavigator.features.map.domain.usecase
 
 import kotlinx.coroutines.flow.Flow
 import org.giste.roadbooknavigator.features.map.domain.model.DownloadStatus
-import org.giste.roadbooknavigator.features.map.domain.model.MapFile
-import org.giste.roadbooknavigator.features.map.domain.model.RemoteMapFile
-import org.giste.roadbooknavigator.features.map.domain.model.RemoteMapFolder
+import org.giste.roadbooknavigator.features.map.domain.repository.MapRepository
+import javax.inject.Inject
 
-interface MapRepository {
-    fun getLocalMaps(): Flow<List<MapFile>>
-    suspend fun deleteMap(mapFile: MapFile)
-
-    fun getRemoteMaps(): Flow<List<RemoteMapFolder>>
-    fun downloadMap(remoteMapFile: RemoteMapFile): Flow<DownloadStatus>
-    fun getDownloadingMaps(): Flow<Map<String, DownloadStatus>>
-    fun cancelDownload(url: String)
+class GetDownloadingMapsUseCase @Inject constructor(
+    private val repository: MapRepository
+) {
+    operator fun invoke(): Flow<Map<String, DownloadStatus>> = repository.getDownloadingMaps()
 }

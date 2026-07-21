@@ -20,14 +20,11 @@ package org.giste.roadbooknavigator.features.map.ui.management
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.map.domain.model.DownloadStatus
@@ -37,6 +34,7 @@ import org.giste.roadbooknavigator.features.map.domain.model.RemoteMapFile
 import org.giste.roadbooknavigator.features.map.domain.model.RemoteMapFolder
 import org.giste.roadbooknavigator.features.map.domain.usecase.DeleteMapUseCase
 import org.giste.roadbooknavigator.features.map.domain.usecase.DownloadMapUseCase
+import org.giste.roadbooknavigator.features.map.domain.usecase.GetDownloadingMapsUseCase
 import org.giste.roadbooknavigator.features.map.domain.usecase.GetMapOverviewUseCase
 import javax.inject.Inject
 
@@ -44,16 +42,14 @@ import javax.inject.Inject
 class MapManagementViewModel @Inject constructor(
     getMapOverviewUseCase: GetMapOverviewUseCase,
     private val downloadMapUseCase: DownloadMapUseCase,
+    getDownloadingMapsUseCase: GetDownloadingMapsUseCase,
     private val deleteMapUseCase: DeleteMapUseCase,
     private val logger: Logger
 ) : ViewModel() {
 
-    private val _downloadingMaps = MutableStateFlow<Map<String, DownloadStatus>>(emptyMap())
-    private val downloadingMaps = _downloadingMaps.asStateFlow()
-
     val uiState: StateFlow<MapManagementUiState> = combine(
         getMapOverviewUseCase(),
-        downloadingMaps
+        getDownloadingMapsUseCase()
     ) { overview, downloading ->
         MapManagementUiState.Success(
             downloadedMaps = overview.downloadedMaps,
@@ -73,10 +69,9 @@ class MapManagementViewModel @Inject constructor(
 
     fun downloadMap(remoteMapFile: RemoteMapFile) {
         viewModelScope.launch {
-            downloadMapUseCase(remoteMapFile)
-                .collect { status ->
-                    _downloadingMaps.update { it + (remoteMapFile.url to status) }
-                }
+            downloadMapUseCase(remoteMapFile).collect {
+                // We just trigger the flow, but we observe progress via getDownloadingMapsUseCase
+            }
         }
     }
 
@@ -92,7 +87,6 @@ class MapManagementViewModel @Inject constructor(
 
     fun cancelDownload(url: String) {
         downloadMapUseCase.cancelDownload(url)
-        _downloadingMaps.update { it - url }
     }
 
     override fun onCleared() {

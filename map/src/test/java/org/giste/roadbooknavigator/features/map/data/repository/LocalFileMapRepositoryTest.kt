@@ -31,6 +31,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.giste.roadbooknavigator.core.util.Logger
@@ -167,20 +168,14 @@ class LocalFileMapRepositoryTest {
     }
 
     @Test
-    fun `downloadMap should enqueue unique work and return flow`() = runTest {
+    fun `downloadMap should enqueue unique work and getDownloadingMaps should return status`() = runTest {
         val remoteMapFile = RemoteMapFile("spain.map", "europe", "http://url", 100L, 1000L)
 
-        val results = mutableListOf<DownloadStatus>()
-        val job = launch {
-            repository.downloadMap(remoteMapFile).collect { results.add(it) }
-        }
+        repository.downloadMap(remoteMapFile)
         runCurrent()
 
-        val workManager = WorkManager.getInstance(context)
-        val workInfos = workManager.getWorkInfosForUniqueWork(remoteMapFile.url).get()
-        assertEquals(1, workInfos.size)
-
-        job.cancel()
+        val statusMap = repository.getDownloadingMaps().first { it.isNotEmpty() }
+        assertTrue(statusMap.containsKey(remoteMapFile.url))
     }
 
     @Test

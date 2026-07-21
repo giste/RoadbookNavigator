@@ -53,6 +53,7 @@ internal class DownloadMapWorker @AssistedInject constructor(
         val parentPath = inputData.getString(KEY_PARENT_PATH) ?: ""
         val lastModified = inputData.getLong(KEY_LAST_MODIFIED, 0L)
 
+        setProgress(workDataOf(KEY_URL to url, PROGRESS_KEY to 0f))
         setForeground(createForegroundInfo(name, url))
 
         val mapsDir = File(applicationContext.filesDir, "maps")
@@ -74,7 +75,7 @@ internal class DownloadMapWorker @AssistedInject constructor(
                         bytesRead += read
                         if (totalSize > 0) {
                             val progress = bytesRead.toFloat() / totalSize
-                            setProgress(workDataOf(PROGRESS_KEY to progress))
+                            setProgress(workDataOf(KEY_URL to url, PROGRESS_KEY to progress))
                             updateNotification(name, url, progress)
                         }
                     }

@@ -17,28 +17,35 @@
 
 package org.giste.roadbooknavigator.features.map.ui
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
+import org.giste.roadbooknavigator.features.location.domain.UserLocation
+import org.giste.roadbooknavigator.features.map.domain.model.MapFile
+import org.giste.roadbooknavigator.features.map.R
 import org.oscim.android.MapView
 import org.oscim.backend.CanvasAdapter
 import org.oscim.layers.tile.buildings.BuildingLayer
@@ -57,66 +64,164 @@ fun MapScreen(
     modifier: Modifier = Modifier,
     viewModel: MapViewModel = hiltViewModel()
 ) {
-    val context = LocalContext.current
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState = viewModel.uiState.collectAsState().value
+    val location = uiState.currentLocation
 
-    val mapView = remember { MapView(context) }
+    if (uiState.localMaps.isEmpty()) {
+        LocationView(
+            location = location,
+            modifier = modifier
+        )
+    } else {
+        VtmMapView(
+            mapSources = uiState.localMaps,
+            location = location,
+            zoom = uiState.settings.initialZoom,
+            tilt = uiState.settings.initialTilt,
+            modifier = modifier,
+        )
+    }
+}
 
-    // Lifecycle management
-    val lifecycle = LocalLifecycleOwner.current.lifecycle
-    DisposableEffect(lifecycle, mapView) {
-        val observer = LifecycleEventObserver { _, event ->
-            when (event) {
-                Lifecycle.Event.ON_RESUME -> mapView.onResume()
-                Lifecycle.Event.ON_PAUSE -> mapView.onPause()
-                Lifecycle.Event.ON_DESTROY -> mapView.onDestroy()
-                else -> {}
-            }
-        }
-        lifecycle.addObserver(observer)
-        onDispose {
-            lifecycle.removeObserver(observer)
+@Composable
+private fun LocationView(
+    location: UserLocation?,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(RoadbookNavigatorTheme.dimensions.paddingMedium)
+    ) {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Text(
+                text = stringResource(R.string.map_load_instruction),
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
+            )
+            HorizontalDivider()
+            Text(
+                text = stringResource(R.string.map_location_title),
+                style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
+                textDecoration = TextDecoration.Underline,
+            )
+            val unknown = stringResource(R.string.map_location_unknown)
+            LocationDetail(
+                text = stringResource(
+                    R.string.map_location_latitude,
+                    location?.latitude?.toString() ?: unknown
+                )
+            )
+            LocationDetail(
+                text = stringResource(
+                    R.string.map_location_longitude,
+                    location?.longitude?.toString() ?: unknown
+                )
+            )
+            LocationDetail(
+                text = stringResource(
+                    R.string.map_location_accuracy,
+                    location?.accuracy?.toString() ?: unknown
+                )
+            )
+            LocationDetail(
+                text = stringResource(
+                    R.string.map_location_altitude,
+                    location?.altitude?.toString() ?: unknown
+                )
+            )
+            LocationDetail(
+                text = stringResource(
+                    R.string.map_location_vertical_accuracy,
+                    location?.verticalAccuracy?.toString() ?: unknown
+                )
+            )
+            LocationDetail(
+                text = stringResource(
+                    R.string.map_location_bearing,
+                    location?.bearing?.toString() ?: unknown
+                )
+            )
+            LocationDetail(
+                text = stringResource(
+                    R.string.map_location_speed,
+                    location?.speed?.toString() ?: unknown
+                )
+            )
         }
     }
+}
 
-    Box(modifier = modifier.fillMaxSize()) {
+@Composable
+private fun LocationDetail(text: String, modifier: Modifier = Modifier) {
+    Text(text = text, style = MaterialTheme.typography.labelSmall, modifier = modifier)
+}
+
+@Composable
+private fun VtmMapView(
+    mapSources: List<MapFile>,
+    location: UserLocation?,
+    zoom: Int,
+    tilt: Float,
+    modifier: Modifier = Modifier,
+
+) {
+    val mapView = rememberMapViewWithLifecycle()
+
+    Box (modifier = modifier.fillMaxSize()) {
         AndroidView(
             factory = {
                 with(mapView.map()) {
+                    // Tile source from maps
+                    val tileSource = MultiMapFileTileSource()
+                    mapSources.forEach {
+                        val map = MapFileTileSource()
+                        map.setMapFile(it.path)
+                        tileSource.add(map)
+                    }
+
+                    // Vector layer
+                    val tileLayer: VectorTileLayer = setBaseMap(tileSource)
+
+                    // Building layer
+                    layers().add(BuildingLayer(this, tileLayer))
+
+                    // Label layer
+                    layers().add(LabelLayer(this, tileLayer))
+
                     // Scale bar
                     val mapScaleBar: MapScaleBar = DefaultMapScaleBar(this)
                     val mapScaleBarLayer = MapScaleBarLayer(this, mapScaleBar)
-                    mapScaleBarLayer.renderer.setPosition(GLViewport.Position.BOTTOM_LEFT)
+                    mapScaleBarLayer.renderer.setPosition(GLViewport.Position.TOP_RIGHT)
                     mapScaleBarLayer.renderer.setOffset(5 * CanvasAdapter.getScale(), 0f)
                     layers().add(mapScaleBarLayer)
 
-                    // Initial layers setup (empty multi-source initially)
-                    val multiTileSource = MultiMapFileTileSource()
-                    val baseLayer = setBaseMap(multiTileSource)
-                    layers().add(BuildingLayer(this, baseLayer))
-                    layers().add(LabelLayer(this, baseLayer))
-
+                    // Render theme
                     setTheme(VtmThemes.DEFAULT)
+
+                    // Set center at the bottom
                     viewport().mapViewCenterY = 0.6f
 
                     // Initial position, scale and tilt
                     val initialPosition = mapPosition
                     initialPosition
                         .setPosition(40.60092, -3.70806)
-                        .setScale((1 shl uiState.settings.initialZoom).toDouble())
-                        .setTilt(uiState.settings.initialTilt)
+                        .setScale((1 shl zoom).toDouble())
+                        .setTilt(tilt)
                     mapPosition = initialPosition
                 }
+
                 mapView
             },
             modifier = Modifier.fillMaxSize(),
             update = { view ->
-                val map = view.map()
-                uiState.currentLocation?.let { location ->
-                    val pos = map.mapPosition
-                    pos.setPosition(location.latitude, location.longitude)
-                    pos.bearing = 360f - location.bearing
-                    map.animator().animateTo(pos)
+                with(view.map()) {
+                    location?.let { location ->
+                        val newPosition = mapPosition
+                        newPosition.setPosition(location.latitude, location.longitude)
+                        location.bearing.let { newPosition.setBearing(360f - location.bearing) }
+                        this.animator().animateTo(newPosition)
+                    }
                 }
             }
         )
@@ -132,37 +237,38 @@ fun MapScreen(
             style = MaterialTheme.typography.labelSmall,
         )
     }
+}
 
-    // Handle map loading when localMaps change
-    LaunchedEffect(uiState.localMaps) {
-        Log.d("MapScreen", "Local maps changed: ${uiState.localMaps}")
-        val map = mapView.map()
+@Composable
+private fun rememberMapViewWithLifecycle(): MapView {
+    val context = LocalContext.current
+    val mapView = remember { MapView(context) }
+    val observer = remember { VtmMapViewLifecycleObserver(mapView) }
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
 
-        val multiTileSource = MultiMapFileTileSource()
-        var hasFiles = false
-        uiState.localMaps.forEach { mapFile ->
-            val tileSource = MapFileTileSource()
-            if (tileSource.setMapFile(mapFile.path)) {
-                multiTileSource.add(tileSource)
-                Log.d("MapScreen", "Added tile source ${mapFile.name}")
-                hasFiles = true
-            }
+    DisposableEffect(Unit) {
+        lifecycle.addObserver(observer)
+        onDispose {
+            lifecycle.removeObserver(observer)
         }
+    }
 
-        if (hasFiles) {
-            // Remove previous layers we added to avoid duplication
-            val layers = map.layers()
-            val toRemove = layers.filter {
-                it is VectorTileLayer || it is BuildingLayer || it is LabelLayer
-            }
-            layers.removeAll(toRemove)
+    return mapView
+}
 
-            val baseLayer = map.setBaseMap(multiTileSource)
-            map.layers().add(BuildingLayer(map, baseLayer))
-            map.layers().add(LabelLayer(map, baseLayer))
+private class VtmMapViewLifecycleObserver(private val mapView: MapView) : DefaultLifecycleObserver {
+    override fun onResume(owner: LifecycleOwner) {
+        super.onResume(owner)
+        mapView.onResume()
+    }
 
-            map.setTheme(VtmThemes.DEFAULT)
-            map.render()
-        }
+    override fun onPause(owner: LifecycleOwner) {
+        super.onPause(owner)
+        mapView.onPause()
+    }
+
+    override fun onDestroy(owner: LifecycleOwner) {
+        super.onDestroy(owner)
+        mapView.onDestroy()
     }
 }

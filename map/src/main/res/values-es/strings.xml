@@ -22,4 +22,15 @@
     <string name="map_management_status_update_available">Actualización disponible</string>
     <string name="map_management_action_update">Actualizar mapa</string>
     <string name="map_management_action_download">Descargar mapa</string>
+
+    <string name="map_load_instruction">Cargue mapas en Ajustes -> Gestión de mapas</string>
+    <string name="map_location_title">Ubicación</string>
+    <string name="map_location_latitude">Latitud: %1$s</string>
+    <string name="map_location_longitude">Longitud: %1$s</string>
+    <string name="map_location_accuracy">Precisión: %1$s</string>
+    <string name="map_location_altitude">Altitud: %1$s</string>
+    <string name="map_location_vertical_accuracy">Precisión vertical: %1$s</string>
+    <string name="map_location_bearing">Rumbo: %1$s</string>
+    <string name="map_location_speed">Velocidad: %1$s</string>
+    <string name="map_location_unknown">desconocido</string>
 </resources>

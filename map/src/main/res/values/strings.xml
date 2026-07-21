@@ -33,4 +33,12 @@
     <string name="map_location_bearing">Bearing: %1$s</string>
     <string name="map_location_speed">Speed: %1$s</string>
     <string name="map_location_unknown">unknown</string>
+
+    <!-- Map Download Notifications -->
+    <string name="map_download_notification_channel_id">map_downloads_channel</string>
+    <string name="map_download_notification_channel_name">Map Downloads</string>
+    <string name="map_download_notification_channel_description">Shows progress of map downloads</string>
+    <string name="map_download_notification_title">Downloading map</string>
+    <string name="map_download_notification_content">Downloading %1$s…</string>
+    <string name="map_download_notification_cancel">Cancel</string>
 </resources>

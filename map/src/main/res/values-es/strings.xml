@@ -33,4 +33,12 @@
     <string name="map_location_bearing">Rumbo: %1$s</string>
     <string name="map_location_speed">Velocidad: %1$s</string>
     <string name="map_location_unknown">desconocido</string>
+
+    <!-- Map Download Notifications -->
+    <string name="map_download_notification_channel_id" translatable="false">map_downloads_channel</string>
+    <string name="map_download_notification_channel_name">Descargas de mapas</string>
+    <string name="map_download_notification_channel_description">Muestra el progreso de las descargas de mapas</string>
+    <string name="map_download_notification_title">Descargando mapa</string>
+    <string name="map_download_notification_content">Descargando %1$s…</string>
+    <string name="map_download_notification_cancel">Cancelar</string>
 </resources>

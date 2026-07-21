@@ -24,19 +24,24 @@ import androidx.work.WorkerParameters
 import androidx.work.testing.TestListenableWorkerBuilder
 import androidx.work.workDataOf
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
+import io.mockk.spyk
 import kotlinx.coroutines.test.runTest
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.giste.roadbooknavigator.core.util.Logger
+import org.giste.roadbooknavigator.features.map.R
 import org.giste.roadbooknavigator.features.map.data.datasource.RemoteMapDataSource
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 import java.io.File
 
 @RunWith(RobolectricTestRunner::class)
+@Config(sdk = [33])
 class DownloadMapWorkerTest {
 
     private lateinit var context: Context
@@ -45,7 +50,15 @@ class DownloadMapWorkerTest {
 
     @Before
     fun setup() {
-        context = ApplicationProvider.getApplicationContext()
+        val realContext = ApplicationProvider.getApplicationContext<Context>()
+        context = spyk(realContext)
+        // Mock strings to avoid Resources$NotFoundException in some environments
+        every { context.getString(R.string.map_download_notification_channel_id) } returns "map_downloads_channel"
+        every { context.getString(R.string.map_download_notification_channel_name) } returns "Map Downloads"
+        every { context.getString(R.string.map_download_notification_title) } returns "Downloading map"
+        every { context.getString(R.string.map_download_notification_cancel) } returns "Cancel"
+        every { context.getString(R.string.map_download_notification_content, any()) } returns "Downloading..."
+        every { context.getString(R.string.map_download_notification_channel_description) } returns "Description"
     }
 
     @Test

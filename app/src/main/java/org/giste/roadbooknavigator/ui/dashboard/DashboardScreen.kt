@@ -380,7 +380,7 @@ fun PortraitDistanceSection(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(IntrinsicSize.Min)
-                .weight(2f),
+                .weight(1.7f),
             verticalAlignment = Alignment.CenterVertically
         ) {
             SettingsButton(onClick = onSettingsClick)
@@ -395,7 +395,7 @@ fun PortraitDistanceSection(
                     .fillMaxHeight()
             )
         }
-        mapSlot(Modifier.weight(8f))
+        mapSlot(Modifier.weight(8.3f))
     }
 }
 

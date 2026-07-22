@@ -40,7 +40,7 @@ import org.giste.roadbooknavigator.features.map.data.receiver.DownloadCancelRece
 import java.io.File
 
 @HiltWorker
-class DownloadMapWorker @AssistedInject constructor(
+internal class DownloadMapWorker @AssistedInject constructor(
     @Assisted appContext: Context,
     @Assisted workerParams: WorkerParameters,
     private val remoteDataSource: RemoteMapDataSource,

@@ -168,14 +168,15 @@ class LocalFileMapRepositoryTest {
     }
 
     @Test
-    fun `downloadMap should enqueue unique work and getDownloadingMaps should return status`() = runTest {
+    fun `downloadMap should enqueue unique work`() = runTest {
         val remoteMapFile = RemoteMapFile("spain.map", "europe", "http://url", 100L, 1000L)
 
         repository.downloadMap(remoteMapFile)
         runCurrent()
 
-        val statusMap = repository.getDownloadingMaps().first { it.isNotEmpty() }
-        assertTrue(statusMap.containsKey(remoteMapFile.url))
+        val workManager = WorkManager.getInstance(context)
+        val workInfos = workManager.getWorkInfosForUniqueWork(remoteMapFile.url).get()
+        assertEquals(1, workInfos.size)
     }
 
     @Test

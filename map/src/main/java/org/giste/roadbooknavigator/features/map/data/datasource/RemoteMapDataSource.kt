@@ -20,7 +20,7 @@ package org.giste.roadbooknavigator.features.map.data.datasource
 import okhttp3.ResponseBody
 import org.giste.roadbooknavigator.features.map.domain.model.RemoteMapFolder
 
-interface RemoteMapDataSource {
+internal interface RemoteMapDataSource {
     suspend fun getRemoteMaps(url: String): RemoteMapFolder
     suspend fun downloadFile(url: String): ResponseBody
 }

@@ -24,7 +24,7 @@ class OdometerThresholdsTest {
 
     @Test
     fun `SpeedThreshold should accept values within range`() {
-        val value = 2.5f
+        val value = 1.5f
         val threshold = SpeedThreshold(value)
         assertEquals(value, threshold.metersPerSecond)
     }

@@ -17,6 +17,7 @@
 
 package org.giste.roadbooknavigator.features.map.data.worker
 
+import android.app.NotificationManager
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.work.ListenableWorker
@@ -36,6 +37,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.Shadows
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import java.io.File
@@ -134,5 +136,59 @@ class DownloadMapWorkerTest {
         val result = worker.doWork()
 
         assertEquals(ListenableWorker.Result.failure(), result)
+    }
+
+    @Test
+    fun `doWork updates notification progress during download`() = runTest {
+        val url = "https://example.com/map.map"
+        val name = "test.map"
+        // 16KB content to ensure multiple 8KB reads
+        val content = "A".repeat(16384)
+        val responseBody = content.toResponseBody()
+
+        coEvery { remoteDataSource.downloadFile(url) } returns responseBody
+
+        val worker = TestListenableWorkerBuilder<DownloadMapWorker>(context)
+            .setWorkerFactory(object : androidx.work.WorkerFactory() {
+                override fun createWorker(
+                    appContext: Context,
+                    workerClassName: String,
+                    workerParameters: WorkerParameters
+                ): ListenableWorker {
+                    return DownloadMapWorker(
+                        appContext,
+                        workerParameters,
+                        remoteDataSource,
+                        logger
+                    )
+                }
+            })
+            .setInputData(
+                workDataOf(
+                    DownloadMapWorker.KEY_URL to url,
+                    DownloadMapWorker.KEY_NAME to name
+                )
+            )
+            .build()
+
+        worker.doWork()
+
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val shadowNotificationManager = Shadows.shadowOf(notificationManager)
+
+        // Verify notifications were posted
+        val notifications = shadowNotificationManager.allNotifications
+        assert(notifications.isNotEmpty())
+
+        // Check the notification has progress and flags
+        val notification = notifications.first()
+        // Progress should be finished (100/100)
+        assertEquals(100, notification.extras.getInt(android.app.Notification.EXTRA_PROGRESS))
+        assertEquals(100, notification.extras.getInt(android.app.Notification.EXTRA_PROGRESS_MAX))
+        // Verify FLAG_ONLY_ALERT_ONCE is set
+        assertEquals(
+            true,
+            (notification.flags and android.app.Notification.FLAG_ONLY_ALERT_ONCE) != 0
+        )
     }
 }

@@ -29,6 +29,7 @@ import kotlinx.coroutines.launch
 import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.map.domain.model.DownloadStatus
 import org.giste.roadbooknavigator.features.map.domain.model.DownloadedMapInfo
+import org.giste.roadbooknavigator.features.map.domain.model.DownloadedMapStatus
 import org.giste.roadbooknavigator.features.map.domain.model.MapFile
 import org.giste.roadbooknavigator.features.map.domain.model.RemoteMapFile
 import org.giste.roadbooknavigator.features.map.domain.model.RemoteMapFolder
@@ -51,9 +52,17 @@ class MapManagementViewModel @Inject constructor(
         getMapOverviewUseCase(),
         getDownloadingMapsUseCase()
     ) { overview, downloading ->
+        val downloadedUrls = overview.downloadedMaps.mapNotNull { info ->
+            when (val status = info.status) {
+                is DownloadedMapStatus.UpToDate -> status.remoteMapFile.url
+                is DownloadedMapStatus.UpdateAvailable -> status.remoteMapFile.url
+                DownloadedMapStatus.Obsolete -> null
+            }
+        }.toSet()
+
         MapManagementUiState.Success(
             downloadedMaps = overview.downloadedMaps,
-            remoteFolders = overview.remoteFolders,
+            remoteFolders = overview.remoteFolders.mapNotNull { it.filterMaps(downloadedUrls) },
             downloadingStatus = downloading
         )
     }

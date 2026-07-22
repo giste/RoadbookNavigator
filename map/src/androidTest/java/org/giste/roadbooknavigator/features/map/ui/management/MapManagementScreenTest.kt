@@ -80,10 +80,11 @@ class MapManagementScreenTest {
     @Test
     fun whenStateIsSuccess_thenMapListsAreShown() {
         val downloadedMap = MapFile("Spain", "/path/spain.map", 100L, 0L, "Europe")
+        val remoteMapDownloaded = RemoteMapFile("Spain", "Europe", "http://spain.map", 100L, 0L)
         val remoteMap = RemoteMapFile("France", "/", "http://france.map", 200L, 0L)
         
         val state = MapManagementUiState.Success(
-            downloadedMaps = listOf(DownloadedMapInfo(downloadedMap, DownloadedMapStatus.UpToDate)),
+            downloadedMaps = listOf(DownloadedMapInfo(downloadedMap, DownloadedMapStatus.UpToDate(remoteMapDownloaded))),
             remoteFolders = listOf(RemoteMapFolder("Europe", "/", maps = listOf(remoteMap)))
         )
 
@@ -144,8 +145,9 @@ class MapManagementScreenTest {
     fun whenDeleteClick_thenCallbackIsInvoked() {
         var clickedMap: MapFile? = null
         val downloadedMap = MapFile("Spain", "/path/spain.map", 100L, 0L, "Europe")
+        val remoteMapDownloaded = RemoteMapFile("Spain", "Europe", "http://spain.map", 100L, 0L)
         val state = MapManagementUiState.Success(
-            downloadedMaps = listOf(DownloadedMapInfo(downloadedMap, DownloadedMapStatus.UpToDate)),
+            downloadedMaps = listOf(DownloadedMapInfo(downloadedMap, DownloadedMapStatus.UpToDate(remoteMapDownloaded))),
             remoteFolders = emptyList()
         )
 
@@ -173,8 +175,9 @@ class MapManagementScreenTest {
     @Test
     fun whenSectionTapped_thenItCollapsesAndExpands() {
         val downloadedMap = MapFile("Spain", "/path/spain.map", 100L, 0L, "Europe")
+        val remoteMapDownloaded = RemoteMapFile("Spain", "Europe", "http://spain.map", 100L, 0L)
         val state = MapManagementUiState.Success(
-            downloadedMaps = listOf(DownloadedMapInfo(downloadedMap, DownloadedMapStatus.UpToDate)),
+            downloadedMaps = listOf(DownloadedMapInfo(downloadedMap, DownloadedMapStatus.UpToDate(remoteMapDownloaded))),
             remoteFolders = emptyList()
         )
 

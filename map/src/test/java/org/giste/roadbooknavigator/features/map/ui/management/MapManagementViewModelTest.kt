@@ -35,6 +35,8 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.map.domain.model.DownloadStatus
+import org.giste.roadbooknavigator.features.map.domain.model.DownloadedMapInfo
+import org.giste.roadbooknavigator.features.map.domain.model.DownloadedMapStatus
 import org.giste.roadbooknavigator.features.map.domain.model.MapFile
 import org.giste.roadbooknavigator.features.map.domain.model.MapOverview
 import org.giste.roadbooknavigator.features.map.domain.model.RemoteMapFile
@@ -199,5 +201,42 @@ class MapManagementViewModelTest {
         runCurrent()
 
         coVerify { downloadMapUseCase.cancelDownload(url) }
+    }
+
+    @Test
+    fun `uiState should filter remote folders based on downloaded maps`() = runTest {
+        val remoteMap1 = RemoteMapFile("map1", "/", "url1", 100L, 0L)
+        val remoteMap2 = RemoteMapFile("map2", "/", "url2", 100L, 0L)
+        val localMap1 = MapFile("map1.map", "/path1", 100L, 0L, "/")
+        
+        val downloadedInfo = listOf(
+            DownloadedMapInfo(localMap1, DownloadedMapStatus.UpToDate(remoteMap1))
+        )
+        val remoteFolders = listOf(
+            RemoteMapFolder("root", "/", maps = listOf(remoteMap1, remoteMap2))
+        )
+        val overview = MapOverview(downloadedInfo, remoteFolders)
+        
+        every { getMapOverviewUseCase() } returns flowOf(overview)
+
+        val viewModel = MapManagementViewModel(
+            getMapOverviewUseCase,
+            downloadMapUseCase,
+            getDownloadingMapsUseCase,
+            deleteMapUseCase,
+            logger
+        )
+
+        val job = launch(testDispatcher) {
+            viewModel.uiState.collect {}
+        }
+        runCurrent()
+
+        val state = viewModel.uiState.value as MapManagementUiState.Success
+        assertEquals(1, state.remoteFolders.size)
+        assertEquals(1, state.remoteFolders[0].maps.size)
+        assertEquals("map2", state.remoteFolders[0].maps[0].name)
+
+        job.cancel()
     }
 }

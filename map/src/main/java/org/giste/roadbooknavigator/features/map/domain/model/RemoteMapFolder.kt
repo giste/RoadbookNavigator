@@ -30,4 +30,15 @@ data class RemoteMapFolder(
         }
         return null
     }
+
+    fun filterMaps(downloadedUrls: Set<String>): RemoteMapFolder? {
+        val filteredMaps = maps.filter { it.url !in downloadedUrls }
+        val filteredSubFolders = subFolders.mapNotNull { it.filterMaps(downloadedUrls) }
+
+        return if (filteredMaps.isEmpty() && filteredSubFolders.isEmpty()) {
+            null
+        } else {
+            copy(maps = filteredMaps, subFolders = filteredSubFolders)
+        }
+    }
 }

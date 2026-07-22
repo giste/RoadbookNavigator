@@ -46,7 +46,7 @@ class GetMapOverviewUseCase @Inject constructor(
                         remoteMap
                     )
 
-                    else -> DownloadedMapStatus.UpToDate
+                    else -> DownloadedMapStatus.UpToDate(remoteMap)
                 }
                 DownloadedMapInfo(localMap, status)
             }

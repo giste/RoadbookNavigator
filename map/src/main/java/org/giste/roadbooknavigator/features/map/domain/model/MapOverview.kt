@@ -28,7 +28,7 @@ data class DownloadedMapInfo(
 )
 
 sealed class DownloadedMapStatus {
-    data object UpToDate : DownloadedMapStatus()
+    data class UpToDate(val remoteMapFile: RemoteMapFile) : DownloadedMapStatus()
     data class UpdateAvailable(val remoteMapFile: RemoteMapFile) : DownloadedMapStatus()
     data object Obsolete : DownloadedMapStatus()
 }

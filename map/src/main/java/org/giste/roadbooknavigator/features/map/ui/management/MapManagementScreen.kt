@@ -365,7 +365,7 @@ fun DownloadedMapItem(
                     )
                 }
 
-                DownloadedMapStatus.UpToDate -> {
+                is DownloadedMapStatus.UpToDate -> {
                     // Nothing
                 }
             }

@@ -55,7 +55,8 @@ class GetMapOverviewUseCaseTest {
         assertEquals(3, result.downloadedMaps.size)
         
         val upToDateInfo = result.downloadedMaps.find { it.mapFile.name == "up-to-date.map" }
-        assertEquals(DownloadedMapStatus.UpToDate, upToDateInfo?.status)
+        assertTrue(upToDateInfo?.status is DownloadedMapStatus.UpToDate)
+        assertEquals(remoteMapUpToDate, (upToDateInfo?.status as DownloadedMapStatus.UpToDate).remoteMapFile)
 
         val obsoleteInfo = result.downloadedMaps.find { it.mapFile.name == "obsolete.map" }
         assertEquals(DownloadedMapStatus.Obsolete, obsoleteInfo?.status)

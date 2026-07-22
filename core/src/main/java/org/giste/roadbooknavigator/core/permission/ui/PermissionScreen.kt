@@ -36,6 +36,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
@@ -196,17 +197,20 @@ private val AppPermission.title: String
     get() = when (this) {
         AppPermission.FINE_LOCATION -> "Fine Location"
         AppPermission.COARSE_LOCATION -> "Coarse Location"
+        AppPermission.NOTIFICATIONS -> "Notifications"
     }
 
 private val AppPermission.description: String
     get() = when (this) {
         AppPermission.FINE_LOCATION -> "Used for high-accuracy tracking and navigation."
         AppPermission.COARSE_LOCATION -> "Used for basic positioning when GPS is unavailable."
+        AppPermission.NOTIFICATIONS -> "Used to show map download progress in the status bar."
     }
 
 private val AppPermission.icon: ImageVector
     get() = when (this) {
         AppPermission.FINE_LOCATION, AppPermission.COARSE_LOCATION -> Icons.Default.Place
+        AppPermission.NOTIFICATIONS -> Icons.Default.Notifications
     }
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)

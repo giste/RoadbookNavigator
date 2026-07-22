@@ -33,7 +33,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-internal class JsoupRemoteMapDataSource @Inject constructor(
+class JsoupRemoteMapDataSource @Inject constructor(
     private val okHttpClient: OkHttpClient,
     @param:IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : RemoteMapDataSource {

@@ -20,4 +20,5 @@ package org.giste.roadbooknavigator.core.permission.domain
 enum class AppPermission {
     FINE_LOCATION,
     COARSE_LOCATION,
+    NOTIFICATIONS,
 }

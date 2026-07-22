@@ -188,7 +188,7 @@ internal class LocalFileMapRepository @Inject constructor(
         return workManager.getWorkInfosByTagFlow("map_download")
             .map { workInfos ->
                 workInfos
-                    .filter { !it.state.isFinished || it.state == WorkInfo.State.SUCCEEDED || it.state == WorkInfo.State.FAILED }
+                    .filter { !it.state.isFinished }
                     .associate { info ->
                         val url = info.tags.find { it.startsWith("url:") }?.removePrefix("url:") ?: ""
                         url to mapWorkInfoToDownloadStatus(info)

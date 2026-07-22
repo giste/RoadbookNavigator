@@ -27,4 +27,5 @@ import org.giste.roadbooknavigator.core.permission.domain.AppPermission
 fun AppPermission.toAndroidPermission(): String? = when (this) {
     AppPermission.FINE_LOCATION -> Manifest.permission.ACCESS_FINE_LOCATION
     AppPermission.COARSE_LOCATION -> Manifest.permission.ACCESS_COARSE_LOCATION
+    AppPermission.NOTIFICATIONS -> Manifest.permission.POST_NOTIFICATIONS
 }

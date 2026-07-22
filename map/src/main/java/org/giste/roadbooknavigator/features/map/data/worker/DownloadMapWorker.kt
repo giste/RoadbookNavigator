@@ -40,7 +40,7 @@ import org.giste.roadbooknavigator.features.map.data.receiver.DownloadCancelRece
 import java.io.File
 
 @HiltWorker
-internal class DownloadMapWorker @AssistedInject constructor(
+class DownloadMapWorker @AssistedInject constructor(
     @Assisted appContext: Context,
     @Assisted workerParams: WorkerParameters,
     private val remoteDataSource: RemoteMapDataSource,
@@ -58,37 +58,52 @@ internal class DownloadMapWorker @AssistedInject constructor(
 
         val mapsDir = File(applicationContext.filesDir, "maps")
         val destinationPath = "${mapsDir.absolutePath}/$parentPath/$name"
-        val file = File(destinationPath)
+        val destinationFile = File(destinationPath)
+        val tempFile = File("$destinationPath.tmp")
 
         return try {
-            file.parentFile?.mkdirs()
+            destinationFile.parentFile?.mkdirs()
             val responseBody = remoteDataSource.downloadFile(url)
             val totalSize = responseBody.contentLength()
             var bytesRead = 0L
 
             responseBody.source().use { source ->
-                file.sink().buffer().use { sink ->
+                tempFile.sink().buffer().use { sink ->
                     val buffer = ByteArray(8192)
                     var read: Int
+                    var lastUpdatePercent = -1
+                    
                     while (source.read(buffer).also { read = it } != -1) {
                         sink.write(buffer, 0, read)
                         bytesRead += read
                         if (totalSize > 0) {
                             val progress = bytesRead.toFloat() / totalSize
-                            setProgress(workDataOf(KEY_URL to url, PROGRESS_KEY to progress))
-                            updateNotification(name, url, progress)
+                            val currentPercent = (progress * 100).toInt()
+                            
+                            // Update progress only when percent changes
+                            if (currentPercent > lastUpdatePercent) {
+                                lastUpdatePercent = currentPercent
+                                setProgress(workDataOf(KEY_URL to url, PROGRESS_KEY to progress))
+                                updateNotification(name, url, progress)
+                            }
                         }
                     }
                 }
             }
 
-            if (lastModified > 0) {
-                file.setLastModified(lastModified)
+            if (tempFile.renameTo(destinationFile)) {
+                if (lastModified > 0) {
+                    destinationFile.setLastModified(lastModified)
+                }
+                Result.success()
+            } else {
+                logger.e("Failed to rename temp file to %s", name)
+                tempFile.delete()
+                Result.failure()
             }
-
-            Result.success()
         } catch (e: Exception) {
             logger.e(e, "Error downloading map %s", name)
+            tempFile.delete()
             Result.failure()
         }
     }
@@ -99,6 +114,7 @@ internal class DownloadMapWorker @AssistedInject constructor(
     }
 
     private fun createForegroundInfo(name: String, url: String, progress: Float = 0f): ForegroundInfo {
+        val notificationId = url.hashCode()
         val id = applicationContext.getString(R.string.map_download_notification_channel_id)
         val channelName = applicationContext.getString(R.string.map_download_notification_channel_name)
         val title = applicationContext.getString(R.string.map_download_notification_title)
@@ -130,11 +146,10 @@ internal class DownloadMapWorker @AssistedInject constructor(
             .addAction(android.R.drawable.ic_menu_close_clear_cancel, cancel, pendingIntent)
             .build()
 
-        return ForegroundInfo(NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
+        return ForegroundInfo(notificationId, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
     }
 
     companion object {
-        private const val NOTIFICATION_ID = 100
         const val KEY_URL = "url"
         const val KEY_NAME = "name"
         const val KEY_PARENT_PATH = "parent_path"

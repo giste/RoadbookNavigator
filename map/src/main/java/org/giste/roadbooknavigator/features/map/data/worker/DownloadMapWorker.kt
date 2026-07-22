@@ -47,11 +47,16 @@ internal class DownloadMapWorker @AssistedInject constructor(
     private val logger: Logger
 ) : CoroutineWorker(appContext, workerParams) {
 
+    private val notificationManager =
+        applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
     override suspend fun doWork(): Result {
         val url = inputData.getString(KEY_URL) ?: return Result.failure()
         val name = inputData.getString(KEY_NAME) ?: return Result.failure()
         val parentPath = inputData.getString(KEY_PARENT_PATH) ?: ""
         val lastModified = inputData.getLong(KEY_LAST_MODIFIED, 0L)
+
+        createNotificationChannel()
 
         setProgress(workDataOf(KEY_URL to url, PROGRESS_KEY to 0f))
         setForeground(createForegroundInfo(name, url))
@@ -108,23 +113,31 @@ internal class DownloadMapWorker @AssistedInject constructor(
         }
     }
 
-    private suspend fun updateNotification(name: String, url: String, progress: Float) {
-        val foregroundInfo = createForegroundInfo(name, url, progress)
-        setForeground(foregroundInfo)
+    private fun updateNotification(name: String, url: String, progress: Float) {
+        val notificationId = url.hashCode()
+        val notification = createNotification(name, url, progress)
+        notificationManager.notify(notificationId, notification)
+    }
+
+    private fun createNotificationChannel() {
+        val id = applicationContext.getString(R.string.map_download_notification_channel_id)
+        val channelName = applicationContext.getString(R.string.map_download_notification_channel_name)
+        val channel = NotificationChannel(id, channelName, NotificationManager.IMPORTANCE_LOW).apply {
+            description = applicationContext.getString(R.string.map_download_notification_channel_description)
+        }
+        notificationManager.createNotificationChannel(channel)
     }
 
     private fun createForegroundInfo(name: String, url: String, progress: Float = 0f): ForegroundInfo {
         val notificationId = url.hashCode()
+        val notification = createNotification(name, url, progress)
+        return ForegroundInfo(notificationId, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
+    }
+
+    private fun createNotification(name: String, url: String, progress: Float): android.app.Notification {
         val id = applicationContext.getString(R.string.map_download_notification_channel_id)
-        val channelName = applicationContext.getString(R.string.map_download_notification_channel_name)
         val title = applicationContext.getString(R.string.map_download_notification_title)
         val cancel = applicationContext.getString(R.string.map_download_notification_cancel)
-
-        val channel = NotificationChannel(id, channelName, NotificationManager.IMPORTANCE_LOW).apply {
-            description = applicationContext.getString(R.string.map_download_notification_channel_description)
-        }
-        val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.createNotificationChannel(channel)
 
         val intent = Intent(applicationContext, DownloadCancelReceiver::class.java).apply {
             putExtra(DownloadCancelReceiver.KEY_URL, url)
@@ -136,17 +149,16 @@ internal class DownloadMapWorker @AssistedInject constructor(
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        val notification = NotificationCompat.Builder(applicationContext, id)
+        return NotificationCompat.Builder(applicationContext, id)
             .setContentTitle(title)
             .setTicker(title)
             .setContentText(applicationContext.getString(R.string.map_download_notification_content, name))
             .setSmallIcon(android.R.drawable.stat_sys_download)
             .setOngoing(true)
+            .setOnlyAlertOnce(true)
             .setProgress(100, (progress * 100).toInt(), false)
             .addAction(android.R.drawable.ic_menu_close_clear_cancel, cancel, pendingIntent)
             .build()
-
-        return ForegroundInfo(notificationId, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
     }
 
     companion object {

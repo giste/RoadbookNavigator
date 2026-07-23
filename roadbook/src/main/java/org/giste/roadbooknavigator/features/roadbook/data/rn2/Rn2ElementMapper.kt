@@ -139,20 +139,25 @@ internal class Rn2ElementMapper @Inject constructor(
         val angle = jsonIcon.angle?.toInt() ?: 0
 
         val type = when (jsonIcon) {
+            // Cross
             is Rn2Icon.Danger1 -> Icon.IconType.Danger1
             is Rn2Icon.Danger2 -> Icon.IconType.Danger2
             is Rn2Icon.Danger3 -> Icon.IconType.Danger3
             is Rn2Icon.FuelZone -> Icon.IconType.FuelZone
             is Rn2Icon.ResetDistance -> Icon.IconType.ResetDistance
+            // Landmark
             is Rn2Icon.AboveBridge -> Icon.IconType.AboveBridge
             is Rn2Icon.FortCastle -> Icon.IconType.FortCastle
             is Rn2Icon.House -> Icon.IconType.House
             is Rn2Icon.TrafficLight -> Icon.IconType.TrafficLight
+            is Rn2Icon.Tree -> Icon.IconType.Tree
             is Rn2Icon.Tunnel -> Icon.IconType.Tunnel
             is Rn2Icon.UnderBridge -> Icon.IconType.UnderBridge
+            // Signs
             is Rn2Icon.Alert -> Icon.IconType.Alert
             is Rn2Icon.Roundabout -> Icon.IconType.Roundabout
             is Rn2Icon.Stop -> Icon.IconType.Stop
+            // Terrain
             is Rn2Icon.RiverWater -> Icon.IconType.RiverWater
             is Rn2Icon.Unknown -> {
                 logger.w("Rn2ElementMapper: Unknown icon encountered with ID: %s", jsonIcon.id)

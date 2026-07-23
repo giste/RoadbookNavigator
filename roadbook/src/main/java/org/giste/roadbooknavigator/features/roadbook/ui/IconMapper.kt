@@ -30,6 +30,7 @@ import org.giste.roadbooknavigator.features.roadbook.ui.icons.landmark.aboveBrid
 import org.giste.roadbooknavigator.features.roadbook.ui.icons.landmark.fortCastle
 import org.giste.roadbooknavigator.features.roadbook.ui.icons.landmark.house
 import org.giste.roadbooknavigator.features.roadbook.ui.icons.landmark.trafficLight
+import org.giste.roadbooknavigator.features.roadbook.ui.icons.landmark.tree
 import org.giste.roadbooknavigator.features.roadbook.ui.icons.landmark.tunnel
 import org.giste.roadbooknavigator.features.roadbook.ui.icons.landmark.underBridge
 import org.giste.roadbooknavigator.features.roadbook.ui.icons.signs.Alert
@@ -40,21 +41,27 @@ import org.giste.roadbooknavigator.features.roadbook.ui.icons.terrain.river
 object IconMapper {
     fun getIcon(type: Icon.IconType, onSurface: Color, surface: Color): ImageVector? {
         return when (type) {
+            // Cross
             Icon.IconType.Danger1 -> RoadbookIcons.Cross.DangerLevel1
             Icon.IconType.Danger2 -> RoadbookIcons.Cross.DangerLevel2
             Icon.IconType.Danger3 -> RoadbookIcons.Cross.DangerLevel3
             Icon.IconType.FuelZone -> RoadbookIcons.Cross.fuelZone(onSurface)
             Icon.IconType.ResetDistance -> RoadbookIcons.Cross.resetDistance(onSurface, surface)
+            // Landmark
             Icon.IconType.AboveBridge -> RoadbookIcons.Landmark.aboveBridge(onSurface, surface)
             Icon.IconType.FortCastle -> RoadbookIcons.Landmark.fortCastle(onSurface)
             Icon.IconType.House -> RoadbookIcons.Landmark.house(onSurface, surface)
             Icon.IconType.TrafficLight -> RoadbookIcons.Landmark.trafficLight(onSurface, surface)
+            Icon.IconType.Tree -> RoadbookIcons.Landmark.tree(onSurface)
             Icon.IconType.Tunnel -> RoadbookIcons.Landmark.tunnel(onSurface)
             Icon.IconType.UnderBridge -> RoadbookIcons.Landmark.underBridge(onSurface, surface)
+            // Signs
             Icon.IconType.Alert -> RoadbookIcons.Signs.Alert
             Icon.IconType.Roundabout -> RoadbookIcons.Signs.roundabout(onSurface)
             Icon.IconType.Stop -> RoadbookIcons.Signs.Stop
+            // Terrain
             Icon.IconType.RiverWater -> RoadbookIcons.Terrain.river(onSurface)
+            // Unknown
             Icon.IconType.Unknown -> null
         }
     }

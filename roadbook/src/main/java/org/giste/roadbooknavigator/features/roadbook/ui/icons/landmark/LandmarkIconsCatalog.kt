@@ -89,7 +89,8 @@ private fun LandmarkIconsGallery() {
                     "House" to RoadbookIcons.Landmark.house(onSurface, iconSurface),
                     "Tunnel" to RoadbookIcons.Landmark.tunnel(onSurface),
                     "Fort/Castle" to RoadbookIcons.Landmark.fortCastle(onSurface),
-                    "Traffic Light" to RoadbookIcons.Landmark.trafficLight(onSurface, iconSurface)
+                    "Traffic Light" to RoadbookIcons.Landmark.trafficLight(onSurface, iconSurface),
+                    "Tree" to RoadbookIcons.Landmark.tree(onSurface)
                 )
 
                 icons.chunked(3).forEach { rowIcons ->

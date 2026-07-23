@@ -89,10 +89,16 @@ data class Icon(
     override val elementType: ElementType = ElementType.Icon
 
     enum class IconType {
+        // Cross
         Danger1, Danger2, Danger3, FuelZone, ResetDistance,
-        AboveBridge, UnderBridge, FortCastle, House,
-        TrafficLight, Tunnel, Alert, Roundabout, Stop,
-        RiverWater, Unknown
+        // Landmark
+        AboveBridge, FortCastle, House, TrafficLight, Tree, Tunnel, UnderBridge,
+        // Signs
+        Alert, Roundabout, Stop,
+        // Terrain
+        RiverWater,
+        // Unknown
+        Unknown
     }
 }
 

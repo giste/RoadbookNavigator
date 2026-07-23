@@ -18,11 +18,14 @@
 package org.giste.roadbooknavigator
 
 import android.app.Application
-import android.content.Context
-import androidx.test.runner.AndroidJUnitRunner
+import androidx.work.Configuration
 
-class HiltTestRunner : AndroidJUnitRunner() {
-    override fun newApplication(cl: ClassLoader?, name: String?, context: Context?): Application {
-        return super.newApplication(cl, RoadbookNavigatorTestApp_Application::class.java.name, context)
-    }
+/**
+ * Base application for tests that provides WorkManager configuration.
+ */
+open class RoadbookNavigatorTestBaseApp : Application(), Configuration.Provider {
+    override val workManagerConfiguration: Configuration
+        get() = Configuration.Builder()
+            .setMinimumLoggingLevel(android.util.Log.DEBUG)
+            .build()
 }

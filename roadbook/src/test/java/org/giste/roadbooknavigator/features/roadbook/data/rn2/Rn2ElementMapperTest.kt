@@ -75,6 +75,7 @@ class Rn2ElementMapperTest {
         val args = constructor.parameters.associateWith { param ->
             when (param.name) {
                 "id" -> "test-id"
+                "name" -> "test-name"
                 else -> null // Most other fields in Rn2Icon are nullable Double?
             }
         }

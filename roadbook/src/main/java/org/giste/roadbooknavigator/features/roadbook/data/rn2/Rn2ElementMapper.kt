@@ -160,7 +160,11 @@ internal class Rn2ElementMapper @Inject constructor(
             // Terrain
             is Rn2Icon.RiverWater -> Icon.IconType.RiverWater
             is Rn2Icon.Unknown -> {
-                logger.w("Rn2ElementMapper: Unknown icon encountered with ID: %s", jsonIcon.id)
+                logger.w(
+                    "Rn2ElementMapper: Unknown icon encountered with ID: %s and Name: %s",
+                    jsonIcon.id,
+                    jsonIcon.name
+                )
                 Icon.IconType.Unknown
             }
         }

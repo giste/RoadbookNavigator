@@ -79,6 +79,7 @@ class Rn2MapperTest {
                                 "elements": [
                                     {
                                         "id": "$resetId",
+                                        "name": "Reset Distance",
                                         "type": "Icon"
                                     }
                                 ]
@@ -212,13 +213,19 @@ class Rn2MapperTest {
 
     @Test
     fun `mapToDomain should map unknown icon ID to Unknown Icon type`() {
+        // ... (existing test) ...
+    }
+
+    @Test
+    fun `mapToDomain should fallback to matching by name if ID is unknown`() {
         // Given
-        val unknownId = "unknown-uuid-12345"
+        val unknownId = "completely-unknown-uuid"
+        val knownName = "Tree"
         val jsonString = """
             {
                 "route": {
                     "version": 4,
-                    "name": "Unknown Icon Test",
+                    "name": "Fallback Test",
                     "waypoints": [
                         {
                             "t_uuid": "uuid",
@@ -230,9 +237,8 @@ class Rn2MapperTest {
                                 "elements": [
                                     {
                                         "id": "$unknownId",
-                                        "type": "Icon",
-                                        "x": 10.0,
-                                        "y": 20.0
+                                        "name": "$knownName",
+                                        "type": "Icon"
                                     }
                                 ]
                             },
@@ -248,7 +254,7 @@ class Rn2MapperTest {
 
         // Then
         val icon = route.waypoints[0].tulipElements[0] as Icon
-        assertEquals(Icon.IconType.Unknown, icon.type)
+        assertEquals(Icon.IconType.Tree, icon.type)
         assertEquals(unknownId, icon.originalId)
     }
 

@@ -79,7 +79,8 @@ class WaypointProcessorTest {
         // Our mock helper doesn't add icons yet, so we need to craft them.
         
         val resetIcon = Rn2Icon.ResetDistance(
-            id = "308c7365-bc3f-451b-9e98-531e9015024f"
+            id = "308c7365-bc3f-451b-9e98-531e9015024f",
+            name = "Reset Distance"
         )
         
         val wp1 = createMockWaypoint(0, 40.0, -3.0, true)

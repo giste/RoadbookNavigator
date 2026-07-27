@@ -27,6 +27,7 @@ import kotlinx.serialization.json.JsonElement as KJsonElement
 @Serializable(with = Rn2IconSerializer::class)
 internal sealed class Rn2Icon : Rn2Element() {
     abstract val id: String
+    abstract val name: String
     abstract val angle: Double?
     abstract val width: Double?
     abstract val height: Double?
@@ -64,6 +65,7 @@ internal sealed class Rn2Icon : Rn2Element() {
     @Serializable
     internal data class Danger1(
         override val id: String,
+        override val name: String,
         override val angle: Double? = null,
         override val width: Double? = null,
         override val height: Double? = null,
@@ -76,6 +78,7 @@ internal sealed class Rn2Icon : Rn2Element() {
     @Serializable
     internal data class Danger2(
         override val id: String,
+        override val name: String,
         override val angle: Double? = null,
         override val width: Double? = null,
         override val height: Double? = null,
@@ -88,6 +91,7 @@ internal sealed class Rn2Icon : Rn2Element() {
     @Serializable
     internal data class Danger3(
         override val id: String,
+        override val name: String,
         override val angle: Double? = null,
         override val width: Double? = null,
         override val height: Double? = null,
@@ -100,6 +104,7 @@ internal sealed class Rn2Icon : Rn2Element() {
     @Serializable
     internal data class FuelZone(
         override val id: String,
+        override val name: String,
         override val angle: Double? = null,
         override val width: Double? = null,
         override val height: Double? = null,
@@ -112,6 +117,7 @@ internal sealed class Rn2Icon : Rn2Element() {
     @Serializable
     internal data class ResetDistance(
         override val id: String,
+        override val name: String,
         override val angle: Double? = null,
         override val width: Double? = null,
         override val height: Double? = null,
@@ -124,6 +130,7 @@ internal sealed class Rn2Icon : Rn2Element() {
     @Serializable
     internal data class AboveBridge(
         override val id: String,
+        override val name: String,
         override val angle: Double? = null,
         override val width: Double? = null,
         override val height: Double? = null,
@@ -136,6 +143,7 @@ internal sealed class Rn2Icon : Rn2Element() {
     @Serializable
     internal data class FortCastle(
         override val id: String,
+        override val name: String,
         override val angle: Double? = null,
         override val width: Double? = null,
         override val height: Double? = null,
@@ -148,6 +156,7 @@ internal sealed class Rn2Icon : Rn2Element() {
     @Serializable
     internal data class House(
         override val id: String,
+        override val name: String,
         override val angle: Double? = null,
         override val width: Double? = null,
         override val height: Double? = null,
@@ -160,6 +169,7 @@ internal sealed class Rn2Icon : Rn2Element() {
     @Serializable
     internal data class TrafficLight(
         override val id: String,
+        override val name: String,
         override val angle: Double? = null,
         override val width: Double? = null,
         override val height: Double? = null,
@@ -172,6 +182,7 @@ internal sealed class Rn2Icon : Rn2Element() {
     @Serializable
     internal data class Tree(
         override val id: String,
+        override val name: String,
         override val angle: Double? = null,
         override val width: Double? = null,
         override val height: Double? = null,
@@ -184,6 +195,7 @@ internal sealed class Rn2Icon : Rn2Element() {
     @Serializable
     internal data class Tunnel(
         override val id: String,
+        override val name: String,
         override val angle: Double? = null,
         override val width: Double? = null,
         override val height: Double? = null,
@@ -196,6 +208,7 @@ internal sealed class Rn2Icon : Rn2Element() {
     @Serializable
     internal data class UnderBridge(
         override val id: String,
+        override val name: String,
         override val angle: Double? = null,
         override val width: Double? = null,
         override val height: Double? = null,
@@ -208,6 +221,7 @@ internal sealed class Rn2Icon : Rn2Element() {
     @Serializable
     internal data class Alert(
         override val id: String,
+        override val name: String,
         override val angle: Double? = null,
         override val width: Double? = null,
         override val height: Double? = null,
@@ -220,6 +234,7 @@ internal sealed class Rn2Icon : Rn2Element() {
     @Serializable
     internal data class Roundabout(
         override val id: String,
+        override val name: String,
         override val angle: Double? = null,
         override val width: Double? = null,
         override val height: Double? = null,
@@ -232,6 +247,7 @@ internal sealed class Rn2Icon : Rn2Element() {
     @Serializable
     internal data class Stop(
         override val id: String,
+        override val name: String,
         override val angle: Double? = null,
         override val width: Double? = null,
         override val height: Double? = null,
@@ -244,6 +260,7 @@ internal sealed class Rn2Icon : Rn2Element() {
     @Serializable
     internal data class RiverWater(
         override val id: String,
+        override val name: String,
         override val angle: Double? = null,
         override val width: Double? = null,
         override val height: Double? = null,
@@ -256,6 +273,7 @@ internal sealed class Rn2Icon : Rn2Element() {
     @Serializable
     internal data class Unknown(
         override val id: String,
+        override val name: String,
         override val angle: Double? = null,
         override val width: Double? = null,
         override val height: Double? = null,
@@ -268,8 +286,10 @@ internal sealed class Rn2Icon : Rn2Element() {
 
 internal object Rn2IconSerializer : JsonContentPolymorphicSerializer<Rn2Icon>(Rn2Icon::class) {
     override fun selectDeserializer(element: KJsonElement): DeserializationStrategy<Rn2Icon> {
-        val id = element.jsonObject["id"]?.jsonPrimitive?.content
-        return when (id) {
+        val json = element.jsonObject
+        val id = json["id"]?.jsonPrimitive?.content
+
+        val serializerById = when (id) {
             // Cross
             Rn2Icon.CROSS_DANGER_1_ID -> Rn2Icon.Danger1.serializer()
             Rn2Icon.CROSS_DANGER_2_ID -> Rn2Icon.Danger2.serializer()
@@ -290,7 +310,29 @@ internal object Rn2IconSerializer : JsonContentPolymorphicSerializer<Rn2Icon>(Rn
             Rn2Icon.SIGN_STOP_ID -> Rn2Icon.Stop.serializer()
             // Terrain
             Rn2Icon.TERRAIN_RIVER_WATER_ID -> Rn2Icon.RiverWater.serializer()
-            // unknown
+            else -> null
+        }
+
+        if (serializerById != null) return serializerById
+
+        val name = json["name"]?.jsonPrimitive?.content
+        return when (name) {
+            "Danger Level 1" -> Rn2Icon.Danger1.serializer()
+            "Danger Level 2" -> Rn2Icon.Danger2.serializer()
+            "Danger Level 3" -> Rn2Icon.Danger3.serializer()
+            "Fuel Zone" -> Rn2Icon.FuelZone.serializer()
+            "Reset to Distance to Zero" -> Rn2Icon.ResetDistance.serializer()
+            "Above Bridge" -> Rn2Icon.AboveBridge.serializer()
+            "Fort / Castle" -> Rn2Icon.FortCastle.serializer()
+            "House" -> Rn2Icon.House.serializer()
+            "Traffic Light" -> Rn2Icon.TrafficLight.serializer()
+            "Tree" -> Rn2Icon.Tree.serializer()
+            "Tunnel" -> Rn2Icon.Tunnel.serializer()
+            "Under Bridge" -> Rn2Icon.UnderBridge.serializer()
+            "Alert" -> Rn2Icon.Alert.serializer()
+            "Roundabout" -> Rn2Icon.Roundabout.serializer()
+            "Stop" -> Rn2Icon.Stop.serializer()
+            "River / Water" -> Rn2Icon.RiverWater.serializer()
             else -> Rn2Icon.Unknown.serializer()
         }
     }

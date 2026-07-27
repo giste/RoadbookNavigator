@@ -76,6 +76,7 @@ class Rn2ElementMapperTest {
             when (param.name) {
                 "id" -> "test-id"
                 "name" -> "test-name"
+                "w" -> 50.0
                 else -> null // Most other fields in Rn2Icon are nullable Double?
             }
         }

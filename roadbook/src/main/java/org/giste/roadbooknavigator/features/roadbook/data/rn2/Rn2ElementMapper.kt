@@ -129,14 +129,22 @@ internal class Rn2ElementMapper @Inject constructor(
     }
 
     private fun mapJsonIconToDomain(jsonIcon: Rn2Icon): Icon {
-        val baseWidth = jsonIcon.width ?: 50.0
-        val baseHeight = jsonIcon.height ?: 50.0
-        val scaleX = jsonIcon.scaleX ?: 1.0
-        val scaleY = jsonIcon.scaleY ?: 1.0
-        val width = (baseWidth * scaleX).toInt()
-        val height = (baseHeight * scaleY).toInt()
+        val hasScale = jsonIcon.scaleX != null && jsonIcon.scaleY != null
+        val width = if (hasScale) {
+            ((jsonIcon.width ?: 50.0) * (jsonIcon.scaleX ?: 1.0)).toInt()
+        } else {
+            jsonIcon.w.toInt()
+        }
+        val height = if (hasScale) {
+            ((jsonIcon.height ?: 50.0) * (jsonIcon.scaleY ?: 1.0)).toInt()
+        } else {
+            jsonIcon.w.toInt()
+        }
         val center = Point(jsonIcon.x ?: 0.0, jsonIcon.y ?: 0.0)
         val angle = jsonIcon.angle?.toInt() ?: 0
+
+        val scaleX = jsonIcon.scaleX ?: 1.0
+        val scaleY = jsonIcon.scaleY ?: 1.0
 
         val type = when (jsonIcon) {
             // Cross

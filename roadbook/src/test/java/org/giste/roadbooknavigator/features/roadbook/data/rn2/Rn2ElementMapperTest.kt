@@ -22,6 +22,7 @@ import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2Icon
 import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2Waypoint
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Icon
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Before
 import org.junit.Test
@@ -66,6 +67,52 @@ class Rn2ElementMapperTest {
                 domainIcon.type
             )
         }
+    }
+
+    @Test
+    fun `mapElements should use width and height multiplied by scale when scales are present`() {
+        // Given
+        val iconDto = Rn2Icon.Danger1(
+            id = "id",
+            name = "name",
+            w = 50.0, // Should be ignored if scales are present
+            width = 100.0,
+            height = 100.0,
+            scaleX = 0.5,
+            scaleY = 0.5
+        )
+        val currentWaypoint = mockk<Rn2Waypoint>(relaxed = true)
+
+        // When
+        val elements = mapper.mapElements(listOf(iconDto), currentWaypoint = currentWaypoint)
+        val domainIcon = elements.first() as Icon
+
+        // Then
+        assertEquals(50, domainIcon.width)
+        assertEquals(50, domainIcon.height)
+    }
+
+    @Test
+    fun `mapElements should use w for width and height when scales are missing`() {
+        // Given
+        val iconDto = Rn2Icon.Danger1(
+            id = "id",
+            name = "name",
+            w = 75.0, // Should be used
+            width = 100.0, // Should be ignored
+            height = 100.0, // Should be ignored
+            scaleX = null,
+            scaleY = null
+        )
+        val currentWaypoint = mockk<Rn2Waypoint>(relaxed = true)
+
+        // When
+        val elements = mapper.mapElements(listOf(iconDto), currentWaypoint = currentWaypoint)
+        val domainIcon = elements.first() as Icon
+
+        // Then
+        assertEquals(75, domainIcon.width)
+        assertEquals(75, domainIcon.height)
     }
 
     private fun <T : Any> createInstance(kClass: KClass<T>): T {

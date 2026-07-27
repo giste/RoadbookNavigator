@@ -95,6 +95,10 @@ data class Icon(
         AboveBridge, FortCastle, House, TrafficLight, Tree, Tunnel, UnderBridge,
         // Signs
         Alert, Roundabout, Stop,
+        // Speed
+        SpeedLimit10, SpeedLimit20, SpeedLimit30, SpeedLimit40, SpeedLimit50,
+        SpeedLimit60, SpeedLimit70, SpeedLimit80, SpeedLimit90, SpeedLimit100,
+        SpeedLimit110, SpeedLimit120, SpeedLimit130, SpeedLimit140, SpeedLimit150,
         // Terrain
         RiverWater,
         // Unknown

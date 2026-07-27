@@ -259,6 +259,45 @@ class Rn2MapperTest {
     }
 
     @Test
+    fun `mapToDomain should map speed limit name to SpeedLimit icon type`() {
+        // Given
+        val jsonString = """
+            {
+                "route": {
+                    "version": 4,
+                    "name": "Speed Limit Test",
+                    "waypoints": [
+                        {
+                            "t_uuid": "uuid",
+                            "waypointid": 0,
+                            "lat": 40.0,
+                            "lon": -3.0,
+                            "show": true,
+                            "tulip": {
+                                "elements": [
+                                    {
+                                        "id": "some-id",
+                                        "name": "Speed Limit 50",
+                                        "type": "Icon"
+                                    }
+                                ]
+                            },
+                            "notes": {"elements": []}
+                        }
+                    ]
+                }
+            }
+        """.trimIndent()
+
+        // When
+        val route = mapper.mapToDomain(jsonString)
+
+        // Then
+        val icon = route.waypoints[0].tulipElements[0] as Icon
+        assertEquals(Icon.IconType.SpeedLimit50, icon.type)
+    }
+
+    @Test
     fun `mapToDomain should parse real rn2 file correctly`() {
         // Given
         val jsonString = this.javaClass.classLoader?.getResourceAsStream("route_example.rn2")?.bufferedReader()?.use { it.readText() }

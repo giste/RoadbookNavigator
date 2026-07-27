@@ -159,6 +159,22 @@ internal class Rn2ElementMapper @Inject constructor(
             is Rn2Icon.Stop -> Icon.IconType.Stop
             // Terrain
             is Rn2Icon.RiverWater -> Icon.IconType.RiverWater
+            // Speed
+            is Rn2Icon.Limit10 -> Icon.IconType.SpeedLimit10
+            is Rn2Icon.Limit20 -> Icon.IconType.SpeedLimit20
+            is Rn2Icon.Limit30 -> Icon.IconType.SpeedLimit30
+            is Rn2Icon.Limit40 -> Icon.IconType.SpeedLimit40
+            is Rn2Icon.Limit50 -> Icon.IconType.SpeedLimit50
+            is Rn2Icon.Limit60 -> Icon.IconType.SpeedLimit60
+            is Rn2Icon.Limit70 -> Icon.IconType.SpeedLimit70
+            is Rn2Icon.Limit80 -> Icon.IconType.SpeedLimit80
+            is Rn2Icon.Limit90 -> Icon.IconType.SpeedLimit90
+            is Rn2Icon.Limit100 -> Icon.IconType.SpeedLimit100
+            is Rn2Icon.Limit110 -> Icon.IconType.SpeedLimit110
+            is Rn2Icon.Limit120 -> Icon.IconType.SpeedLimit120
+            is Rn2Icon.Limit130 -> Icon.IconType.SpeedLimit130
+            is Rn2Icon.Limit140 -> Icon.IconType.SpeedLimit140
+            is Rn2Icon.Limit150 -> Icon.IconType.SpeedLimit150
             is Rn2Icon.Unknown -> {
                 logger.w(
                     "Rn2ElementMapper: Unknown icon encountered with ID: %s and Name: %s",

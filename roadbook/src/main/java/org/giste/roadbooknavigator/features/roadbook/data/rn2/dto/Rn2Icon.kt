@@ -60,6 +60,23 @@ internal sealed class Rn2Icon : Rn2Element() {
 
         // Terrain
         const val TERRAIN_RIVER_WATER_ID = "aabe9acd-ab1b-467d-9bbb-877bb0d0da23"
+
+        // Speed Limits (Placeholders)
+        const val SPEED_LIMIT_10_ID = "fabb3ac4-ce05-466d-b17a-5799d9be80c4"
+        const val SPEED_LIMIT_20_ID = "396d67b9-1991-4c79-8e09-ede6e3834ce4"
+        const val SPEED_LIMIT_30_ID = "33b6a49a-6796-44e3-a173-37437993e0e3"
+        const val SPEED_LIMIT_40_ID = "0e5e32f1-0b62-467b-b3b9-9066de77df6f"
+        const val SPEED_LIMIT_50_ID = "53cb2146-c977-41ec-8132-b648cf87fa78"
+        const val SPEED_LIMIT_60_ID = "eda0a1dc-f08f-45a4-bf5a-ca994df19231"
+        const val SPEED_LIMIT_70_ID = "c477f231-9416-4780-be47-8313e791d978"
+        const val SPEED_LIMIT_80_ID = "3e46b793-17e7-4bf7-8c74-941bb24d0250"
+        const val SPEED_LIMIT_90_ID = "2385115f-2f5f-4c93-bd95-2dc06e53a7cd"
+        const val SPEED_LIMIT_100_ID = "f1fa5ad3-0a60-4deb-acfa-5505f43e3f7e"
+        const val SPEED_LIMIT_110_ID = "c24339cc-a39b-4d5c-afca-1fe59c056fe5"
+        const val SPEED_LIMIT_120_ID = "3cf3022b-6f9c-4c39-908a-ac7adc011957"
+        const val SPEED_LIMIT_130_ID = "0f58cadc-ab7e-48aa-b3d9-324dcba6a715"
+        const val SPEED_LIMIT_140_ID = "5f2d9b33-76e8-4902-919f-2ba12e9cdd54"
+        const val SPEED_LIMIT_150_ID = "e96d634c-3c64-4192-a82a-ea0dcb92549a"
     }
 
     @Serializable
@@ -271,6 +288,201 @@ internal sealed class Rn2Icon : Rn2Element() {
     ) : Rn2Icon()
 
     @Serializable
+    internal data class Limit10(
+        override val id: String,
+        override val name: String,
+        override val angle: Double? = null,
+        override val width: Double? = null,
+        override val height: Double? = null,
+        override val x: Double? = null,
+        override val y: Double? = null,
+        override val scaleX: Double? = null,
+        override val scaleY: Double? = null
+    ) : Rn2Icon()
+
+    @Serializable
+    internal data class Limit20(
+        override val id: String,
+        override val name: String,
+        override val angle: Double? = null,
+        override val width: Double? = null,
+        override val height: Double? = null,
+        override val x: Double? = null,
+        override val y: Double? = null,
+        override val scaleX: Double? = null,
+        override val scaleY: Double? = null
+    ) : Rn2Icon()
+
+    @Serializable
+    internal data class Limit30(
+        override val id: String,
+        override val name: String,
+        override val angle: Double? = null,
+        override val width: Double? = null,
+        override val height: Double? = null,
+        override val x: Double? = null,
+        override val y: Double? = null,
+        override val scaleX: Double? = null,
+        override val scaleY: Double? = null
+    ) : Rn2Icon()
+
+    @Serializable
+    internal data class Limit40(
+        override val id: String,
+        override val name: String,
+        override val angle: Double? = null,
+        override val width: Double? = null,
+        override val height: Double? = null,
+        override val x: Double? = null,
+        override val y: Double? = null,
+        override val scaleX: Double? = null,
+        override val scaleY: Double? = null
+    ) : Rn2Icon()
+
+    @Serializable
+    internal data class Limit50(
+        override val id: String,
+        override val name: String,
+        override val angle: Double? = null,
+        override val width: Double? = null,
+        override val height: Double? = null,
+        override val x: Double? = null,
+        override val y: Double? = null,
+        override val scaleX: Double? = null,
+        override val scaleY: Double? = null
+    ) : Rn2Icon()
+
+    @Serializable
+    internal data class Limit60(
+        override val id: String,
+        override val name: String,
+        override val angle: Double? = null,
+        override val width: Double? = null,
+        override val height: Double? = null,
+        override val x: Double? = null,
+        override val y: Double? = null,
+        override val scaleX: Double? = null,
+        override val scaleY: Double? = null
+    ) : Rn2Icon()
+
+    @Serializable
+    internal data class Limit70(
+        override val id: String,
+        override val name: String,
+        override val angle: Double? = null,
+        override val width: Double? = null,
+        override val height: Double? = null,
+        override val x: Double? = null,
+        override val y: Double? = null,
+        override val scaleX: Double? = null,
+        override val scaleY: Double? = null
+    ) : Rn2Icon()
+
+    @Serializable
+    internal data class Limit80(
+        override val id: String,
+        override val name: String,
+        override val angle: Double? = null,
+        override val width: Double? = null,
+        override val height: Double? = null,
+        override val x: Double? = null,
+        override val y: Double? = null,
+        override val scaleX: Double? = null,
+        override val scaleY: Double? = null
+    ) : Rn2Icon()
+
+    @Serializable
+    internal data class Limit90(
+        override val id: String,
+        override val name: String,
+        override val angle: Double? = null,
+        override val width: Double? = null,
+        override val height: Double? = null,
+        override val x: Double? = null,
+        override val y: Double? = null,
+        override val scaleX: Double? = null,
+        override val scaleY: Double? = null
+    ) : Rn2Icon()
+
+    @Serializable
+    internal data class Limit100(
+        override val id: String,
+        override val name: String,
+        override val angle: Double? = null,
+        override val width: Double? = null,
+        override val height: Double? = null,
+        override val x: Double? = null,
+        override val y: Double? = null,
+        override val scaleX: Double? = null,
+        override val scaleY: Double? = null
+    ) : Rn2Icon()
+
+    @Serializable
+    internal data class Limit110(
+        override val id: String,
+        override val name: String,
+        override val angle: Double? = null,
+        override val width: Double? = null,
+        override val height: Double? = null,
+        override val x: Double? = null,
+        override val y: Double? = null,
+        override val scaleX: Double? = null,
+        override val scaleY: Double? = null
+    ) : Rn2Icon()
+
+    @Serializable
+    internal data class Limit120(
+        override val id: String,
+        override val name: String,
+        override val angle: Double? = null,
+        override val width: Double? = null,
+        override val height: Double? = null,
+        override val x: Double? = null,
+        override val y: Double? = null,
+        override val scaleX: Double? = null,
+        override val scaleY: Double? = null
+    ) : Rn2Icon()
+
+    @Serializable
+    internal data class Limit130(
+        override val id: String,
+        override val name: String,
+        override val angle: Double? = null,
+        override val width: Double? = null,
+        override val height: Double? = null,
+        override val x: Double? = null,
+        override val y: Double? = null,
+        override val scaleX: Double? = null,
+        override val scaleY: Double? = null
+    ) : Rn2Icon()
+
+    @Serializable
+    internal data class Limit140(
+        override val id: String,
+        override val name: String,
+        override val angle: Double? = null,
+        override val width: Double? = null,
+        override val height: Double? = null,
+        override val x: Double? = null,
+        override val y: Double? = null,
+        override val scaleX: Double? = null,
+        override val scaleY: Double? = null
+    ) : Rn2Icon()
+
+    @Serializable
+    internal data class Limit150(
+        override val id: String,
+        override val name: String,
+        override val angle: Double? = null,
+        override val width: Double? = null,
+        override val height: Double? = null,
+        override val x: Double? = null,
+        override val y: Double? = null,
+        override val scaleX: Double? = null,
+        override val scaleY: Double? = null
+    ) : Rn2Icon()
+
+    @Serializable
     internal data class Unknown(
         override val id: String,
         override val name: String,
@@ -310,6 +522,22 @@ internal object Rn2IconSerializer : JsonContentPolymorphicSerializer<Rn2Icon>(Rn
             Rn2Icon.SIGN_STOP_ID -> Rn2Icon.Stop.serializer()
             // Terrain
             Rn2Icon.TERRAIN_RIVER_WATER_ID -> Rn2Icon.RiverWater.serializer()
+            // Speed Limits
+            Rn2Icon.SPEED_LIMIT_10_ID -> Rn2Icon.Limit10.serializer()
+            Rn2Icon.SPEED_LIMIT_20_ID -> Rn2Icon.Limit20.serializer()
+            Rn2Icon.SPEED_LIMIT_30_ID -> Rn2Icon.Limit30.serializer()
+            Rn2Icon.SPEED_LIMIT_40_ID -> Rn2Icon.Limit40.serializer()
+            Rn2Icon.SPEED_LIMIT_50_ID -> Rn2Icon.Limit50.serializer()
+            Rn2Icon.SPEED_LIMIT_60_ID -> Rn2Icon.Limit60.serializer()
+            Rn2Icon.SPEED_LIMIT_70_ID -> Rn2Icon.Limit70.serializer()
+            Rn2Icon.SPEED_LIMIT_80_ID -> Rn2Icon.Limit80.serializer()
+            Rn2Icon.SPEED_LIMIT_90_ID -> Rn2Icon.Limit90.serializer()
+            Rn2Icon.SPEED_LIMIT_100_ID -> Rn2Icon.Limit100.serializer()
+            Rn2Icon.SPEED_LIMIT_110_ID -> Rn2Icon.Limit110.serializer()
+            Rn2Icon.SPEED_LIMIT_120_ID -> Rn2Icon.Limit120.serializer()
+            Rn2Icon.SPEED_LIMIT_130_ID -> Rn2Icon.Limit130.serializer()
+            Rn2Icon.SPEED_LIMIT_140_ID -> Rn2Icon.Limit140.serializer()
+            Rn2Icon.SPEED_LIMIT_150_ID -> Rn2Icon.Limit150.serializer()
             else -> null
         }
 
@@ -333,6 +561,22 @@ internal object Rn2IconSerializer : JsonContentPolymorphicSerializer<Rn2Icon>(Rn
             "Roundabout" -> Rn2Icon.Roundabout.serializer()
             "Stop" -> Rn2Icon.Stop.serializer()
             "River / Water" -> Rn2Icon.RiverWater.serializer()
+            // Speed Limits
+            "Speed Limit 10" -> Rn2Icon.Limit10.serializer()
+            "Speed Limit 20" -> Rn2Icon.Limit20.serializer()
+            "Speed Limit 30" -> Rn2Icon.Limit30.serializer()
+            "Speed Limit 40" -> Rn2Icon.Limit40.serializer()
+            "Speed Limit 50" -> Rn2Icon.Limit50.serializer()
+            "Speed Limit 60" -> Rn2Icon.Limit60.serializer()
+            "Speed Limit 70" -> Rn2Icon.Limit70.serializer()
+            "Speed Limit 80" -> Rn2Icon.Limit80.serializer()
+            "Speed Limit 90" -> Rn2Icon.Limit90.serializer()
+            "Speed Limit 100" -> Rn2Icon.Limit100.serializer()
+            "Speed Limit 110" -> Rn2Icon.Limit110.serializer()
+            "Speed Limit 120" -> Rn2Icon.Limit120.serializer()
+            "Speed Limit 130" -> Rn2Icon.Limit130.serializer()
+            "Speed Limit 140" -> Rn2Icon.Limit140.serializer()
+            "Speed Limit 150" -> Rn2Icon.Limit150.serializer()
             else -> Rn2Icon.Unknown.serializer()
         }
     }

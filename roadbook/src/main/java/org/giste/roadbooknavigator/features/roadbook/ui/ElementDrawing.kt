@@ -164,6 +164,82 @@ internal fun DrawScope.drawTulipIcon(
     }
 }
 
+internal fun DrawScope.drawUnknownIcon(
+    icon: Icon,
+    textMeasurer: TextMeasurer,
+    color: Color,
+    scale: Float
+) {
+    val width = icon.width.toFloat() * scale
+    val height = icon.height.toFloat() * scale
+    val center = Offset(
+        icon.center.x.toFloat() * scale,
+        icon.center.y.toFloat() * scale
+    )
+
+    val drawSize = Size(width, height)
+
+    withTransform({
+        translate(center.x, center.y)
+        rotate(icon.angle.toFloat(), pivot = Offset.Zero)
+        translate(-drawSize.width / 2f, -drawSize.height / 2f)
+    }) {
+        drawRect(
+            color = color,
+            size = drawSize,
+            style = Stroke(
+                width = 1f * scale,
+                pathEffect = PathEffect.dashPathEffect(floatArrayOf(4f * scale, 4f * scale), 0f)
+            )
+        )
+
+        val displayText = if (icon.type != Icon.IconType.Unknown) {
+            icon.type.name
+        } else {
+            icon.originalName ?: icon.originalId ?: "?"
+        }
+
+        val fontSize = (10f * scale / density).sp
+        val style = TextStyle(
+            color = color,
+            fontSize = fontSize,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
+        )
+
+        val textLayoutResult = textMeasurer.measure(
+            text = displayText,
+            style = style,
+            constraints = Constraints(
+                maxWidth = drawSize.width.toInt().coerceAtLeast(0),
+                maxHeight = drawSize.height.toInt().coerceAtLeast(0)
+            )
+        )
+
+        if (textLayoutResult.size.width <= drawSize.width && textLayoutResult.size.height <= drawSize.height) {
+            drawText(
+                textLayoutResult = textLayoutResult,
+                topLeft = Offset(
+                    (drawSize.width - textLayoutResult.size.width) / 2f,
+                    (drawSize.height - textLayoutResult.size.height) / 2f
+                )
+            )
+        } else {
+            val questionMarkResult = textMeasurer.measure(
+                text = "?",
+                style = style
+            )
+            drawText(
+                textLayoutResult = questionMarkResult,
+                topLeft = Offset(
+                    (drawSize.width - questionMarkResult.size.width) / 2f,
+                    (drawSize.height - questionMarkResult.size.height) / 2f
+                )
+            )
+        }
+    }
+}
+
 internal fun DrawScope.drawRoad(
     road: Road,
     color: Color,

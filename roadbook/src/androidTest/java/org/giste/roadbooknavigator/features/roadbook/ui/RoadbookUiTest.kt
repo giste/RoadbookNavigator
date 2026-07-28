@@ -44,6 +44,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import org.giste.roadbooknavigator.features.roadbook.R
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Coordinates
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Distance
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Icon
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Point
 import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookPosition
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Route
 import org.giste.roadbooknavigator.features.roadbook.domain.model.ShortDistanceThreshold
@@ -156,6 +158,39 @@ class RoadbookUiTest {
 
         // Verify that the intent with ACTION_GET_CONTENT was indeed launched
         intended(hasAction(Intent.ACTION_GET_CONTENT))
+    }
+
+    @Test
+    fun unknownIcon_rendersPlaceholderWithoutCrashing() {
+        val waypoint = Waypoint(
+            number = 1,
+            coordinates = Coordinates(0.0, 0.0),
+            distance = Distance(1000),
+            distanceFromPrevious = Distance(1000),
+            tulipElements = listOf(
+                Icon(
+                    type = Icon.IconType.Unknown,
+                    center = Point(100.0, 67.5),
+                    width = 50,
+                    height = 50,
+                    originalName = "Unknown Icon"
+                )
+            )
+        )
+        val route = Route(name = "Test", waypoints = listOf(waypoint))
+
+        composeTestRule.setContent {
+            RoadbookContent(
+                state = RoadbookUiState.Success(route),
+                listState = rememberLazyListState(),
+                onFileSelected = {},
+                onSetPartialClick = {},
+                onWaypointVisible = { _, _ -> }
+            )
+        }
+
+        // If it renders without crashing, we consider it a pass for this basic check
+        composeTestRule.onNodeWithText("1").assertIsDisplayed()
     }
 
     @Test

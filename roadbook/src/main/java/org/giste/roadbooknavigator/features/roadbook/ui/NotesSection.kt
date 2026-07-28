@@ -57,7 +57,8 @@ internal fun NotesSection(waypoint: Waypoint, modifier: Modifier = Modifier) {
                 waypoint.notesElements.forEach { element ->
                     when (element) {
                         is Icon -> {
-                            iconPainters[element]?.let { painter ->
+                            val painter = iconPainters[element]
+                            if (painter != null) {
                                 val tint = when (element.type) {
                                     Icon.IconType.Danger1,
                                     Icon.IconType.Danger2,
@@ -66,6 +67,8 @@ internal fun NotesSection(waypoint: Waypoint, modifier: Modifier = Modifier) {
                                     else -> null
                                 }
                                 drawTulipIcon(element, painter, tint, scale)
+                            } else {
+                                drawUnknownIcon(element, textMeasurer, errorColor, scale)
                             }
                         }
 

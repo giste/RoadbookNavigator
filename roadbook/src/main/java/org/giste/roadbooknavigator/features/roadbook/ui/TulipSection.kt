@@ -97,7 +97,8 @@ internal fun TulipSection(waypoint: Waypoint, modifier: Modifier = Modifier) {
                         }
 
                         is Icon -> {
-                            iconPainters[element]?.let { painter ->
+                            val painter = iconPainters[element]
+                            if (painter != null) {
                                 val tint = when (element.type) {
                                     Icon.IconType.Danger1,
                                     Icon.IconType.Danger2,
@@ -106,6 +107,8 @@ internal fun TulipSection(waypoint: Waypoint, modifier: Modifier = Modifier) {
                                     else -> null
                                 }
                                 drawTulipIcon(element, painter, tint, scale)
+                            } else {
+                                drawUnknownIcon(element, textMeasurer, errorColor, scale)
                             }
                         }
 

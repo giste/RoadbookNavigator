@@ -56,8 +56,8 @@ class Rn2ElementMapperTest {
             val iconDto = createInstance(subclass)
             
             // When
-            val elements = mapper.mapElements(listOf(iconDto), currentWaypoint = currentWaypoint)
-            val domainIcon = elements.first() as Icon
+            val result = mapper.mapElements(listOf(iconDto), currentWaypoint = currentWaypoint)
+            val domainIcon = result.first.first() as Icon
 
             // Then
             assertNotEquals(
@@ -84,8 +84,8 @@ class Rn2ElementMapperTest {
         val currentWaypoint = mockk<Rn2Waypoint>(relaxed = true)
 
         // When
-        val elements = mapper.mapElements(listOf(iconDto), currentWaypoint = currentWaypoint)
-        val domainIcon = elements.first() as Icon
+        val result = mapper.mapElements(listOf(iconDto), currentWaypoint = currentWaypoint)
+        val domainIcon = result.first.first() as Icon
 
         // Then
         assertEquals(50, domainIcon.width)
@@ -107,8 +107,8 @@ class Rn2ElementMapperTest {
         val currentWaypoint = mockk<Rn2Waypoint>(relaxed = true)
 
         // When
-        val elements = mapper.mapElements(listOf(iconDto), currentWaypoint = currentWaypoint)
-        val domainIcon = elements.first() as Icon
+        val result = mapper.mapElements(listOf(iconDto), currentWaypoint = currentWaypoint)
+        val domainIcon = result.first.first() as Icon
 
         // Then
         assertEquals(75, domainIcon.width)

@@ -43,28 +43,49 @@ internal class Rn2ElementMapper @Inject constructor(
 
     /**
      * Maps a list of JSON elements into Domain elements.
+     * Returns a pair containing the list of mapped elements and the road type to be inherited by the next waypoint.
      */
     fun mapElements(
         rn2Elements: List<Rn2Element>,
         prevWaypoint: Rn2Waypoint? = null,
         currentWaypoint: Rn2Waypoint,
-        nextWaypoint: Rn2Waypoint? = null
-    ): List<Element> {
-        return rn2Elements.map {
-            mapJsonElementToDomain(
+        nextWaypoint: Rn2Waypoint? = null,
+        inheritedRoadType: Road.RoadType = Road.RoadType.Track
+    ): Pair<List<Element>, Road.RoadType> {
+        logger.v(
+            "Rn2ElementMapper: Mapping %d elements for waypoint %d. Inherited type: %s",
+            rn2Elements.size,
+            currentWaypoint.waypointId,
+            inheritedRoadType
+        )
+        var currentInheritance = inheritedRoadType
+        val mappedElements = rn2Elements.map {
+            val element = mapJsonElementToDomain(
                 it,
                 prevWaypoint,
                 currentWaypoint,
-                nextWaypoint
+                nextWaypoint,
+                currentInheritance
             )
+            // Update inheritance based on the last road/track element found
+            when (element) {
+                is Track -> currentInheritance = element.roadOut.roadType
+                else -> {}
+            }
+
+            logger.v("Rn2ElementMapper: Mapped element: %s", element)
+
+            element
         }
+        return mappedElements to currentInheritance
     }
 
     private fun mapJsonElementToDomain(
         rn2Element: Rn2Element,
         prevWaypoint: Rn2Waypoint?,
         currentWaypoint: Rn2Waypoint,
-        nextWaypoint: Rn2Waypoint?
+        nextWaypoint: Rn2Waypoint?,
+        inheritedRoadType: Road.RoadType
     ): Element {
         return when (rn2Element) {
             is Rn2Icon -> mapJsonIconToDomain(rn2Element)
@@ -73,7 +94,7 @@ internal class Rn2ElementMapper @Inject constructor(
                     start = rn2Element.start?.let { Point(it.x, it.y) },
                     end = rn2Element.end?.let { Point(it.x, it.y) },
                     handles = rn2Element.handles.map { Point(it.x, it.y) },
-                    roadType = mapToRoadType(rn2Element.typeId)
+                    roadType = mapToRoadType(rn2Element.typeId) ?: Road.RoadType.Track
                 )
             }
 
@@ -94,11 +115,14 @@ internal class Rn2ElementMapper @Inject constructor(
                     Point(0.0, -55.0) // Default if no next waypoint
                 }
 
+                val roadInType = mapToRoadType(rn2Element.roadIn.typeId) ?: inheritedRoadType
+                val roadOutType = mapToRoadType(rn2Element.roadOut.typeId) ?: roadInType
+
                 Track(
                     roadIn = Road(
                         start = rn2Element.roadIn.start?.let { Point(it.x, it.y) },
                         end = rn2Element.roadIn.end?.let { Point(it.x, it.y) } ?: Point(0.0, 35.0),
-                        roadType = mapToRoadType(rn2Element.roadIn.typeId),
+                        roadType = roadInType,
                         handles = rn2Element.roadIn.handles.map { Point(it.x, it.y) },
                     ),
                     roadOut = Road(
@@ -107,7 +131,7 @@ internal class Rn2ElementMapper @Inject constructor(
                             0.0
                         ),
                         end = roadOutEnd,
-                        roadType = mapToRoadType(rn2Element.roadOut.typeId),
+                        roadType = roadOutType,
                         handles = rn2Element.roadOut.handles.map { Point(it.x, it.y) },
                     ),
                 )
@@ -205,7 +229,7 @@ internal class Rn2ElementMapper @Inject constructor(
         )
     }
 
-    private fun mapToRoadType(typeId: Int?): Road.RoadType {
-        return Road.RoadType.entries.find { it.value == typeId } ?: Road.RoadType.Track
+    private fun mapToRoadType(typeId: Int?): Road.RoadType? {
+        return Road.RoadType.entries.find { it.value == typeId }
     }
 }

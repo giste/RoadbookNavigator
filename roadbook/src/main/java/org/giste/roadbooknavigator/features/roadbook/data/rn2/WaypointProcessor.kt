@@ -22,6 +22,8 @@ import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2Icon
 import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2Waypoint
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Coordinates
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Distance
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Element
+import org.giste.roadbooknavigator.features.roadbook.domain.model.Road
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Waypoint
 import javax.inject.Inject
 import kotlin.math.roundToLong
@@ -43,7 +45,9 @@ internal class WaypointProcessor @Inject constructor(
         val accDist: Double,
         val distFromVisible: Double,
         val visibleCount: Int,
-        val isReset: Boolean
+        val isReset: Boolean,
+        val tulipElements: List<Element>,
+        val lastVisibleRoadOutType: Road.RoadType
     )
 
     /**
@@ -56,6 +60,18 @@ internal class WaypointProcessor @Inject constructor(
         }
 
         val initialWP = waypoints.first()
+        val (initialTulipElements, initialInheritance) = if (initialWP.show) {
+            rn2ElementMapper.mapElements(
+                initialWP.tulip.elements,
+                null,
+                initialWP,
+                waypoints.getOrNull(1),
+                Road.RoadType.Track
+            )
+        } else {
+            emptyList<Element>() to Road.RoadType.Track
+        }
+
         val initialState = ProcessingState(
             prev = null,
             current = initialWP,
@@ -63,7 +79,9 @@ internal class WaypointProcessor @Inject constructor(
             accDist = 0.0,
             distFromVisible = 0.0,
             visibleCount = if (initialWP.show) 1 else 0,
-            isReset = hasReset(initialWP)
+            isReset = hasReset(initialWP),
+            tulipElements = initialTulipElements,
+            lastVisibleRoadOutType = initialInheritance
         )
 
         return waypoints.asSequence()
@@ -78,6 +96,18 @@ internal class WaypointProcessor @Inject constructor(
                     if (acc.current.show) distance else acc.distFromVisible + distance
                 val newVisibleCount = if (current.show) acc.visibleCount + 1 else acc.visibleCount
 
+                val (currentTulipElements, newInheritance) = if (current.show) {
+                    rn2ElementMapper.mapElements(
+                        current.tulip.elements,
+                        acc.current,
+                        current,
+                        next,
+                        acc.lastVisibleRoadOutType
+                    )
+                } else {
+                    emptyList<Element>() to acc.lastVisibleRoadOutType
+                }
+
                 val currentProcessingState = ProcessingState(
                     prev = acc.current,
                     current = current,
@@ -85,7 +115,9 @@ internal class WaypointProcessor @Inject constructor(
                     accDist = newAccDist,
                     distFromVisible = newDistFromVisible,
                     visibleCount = newVisibleCount,
-                    isReset = hasReset(current)
+                    isReset = hasReset(current),
+                    tulipElements = currentTulipElements,
+                    lastVisibleRoadOutType = newInheritance
                 )
                 logger.v("Processed state for waypoint %s: %s", current, currentProcessingState)
 
@@ -109,18 +141,14 @@ internal class WaypointProcessor @Inject constructor(
                     },
                     reset = state.isReset,
                     dangerLevel = mapToDangerLevel(state.current),
-                    tulipElements = rn2ElementMapper.mapElements(
-                        state.current.tulip.elements,
-                        state.prev,
-                        state.current,
-                        state.next
-                    ),
+                    tulipElements = state.tulipElements,
                     notesElements = rn2ElementMapper.mapElements(
                         state.current.notes.elements,
                         null,
                         state.current,
-                        null
-                    ),
+                        null,
+                        state.lastVisibleRoadOutType
+                    ).first,
                 ).also {
                     logger.v("WaypointProcessor: Processed waypoint %d: %s", it.number, it)
                 }

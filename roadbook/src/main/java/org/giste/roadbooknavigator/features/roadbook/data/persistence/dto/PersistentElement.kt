@@ -46,6 +46,7 @@ internal data class PersistentIcon(
     val scaleX: Double = 1.0,
     val scaleY: Double = 1.0,
     val originalId: String? = null,
+    val originalName: String? = null,
 ) : PersistentElement()
 
 @Serializable

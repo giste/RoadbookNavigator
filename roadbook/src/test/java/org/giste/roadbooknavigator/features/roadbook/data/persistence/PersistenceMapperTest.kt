@@ -66,7 +66,7 @@ class PersistenceMapperTest {
                         )
                     ),
                     notesElements = listOf(
-                        Icon(Icon.IconType.FuelZone, 50, 50, Point(10.0, 10.0)),
+                        Icon(Icon.IconType.FuelZone, 50, 50, Point(10.0, 10.0), originalName = "Fuel"),
                         Text("GAS STATION", 18, 1.2, 100.0, 20.0, 100.0, 20.0, Point(10.0, 30.0))
                     )
                 ),
@@ -87,7 +87,8 @@ class PersistenceMapperTest {
                             45,
                             1.5,
                             1.5,
-                            "danger_id"
+                            "danger_id",
+                            "Danger Icon"
                         )
                     )
                 )

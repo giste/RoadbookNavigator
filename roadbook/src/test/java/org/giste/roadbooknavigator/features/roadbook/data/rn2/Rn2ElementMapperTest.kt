@@ -115,6 +115,24 @@ class Rn2ElementMapperTest {
         assertEquals(75, domainIcon.height)
     }
 
+    @Test
+    fun `mapElements should map name to originalName`() {
+        // Given
+        val iconDto = Rn2Icon.Danger1(
+            id = "test-id",
+            name = "Danger Area",
+            w = 50.0
+        )
+        val currentWaypoint = mockk<Rn2Waypoint>(relaxed = true)
+
+        // When
+        val result = mapper.mapElements(listOf(iconDto), currentWaypoint = currentWaypoint)
+        val domainIcon = result.first.first() as Icon
+
+        // Then
+        assertEquals("Danger Area", domainIcon.originalName)
+    }
+
     private fun <T : Any> createInstance(kClass: KClass<T>): T {
         val constructor = kClass.primaryConstructor 
             ?: throw IllegalStateException("No primary constructor for ${kClass.simpleName}")

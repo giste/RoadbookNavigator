@@ -41,10 +41,12 @@ class ElementTest {
             type = Icon.IconType.Danger1,
             width = 10,
             height = 10,
-            center = Point(5.0, 5.0)
+            center = Point(5.0, 5.0),
+            originalName = "Danger Zone"
         )
         assertEquals(Element.ElementType.Icon, icon.elementType)
         assertEquals(Icon.IconType.Danger1, icon.type)
+        assertEquals("Danger Zone", icon.originalName)
     }
 
     @Test

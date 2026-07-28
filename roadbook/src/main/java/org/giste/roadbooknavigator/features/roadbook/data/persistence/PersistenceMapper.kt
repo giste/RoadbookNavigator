@@ -120,7 +120,8 @@ internal class PersistenceMapper @Inject constructor() {
                 angle = element.angle,
                 scaleX = element.scaleX,
                 scaleY = element.scaleY,
-                originalId = element.originalId
+                originalId = element.originalId,
+                originalName = element.originalName
             )
 
             is Text -> PersistentText(
@@ -158,7 +159,8 @@ internal class PersistenceMapper @Inject constructor() {
                 angle = pe.angle,
                 scaleX = pe.scaleX,
                 scaleY = pe.scaleY,
-                originalId = pe.originalId
+                originalId = pe.originalId,
+                originalName = pe.originalName
             )
 
             is PersistentText -> Text(

@@ -225,7 +225,8 @@ internal class Rn2ElementMapper @Inject constructor(
             angle = angle,
             scaleX = scaleX,
             scaleY = scaleY,
-            originalId = jsonIcon.id
+            originalId = jsonIcon.id,
+            originalName = jsonIcon.name
         )
     }
 

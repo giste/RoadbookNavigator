@@ -146,6 +146,72 @@ class DashboardScreenTest {
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     @Test
+    fun longClickOnTotalDistance_triggersOnLongClickTotal() {
+        val uiState = DashboardUiState(
+            odometer = Odometer(1000.0, 500.0),
+        )
+        val viewModel: DashboardViewModel = mockk(relaxed = true)
+        every { viewModel.uiState } returns MutableStateFlow(uiState)
+
+        val expectedTotal = String.format(Locale.getDefault(), "%.1f", 1000.0 / 1000.0)
+        val windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp))
+
+        composeTestRule.setContent {
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                DashboardScreen(
+                    windowSizeClass = windowSizeClass,
+                    onSettingsClick = {},
+                    viewModel = viewModel,
+                    roadbookSlot = { modifier -> FocusedRoadbookStub(modifier) },
+                    mapSlot = { Box(it) }
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithText(expectedTotal).performTouchInput {
+            longClick()
+        }
+
+        verify { viewModel.showResetAllDialog() }
+    }
+
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+    @Test
+    fun resetAllDialog_showsAndTriggersReset() {
+        val uiState = DashboardUiState(
+            odometer = Odometer(1000.0, 500.0),
+            showResetAllDialog = true
+        )
+        val viewModel: DashboardViewModel = mockk(relaxed = true)
+        every { viewModel.uiState } returns MutableStateFlow(uiState)
+
+        val windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp))
+
+        composeTestRule.setContent {
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                DashboardScreen(
+                    windowSizeClass = windowSizeClass,
+                    onSettingsClick = {},
+                    viewModel = viewModel,
+                    roadbookSlot = { modifier -> FocusedRoadbookStub(modifier) },
+                    mapSlot = { Box(it) }
+                )
+            }
+        }
+
+        // Verify dialog is shown
+        composeTestRule.onNodeWithTag("ResetAllDialogHeader").assertIsDisplayed()
+        composeTestRule.onNodeWithTag("ResetAllMessage").assertIsDisplayed()
+
+        // Click confirm
+        composeTestRule.onNodeWithTag("ResetAllConfirmButton").performClick()
+
+        verify { viewModel.resetAllDistances() }
+        verify { viewModel.hideResetAllDialog() }
+    }
+
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+    @Test
     fun tabletPortrait_displaysMapSection() {
         val viewModel: DashboardViewModel = mockk(relaxed = true)
         every { viewModel.uiState } returns MutableStateFlow(DashboardUiState())

@@ -68,6 +68,7 @@ import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 import org.giste.roadbooknavigator.features.map.ui.MapScreen
 import org.giste.roadbooknavigator.features.odometer.domain.Odometer
 import org.giste.roadbooknavigator.features.odometer.ui.PartialDistance
+import org.giste.roadbooknavigator.features.odometer.ui.ResetAllConfirmationDialog
 import org.giste.roadbooknavigator.features.odometer.ui.SetPartialDialog
 import org.giste.roadbooknavigator.features.odometer.ui.TotalDistance
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Coordinates
@@ -107,6 +108,7 @@ fun DashboardScreen(
         }
         TotalDistance(
             distance = totalDistanceStr,
+            onLongClick = { viewModel.showResetAllDialog() },
             modifier = modifier
         )
     },
@@ -131,8 +133,10 @@ fun DashboardScreen(
         onIncrementPartial = { viewModel.incrementPartialDistance() },
         onDecrementPartial = { viewModel.decrementPartialDistance() },
         onResetPartial = { viewModel.resetPartialDistance() },
+        onResetAll = { viewModel.resetAllDistances() },
         onSetPartialDistance = { viewModel.setPartialDistance(it) },
         onHideSetPartialDialog = { viewModel.hideSetPartialDialog() },
+        onHideResetAllDialog = { viewModel.hideResetAllDialog() },
         landscapeDistanceSectionWeight = uiState.landscapeDistanceSectionWeight
     )
 }
@@ -149,8 +153,10 @@ fun DashboardContent(
     onIncrementPartial: () -> Unit,
     onDecrementPartial: () -> Unit,
     onResetPartial: () -> Unit,
+    onResetAll: () -> Unit,
     onSetPartialDistance: (Double) -> Unit,
     onHideSetPartialDialog: () -> Unit,
+    onHideResetAllDialog: () -> Unit,
     landscapeDistanceSectionWeight: Float,
 ) {
     val focusRequester = remember { FocusRequester() }
@@ -205,6 +211,17 @@ fun DashboardContent(
                 onConfirm = {
                     onSetPartialDistance(it)
                     onHideSetPartialDialog()
+                }
+            )
+        }
+
+        if (uiState.showResetAllDialog) {
+            ResetAllConfirmationDialog(
+                windowSizeClass = windowSizeClass,
+                onDismiss = onHideResetAllDialog,
+                onConfirm = {
+                    onResetAll()
+                    onHideResetAllDialog()
                 }
             )
         }

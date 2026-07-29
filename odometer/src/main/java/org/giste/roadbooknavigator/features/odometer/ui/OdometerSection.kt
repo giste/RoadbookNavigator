@@ -38,11 +38,16 @@ import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 @Composable
 fun TotalDistance(
     distance: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onLongClick: () -> Unit = {}
 ) {
     Box(
         modifier = modifier
             .fillMaxWidth()
+            .combinedClickable(
+                onClick = {},
+                onLongClick = onLongClick
+            )
             .padding(vertical = RoadbookNavigatorTheme.dimensions.paddingTiny)
             .padding(horizontal = RoadbookNavigatorTheme.dimensions.paddingSmall),
         contentAlignment = Alignment.CenterEnd

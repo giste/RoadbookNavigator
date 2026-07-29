@@ -17,4 +17,6 @@
 
 <resources>
     <string name="set_partial_title">AJUSTAR DISTANCIA PARCIAL</string>
+    <string name="reset_all_title">REINICIAR TODAS LAS DISTANCIAS</string>
+    <string name="reset_all_message">¿Estás seguro de que quieres reiniciar tanto la distancia total como la parcial a cero?</string>
 </resources>

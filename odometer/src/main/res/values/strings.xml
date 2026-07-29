@@ -17,4 +17,6 @@
 
 <resources>
     <string name="set_partial_title">SET PARTIAL DISTANCE</string>
+    <string name="reset_all_title">RESET ALL DISTANCES</string>
+    <string name="reset_all_message">Are you sure you want to reset both total and partial distances to zero?</string>
 </resources>

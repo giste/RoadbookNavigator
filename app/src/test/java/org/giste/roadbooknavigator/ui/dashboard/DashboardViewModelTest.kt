@@ -92,6 +92,7 @@ class DashboardViewModelTest {
 
         assertEquals(Odometer(), viewModel.uiState.value.odometer)
         assertEquals(false, viewModel.uiState.value.showSetPartialDialog)
+        assertEquals(false, viewModel.uiState.value.showResetAllDialog)
         assertEquals(true, viewModel.uiState.value.isFullScreen)
         assertEquals(OdometerSettings.DEFAULT_INCREASE_KEYS, viewModel.uiState.value.increasePartialKeys)
     }
@@ -140,5 +141,16 @@ class DashboardViewModelTest {
 
         viewModel.hideSetPartialDialog()
         assertTrue(!viewModel.uiState.value.showSetPartialDialog)
+    }
+
+    @Test
+    fun `show and hide reset all dialog should update uiState`() = runTest {
+        backgroundScope.launch(testDispatcher) { viewModel.uiState.collect {} }
+
+        viewModel.showResetAllDialog()
+        assertTrue(viewModel.uiState.value.showResetAllDialog)
+
+        viewModel.hideResetAllDialog()
+        assertTrue(!viewModel.uiState.value.showResetAllDialog)
     }
 }

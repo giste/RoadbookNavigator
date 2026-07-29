@@ -54,16 +54,19 @@ class DashboardViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _showSetPartialDialog = MutableStateFlow(false)
+    private val _showResetAllDialog = MutableStateFlow(false)
 
     val uiState: StateFlow<DashboardUiState> = combine(
         getOdometerUseCase().onStart { emit(Odometer()) },
         _showSetPartialDialog,
+        _showResetAllDialog,
         getSettingsUseCase(),
         getOdometerSettingsUseCase()
-    ) { odometer, showDialog, settings, odometerSettings ->
+    ) { odometer, showPartialDialog, showResetAllDialog, settings, odometerSettings ->
         DashboardUiState(
             odometer = odometer,
-            showSetPartialDialog = showDialog,
+            showSetPartialDialog = showPartialDialog,
+            showResetAllDialog = showResetAllDialog,
             isFullScreen = settings.fullScreen,
             landscapeDistanceSectionWeight = settings.landscapeDistanceSectionWeight,
             increasePartialKeys = odometerSettings.increasePartial,
@@ -82,6 +85,14 @@ class DashboardViewModel @Inject constructor(
 
     fun hideSetPartialDialog() {
         _showSetPartialDialog.value = false
+    }
+
+    fun showResetAllDialog() {
+        _showResetAllDialog.value = true
+    }
+
+    fun hideResetAllDialog() {
+        _showResetAllDialog.value = false
     }
 
     fun resetPartialDistance() {
@@ -126,6 +137,7 @@ class DashboardViewModel @Inject constructor(
 data class DashboardUiState(
     val odometer: Odometer = Odometer(),
     val showSetPartialDialog: Boolean = false,
+    val showResetAllDialog: Boolean = false,
     val isFullScreen: Boolean = false,
     val landscapeDistanceSectionWeight: Float = 0.3f,
     val increasePartialKeys: List<Int> = OdometerSettings.DEFAULT_INCREASE_KEYS,

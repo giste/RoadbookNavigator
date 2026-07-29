@@ -72,10 +72,6 @@ configure<ApplicationExtension> {
         compose = true
         buildConfig = true
     }
-
-    lint {
-        checkReleaseBuilds = false
-    }
 }
 
 kotlin {

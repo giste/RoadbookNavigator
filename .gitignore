@@ -36,6 +36,8 @@ Thumbs.db
 
 # Project specific
 /app/build/
+/app/debug/
+/app/release/
 *.apk
 *.aar
 *.ap_

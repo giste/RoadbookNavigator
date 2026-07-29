@@ -17,6 +17,7 @@
 
 import com.android.build.api.dsl.ApplicationExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
@@ -30,6 +31,21 @@ configure<ApplicationExtension> {
     namespace = "org.giste.roadbooknavigator"
     compileSdk = 37
 
+    val keystorePropertiesFile = rootProject.file("keystore.properties")
+    val keystoreProperties = Properties()
+    if (keystorePropertiesFile.exists()) {
+        keystoreProperties.load(keystorePropertiesFile.inputStream())
+    }
+
+    signingConfigs {
+        create("release") {
+            keyAlias = keystoreProperties["keyAlias"] as String?
+            keyPassword = keystoreProperties["keyPassword"] as String?
+            storeFile = keystoreProperties["storeFile"]?.let { file(it) }
+            storePassword = keystoreProperties["storePassword"] as String?
+        }
+    }
+
     defaultConfig {
         applicationId = "org.giste.roadbooknavigator"
         minSdk = 33
@@ -42,6 +58,7 @@ configure<ApplicationExtension> {
 
     buildTypes {
         release {
+            signingConfig = signingConfigs.getByName("release")
             optimization {
                 enable = false
             }
@@ -54,6 +71,10 @@ configure<ApplicationExtension> {
     buildFeatures {
         compose = true
         buildConfig = true
+    }
+
+    lint {
+        checkReleaseBuilds = false
     }
 }
 

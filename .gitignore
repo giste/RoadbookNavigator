@@ -44,6 +44,7 @@ Thumbs.db
 # Secrets
 google-services.json
 *secret.xml
+keystore.properties
 
 # AI Agent Artifacts
 .artifacts/

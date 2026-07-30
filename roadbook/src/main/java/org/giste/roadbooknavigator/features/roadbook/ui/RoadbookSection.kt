@@ -22,7 +22,6 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.border
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -52,8 +51,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -82,7 +79,6 @@ fun RoadbookSection(
 ) {
     val state by viewModel.roadbookState.collectAsStateWithLifecycle()
     val initialPosition by viewModel.initialScrollPosition.collectAsState()
-    val focusRequester = remember { FocusRequester() }
 
     val routeKey = remember((state as? RoadbookUiState.Success)?.route) {
         (state as? RoadbookUiState.Success)?.let {
@@ -108,17 +104,11 @@ fun RoadbookSection(
     RoadbookContent(
         state = state,
         listState = listState,
-        modifier = modifier
-            .focusRequester(focusRequester)
-            .focusable(),
+        modifier = modifier,
         onFileSelected = viewModel::importRoute,
         onSetPartialClick = onSetPartialClick,
         onWaypointVisible = viewModel::onWaypointVisible
     )
-
-    LaunchedEffect(Unit) {
-        focusRequester.requestFocus()
-    }
 }
 
 @Composable

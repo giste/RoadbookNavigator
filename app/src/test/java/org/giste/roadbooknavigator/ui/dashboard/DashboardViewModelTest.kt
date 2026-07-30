@@ -33,6 +33,10 @@ import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.odometer.domain.Odometer
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettings
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.*
+import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookSettings
+import org.giste.roadbooknavigator.features.roadbook.domain.usecase.GetRoadbookSettingsUseCase
+import org.giste.roadbooknavigator.features.roadbook.domain.usecase.MoveRoadbookDownUseCase
+import org.giste.roadbooknavigator.features.roadbook.domain.usecase.MoveRoadbookUpUseCase
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.usecase.GetSettingsUseCase
 import org.junit.After
@@ -52,11 +56,15 @@ class DashboardViewModelTest {
     private val setPartialDistanceUseCase: SetPartialDistanceUseCase = mockk()
     private val getSettingsUseCase: GetSettingsUseCase = mockk()
     private val getOdometerSettingsUseCase: GetOdometerSettingsUseCase = mockk()
+    private val getRoadbookSettingsUseCase: GetRoadbookSettingsUseCase = mockk()
+    private val moveRoadbookUpUseCase: MoveRoadbookUpUseCase = mockk()
+    private val moveRoadbookDownUseCase: MoveRoadbookDownUseCase = mockk()
     private val logger: Logger = mockk(relaxed = true)
 
     private val odometerFlow = MutableStateFlow(Odometer())
     private val settingsFlow = MutableStateFlow(AppSettings())
     private val odometerSettingsFlow = MutableStateFlow(OdometerSettings())
+    private val roadbookSettingsFlow = MutableStateFlow(RoadbookSettings())
     private val testDispatcher = UnconfinedTestDispatcher()
 
     private lateinit var viewModel: DashboardViewModel
@@ -67,6 +75,7 @@ class DashboardViewModelTest {
         every { getOdometerUseCase() } returns odometerFlow
         every { getSettingsUseCase() } returns settingsFlow
         every { getOdometerSettingsUseCase() } returns odometerSettingsFlow
+        every { getRoadbookSettingsUseCase() } returns roadbookSettingsFlow
 
         viewModel = DashboardViewModel(
             getOdometerUseCase,
@@ -77,6 +86,9 @@ class DashboardViewModelTest {
             setPartialDistanceUseCase,
             getSettingsUseCase,
             getOdometerSettingsUseCase,
+            getRoadbookSettingsUseCase,
+            moveRoadbookUpUseCase,
+            moveRoadbookDownUseCase,
             logger
         )
     }
@@ -95,6 +107,7 @@ class DashboardViewModelTest {
         assertEquals(false, viewModel.uiState.value.showResetAllDialog)
         assertEquals(true, viewModel.uiState.value.isFullScreen)
         assertEquals(OdometerSettings.DEFAULT_INCREASE_KEYS, viewModel.uiState.value.increasePartialKeys)
+        assertEquals(RoadbookSettings.DEFAULT_UP_KEYS, viewModel.uiState.value.roadbookUpKeys)
     }
 
     @Test
@@ -130,6 +143,18 @@ class DashboardViewModelTest {
 
         viewModel.setPartialDistance(100.0)
         coVerify { setPartialDistanceUseCase(100.0) }
+    }
+
+    @Test
+    fun `roadbook actions should call respective use cases`() = runTest {
+        coEvery { moveRoadbookUpUseCase() } returns Unit
+        coEvery { moveRoadbookDownUseCase() } returns Unit
+
+        viewModel.moveRoadbookUp()
+        coVerify { moveRoadbookUpUseCase() }
+
+        viewModel.moveRoadbookDown()
+        coVerify { moveRoadbookDownUseCase() }
     }
 
     @Test

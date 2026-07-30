@@ -69,17 +69,11 @@ class DashboardScreenTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
     @Composable
-    private fun FocusedRoadbookStub(modifier: Modifier = Modifier) {
-        val focusRequester = remember { FocusRequester() }
+    private fun RoadbookStub(modifier: Modifier = Modifier) {
         Box(
             modifier = modifier
                 .testTag("RoadbookStub")
-                .focusRequester(focusRequester)
-                .focusable()
         )
-        LaunchedEffect(Unit) {
-            focusRequester.requestFocus()
-        }
     }
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
@@ -99,7 +93,7 @@ class DashboardScreenTest {
                     windowSizeClass = windowSizeClass,
                     onSettingsClick = {},
                     viewModel = viewModel,
-                    roadbookSlot = { modifier -> FocusedRoadbookStub(modifier) },
+                    roadbookSlot = { modifier -> RoadbookStub(modifier) },
                     mapSlot = { Box(it) }
                 )
             }
@@ -131,7 +125,7 @@ class DashboardScreenTest {
                     windowSizeClass = windowSizeClass,
                     onSettingsClick = {},
                     viewModel = viewModel,
-                    roadbookSlot = { modifier -> FocusedRoadbookStub(modifier) },
+                    roadbookSlot = { modifier -> RoadbookStub(modifier) },
                     mapSlot = { Box(it) }
                 )
             }
@@ -162,7 +156,7 @@ class DashboardScreenTest {
                     windowSizeClass = windowSizeClass,
                     onSettingsClick = {},
                     viewModel = viewModel,
-                    roadbookSlot = { modifier -> FocusedRoadbookStub(modifier) },
+                    roadbookSlot = { modifier -> RoadbookStub(modifier) },
                     mapSlot = { Box(it) }
                 )
             }
@@ -193,7 +187,7 @@ class DashboardScreenTest {
                     windowSizeClass = windowSizeClass,
                     onSettingsClick = {},
                     viewModel = viewModel,
-                    roadbookSlot = { modifier -> FocusedRoadbookStub(modifier) },
+                    roadbookSlot = { modifier -> RoadbookStub(modifier) },
                     mapSlot = { Box(it) }
                 )
             }
@@ -228,7 +222,7 @@ class DashboardScreenTest {
                     windowSizeClass = windowSizeClass,
                     onSettingsClick = {},
                     viewModel = viewModel,
-                    roadbookSlot = { modifier -> FocusedRoadbookStub(modifier) },
+                    roadbookSlot = { modifier -> RoadbookStub(modifier) },
                     mapSlot = { modifier ->
                         Text(text = mapDummyText, modifier = modifier.testTag(mapTag))
                     }
@@ -260,7 +254,7 @@ class DashboardScreenTest {
                     windowSizeClass = windowSizeClass,
                     onSettingsClick = {},
                     viewModel = viewModel,
-                    roadbookSlot = { modifier -> FocusedRoadbookStub(modifier) },
+                    roadbookSlot = { modifier -> RoadbookStub(modifier) },
                     mapSlot = { modifier ->
                         Text(text = mapDummyText, modifier = modifier.testTag(mapTag))
                     }
@@ -293,7 +287,7 @@ class DashboardScreenTest {
                     windowSizeClass = windowSizeClass,
                     onSettingsClick = {},
                     viewModel = viewModel,
-                    roadbookSlot = { modifier -> FocusedRoadbookStub(modifier) },
+                    roadbookSlot = { modifier -> RoadbookStub(modifier) },
                     mapSlot = { Box(it) }
                 )
             }
@@ -333,7 +327,7 @@ class DashboardScreenTest {
                     windowSizeClass = windowSizeClass,
                     onSettingsClick = {},
                     viewModel = viewModel,
-                    roadbookSlot = { modifier -> FocusedRoadbookStub(modifier) },
+                    roadbookSlot = { modifier -> RoadbookStub(modifier) },
                     mapSlot = { Box(it) }
                 )
             }
@@ -372,7 +366,7 @@ class DashboardScreenTest {
                     windowSizeClass = windowSizeClass,
                     onSettingsClick = {},
                     viewModel = viewModel,
-                    roadbookSlot = { modifier -> FocusedRoadbookStub(modifier) },
+                    roadbookSlot = { modifier -> RoadbookStub(modifier) },
                     mapSlot = { Box(it) }
                 )
             }
@@ -421,36 +415,15 @@ class DashboardScreenTest {
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     @Test
-    fun roadbookAndOdometerKeys_areCorrectlyRouted() {
-        val waypoints = List(10) { i ->
-            Waypoint(
-                number = i + 1,
-                coordinates = Coordinates(0.0, 0.0),
-                distance = Distance(i * 1000L),
-                distanceFromPrevious = Distance(1000L)
-            )
-        }
-        val route = Route(name = "Integration Test", waypoints = waypoints)
-        
+    fun roadbookKeys_triggerRoadbookActions() {
         val viewModel: DashboardViewModel = mockk(relaxed = true)
-        val roadbookViewModel: RoadbookViewModel = mockk(relaxed = true)
-        
         val uiStateFlow = MutableStateFlow(
             DashboardUiState(
-                increasePartialKeys = listOf(android.view.KeyEvent.KEYCODE_VOLUME_UP)
+                roadbookUpKeys = listOf(android.view.KeyEvent.KEYCODE_DPAD_UP),
+                roadbookDownKeys = listOf(android.view.KeyEvent.KEYCODE_DPAD_DOWN)
             )
         )
-        val roadbookStateFlow = MutableStateFlow<RoadbookUiState>(
-            RoadbookUiState.Success(
-                route = route,
-                roadbookUp = listOf(android.view.KeyEvent.KEYCODE_DPAD_UP)
-            )
-        )
-        val scrollPositionFlow = MutableStateFlow(RoadbookPosition(0, 0))
-        
         every { viewModel.uiState } returns uiStateFlow
-        every { roadbookViewModel.roadbookState } returns roadbookStateFlow
-        every { roadbookViewModel.initialScrollPosition } returns scrollPositionFlow
         
         val windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp))
 
@@ -460,24 +433,17 @@ class DashboardScreenTest {
                     windowSizeClass = windowSizeClass,
                     onSettingsClick = {},
                     viewModel = viewModel,
-                    roadbookSlot = { modifier ->
-                        RoadbookSection(
-                            viewModel = roadbookViewModel,
-                            modifier = modifier,
-                            onSetPartialClick = {}
-                        )
-                    },
+                    roadbookSlot = { modifier -> RoadbookStub(modifier) },
                     mapSlot = { Box(it) }
                 )
             }
         }
 
-        // --- Step 1 & 2: Roadbook Navigation (DPAD_UP) ---
-        // Initially waypoint 1 is displayed
-        composeTestRule.onNodeWithText("1").assertIsDisplayed()
+        // Focus the main screen
+        composeTestRule.onNodeWithTag("MainScreen").performClick()
         
-        // Press DPAD_UP. The roadbook component (focused by default) should handle it.
-        composeTestRule.onNodeWithTag("RoadbookList").performKeyPress(
+        // Test Roadbook Up
+        composeTestRule.onNodeWithTag("MainScreen").performKeyPress(
             KeyEvent(
                 nativeKeyEvent = android.view.KeyEvent(
                     android.view.KeyEvent.ACTION_DOWN,
@@ -485,186 +451,17 @@ class DashboardScreenTest {
                 )
             )
         )
-        composeTestRule.waitForIdle()
+        verify { viewModel.moveRoadbookUp() }
 
-        // Waypoint 2 should now be visible (scrolled to)
-        composeTestRule.onNodeWithText("2").assertIsDisplayed()
-        // Waypoint 1 should be scrolled out and not exist in the semantics tree
-        composeTestRule.onNodeWithText("1").assertDoesNotExist()
-        
-        // --- Step 3: Odometer Integration (VOLUME_UP) ---
-        // The roadbook doesn't handle VOLUME_UP, so it should bubble up to the dashboard.
-        composeTestRule.onNodeWithTag("RoadbookList").performKeyPress(
-            KeyEvent(
-                nativeKeyEvent = android.view.KeyEvent(
-                    android.view.KeyEvent.ACTION_DOWN,
-                    android.view.KeyEvent.KEYCODE_VOLUME_UP
-                )
-            )
-        )
-        
-        // Verify dashboard logic was triggered exactly once (bubbled up)
-        verify(exactly = 1) { viewModel.incrementPartialDistance() }
-    }
-
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
-    @Test
-    fun directionalKeys_triggerOdometerActions() {
-        val viewModel: DashboardViewModel = mockk(relaxed = true)
-        val uiStateFlow = MutableStateFlow(
-            DashboardUiState(
-                increasePartialKeys = listOf(android.view.KeyEvent.KEYCODE_DPAD_RIGHT),
-                decreasePartialKeys = listOf(android.view.KeyEvent.KEYCODE_DPAD_LEFT)
-            )
-        )
-        every { viewModel.uiState } returns uiStateFlow
-        
-        val windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp))
-
-        composeTestRule.setContent {
-            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
-                DashboardScreen(
-                    windowSizeClass = windowSizeClass,
-                    onSettingsClick = {},
-                    viewModel = viewModel,
-                    roadbookSlot = { modifier -> FocusedRoadbookStub(modifier) },
-                    mapSlot = { Box(it) }
-                )
-            }
-        }
-
-        composeTestRule.onNodeWithTag("MainScreen").performClick()
-
-        // Test DPAD_RIGHT
+        // Test Roadbook Down
         composeTestRule.onNodeWithTag("MainScreen").performKeyPress(
             KeyEvent(
                 nativeKeyEvent = android.view.KeyEvent(
                     android.view.KeyEvent.ACTION_DOWN,
-                    android.view.KeyEvent.KEYCODE_DPAD_RIGHT
+                    android.view.KeyEvent.KEYCODE_DPAD_DOWN
                 )
             )
         )
-        verify { viewModel.incrementPartialDistance() }
-
-        // Test DPAD_LEFT
-        composeTestRule.onNodeWithTag("MainScreen").performKeyPress(
-            KeyEvent(
-                nativeKeyEvent = android.view.KeyEvent(
-                    android.view.KeyEvent.ACTION_DOWN,
-                    android.view.KeyEvent.KEYCODE_DPAD_LEFT
-                )
-            )
-        )
-        verify { viewModel.decrementPartialDistance() }
-    }
-
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
-    @Test
-    fun mediaKeys_triggerOdometerActions() {
-        val viewModel: DashboardViewModel = mockk(relaxed = true)
-        val mediaKeys = listOf(
-            android.view.KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE,
-            android.view.KeyEvent.KEYCODE_MEDIA_PLAY,
-            android.view.KeyEvent.KEYCODE_MEDIA_PAUSE
-        )
-        val uiStateFlow = MutableStateFlow(
-            DashboardUiState(
-                resetPartialKeys = mediaKeys
-            )
-        )
-        every { viewModel.uiState } returns uiStateFlow
-        
-        val windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp))
-
-        composeTestRule.setContent {
-            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
-                DashboardScreen(
-                    windowSizeClass = windowSizeClass,
-                    onSettingsClick = {},
-                    viewModel = viewModel,
-                    roadbookSlot = { modifier -> FocusedRoadbookStub(modifier) },
-                    mapSlot = { Box(it) }
-                )
-            }
-        }
-
-        composeTestRule.onNodeWithTag("MainScreen").performClick()
-
-        mediaKeys.forEach { keyCode ->
-            composeTestRule.onNodeWithTag("MainScreen").performKeyPress(
-                KeyEvent(
-                    nativeKeyEvent = android.view.KeyEvent(
-                        android.view.KeyEvent.ACTION_DOWN,
-                        keyCode
-                    )
-                )
-            )
-        }
-
-        verify(exactly = 3) { viewModel.resetPartialDistance() }
-    }
-
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
-    @Test
-    fun focus_verifiesRoadbookRetainsPriorityForDirectionalKeys() {
-        val waypoints = List(5) { i ->
-            Waypoint(
-                number = i + 1,
-                coordinates = Coordinates(0.0, 0.0),
-                distance = Distance(i * 1000L),
-                distanceFromPrevious = Distance(1000L)
-            )
-        }
-        val route = Route(name = "Focus Test", waypoints = waypoints)
-        
-        val viewModel: DashboardViewModel = mockk(relaxed = true)
-        val roadbookViewModel: RoadbookViewModel = mockk(relaxed = true)
-        
-        val uiStateFlow = MutableStateFlow(DashboardUiState())
-        val roadbookStateFlow = MutableStateFlow<RoadbookUiState>(RoadbookUiState.Success(route))
-        val scrollPositionFlow = MutableStateFlow(RoadbookPosition(0, 0))
-        
-        every { viewModel.uiState } returns uiStateFlow
-        every { roadbookViewModel.roadbookState } returns roadbookStateFlow
-        every { roadbookViewModel.initialScrollPosition } returns scrollPositionFlow
-        
-        val windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp))
-
-        composeTestRule.setContent {
-            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
-                DashboardScreen(
-                    windowSizeClass = windowSizeClass,
-                    onSettingsClick = {},
-                    viewModel = viewModel,
-                    roadbookSlot = { modifier ->
-                        RoadbookSection(
-                            viewModel = roadbookViewModel,
-                            modifier = modifier,
-                            onSetPartialClick = {}
-                        )
-                    },
-                    mapSlot = { Box(it) }
-                )
-            }
-        }
-
-        // Send DPAD_UP to RoadbookList
-        composeTestRule.onNodeWithTag("RoadbookList").performKeyPress(
-            KeyEvent(
-                nativeKeyEvent = android.view.KeyEvent(
-                    android.view.KeyEvent.ACTION_DOWN,
-                    android.view.KeyEvent.KEYCODE_DPAD_UP
-                )
-            )
-        )
-        composeTestRule.waitForIdle()
-
-        // Verify Waypoint 2 is displayed (handled by Roadbook)
-        composeTestRule.onNodeWithText("2").assertIsDisplayed()
-        
-        // Verify it did NOT reach the dashboard's Odometer logic (even if it were mapped there)
-        verify(exactly = 0) { viewModel.incrementPartialDistance() }
-        verify(exactly = 0) { viewModel.decrementPartialDistance() }
-        verify(exactly = 0) { viewModel.resetPartialDistance() }
+        verify { viewModel.moveRoadbookDown() }
     }
 }

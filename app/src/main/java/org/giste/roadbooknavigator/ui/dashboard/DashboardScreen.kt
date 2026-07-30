@@ -43,6 +43,7 @@ import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -134,6 +135,8 @@ fun DashboardScreen(
         onDecrementPartial = { viewModel.decrementPartialDistance() },
         onResetPartial = { viewModel.resetPartialDistance() },
         onResetAll = { viewModel.resetAllDistances() },
+        onMoveRoadbookUp = { viewModel.moveRoadbookUp() },
+        onMoveRoadbookDown = { viewModel.moveRoadbookDown() },
         onSetPartialDistance = { viewModel.setPartialDistance(it) },
         onHideSetPartialDialog = { viewModel.hideSetPartialDialog() },
         onHideResetAllDialog = { viewModel.hideResetAllDialog() },
@@ -154,6 +157,8 @@ fun DashboardContent(
     onDecrementPartial: () -> Unit,
     onResetPartial: () -> Unit,
     onResetAll: () -> Unit,
+    onMoveRoadbookUp: () -> Unit,
+    onMoveRoadbookDown: () -> Unit,
     onSetPartialDistance: (Double) -> Unit,
     onHideSetPartialDialog: () -> Unit,
     onHideResetAllDialog: () -> Unit,
@@ -186,6 +191,16 @@ fun DashboardContent(
                             true
                         }
 
+                        uiState.roadbookUpKeys.contains(keyCode) -> {
+                            onMoveRoadbookUp()
+                            true
+                        }
+
+                        uiState.roadbookDownKeys.contains(keyCode) -> {
+                            onMoveRoadbookDown()
+                            true
+                        }
+
                         else -> false
                     }
                 } else {
@@ -193,6 +208,10 @@ fun DashboardContent(
                 }
             }
     ) {
+        LaunchedEffect(Unit) {
+            focusRequester.requestFocus()
+        }
+
         MainContent(
             windowSizeClass = windowSizeClass,
             uiState = uiState,

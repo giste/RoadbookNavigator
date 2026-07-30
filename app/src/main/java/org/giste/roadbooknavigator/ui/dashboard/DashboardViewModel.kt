@@ -37,6 +37,10 @@ import org.giste.roadbooknavigator.features.odometer.domain.usecase.IncrementPar
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.ResetAllDistancesUseCase
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.ResetPartialDistanceUseCase
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.SetPartialDistanceUseCase
+import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookSettings
+import org.giste.roadbooknavigator.features.roadbook.domain.usecase.GetRoadbookSettingsUseCase
+import org.giste.roadbooknavigator.features.roadbook.domain.usecase.MoveRoadbookDownUseCase
+import org.giste.roadbooknavigator.features.roadbook.domain.usecase.MoveRoadbookUpUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.GetSettingsUseCase
 import javax.inject.Inject
 
@@ -50,6 +54,9 @@ class DashboardViewModel @Inject constructor(
     private val setPartialDistanceUseCase: SetPartialDistanceUseCase,
     getSettingsUseCase: GetSettingsUseCase,
     getOdometerSettingsUseCase: GetOdometerSettingsUseCase,
+    getRoadbookSettingsUseCase: GetRoadbookSettingsUseCase,
+    private val moveRoadbookUpUseCase: MoveRoadbookUpUseCase,
+    private val moveRoadbookDownUseCase: MoveRoadbookDownUseCase,
     private val logger: Logger
 ) : ViewModel() {
 
@@ -61,8 +68,16 @@ class DashboardViewModel @Inject constructor(
         _showSetPartialDialog,
         _showResetAllDialog,
         getSettingsUseCase(),
-        getOdometerSettingsUseCase()
-    ) { odometer, showPartialDialog, showResetAllDialog, settings, odometerSettings ->
+        getOdometerSettingsUseCase(),
+        getRoadbookSettingsUseCase()
+    ) { flows ->
+        val odometer = flows[0] as Odometer
+        val showPartialDialog = flows[1] as Boolean
+        val showResetAllDialog = flows[2] as Boolean
+        val settings = flows[3] as org.giste.roadbooknavigator.features.settings.domain.AppSettings
+        val odometerSettings = flows[4] as OdometerSettings
+        val roadbookSettings = flows[5] as RoadbookSettings
+
         DashboardUiState(
             odometer = odometer,
             showSetPartialDialog = showPartialDialog,
@@ -71,7 +86,9 @@ class DashboardViewModel @Inject constructor(
             landscapeDistanceSectionWeight = settings.landscapeDistanceSectionWeight,
             increasePartialKeys = odometerSettings.increasePartial,
             decreasePartialKeys = odometerSettings.decreasePartial,
-            resetPartialKeys = odometerSettings.resetPartial
+            resetPartialKeys = odometerSettings.resetPartial,
+            roadbookUpKeys = roadbookSettings.roadbookUp,
+            roadbookDownKeys = roadbookSettings.roadbookDown
         )
     }.stateIn(
         scope = viewModelScope,
@@ -129,6 +146,20 @@ class DashboardViewModel @Inject constructor(
             setPartialDistanceUseCase(distance)
         }
     }
+
+    fun moveRoadbookUp() {
+        logger.d("DashboardViewModel: Moving roadbook up")
+        viewModelScope.launch {
+            moveRoadbookUpUseCase()
+        }
+    }
+
+    fun moveRoadbookDown() {
+        logger.d("DashboardViewModel: Moving roadbook down")
+        viewModelScope.launch {
+            moveRoadbookDownUseCase()
+        }
+    }
 }
 
 /**
@@ -142,5 +173,7 @@ data class DashboardUiState(
     val landscapeDistanceSectionWeight: Float = 0.3f,
     val increasePartialKeys: List<Int> = OdometerSettings.DEFAULT_INCREASE_KEYS,
     val decreasePartialKeys: List<Int> = OdometerSettings.DEFAULT_DECREASE_KEYS,
-    val resetPartialKeys: List<Int> = OdometerSettings.DEFAULT_RESET_KEYS
+    val resetPartialKeys: List<Int> = OdometerSettings.DEFAULT_RESET_KEYS,
+    val roadbookUpKeys: List<Int> = RoadbookSettings.DEFAULT_UP_KEYS,
+    val roadbookDownKeys: List<Int> = RoadbookSettings.DEFAULT_DOWN_KEYS
 )

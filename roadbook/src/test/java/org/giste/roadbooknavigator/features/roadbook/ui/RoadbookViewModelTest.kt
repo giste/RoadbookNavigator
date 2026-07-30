@@ -39,6 +39,8 @@ import org.giste.roadbooknavigator.features.roadbook.domain.usecase.GetActiveRoa
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.GetRoadbookPositionUseCase
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.GetRoadbookSettingsUseCase
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.ImportRoadbookUseCase
+import org.giste.roadbooknavigator.features.roadbook.domain.usecase.MoveRoadbookDownUseCase
+import org.giste.roadbooknavigator.features.roadbook.domain.usecase.MoveRoadbookUpUseCase
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.SaveRoadbookPositionUseCase
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -54,6 +56,8 @@ class RoadbookViewModelTest {
     private val importRoadbookUseCase: ImportRoadbookUseCase = mockk()
     private val getRoadbookPositionUseCase: GetRoadbookPositionUseCase = mockk()
     private val saveRoadbookPositionUseCase: SaveRoadbookPositionUseCase = mockk()
+    private val moveRoadbookUpUseCase: MoveRoadbookUpUseCase = mockk()
+    private val moveRoadbookDownUseCase: MoveRoadbookDownUseCase = mockk()
     private val getRoadbookSettingsUseCase: GetRoadbookSettingsUseCase = mockk()
     private val logger: Logger = mockk(relaxed = true)
 
@@ -76,6 +80,8 @@ class RoadbookViewModelTest {
             importRoadbookUseCase,
             getRoadbookPositionUseCase,
             saveRoadbookPositionUseCase,
+            moveRoadbookUpUseCase,
+            moveRoadbookDownUseCase,
             getRoadbookSettingsUseCase,
             logger
         )
@@ -98,9 +104,7 @@ class RoadbookViewModelTest {
         activeRoadbookFlow.value = route
         scrollPositionFlow.value = RoadbookPosition(5, 10)
         settingsFlow.value = RoadbookSettings(
-            shortDistanceThreshold = ShortDistanceThreshold(250L),
-            roadbookUp = listOf(1, 2),
-            roadbookDown = listOf(3, 4)
+            shortDistanceThreshold = ShortDistanceThreshold(250L)
         )
 
         backgroundScope.launch(testDispatcher) { viewModel.roadbookState.collect {} }
@@ -109,9 +113,7 @@ class RoadbookViewModelTest {
             route = route,
             shortDistanceThreshold = ShortDistanceThreshold(250L),
             initialIndex = 5,
-            initialOffset = 10,
-            roadbookUp = listOf(1, 2),
-            roadbookDown = listOf(3, 4)
+            initialOffset = 10
         )
         assertEquals(expectedState, viewModel.roadbookState.value)
     }
@@ -153,5 +155,23 @@ class RoadbookViewModelTest {
         viewModel.onWaypointVisible(10, 20)
 
         coVerify { saveRoadbookPositionUseCase(10, 20) }
+    }
+
+    @Test
+    fun `scrollUp should call moveRoadbookUpUseCase`() = runTest {
+        coEvery { moveRoadbookUpUseCase() } returns Unit
+
+        viewModel.scrollUp()
+
+        coVerify { moveRoadbookUpUseCase() }
+    }
+
+    @Test
+    fun `scrollDown should call moveRoadbookDownUseCase`() = runTest {
+        coEvery { moveRoadbookDownUseCase() } returns Unit
+
+        viewModel.scrollDown()
+
+        coVerify { moveRoadbookDownUseCase() }
     }
 }

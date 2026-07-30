@@ -46,21 +46,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.input.key.KeyEventType
-import androidx.compose.ui.input.key.key
-import androidx.compose.ui.input.key.nativeKeyCode
-import androidx.compose.ui.input.key.onKeyEvent
-import androidx.compose.ui.input.key.type
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -69,7 +62,6 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import kotlinx.coroutines.launch
 import org.giste.roadbooknavigator.core.settings.domain.AppTheme
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 import org.giste.roadbooknavigator.features.roadbook.R
@@ -90,7 +82,6 @@ fun RoadbookSection(
 ) {
     val state by viewModel.roadbookState.collectAsStateWithLifecycle()
     val initialPosition by viewModel.initialScrollPosition.collectAsState()
-    val coroutineScope = rememberCoroutineScope()
     val focusRequester = remember { FocusRequester() }
 
     val routeKey = remember((state as? RoadbookUiState.Success)?.route) {
@@ -100,23 +91,17 @@ fun RoadbookSection(
     }
 
     val listState = rememberSaveable(routeKey, saver = LazyListState.Saver) {
-        if (state is RoadbookUiState.Success) {
-            LazyListState(
-                firstVisibleItemIndex = initialPosition.index,
-                firstVisibleItemScrollOffset = initialPosition.offset
-            )
-        } else {
-            LazyListState()
-        }
+        LazyListState(
+            firstVisibleItemIndex = initialPosition.index,
+            firstVisibleItemScrollOffset = initialPosition.offset
+        )
     }
 
-    var targetWaypointIndex by remember(routeKey) {
-        mutableIntStateOf(initialPosition.index)
-    }
-
-    LaunchedEffect(listState.isScrollInProgress) {
-        if (!listState.isScrollInProgress) {
-            targetWaypointIndex = listState.firstVisibleItemIndex
+    LaunchedEffect(initialPosition) {
+        if (listState.firstVisibleItemIndex != initialPosition.index ||
+            listState.firstVisibleItemScrollOffset != initialPosition.offset
+        ) {
+            listState.animateScrollToItem(initialPosition.index, initialPosition.offset)
         }
     }
 
@@ -125,43 +110,7 @@ fun RoadbookSection(
         listState = listState,
         modifier = modifier
             .focusRequester(focusRequester)
-            .focusable()
-            .onKeyEvent { event ->
-                val currentState = state
-                if (event.type == KeyEventType.KeyDown && currentState is RoadbookUiState.Success) {
-                    val keyCode = event.key.nativeKeyCode
-                    when {
-                        currentState.roadbookUp.contains(keyCode) -> {
-                            val waypointsCount = currentState.route.waypoints.size
-                            if (waypointsCount > 0) {
-                                coroutineScope.launch {
-                                    targetWaypointIndex = (targetWaypointIndex + 1)
-                                        .coerceAtMost(waypointsCount - 1)
-                                    listState.animateScrollToItem(targetWaypointIndex)
-                                }
-                            }
-                            true
-                        }
-
-                        currentState.roadbookDown.contains(keyCode) -> {
-                            coroutineScope.launch {
-                                targetWaypointIndex =
-                                    if (listState.firstVisibleItemScrollOffset > 0) {
-                                        listState.firstVisibleItemIndex
-                                    } else {
-                                        (targetWaypointIndex - 1).coerceAtLeast(0)
-                                    }
-                                listState.animateScrollToItem(targetWaypointIndex)
-                            }
-                            true
-                        }
-
-                        else -> false
-                    }
-                } else {
-                    false
-                }
-            },
+            .focusable(),
         onFileSelected = viewModel::importRoute,
         onSetPartialClick = onSetPartialClick,
         onWaypointVisible = viewModel::onWaypointVisible

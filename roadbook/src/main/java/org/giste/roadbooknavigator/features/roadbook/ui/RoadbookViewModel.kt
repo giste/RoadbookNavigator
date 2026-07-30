@@ -32,6 +32,8 @@ import org.giste.roadbooknavigator.features.roadbook.domain.usecase.GetActiveRoa
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.GetRoadbookPositionUseCase
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.GetRoadbookSettingsUseCase
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.ImportRoadbookUseCase
+import org.giste.roadbooknavigator.features.roadbook.domain.usecase.MoveRoadbookDownUseCase
+import org.giste.roadbooknavigator.features.roadbook.domain.usecase.MoveRoadbookUpUseCase
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.SaveRoadbookPositionUseCase
 import java.io.InputStream
 import javax.inject.Inject
@@ -42,6 +44,8 @@ class RoadbookViewModel @Inject constructor(
     private val importRoadbookUseCase: ImportRoadbookUseCase,
     getRoadbookPositionUseCase: GetRoadbookPositionUseCase,
     private val saveRoadbookPositionUseCase: SaveRoadbookPositionUseCase,
+    private val moveRoadbookUpUseCase: MoveRoadbookUpUseCase,
+    private val moveRoadbookDownUseCase: MoveRoadbookDownUseCase,
     getRoadbookSettingsUseCase: GetRoadbookSettingsUseCase,
     private val logger: Logger
 ) : ViewModel() {
@@ -59,8 +63,6 @@ class RoadbookViewModel @Inject constructor(
                 shortDistanceThreshold = settings.shortDistanceThreshold,
                 initialIndex = position.index,
                 initialOffset = position.offset,
-                roadbookUp = settings.roadbookUp,
-                roadbookDown = settings.roadbookDown
             )
         } else {
             RoadbookUiState.Empty
@@ -100,6 +102,20 @@ class RoadbookViewModel @Inject constructor(
     fun onWaypointVisible(index: Int, offset: Int) {
         viewModelScope.launch {
             saveRoadbookPositionUseCase(index, offset)
+        }
+    }
+
+    fun scrollUp() {
+        logger.d("RoadbookViewModel: Scrolling up")
+        viewModelScope.launch {
+            moveRoadbookUpUseCase()
+        }
+    }
+
+    fun scrollDown() {
+        logger.d("RoadbookViewModel: Scrolling down")
+        viewModelScope.launch {
+            moveRoadbookDownUseCase()
         }
     }
 }

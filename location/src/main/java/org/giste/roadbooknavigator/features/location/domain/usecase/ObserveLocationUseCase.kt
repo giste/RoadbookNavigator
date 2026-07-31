@@ -29,7 +29,7 @@ import javax.inject.Inject
 /**
  * Use case to observe the current device location.
  */
-class ObserveLocationUseCase @Inject constructor(
+class ObserveLocationUseCase @Inject internal constructor(
     private val repository: LocationRepository,
     private val getLocationSettingsUseCase: GetLocationSettingsUseCase,
     private val logger: LocationLogger

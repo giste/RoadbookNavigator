@@ -22,7 +22,7 @@ import kotlinx.coroutines.flow.Flow
 /**
  * Interface to provide raw location updates.
  */
-interface LocationRepository {
+internal interface LocationRepository {
     /**
      * Emits the current location as it changes.
      *

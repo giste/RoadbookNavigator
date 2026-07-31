@@ -24,7 +24,7 @@ import javax.inject.Inject
 /**
  * Use case to update the minimum distance between location updates.
  */
-class UpdateLocationMinDistanceUseCase @Inject constructor(
+class UpdateLocationMinDistanceUseCase @Inject internal constructor(
     private val repository: LocationSettingsRepository
 ) {
     suspend operator fun invoke(distance: Float): Result<Unit> = runCatching {

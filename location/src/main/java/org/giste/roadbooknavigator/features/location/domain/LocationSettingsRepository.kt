@@ -22,7 +22,7 @@ import kotlinx.coroutines.flow.Flow
 /**
  * Repository for managing location-related settings.
  */
-interface LocationSettingsRepository {
+internal interface LocationSettingsRepository {
     /**
      * Emits the current location settings.
      */

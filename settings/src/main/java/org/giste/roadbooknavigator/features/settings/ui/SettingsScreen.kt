@@ -97,9 +97,9 @@ import androidx.compose.ui.window.Dialog
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import org.giste.roadbooknavigator.core.settings.domain.AppTheme
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
-import org.giste.roadbooknavigator.features.location.domain.LocationSettings
-import org.giste.roadbooknavigator.features.location.domain.MinDistanceThreshold
-import org.giste.roadbooknavigator.features.location.domain.PollingIntervalThreshold
+import org.giste.android.location.domain.LocationSettings
+import org.giste.android.location.domain.MinDistanceThreshold
+import org.giste.android.location.domain.PollingIntervalThreshold
 import org.giste.roadbooknavigator.features.map.domain.model.MapSettings
 import org.giste.roadbooknavigator.features.map.ui.management.MapManagementScreen
 import org.giste.roadbooknavigator.features.odometer.domain.AccuracyThreshold

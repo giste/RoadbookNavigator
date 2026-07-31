@@ -31,8 +31,8 @@ import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.giste.roadbooknavigator.core.util.Logger
-import org.giste.roadbooknavigator.features.location.domain.UserLocation
-import org.giste.roadbooknavigator.features.location.domain.usecase.ObserveLocationUseCase
+import org.giste.android.location.domain.UserLocation
+import org.giste.android.location.domain.usecase.ObserveLocationUseCase
 import org.giste.roadbooknavigator.features.map.domain.model.MapFile
 import org.giste.roadbooknavigator.features.map.domain.model.MapSettings
 import org.giste.roadbooknavigator.features.map.domain.usecase.GetLocalMapsUseCase

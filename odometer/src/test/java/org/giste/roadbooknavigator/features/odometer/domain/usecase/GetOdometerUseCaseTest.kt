@@ -30,8 +30,8 @@ import kotlinx.coroutines.test.runTest
 import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.odometer.domain.DistanceUtils
 import org.giste.roadbooknavigator.features.odometer.domain.Odometer
-import org.giste.roadbooknavigator.features.location.domain.UserLocation
-import org.giste.roadbooknavigator.features.location.domain.usecase.ObserveLocationUseCase
+import org.giste.android.location.domain.UserLocation
+import org.giste.android.location.domain.usecase.ObserveLocationUseCase
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerRepository
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettings
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettingsRepository

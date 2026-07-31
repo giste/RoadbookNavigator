@@ -28,11 +28,11 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.giste.roadbooknavigator.core.settings.domain.AppTheme
 import org.giste.roadbooknavigator.core.util.Logger
-import org.giste.roadbooknavigator.features.location.domain.LocationSettings
-import org.giste.roadbooknavigator.features.location.domain.usecase.ObserveLocationSettingsUseCase
-import org.giste.roadbooknavigator.features.location.domain.usecase.RestoreLocationDefaultsUseCase
-import org.giste.roadbooknavigator.features.location.domain.usecase.UpdateLocationMinDistanceUseCase
-import org.giste.roadbooknavigator.features.location.domain.usecase.UpdateLocationPollingIntervalUseCase
+import org.giste.android.location.domain.LocationSettings
+import org.giste.android.location.domain.usecase.ObserveLocationSettingsUseCase
+import org.giste.android.location.domain.usecase.RestoreLocationDefaultsUseCase
+import org.giste.android.location.domain.usecase.UpdateLocationMinDistanceUseCase
+import org.giste.android.location.domain.usecase.UpdateLocationPollingIntervalUseCase
 import org.giste.roadbooknavigator.features.map.domain.model.MapSettings
 import org.giste.roadbooknavigator.features.map.domain.usecase.GetMapSettingsUseCase
 import org.giste.roadbooknavigator.features.map.domain.usecase.SaveMapSettingsUseCase

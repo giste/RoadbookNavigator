@@ -15,62 +15,51 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.di
+package org.giste.android.location.data
 
-import dagger.Binds
-import dagger.Module
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
-import org.giste.roadbooknavigator.core.util.Logger
-import org.giste.android.location.data.AppLocationLogger
+import android.util.Log
 import org.giste.android.location.domain.LocationLogger
 import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
- * Bridges the :location module's logging to the app's main Timber logger.
+ * Default implementation of [LocationLogger] using [android.util.Log].
  */
-@Module
-@InstallIn(SingletonComponent::class)
-internal abstract class LocationBridgeModule {
-
-    @Binds
-    @Singleton
-    @AppLocationLogger
-    internal abstract fun bindLocationLogger(
-        locationTimberBridge: LocationTimberBridge
-    ): LocationLogger
-}
-
-internal class LocationTimberBridge @Inject constructor(
-    private val logger: Logger
+internal class AndroidLocationLogger(
+    private val tag: String
 ) : LocationLogger {
 
+    @Inject
+    constructor() : this("Location")
+
     override fun v(message: String, vararg args: Any?) {
-        logger.v(message, *args)
+        Log.v(tag, format(message, *args))
     }
 
     override fun d(message: String, vararg args: Any?) {
-        logger.d(message, *args)
+        Log.d(tag, format(message, *args))
     }
 
     override fun i(message: String, vararg args: Any?) {
-        logger.i(message, *args)
+        Log.i(tag, format(message, *args))
     }
 
     override fun w(message: String, vararg args: Any?) {
-        logger.w(message, *args)
+        Log.w(tag, format(message, *args))
     }
 
     override fun e(message: String, vararg args: Any?) {
-        logger.e(message, *args)
+        Log.e(tag, format(message, *args))
     }
 
     override fun e(t: Throwable, message: String, vararg args: Any?) {
-        logger.e(t, message, *args)
+        Log.e(tag, format(message, *args), t)
     }
 
     override fun withTag(tag: String): LocationLogger {
-        return LocationTimberBridge(logger.withTag(tag))
+        return AndroidLocationLogger("${this.tag}:$tag")
+    }
+
+    private fun format(message: String, vararg args: Any?): String {
+        return if (args.isEmpty()) message else String.format(message, *args)
     }
 }

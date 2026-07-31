@@ -19,7 +19,7 @@ package org.giste.roadbooknavigator.features.odometer.domain
 
 import io.mockk.mockk
 import org.giste.roadbooknavigator.core.util.Logger
-import org.giste.roadbooknavigator.features.location.domain.UserLocation
+import org.giste.android.location.domain.UserLocation
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test

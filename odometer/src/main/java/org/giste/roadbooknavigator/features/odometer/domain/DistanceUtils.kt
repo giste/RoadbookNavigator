@@ -18,7 +18,7 @@
 package org.giste.roadbooknavigator.features.odometer.domain
 
 import org.giste.roadbooknavigator.core.util.Logger
-import org.giste.roadbooknavigator.features.location.domain.UserLocation
+import org.giste.android.location.domain.UserLocation
 import javax.inject.Inject
 import kotlin.math.atan2
 import kotlin.math.cos

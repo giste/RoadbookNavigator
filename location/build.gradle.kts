@@ -25,7 +25,7 @@ plugins {
 }
 
 configure<LibraryExtension> {
-    namespace = "org.giste.roadbooknavigator.features.location"
+    namespace = "org.giste.android.location"
     compileSdk = 37
 
     defaultConfig {

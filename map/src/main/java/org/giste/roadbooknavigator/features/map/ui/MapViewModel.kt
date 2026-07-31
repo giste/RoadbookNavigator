@@ -27,8 +27,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import org.giste.roadbooknavigator.core.util.Logger
-import org.giste.roadbooknavigator.features.location.domain.UserLocation
-import org.giste.roadbooknavigator.features.location.domain.usecase.ObserveLocationUseCase
+import org.giste.android.location.domain.UserLocation
+import org.giste.android.location.domain.usecase.ObserveLocationUseCase
 import org.giste.roadbooknavigator.features.map.domain.model.MapFile
 import org.giste.roadbooknavigator.features.map.domain.model.MapSettings
 import org.giste.roadbooknavigator.features.map.domain.usecase.GetLocalMapsUseCase

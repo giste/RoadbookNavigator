@@ -32,11 +32,15 @@ import kotlinx.coroutines.SupervisorJob
 internal object LocationDataStoreFactory {
     private val dataStores = mutableMapOf<String, DataStore<Preferences>>()
 
-    fun create(context: Context, name: String): DataStore<Preferences> {
+    fun create(
+        context: Context,
+        name: String,
+        scope: CoroutineScope? = null
+    ): DataStore<Preferences> {
         return synchronized(dataStores) {
             dataStores.getOrPut(name) {
                 PreferenceDataStoreFactory.create(
-                    scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
+                    scope = scope ?: CoroutineScope(Dispatchers.IO + SupervisorJob()),
                     produceFile = { context.preferencesDataStoreFile(name) }
                 )
             }

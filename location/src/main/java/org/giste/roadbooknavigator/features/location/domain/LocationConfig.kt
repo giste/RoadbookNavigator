@@ -17,13 +17,18 @@
 
 package org.giste.roadbooknavigator.features.location.domain
 
+import kotlinx.coroutines.CoroutineScope
+
 /**
  * Initial configuration for the location module.
  *
  * @property initialPollingInterval Minimum time interval between location updates.
  * @property initialMinDistance Minimum distance between location updates.
+ * @property coroutineScope Optional CoroutineScope for internal background tasks (e.g. DataStore).
+ * If null, a default scope will be created internally.
  */
 public data class LocationConfig(
     public val initialPollingInterval: PollingIntervalThreshold = PollingIntervalThreshold(LocationSettings.DEFAULT_POLLING_INTERVAL),
-    public val initialMinDistance: MinDistanceThreshold = MinDistanceThreshold(LocationSettings.DEFAULT_MIN_DISTANCE)
+    public val initialMinDistance: MinDistanceThreshold = MinDistanceThreshold(LocationSettings.DEFAULT_MIN_DISTANCE),
+    public val coroutineScope: CoroutineScope? = null
 )

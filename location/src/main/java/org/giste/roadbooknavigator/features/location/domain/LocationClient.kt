@@ -41,7 +41,11 @@ public class LocationClient private constructor(
     // Repositories are lazily initialized
     internal val locationSettingsRepository: LocationSettingsRepository by lazy {
         DataStoreLocationSettingsRepository(
-            dataStore = LocationDataStoreFactory.create(context, dataStoreName),
+            dataStore = LocationDataStoreFactory.create(
+                context = context,
+                name = dataStoreName,
+                scope = config.coroutineScope
+            ),
             logger = logger,
             initialConfig = config
         )

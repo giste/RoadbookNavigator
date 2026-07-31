@@ -49,7 +49,8 @@ class LocationClientTest {
     fun `LocationClient should respect custom configuration`() = runTest {
         val customConfig = LocationConfig(
             initialPollingInterval = PollingIntervalThreshold(1234L),
-            initialMinDistance = MinDistanceThreshold(5.6f)
+            initialMinDistance = MinDistanceThreshold(5.6f),
+            coroutineScope = this
         )
         
         val client = LocationClient.create(

@@ -24,7 +24,7 @@ import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import org.giste.roadbooknavigator.core.util.Logger
+import org.giste.roadbooknavigator.features.location.domain.LocationLogger
 import org.giste.roadbooknavigator.features.location.domain.LocationSettings
 import org.giste.roadbooknavigator.features.location.domain.LocationSettingsRepository
 import javax.inject.Inject
@@ -36,7 +36,7 @@ import javax.inject.Singleton
 @Singleton
 internal class DataStoreLocationSettingsRepository @Inject constructor(
     @param:LocationSettingsDataStore private val dataStore: DataStore<Preferences>,
-    private val logger: Logger,
+    private val logger: LocationLogger,
 ) : LocationSettingsRepository {
 
     private object Keys {

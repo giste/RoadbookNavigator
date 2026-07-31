@@ -21,7 +21,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.onEach
-import org.giste.roadbooknavigator.core.util.Logger
+import org.giste.roadbooknavigator.features.location.domain.LocationLogger
 import org.giste.roadbooknavigator.features.location.domain.LocationRepository
 import org.giste.roadbooknavigator.features.location.domain.UserLocation
 import javax.inject.Inject
@@ -32,7 +32,7 @@ import javax.inject.Inject
 class ObserveLocationUseCase @Inject constructor(
     private val repository: LocationRepository,
     private val getLocationSettingsUseCase: GetLocationSettingsUseCase,
-    private val logger: Logger
+    private val logger: LocationLogger
 ) {
     @OptIn(ExperimentalCoroutinesApi::class)
     operator fun invoke(): Flow<UserLocation> {

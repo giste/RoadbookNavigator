@@ -27,6 +27,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import org.giste.roadbooknavigator.features.location.domain.LocationLogger
 import org.giste.roadbooknavigator.features.location.domain.LocationRepository
 import org.giste.roadbooknavigator.features.location.domain.LocationSettingsRepository
 import javax.inject.Qualifier
@@ -53,6 +54,12 @@ internal abstract class LocationDataModule {
     internal abstract fun bindLocationSettingsRepository(
         dataStoreLocationSettingsRepository: DataStoreLocationSettingsRepository
     ): LocationSettingsRepository
+
+    @Binds
+    @Singleton
+    internal abstract fun bindLocationLogger(
+        androidLocationLogger: AndroidLocationLogger
+    ): LocationLogger
 
     companion object {
         @Provides

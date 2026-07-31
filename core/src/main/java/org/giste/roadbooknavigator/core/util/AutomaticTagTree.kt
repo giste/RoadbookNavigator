@@ -22,8 +22,13 @@ import timber.log.Timber
 /**
  * A custom Timber Tree that automatically finds the caller class,
  * skipping the logging infrastructure frames.
+ *
+ * @param additionalIgnoredClasses A list of additional class names or patterns to ignore
+ * when searching the stack trace for the caller class.
  */
-class AutomaticTagTree : Timber.DebugTree() {
+class AutomaticTagTree(
+    private val additionalIgnoredClasses: List<String> = emptyList()
+) : Timber.DebugTree() {
 
     override fun createStackElementTag(element: StackTraceElement): String? {
         // Iterate through stack trace to find the first class that is not part of the logging utility
@@ -41,7 +46,8 @@ class AutomaticTagTree : Timber.DebugTree() {
     }
 
     private fun isLoggingInternal(className: String): Boolean {
-        return className.contains(Timber::class.java.name) ||
+        return additionalIgnoredClasses.any { className.contains(it) } ||
+                className.contains(Timber::class.java.name) ||
                 className.contains(Logger::class.java.name) ||
                 className.contains(TimberLogger::class.java.name) ||
                 className.contains(AutomaticTagTree::class.java.name) ||

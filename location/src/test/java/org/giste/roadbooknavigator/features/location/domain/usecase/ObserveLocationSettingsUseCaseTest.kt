@@ -17,16 +17,31 @@
 
 package org.giste.roadbooknavigator.features.location.domain.usecase
 
-import kotlinx.coroutines.flow.Flow
+import io.mockk.every
+import io.mockk.mockk
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.runTest
 import org.giste.roadbooknavigator.features.location.domain.LocationSettings
 import org.giste.roadbooknavigator.features.location.domain.LocationSettingsRepository
-import javax.inject.Inject
+import org.junit.Assert.assertEquals
+import org.junit.Test
 
-/**
- * Use case to observe location settings.
- */
-class GetLocationSettingsUseCase @Inject internal constructor(
-    private val repository: LocationSettingsRepository
-) {
-    operator fun invoke(): Flow<LocationSettings> = repository.getLocationSettings()
+class ObserveLocationSettingsUseCaseTest {
+
+    private val repository: LocationSettingsRepository = mockk()
+    private val useCase = ObserveLocationSettingsUseCase(repository)
+
+    @Test
+    fun `invoke should return settings from repository`() = runTest {
+        // Given
+        val settings = LocationSettings()
+        every { repository.getLocationSettings() } returns flowOf(settings)
+
+        // When
+        val result = useCase().first()
+
+        // Then
+        assertEquals(settings, result)
+    }
 }

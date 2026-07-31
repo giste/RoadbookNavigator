@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.onEach
 import org.giste.roadbooknavigator.features.location.domain.LocationLogger
 import org.giste.roadbooknavigator.features.location.domain.LocationRepository
+import org.giste.roadbooknavigator.features.location.domain.LocationSettingsRepository
 import org.giste.roadbooknavigator.features.location.domain.UserLocation
 import javax.inject.Inject
 
@@ -30,20 +31,20 @@ import javax.inject.Inject
  * Use case to observe the current device location.
  */
 class ObserveLocationUseCase @Inject internal constructor(
-    private val repository: LocationRepository,
-    private val getLocationSettingsUseCase: GetLocationSettingsUseCase,
+    private val locationRepository: LocationRepository,
+    private val locationSettingsRepository: LocationSettingsRepository,
     private val logger: LocationLogger
 ) {
     @OptIn(ExperimentalCoroutinesApi::class)
     operator fun invoke(): Flow<UserLocation> {
-        return getLocationSettingsUseCase()
+        return locationSettingsRepository.getLocationSettings()
             .flatMapLatest { settings ->
                 logger.i(
                     "ObserveLocationUseCase: Requesting locations with interval: %d ms, minDistance: %f m",
                     settings.pollingInterval,
                     settings.minDistance
                 )
-                repository.getLocations(
+                locationRepository.getLocations(
                     pollingInterval = settings.pollingInterval,
                     minDistance = settings.minDistance
                 )

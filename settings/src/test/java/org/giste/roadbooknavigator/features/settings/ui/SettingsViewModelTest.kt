@@ -31,7 +31,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.location.domain.LocationSettings
-import org.giste.roadbooknavigator.features.location.domain.usecase.GetLocationSettingsUseCase
+import org.giste.roadbooknavigator.features.location.domain.usecase.ObserveLocationSettingsUseCase
 import org.giste.roadbooknavigator.features.location.domain.usecase.RestoreLocationDefaultsUseCase
 import org.giste.roadbooknavigator.features.location.domain.usecase.UpdateLocationMinDistanceUseCase
 import org.giste.roadbooknavigator.features.location.domain.usecase.UpdateLocationPollingIntervalUseCase
@@ -67,7 +67,7 @@ import org.junit.Test
 class SettingsViewModelTest {
 
     private val getSettingsUseCase: GetSettingsUseCase = mockk()
-    private val getLocationsUseCase: GetLocationSettingsUseCase = mockk()
+    private val getLocationsUseCase: ObserveLocationSettingsUseCase = mockk()
     private val getOdometerSettingsUseCase: GetOdometerSettingsUseCase = mockk()
     private val updateThemeUseCase: UpdateThemeUseCase = mockk()
     private val updateFullScreenUseCase: UpdateFullScreenUseCase = mockk()
@@ -108,7 +108,7 @@ class SettingsViewModelTest {
 
         viewModel = SettingsViewModel(
             getSettingsUseCase = getSettingsUseCase,
-            getLocationSettingsUseCase = getLocationsUseCase,
+            observeLocationSettingsUseCase = getLocationsUseCase,
             getOdometerSettingsUseCase = getOdometerSettingsUseCase,
             getMapSettingsUseCase = getMapSettingsUseCase,
             getRoadbookSettingsUseCase = getRoadbookSettingsUseCase,

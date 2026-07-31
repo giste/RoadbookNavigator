@@ -29,7 +29,7 @@ import kotlinx.coroutines.launch
 import org.giste.roadbooknavigator.core.settings.domain.AppTheme
 import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.location.domain.LocationSettings
-import org.giste.roadbooknavigator.features.location.domain.usecase.GetLocationSettingsUseCase
+import org.giste.roadbooknavigator.features.location.domain.usecase.ObserveLocationSettingsUseCase
 import org.giste.roadbooknavigator.features.location.domain.usecase.RestoreLocationDefaultsUseCase
 import org.giste.roadbooknavigator.features.location.domain.usecase.UpdateLocationMinDistanceUseCase
 import org.giste.roadbooknavigator.features.location.domain.usecase.UpdateLocationPollingIntervalUseCase
@@ -60,7 +60,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     getSettingsUseCase: GetSettingsUseCase,
-    getLocationSettingsUseCase: GetLocationSettingsUseCase,
+    observeLocationSettingsUseCase: ObserveLocationSettingsUseCase,
     getOdometerSettingsUseCase: GetOdometerSettingsUseCase,
     getMapSettingsUseCase: GetMapSettingsUseCase,
     getRoadbookSettingsUseCase: GetRoadbookSettingsUseCase,
@@ -84,7 +84,7 @@ class SettingsViewModel @Inject constructor(
 
     val uiState: StateFlow<SettingsUiState> = combine(
         getSettingsUseCase(),
-        getLocationSettingsUseCase(),
+        observeLocationSettingsUseCase(),
         getOdometerSettingsUseCase(),
         getMapSettingsUseCase(),
         getRoadbookSettingsUseCase()

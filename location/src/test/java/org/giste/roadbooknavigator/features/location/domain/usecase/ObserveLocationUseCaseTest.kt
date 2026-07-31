@@ -26,14 +26,15 @@ import kotlinx.coroutines.test.runTest
 import org.giste.roadbooknavigator.features.location.domain.LocationLogger
 import org.giste.roadbooknavigator.features.location.domain.LocationRepository
 import org.giste.roadbooknavigator.features.location.domain.LocationSettings
+import org.giste.roadbooknavigator.features.location.domain.LocationSettingsRepository
 import org.junit.Test
 
 class ObserveLocationUseCaseTest {
 
     private val repository: LocationRepository = mockk()
-    private val getLocationSettingsUseCase: GetLocationSettingsUseCase = mockk()
+    private val locationSettingsRepository: LocationSettingsRepository = mockk()
     private val logger: LocationLogger = mockk(relaxed = true)
-    private val useCase = ObserveLocationUseCase(repository, getLocationSettingsUseCase, logger)
+    private val useCase = ObserveLocationUseCase(repository, locationSettingsRepository, logger)
 
     @Test
     fun `should call repository getLocations with parameters from settings`() = runTest {
@@ -41,7 +42,7 @@ class ObserveLocationUseCaseTest {
             pollingInterval = 2000L,
             minDistance = 10f,
         )
-        every { getLocationSettingsUseCase() } returns flowOf(settings)
+        every { locationSettingsRepository.getLocationSettings() } returns flowOf(settings)
         every { repository.getLocations(any(), any()) } returns flowOf(mockk(relaxed = true))
 
         useCase().first()

@@ -21,16 +21,16 @@ package org.giste.roadbooknavigator.features.location.domain
  * Value Object for GPS polling interval.
  */
 @JvmInline
-value class PollingIntervalThreshold(val milliseconds: Long) {
+public value class PollingIntervalThreshold(public val milliseconds: Long) {
     init {
         require(milliseconds.toDouble() in MIN..MAX) {
             "Polling interval must be between $MIN and $MAX ms"
         }
     }
 
-    companion object {
-        const val MIN = 100.0
-        const val MAX = 2000.0
+    public companion object {
+        public const val MIN: Double = 100.0
+        public const val MAX: Double = 2000.0
     }
 }
 
@@ -38,15 +38,15 @@ value class PollingIntervalThreshold(val milliseconds: Long) {
  * Value Object for GPS minimum distance.
  */
 @JvmInline
-value class MinDistanceThreshold(val meters: Float) {
+public value class MinDistanceThreshold(public val meters: Float) {
     init {
         require(meters in MIN..MAX) {
             "Min distance must be between $MIN and $MAX meters"
         }
     }
 
-    companion object {
-        const val MIN = 0.0f
-        const val MAX = 10.0f
+    public companion object {
+        public const val MIN: Float = 0.0f
+        public const val MAX: Float = 10.0f
     }
 }

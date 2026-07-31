@@ -30,13 +30,13 @@ import javax.inject.Inject
 /**
  * Use case to observe the current device location.
  */
-class ObserveLocationUseCase @Inject internal constructor(
+public class ObserveLocationUseCase @Inject internal constructor(
     private val locationRepository: LocationRepository,
     private val locationSettingsRepository: LocationSettingsRepository,
     private val logger: LocationLogger
 ) {
     @OptIn(ExperimentalCoroutinesApi::class)
-    operator fun invoke(): Flow<UserLocation> {
+    public operator fun invoke(): Flow<UserLocation> {
         return locationSettingsRepository.getLocationSettings()
             .flatMapLatest { settings ->
                 logger.i(

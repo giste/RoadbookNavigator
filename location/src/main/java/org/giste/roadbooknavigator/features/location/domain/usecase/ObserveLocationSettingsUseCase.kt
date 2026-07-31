@@ -25,8 +25,8 @@ import javax.inject.Inject
 /**
  * Use case to observe location settings.
  */
-class ObserveLocationSettingsUseCase @Inject internal constructor(
+public class ObserveLocationSettingsUseCase @Inject internal constructor(
     private val repository: LocationSettingsRepository
 ) {
-    operator fun invoke(): Flow<LocationSettings> = repository.getLocationSettings()
+    public operator fun invoke(): Flow<LocationSettings> = repository.getLocationSettings()
 }

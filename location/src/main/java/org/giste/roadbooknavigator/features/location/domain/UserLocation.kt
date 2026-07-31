@@ -20,13 +20,13 @@ package org.giste.roadbooknavigator.features.location.domain
 /**
  * Domain representation of a GPS location to decouple from Android Framework.
  */
-data class UserLocation(
-    val latitude: Double,
-    val longitude: Double,
-    val altitude: Double,
-    val accuracy: Float,
-    val verticalAccuracy: Float? = null,
-    val speed: Float, // in m/s
-    val bearing: Float, // in degrees
-    val time: Long
+public data class UserLocation(
+    public val latitude: Double,
+    public val longitude: Double,
+    public val altitude: Double,
+    public val accuracy: Float,
+    public val verticalAccuracy: Float? = null,
+    public val speed: Float, // in m/s
+    public val bearing: Float, // in degrees
+    public val time: Long
 )

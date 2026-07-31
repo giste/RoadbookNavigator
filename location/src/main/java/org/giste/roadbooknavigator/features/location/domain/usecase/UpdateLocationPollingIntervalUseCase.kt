@@ -24,10 +24,10 @@ import javax.inject.Inject
 /**
  * Use case to update the location polling interval.
  */
-class UpdateLocationPollingIntervalUseCase @Inject internal constructor(
+public class UpdateLocationPollingIntervalUseCase @Inject internal constructor(
     private val repository: LocationSettingsRepository
 ) {
-    suspend operator fun invoke(interval: Long): Result<Unit> = runCatching {
+    public suspend operator fun invoke(interval: Long): Result<Unit> = runCatching {
         PollingIntervalThreshold(interval)
         repository.updatePollingInterval(interval)
     }

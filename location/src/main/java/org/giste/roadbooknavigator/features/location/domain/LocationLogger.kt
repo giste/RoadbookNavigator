@@ -21,12 +21,12 @@ package org.giste.roadbooknavigator.features.location.domain
  * A logging interface for the location module.
  * This decouples the module from any specific logging framework or other modules.
  */
-interface LocationLogger {
-    fun v(message: String, vararg args: Any?)
-    fun d(message: String, vararg args: Any?)
-    fun i(message: String, vararg args: Any?)
-    fun w(message: String, vararg args: Any?)
-    fun e(message: String, vararg args: Any?)
-    fun e(t: Throwable, message: String, vararg args: Any?)
-    fun withTag(tag: String): LocationLogger
+public interface LocationLogger {
+    public fun v(message: String, vararg args: Any?)
+    public fun d(message: String, vararg args: Any?)
+    public fun i(message: String, vararg args: Any?)
+    public fun w(message: String, vararg args: Any?)
+    public fun e(message: String, vararg args: Any?)
+    public fun e(t: Throwable, message: String, vararg args: Any?)
+    public fun withTag(tag: String): LocationLogger
 }

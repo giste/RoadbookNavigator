@@ -23,10 +23,10 @@ import javax.inject.Inject
 /**
  * Use case to restore location settings to their default values.
  */
-class RestoreLocationDefaultsUseCase @Inject internal constructor(
+public class RestoreLocationDefaultsUseCase @Inject internal constructor(
     private val repository: LocationSettingsRepository
 ) {
-    suspend operator fun invoke(): Result<Unit> = runCatching {
+    public suspend operator fun invoke(): Result<Unit> = runCatching {
         repository.restoreDefaults()
     }
 }

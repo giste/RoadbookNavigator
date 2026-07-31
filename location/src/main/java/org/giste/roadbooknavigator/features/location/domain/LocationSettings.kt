@@ -23,12 +23,12 @@ package org.giste.roadbooknavigator.features.location.domain
  * @property pollingInterval Minimum time interval between location updates, in milliseconds.
  * @property minDistance Minimum distance between location updates, in meters.
  */
-data class LocationSettings(
-    val pollingInterval: Long = DEFAULT_POLLING_INTERVAL,
-    val minDistance: Float = DEFAULT_MIN_DISTANCE,
+public data class LocationSettings(
+    public val pollingInterval: Long = DEFAULT_POLLING_INTERVAL,
+    public val minDistance: Float = DEFAULT_MIN_DISTANCE,
 ) {
-    companion object {
-        const val DEFAULT_POLLING_INTERVAL = 500L // ms
-        const val DEFAULT_MIN_DISTANCE = 2.0f // m
+    public companion object {
+        public const val DEFAULT_POLLING_INTERVAL: Long = 500L // ms
+        public const val DEFAULT_MIN_DISTANCE: Float = 2.0f // m
     }
 }

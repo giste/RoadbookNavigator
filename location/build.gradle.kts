@@ -30,7 +30,6 @@ configure<LibraryExtension> {
 
     defaultConfig {
         minSdk = 33
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     compileOptions {
@@ -58,8 +57,4 @@ dependencies {
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.androidx.test.core)
     testImplementation(libs.robolectric)
-
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.test.core)
-    androidTestImplementation(libs.androidx.espresso.core)
 }

@@ -25,6 +25,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import org.giste.roadbooknavigator.features.location.domain.LocationClient
+import org.giste.roadbooknavigator.features.location.domain.LocationConfig
 import org.giste.roadbooknavigator.features.location.domain.LocationLogger
 import org.giste.roadbooknavigator.features.location.domain.LocationRepository
 import org.giste.roadbooknavigator.features.location.domain.LocationSettingsRepository
@@ -57,7 +58,11 @@ internal abstract class LocationDataModule {
         internal fun provideLocationClient(
             @ApplicationContext context: Context,
             logger: LocationLogger
-        ): LocationClient = LocationClient.create(context, logger)
+        ): LocationClient = LocationClient.create(
+            context = context,
+            config = LocationConfig(),
+            logger = logger
+        )
 
         @Provides
         internal fun provideLocationRepository(client: LocationClient): LocationRepository = client.locationRepository

@@ -26,8 +26,11 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
+import org.giste.roadbooknavigator.features.location.domain.LocationConfig
 import org.giste.roadbooknavigator.features.location.domain.LocationLogger
 import org.giste.roadbooknavigator.features.location.domain.LocationSettings
+import org.giste.roadbooknavigator.features.location.domain.MinDistanceThreshold
+import org.giste.roadbooknavigator.features.location.domain.PollingIntervalThreshold
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -53,7 +56,7 @@ class DataStoreLocationSettingsRepositoryTest {
             scope = testScope,
             produceFile = { File(temporaryFolder.newFolder(), "test_location_settings.preferences_pb") }
         )
-        repository = DataStoreLocationSettingsRepository(dataStore, logger)
+        repository = DataStoreLocationSettingsRepository(dataStore, logger, LocationConfig())
     }
 
     @Test
@@ -61,6 +64,20 @@ class DataStoreLocationSettingsRepositoryTest {
         val settings = repository.getLocationSettings().first()
         assertEquals(LocationSettings.DEFAULT_POLLING_INTERVAL, settings.pollingInterval)
         assertEquals(LocationSettings.DEFAULT_MIN_DISTANCE, settings.minDistance)
+    }
+
+    @Test
+    fun `should use custom initial config when no data exists`() = runTest {
+        val customConfig = LocationConfig(
+            initialPollingInterval = PollingIntervalThreshold(1000L),
+            initialMinDistance = MinDistanceThreshold(5.0f)
+        )
+        val customRepository = DataStoreLocationSettingsRepository(dataStore, logger, customConfig)
+        
+        val settings = customRepository.getLocationSettings().first()
+        
+        assertEquals(1000L, settings.pollingInterval)
+        assertEquals(5.0f, settings.minDistance)
     }
 
     @Test

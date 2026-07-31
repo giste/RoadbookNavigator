@@ -35,13 +35,15 @@ import org.giste.roadbooknavigator.features.location.domain.usecase.UpdateLocati
 public class LocationClient private constructor(
     private val context: Context,
     private val logger: LocationLogger,
+    private val config: LocationConfig,
     private val dataStoreName: String
 ) {
     // Repositories are lazily initialized
     internal val locationSettingsRepository: LocationSettingsRepository by lazy {
         DataStoreLocationSettingsRepository(
             dataStore = LocationDataStoreFactory.create(context, dataStoreName),
-            logger = logger
+            logger = logger,
+            initialConfig = config
         )
     }
 
@@ -96,17 +98,20 @@ public class LocationClient private constructor(
          * Creates a new instance of [LocationClient].
          *
          * @param context The application context.
+         * @param config The initial configuration. Defaults to [LocationConfig].
          * @param logger An optional logger. Defaults to [AndroidLocationLogger].
          * @param dataStoreName The name of the DataStore file. Defaults to "location_settings".
          */
         public fun create(
             context: Context,
+            config: LocationConfig = LocationConfig(),
             logger: LocationLogger = AndroidLocationLogger(),
             dataStoreName: String = "location_settings"
         ): LocationClient {
             return LocationClient(
                 context = context.applicationContext,
                 logger = logger,
+                config = config,
                 dataStoreName = dataStoreName
             )
         }

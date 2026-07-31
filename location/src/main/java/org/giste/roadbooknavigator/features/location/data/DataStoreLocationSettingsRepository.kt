@@ -24,6 +24,7 @@ import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import org.giste.roadbooknavigator.features.location.domain.LocationConfig
 import org.giste.roadbooknavigator.features.location.domain.LocationLogger
 import org.giste.roadbooknavigator.features.location.domain.LocationSettings
 import org.giste.roadbooknavigator.features.location.domain.LocationSettingsRepository
@@ -34,6 +35,7 @@ import org.giste.roadbooknavigator.features.location.domain.LocationSettingsRepo
 internal class DataStoreLocationSettingsRepository(
     private val dataStore: DataStore<Preferences>,
     private val logger: LocationLogger,
+    private val initialConfig: LocationConfig
 ) : LocationSettingsRepository {
 
     private object Keys {
@@ -44,9 +46,9 @@ internal class DataStoreLocationSettingsRepository(
     override fun getLocationSettings(): Flow<LocationSettings> = dataStore.data.map { preferences ->
         LocationSettings(
             pollingInterval = preferences[Keys.POLLING_INTERVAL]
-                ?: LocationSettings.DEFAULT_POLLING_INTERVAL,
+                ?: initialConfig.initialPollingInterval.milliseconds,
             minDistance = preferences[Keys.MIN_DISTANCE]
-                ?: LocationSettings.DEFAULT_MIN_DISTANCE,
+                ?: initialConfig.initialMinDistance.meters,
         )
     }.also { logger.d("DataStoreLocationSettingsRepository: New location settings %s", it) }
 

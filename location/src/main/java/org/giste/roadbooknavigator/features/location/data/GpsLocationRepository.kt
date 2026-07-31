@@ -23,22 +23,18 @@ import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import org.giste.roadbooknavigator.features.location.domain.LocationLogger
 import org.giste.roadbooknavigator.features.location.domain.LocationRepository
 import org.giste.roadbooknavigator.features.location.domain.UserLocation
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Implementation of [LocationRepository] using the Android Framework [android.location.LocationManager].
  */
-@Singleton
-internal class GpsLocationRepository @Inject constructor(
-    @param:ApplicationContext private val context: Context,
+internal class GpsLocationRepository(
+    context: Context,
     private val logger: LocationLogger
 ) : LocationRepository {
 

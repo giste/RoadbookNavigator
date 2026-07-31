@@ -18,16 +18,13 @@
 package org.giste.roadbooknavigator.features.location.data
 
 import android.content.Context
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStore
-import dagger.Binds
 import dagger.BindsOptionalOf
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import org.giste.roadbooknavigator.features.location.domain.LocationClient
 import org.giste.roadbooknavigator.features.location.domain.LocationLogger
 import org.giste.roadbooknavigator.features.location.domain.LocationRepository
 import org.giste.roadbooknavigator.features.location.domain.LocationSettingsRepository
@@ -37,29 +34,11 @@ import javax.inject.Singleton
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-internal annotation class LocationSettingsDataStore
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
 public annotation class AppLocationLogger
-
-private val Context.locationSettingsDataStore: DataStore<Preferences> by preferencesDataStore(name = "location_settings")
 
 @Module
 @InstallIn(SingletonComponent::class)
 internal abstract class LocationDataModule {
-
-    @Binds
-    @Singleton
-    internal abstract fun bindLocationRepository(
-        gpsLocationRepository: GpsLocationRepository
-    ): LocationRepository
-
-    @Binds
-    @Singleton
-    internal abstract fun bindLocationSettingsRepository(
-        dataStoreLocationSettingsRepository: DataStoreLocationSettingsRepository
-    ): LocationSettingsRepository
 
     @BindsOptionalOf
     @AppLocationLogger
@@ -68,15 +47,22 @@ internal abstract class LocationDataModule {
     companion object {
         @Provides
         @Singleton
-        @LocationSettingsDataStore
-        internal fun provideLocationSettingsDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
-            context.locationSettingsDataStore
-
-        @Provides
-        @Singleton
         internal fun provideLocationLogger(
             @AppLocationLogger optionalLogger: Optional<LocationLogger>,
             androidLocationLogger: AndroidLocationLogger
         ): LocationLogger = if (optionalLogger.isPresent) optionalLogger.get() else androidLocationLogger
+
+        @Provides
+        @Singleton
+        internal fun provideLocationClient(
+            @ApplicationContext context: Context,
+            logger: LocationLogger
+        ): LocationClient = LocationClient.create(context, logger)
+
+        @Provides
+        internal fun provideLocationRepository(client: LocationClient): LocationRepository = client.locationRepository
+
+        @Provides
+        internal fun provideLocationSettingsRepository(client: LocationClient): LocationSettingsRepository = client.locationSettingsRepository
     }
 }

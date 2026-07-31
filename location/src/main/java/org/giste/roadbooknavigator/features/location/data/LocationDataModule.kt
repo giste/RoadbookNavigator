@@ -22,6 +22,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.Binds
+import dagger.BindsOptionalOf
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,12 +31,17 @@ import dagger.hilt.components.SingletonComponent
 import org.giste.roadbooknavigator.features.location.domain.LocationLogger
 import org.giste.roadbooknavigator.features.location.domain.LocationRepository
 import org.giste.roadbooknavigator.features.location.domain.LocationSettingsRepository
+import java.util.Optional
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 internal annotation class LocationSettingsDataStore
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+public annotation class AppLocationLogger
 
 private val Context.locationSettingsDataStore: DataStore<Preferences> by preferencesDataStore(name = "location_settings")
 
@@ -55,11 +61,9 @@ internal abstract class LocationDataModule {
         dataStoreLocationSettingsRepository: DataStoreLocationSettingsRepository
     ): LocationSettingsRepository
 
-    @Binds
-    @Singleton
-    internal abstract fun bindLocationLogger(
-        androidLocationLogger: AndroidLocationLogger
-    ): LocationLogger
+    @BindsOptionalOf
+    @AppLocationLogger
+    internal abstract fun optionalLocationLogger(): LocationLogger
 
     companion object {
         @Provides
@@ -67,5 +71,12 @@ internal abstract class LocationDataModule {
         @LocationSettingsDataStore
         internal fun provideLocationSettingsDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
             context.locationSettingsDataStore
+
+        @Provides
+        @Singleton
+        internal fun provideLocationLogger(
+            @AppLocationLogger optionalLogger: Optional<LocationLogger>,
+            androidLocationLogger: AndroidLocationLogger
+        ): LocationLogger = if (optionalLogger.isPresent) optionalLogger.get() else androidLocationLogger
     }
 }

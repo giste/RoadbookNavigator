@@ -17,6 +17,7 @@
 
 package org.giste.roadbooknavigator.features.location.domain.usecase
 
+import androidx.annotation.FloatRange
 import org.giste.roadbooknavigator.features.location.domain.LocationSettingsRepository
 import org.giste.roadbooknavigator.features.location.domain.MinDistanceThreshold
 import javax.inject.Inject
@@ -27,7 +28,10 @@ import javax.inject.Inject
 public class UpdateLocationMinDistanceUseCase @Inject internal constructor(
     private val repository: LocationSettingsRepository
 ) {
-    public suspend operator fun invoke(distance: Float): Result<Unit> = runCatching {
+    public suspend operator fun invoke(
+        @FloatRange(from = MinDistanceThreshold.MIN.toDouble(), to = MinDistanceThreshold.MAX.toDouble())
+        distance: Float
+    ): Result<Unit> = runCatching {
         MinDistanceThreshold(distance)
         repository.updateMinDistance(distance)
     }

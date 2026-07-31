@@ -17,20 +17,25 @@
 
 package org.giste.roadbooknavigator.features.location.domain
 
+import androidx.annotation.FloatRange
+import androidx.annotation.IntRange
+
 /**
  * Value Object for GPS polling interval.
  */
 @JvmInline
-public value class PollingIntervalThreshold(public val milliseconds: Long) {
+public value class PollingIntervalThreshold(
+    @IntRange(from = MIN, to = MAX) public val milliseconds: Long
+) {
     init {
-        require(milliseconds.toDouble() in MIN..MAX) {
+        require(milliseconds in MIN..MAX) {
             "Polling interval must be between $MIN and $MAX ms"
         }
     }
 
     public companion object {
-        public const val MIN: Double = 100.0
-        public const val MAX: Double = 2000.0
+        public const val MIN: Long = 100L
+        public const val MAX: Long = 2000L
     }
 }
 
@@ -38,7 +43,9 @@ public value class PollingIntervalThreshold(public val milliseconds: Long) {
  * Value Object for GPS minimum distance.
  */
 @JvmInline
-public value class MinDistanceThreshold(public val meters: Float) {
+public value class MinDistanceThreshold(
+    @FloatRange(from = MIN.toDouble(), to = MAX.toDouble()) public val meters: Float
+) {
     init {
         require(meters in MIN..MAX) {
             "Min distance must be between $MIN and $MAX meters"

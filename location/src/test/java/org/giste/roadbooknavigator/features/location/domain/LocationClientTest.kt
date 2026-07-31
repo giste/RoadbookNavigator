@@ -22,8 +22,6 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
-import org.giste.roadbooknavigator.features.location.domain.MinDistanceThreshold
-import org.giste.roadbooknavigator.features.location.domain.PollingIntervalThreshold
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule

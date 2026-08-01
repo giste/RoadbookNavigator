@@ -28,9 +28,11 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
+import org.giste.android.location.domain.LocationEvent
 import org.giste.android.location.domain.LocationLogger
 import org.giste.android.location.domain.UserLocation
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -73,11 +75,11 @@ class GpsLocationRepositoryIntegrationTest {
 
     @Test
     fun `should emit location when system sends update`() = runTest {
-        val collectedLocations = mutableListOf<UserLocation>()
+        val collectedEvents = mutableListOf<LocationEvent>()
         
         val job = launch(UnconfinedTestDispatcher()) {
             repository.getLocations(pollingInterval = 1000L, minDistance = 0f)
-                .collect { collectedLocations.add(it) }
+                .collect { collectedEvents.add(it) }
         }
 
         // Simulate a location update
@@ -92,9 +94,11 @@ class GpsLocationRepositoryIntegrationTest {
         shadowLocationManager.simulateLocation(location)
         ShadowLooper.idleMainLooper()
 
-        assertEquals(1, collectedLocations.size)
-        assertEquals(42.0, collectedLocations[0].latitude, 0.0)
-        assertEquals(2.0, collectedLocations[0].longitude, 0.0)
+        assertEquals(1, collectedEvents.size)
+        assertTrue(collectedEvents[0] is LocationEvent.LocationUpdated)
+        val result = (collectedEvents[0] as LocationEvent.LocationUpdated).location
+        assertEquals(42.0, result.latitude, 0.0)
+        assertEquals(2.0, result.longitude, 0.0)
 
         job.cancel()
     }

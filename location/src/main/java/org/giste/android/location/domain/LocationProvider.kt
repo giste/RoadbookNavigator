@@ -20,12 +20,12 @@ package org.giste.android.location.domain
 import kotlinx.coroutines.flow.Flow
 
 /**
- * Interface to provide a stream of user locations.
- * This allows features to depend on an abstraction rather than concrete settings.
+ * Interface to provide a stream of location events.
+ * This allows features to respond to both data updates and engine status changes.
  */
 public interface LocationProvider {
     /**
-     * Emits the current location as it changes.
+     * Emits location events (updates, signal status, errors) as they occur.
      */
-    public fun observeLocation(): Flow<UserLocation>
+    public fun observeLocation(): Flow<LocationEvent>
 }

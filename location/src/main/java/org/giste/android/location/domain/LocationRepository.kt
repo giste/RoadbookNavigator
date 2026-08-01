@@ -20,11 +20,11 @@ package org.giste.android.location.domain
 import kotlinx.coroutines.flow.Flow
 
 /**
- * Interface to provide raw location updates.
+ * Interface to provide location events.
  */
 internal interface LocationRepository {
     /**
-     * Emits the current location as it changes.
+     * Emits location events as they occur.
      *
      * @param pollingInterval Minimum time interval between updates in ms.
      * @param minDistance Minimum distance between updates in meters.
@@ -32,5 +32,5 @@ internal interface LocationRepository {
     fun getLocations(
         pollingInterval: Long = 1000L,
         minDistance: Float = 0f
-    ): Flow<UserLocation>
+    ): Flow<LocationEvent>
 }

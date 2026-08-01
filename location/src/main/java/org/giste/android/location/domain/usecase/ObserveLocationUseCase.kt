@@ -19,14 +19,14 @@ package org.giste.android.location.domain.usecase
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.onEach
+import org.giste.android.location.domain.LocationEvent
 import org.giste.android.location.domain.LocationLogger
 import org.giste.android.location.domain.LocationRepository
 import org.giste.android.location.domain.UserLocation
 import javax.inject.Inject
 
 /**
- * Use case to observe the current device location.
+ * Use case to observe location events from the device.
  */
 public class ObserveLocationUseCase @Inject internal constructor(
     private val locationRepository: LocationRepository,
@@ -36,21 +36,15 @@ public class ObserveLocationUseCase @Inject internal constructor(
     public operator fun invoke(
         pollingInterval: Long,
         minDistance: Float
-    ): Flow<UserLocation> {
+    ): Flow<LocationEvent> {
         logger.i(
-            "ObserveLocationUseCase: Requesting locations with interval: %d ms, minDistance: %f m",
+            "ObserveLocationUseCase: Requesting location events with interval: %d ms, minDistance: %f m",
             pollingInterval,
             minDistance
         )
         return locationRepository.getLocations(
             pollingInterval = pollingInterval,
             minDistance = minDistance
-        ).onEach { location ->
-            logger.v(
-                "ObserveLocationUseCase: New location received: lat=%f, lon=%f",
-                location.latitude,
-                location.longitude
-            )
-        }
+        )
     }
 }

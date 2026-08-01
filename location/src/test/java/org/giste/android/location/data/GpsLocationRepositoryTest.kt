@@ -29,9 +29,11 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
+import org.giste.android.location.domain.LocationEvent
 import org.giste.android.location.domain.LocationLogger
 import org.giste.android.location.domain.UserLocation
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
@@ -46,6 +48,7 @@ class GpsLocationRepositoryTest {
     @Before
     fun setup() {
         every { context.getSystemService(Context.LOCATION_SERVICE) } returns locationManager
+        every { locationManager.removeUpdates(any<LocationListener>()) } returns Unit
         gpsLocationRepository = GpsLocationRepository(context, logger)
     }
 
@@ -60,7 +63,6 @@ class GpsLocationRepositoryTest {
                 capture(listenerSlot),
             ) 
         } returns Unit
-        every { locationManager.removeUpdates(any<LocationListener>()) } returns Unit
 
         val job = launch(UnconfinedTestDispatcher()) {
             gpsLocationRepository.getLocations(1000L, 2f).collect {}
@@ -81,7 +83,7 @@ class GpsLocationRepositoryTest {
     }
 
     @Test
-    fun `should correctly map android location to user location`() = runTest {
+    fun `should correctly map android location to user location event`() = runTest {
         val listenerSlot = slot<LocationListener>()
         every { 
             locationManager.requestLocationUpdates(
@@ -91,7 +93,6 @@ class GpsLocationRepositoryTest {
                 capture(listenerSlot),
             )
         } returns Unit
-        every { locationManager.removeUpdates(any<LocationListener>()) } returns Unit
 
         val androidLocation = mockk<Location>()
         every { androidLocation.latitude } returns 40.0
@@ -104,23 +105,123 @@ class GpsLocationRepositoryTest {
         every { androidLocation.bearing } returns 90f
         every { androidLocation.time } returns 123456789L
 
-        val collectedLocations = mutableListOf<UserLocation>()
+        val collectedEvents = mutableListOf<LocationEvent>()
         val job = launch(UnconfinedTestDispatcher()) {
-            gpsLocationRepository.getLocations(500L, 1f).collect { collectedLocations.add(it) }
+            gpsLocationRepository.getLocations(500L, 1f).collect { collectedEvents.add(it) }
         }
 
         listenerSlot.captured.onLocationChanged(androidLocation)
 
-        val result = collectedLocations.first()
-        assertEquals(40.0, result.latitude, 0.0)
-        assertEquals(-3.0, result.longitude, 0.0)
-        assertEquals(100.0, result.altitude, 0.0)
-        assertEquals(5f, result.accuracy)
-        assertEquals(2f, result.verticalAccuracy)
-        assertEquals(10f, result.speed)
-        assertEquals(90f, result.bearing)
-        assertEquals(123456789L, result.time)
+        val result = collectedEvents.first()
+        assertTrue(result is LocationEvent.LocationUpdated)
+        val location = (result as LocationEvent.LocationUpdated).location
+        assertEquals(40.0, location.latitude, 0.0)
+        assertEquals(-3.0, location.longitude, 0.0)
+        assertEquals(100.0, location.altitude, 0.0)
+        assertEquals(5f, location.accuracy)
+        assertEquals(2f, location.verticalAccuracy)
+        assertEquals(10f, location.speed)
+        assertEquals(90f, location.bearing)
+        assertEquals(123456789L, location.time)
 
         job.cancel()
+    }
+
+    @Test
+    fun `should emit SignalLost when provider status is unavailable`() = runTest {
+        val listenerSlot = slot<LocationListener>()
+        every { 
+            locationManager.requestLocationUpdates(any<String>(), any<Long>(), any<Float>(), capture(listenerSlot))
+        } returns Unit
+
+        val collectedEvents = mutableListOf<LocationEvent>()
+        val job = launch(UnconfinedTestDispatcher()) {
+            gpsLocationRepository.getLocations(1000L, 0f).collect { collectedEvents.add(it) }
+        }
+
+        // status 1 = TEMPORARILY_UNAVAILABLE
+        @Suppress("DEPRECATION")
+        listenerSlot.captured.onStatusChanged(LocationManager.GPS_PROVIDER, 1, null)
+
+        assertTrue(collectedEvents.last() is LocationEvent.SignalLost)
+        job.cancel()
+    }
+
+    @Test
+    fun `should emit SignalRestored when provider status is available`() = runTest {
+        val listenerSlot = slot<LocationListener>()
+        every { 
+            locationManager.requestLocationUpdates(any<String>(), any<Long>(), any<Float>(), capture(listenerSlot))
+        } returns Unit
+
+        val collectedEvents = mutableListOf<LocationEvent>()
+        val job = launch(UnconfinedTestDispatcher()) {
+            gpsLocationRepository.getLocations(1000L, 0f).collect { collectedEvents.add(it) }
+        }
+
+        // status 2 = AVAILABLE
+        @Suppress("DEPRECATION")
+        listenerSlot.captured.onStatusChanged(LocationManager.GPS_PROVIDER, 2, null)
+
+        assertTrue(collectedEvents.last() is LocationEvent.SignalRestored)
+        job.cancel()
+    }
+
+    @Test
+    fun `should emit ProviderDisabled when provider is disabled`() = runTest {
+        val listenerSlot = slot<LocationListener>()
+        every { 
+            locationManager.requestLocationUpdates(any<String>(), any<Long>(), any<Float>(), capture(listenerSlot))
+        } returns Unit
+
+        val collectedEvents = mutableListOf<LocationEvent>()
+        val job = launch(UnconfinedTestDispatcher()) {
+            gpsLocationRepository.getLocations(1000L, 0f).collect { collectedEvents.add(it) }
+        }
+
+        listenerSlot.captured.onProviderDisabled(LocationManager.GPS_PROVIDER)
+
+        assertTrue(collectedEvents.last() is LocationEvent.ProviderDisabled)
+        job.cancel()
+    }
+
+    @Test
+    fun `should emit SignalRestored when provider is enabled`() = runTest {
+        val listenerSlot = slot<LocationListener>()
+        every { 
+            locationManager.requestLocationUpdates(any<String>(), any<Long>(), any<Float>(), capture(listenerSlot))
+        } returns Unit
+
+        val collectedEvents = mutableListOf<LocationEvent>()
+        val job = launch(UnconfinedTestDispatcher()) {
+            gpsLocationRepository.getLocations(1000L, 0f).collect { collectedEvents.add(it) }
+        }
+
+        listenerSlot.captured.onProviderEnabled(LocationManager.GPS_PROVIDER)
+
+        assertTrue(collectedEvents.last() is LocationEvent.SignalRestored)
+        job.cancel()
+    }
+
+    @Test
+    fun `should emit Error when requestLocationUpdates throws`() = runTest {
+        every { 
+            locationManager.requestLocationUpdates(any<String>(), any<Long>(), any<Float>(), any<LocationListener>())
+        } throws SecurityException("No permission")
+
+        val collectedEvents = mutableListOf<LocationEvent>()
+        
+        // We expect the flow to throw the exception after emitting the Error event
+        try {
+            gpsLocationRepository.getLocations(1000L, 0f).collect { 
+                collectedEvents.add(it) 
+            }
+        } catch (e: SecurityException) {
+            // Expected exception from close(e)
+        }
+
+        assertTrue(collectedEvents.isNotEmpty())
+        assertTrue(collectedEvents.last() is LocationEvent.Error)
+        assertEquals("No permission", (collectedEvents.last() as LocationEvent.Error).message)
     }
 }

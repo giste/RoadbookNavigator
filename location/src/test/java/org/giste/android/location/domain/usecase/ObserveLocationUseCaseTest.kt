@@ -23,8 +23,10 @@ import io.mockk.verify
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
+import org.giste.android.location.domain.LocationEvent
 import org.giste.android.location.domain.LocationLogger
 import org.giste.android.location.domain.LocationRepository
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class ObserveLocationUseCaseTest {
@@ -35,10 +37,12 @@ class ObserveLocationUseCaseTest {
 
     @Test
     fun `should call repository getLocations with parameters`() = runTest {
-        every { repository.getLocations(any(), any()) } returns flowOf(mockk(relaxed = true))
+        val expectedEvent = LocationEvent.LocationUpdated(mockk(relaxed = true))
+        every { repository.getLocations(any(), any()) } returns flowOf(expectedEvent)
 
-        useCase(pollingInterval = 2000L, minDistance = 10f).first()
+        val result = useCase(pollingInterval = 2000L, minDistance = 10f).first()
 
+        assertTrue(result is LocationEvent.LocationUpdated)
         verify { repository.getLocations(2000L, 10f) }
     }
 }

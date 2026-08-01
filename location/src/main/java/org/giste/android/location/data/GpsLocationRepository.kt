@@ -26,6 +26,7 @@ import android.os.Bundle
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import org.giste.android.location.domain.LocationEvent
 import org.giste.android.location.domain.LocationLogger
 import org.giste.android.location.domain.LocationRepository
 import org.giste.android.location.domain.UserLocation
@@ -45,9 +46,9 @@ internal class GpsLocationRepository(
     override fun getLocations(
         pollingInterval: Long,
         minDistance: Float
-    ): Flow<UserLocation> = callbackFlow {
+    ): Flow<LocationEvent> = callbackFlow {
         logger.d(
-            "GpsLocationRepository: Requesting location updates (interval: %d, distance: %f)",
+            "GpsLocationRepository: Requesting location events (interval: %d, distance: %f)",
             pollingInterval,
             minDistance
         )
@@ -60,20 +61,29 @@ internal class GpsLocationRepository(
                     location.longitude,
                     location.accuracy
                 )
-                trySend(location.toUserLocation())
+                trySend(LocationEvent.LocationUpdated(location.toUserLocation()))
             }
 
             @Deprecated("Deprecated in Java")
             override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
                 logger.d("GpsLocationRepository: Status changed for %s: %d", provider, status)
+                // Note: TEMPORARY - simple mapping for demonstration. 
+                // status 0 = OUT_OF_SERVICE, 1 = TEMPORARILY_UNAVAILABLE, 2 = AVAILABLE
+                if (status < 2) {
+                    trySend(LocationEvent.SignalLost)
+                } else {
+                    trySend(LocationEvent.SignalRestored)
+                }
             }
 
             override fun onProviderEnabled(provider: String) {
                 logger.i("GpsLocationRepository: Provider enabled: %s", provider)
+                trySend(LocationEvent.SignalRestored)
             }
 
             override fun onProviderDisabled(provider: String) {
                 logger.w("GpsLocationRepository: Provider disabled: %s", provider)
+                trySend(LocationEvent.ProviderDisabled)
             }
         }
 
@@ -86,6 +96,7 @@ internal class GpsLocationRepository(
             )
         } catch (e: Exception) {
             logger.e(e, "GpsLocationRepository: Error requesting location updates: %s", e.message)
+            trySend(LocationEvent.Error(e.message ?: "Unknown error"))
             close(e)
         }
 

@@ -27,10 +27,12 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import org.giste.roadbooknavigator.features.settings.domain.LocationSettingsRepository
 import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
 import javax.inject.Singleton
 
 private val Context.settingsDataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
+private val Context.locationSettingsDataStore: DataStore<Preferences> by preferencesDataStore(name = "location_settings")
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -42,11 +44,23 @@ abstract class SettingsModule {
         settingsRepository: DataStoreSettingsRepository
     ): SettingsRepository
 
+    @Binds
+    @Singleton
+    internal abstract fun bindLocationSettingsRepository(
+        locationSettingsRepository: DataStoreLocationSettingsRepository
+    ): LocationSettingsRepository
+
     companion object {
         @Provides
         @Singleton
         @SettingsDataStore
         internal fun provideSettingsDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
             context.settingsDataStore
+
+        @Provides
+        @Singleton
+        @LocationSettingsDataStore
+        internal fun provideLocationSettingsDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
+            context.locationSettingsDataStore
     }
 }

@@ -30,6 +30,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import org.giste.roadbooknavigator.features.settings.data.SettingsModule
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
+import org.giste.roadbooknavigator.features.settings.domain.LocationSettings
+import org.giste.roadbooknavigator.features.settings.domain.LocationSettingsRepository
 import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -48,11 +50,16 @@ class MainActivityTest {
     @BindValue
     val settingsRepository: SettingsRepository = mockk(relaxed = true)
 
+    @BindValue
+    val locationSettingsRepository: LocationSettingsRepository = mockk(relaxed = true)
+
     private val settingsFlow = MutableStateFlow(AppSettings())
+    private val locationSettingsFlow = MutableStateFlow(LocationSettings())
 
     @Before
     fun setup() {
         every { settingsRepository.getSettings() } returns settingsFlow
+        every { locationSettingsRepository.getLocationSettings() } returns locationSettingsFlow
     }
 
     @Test

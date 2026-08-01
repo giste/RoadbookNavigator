@@ -31,7 +31,7 @@ import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.odometer.domain.DistanceUtils
 import org.giste.roadbooknavigator.features.odometer.domain.Odometer
 import org.giste.android.location.domain.UserLocation
-import org.giste.android.location.domain.usecase.ObserveLocationUseCase
+import org.giste.android.location.domain.LocationProvider
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerRepository
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettings
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettingsRepository
@@ -42,7 +42,7 @@ import org.junit.Test
 class GetOdometerUseCaseTest {
 
     private val odometerRepository: OdometerRepository = mockk()
-    private val observeLocationUseCase: ObserveLocationUseCase = mockk()
+    private val locationProvider: LocationProvider = mockk()
     private val odometerSettingsRepository: OdometerSettingsRepository = mockk()
     private val logger: Logger = mockk(relaxed = true)
     private val distanceUtils = DistanceUtils(logger)
@@ -54,12 +54,12 @@ class GetOdometerUseCaseTest {
 
     @Before
     fun setup() {
-        every { observeLocationUseCase() } returns gpsFlow
+        every { locationProvider.observeLocation() } returns gpsFlow
         every { odometerSettingsRepository.getSettings() } returns settingsFlow
         every { odometerRepository.odometer } returns flowOf(Odometer(0.0, 0.0))
         coEvery { odometerRepository.updateDistance(any()) } returns Unit
         
-        getOdometerUseCase = GetOdometerUseCase(odometerRepository, observeLocationUseCase, odometerSettingsRepository, distanceUtils, logger)
+        getOdometerUseCase = GetOdometerUseCase(odometerRepository, locationProvider, odometerSettingsRepository, distanceUtils, logger)
     }
 
     @Test

@@ -30,11 +30,11 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.giste.roadbooknavigator.core.util.Logger
-import org.giste.android.location.domain.LocationSettings
-import org.giste.android.location.domain.usecase.ObserveLocationSettingsUseCase
-import org.giste.android.location.domain.usecase.RestoreLocationDefaultsUseCase
-import org.giste.android.location.domain.usecase.UpdateLocationMinDistanceUseCase
-import org.giste.android.location.domain.usecase.UpdateLocationPollingIntervalUseCase
+import org.giste.roadbooknavigator.features.settings.domain.LocationSettings
+import org.giste.roadbooknavigator.features.settings.domain.usecase.ObserveLocationSettingsUseCase
+import org.giste.roadbooknavigator.features.settings.domain.usecase.RestoreLocationDefaultsUseCase
+import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateLocationMinDistanceUseCase
+import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateLocationPollingIntervalUseCase
 import org.giste.roadbooknavigator.features.map.domain.model.MapSettings
 import org.giste.roadbooknavigator.features.map.domain.usecase.GetMapSettingsUseCase
 import org.giste.roadbooknavigator.features.map.domain.usecase.SaveMapSettingsUseCase

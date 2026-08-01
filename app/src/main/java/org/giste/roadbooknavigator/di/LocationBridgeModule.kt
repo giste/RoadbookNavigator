@@ -24,11 +24,13 @@ import dagger.hilt.components.SingletonComponent
 import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.android.location.data.AppLocationLogger
 import org.giste.android.location.domain.LocationLogger
+import org.giste.android.location.domain.LocationProvider
+import org.giste.roadbooknavigator.location.AppLocationProvider
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Bridges the :location module's logging to the app's main Timber logger.
+ * Bridges the :location module's infrastructure to the app's concrete implementations.
  */
 @Module
 @InstallIn(SingletonComponent::class)
@@ -40,6 +42,12 @@ internal abstract class LocationBridgeModule {
     internal abstract fun bindLocationLogger(
         locationTimberBridge: LocationTimberBridge
     ): LocationLogger
+
+    @Binds
+    @Singleton
+    internal abstract fun bindLocationProvider(
+        appLocationProvider: AppLocationProvider
+    ): LocationProvider
 }
 
 internal class LocationTimberBridge @Inject constructor(

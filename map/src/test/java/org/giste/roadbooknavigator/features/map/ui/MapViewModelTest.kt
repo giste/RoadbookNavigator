@@ -32,7 +32,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.android.location.domain.UserLocation
-import org.giste.android.location.domain.usecase.ObserveLocationUseCase
+import org.giste.android.location.domain.LocationProvider
 import org.giste.roadbooknavigator.features.map.domain.model.MapFile
 import org.giste.roadbooknavigator.features.map.domain.model.MapSettings
 import org.giste.roadbooknavigator.features.map.domain.usecase.GetLocalMapsUseCase
@@ -48,7 +48,7 @@ class MapViewModelTest {
 
     private val getLocalMapsUseCase: GetLocalMapsUseCase = mockk()
     private val getMapSettingsUseCase: GetMapSettingsUseCase = mockk()
-    private val observeLocationUseCase: ObserveLocationUseCase = mockk()
+    private val locationProvider: LocationProvider = mockk()
     private val logger: Logger = mockk(relaxed = true)
 
     private val testDispatcher = UnconfinedTestDispatcher()
@@ -71,12 +71,12 @@ class MapViewModelTest {
 
         every { getLocalMapsUseCase() } returns flowOf(expectedMaps)
         every { getMapSettingsUseCase() } returns flowOf(expectedSettings)
-        every { observeLocationUseCase() } returns flowOf(expectedLocation)
+        every { locationProvider.observeLocation() } returns flowOf(expectedLocation)
 
         val viewModel = MapViewModel(
             getLocalMapsUseCase,
             getMapSettingsUseCase,
-            observeLocationUseCase,
+            locationProvider,
             logger,
         )
 
@@ -98,12 +98,12 @@ class MapViewModelTest {
         
         every { getLocalMapsUseCase() } returns flowOf(maps)
         every { getMapSettingsUseCase() } returns flowOf(settings)
-        every { observeLocationUseCase() } returns locationFlow
+        every { locationProvider.observeLocation() } returns locationFlow
 
         val viewModel = MapViewModel(
             getLocalMapsUseCase,
             getMapSettingsUseCase,
-            observeLocationUseCase,
+            locationProvider,
             logger,
         )
 
@@ -125,12 +125,12 @@ class MapViewModelTest {
     fun `uiState should reflect empty maps when none are downloaded`() = runTest {
         every { getLocalMapsUseCase() } returns flowOf(emptyList())
         every { getMapSettingsUseCase() } returns flowOf(MapSettings())
-        every { observeLocationUseCase() } returns flowOf(UserLocation(0.0, 0.0, 0.0, 0f, null, 0f, 0f, 0L))
+        every { locationProvider.observeLocation() } returns flowOf(UserLocation(0.0, 0.0, 0.0, 0f, null, 0f, 0f, 0L))
 
         val viewModel = MapViewModel(
             getLocalMapsUseCase,
             getMapSettingsUseCase,
-            observeLocationUseCase,
+            locationProvider,
             logger,
         )
 
@@ -144,12 +144,12 @@ class MapViewModelTest {
         
         every { getLocalMapsUseCase() } returns flowOf(emptyList())
         every { getMapSettingsUseCase() } returns flowOf(MapSettings())
-        every { observeLocationUseCase() } returns pendingLocationFlow
+        every { locationProvider.observeLocation() } returns pendingLocationFlow
         
         val viewModel = MapViewModel(
             getLocalMapsUseCase,
             getMapSettingsUseCase,
-            observeLocationUseCase,
+            locationProvider,
             logger,
         )
         

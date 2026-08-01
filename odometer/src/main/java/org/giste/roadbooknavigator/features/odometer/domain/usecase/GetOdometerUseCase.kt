@@ -25,7 +25,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.scan
 import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.android.location.domain.UserLocation
-import org.giste.android.location.domain.usecase.ObserveLocationUseCase
+import org.giste.android.location.domain.LocationProvider
 import org.giste.roadbooknavigator.features.odometer.domain.DistanceUtils
 import org.giste.roadbooknavigator.features.odometer.domain.Odometer
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerRepository
@@ -44,14 +44,14 @@ import javax.inject.Inject
  */
 class GetOdometerUseCase @Inject constructor(
     private val odometerRepository: OdometerRepository,
-    private val observeLocationUseCase: ObserveLocationUseCase,
+    private val locationProvider: LocationProvider,
     private val odometerSettingsRepository: OdometerSettingsRepository,
     private val distanceUtils: DistanceUtils,
     private val logger: Logger
 ) {
     operator fun invoke(): Flow<Odometer> {
         logger.d("GetOdometerUseCase: Invoked")
-        val locationFlow = observeLocationUseCase()
+        val locationFlow = locationProvider.observeLocation()
             .onStart { emit(UserLocation(0.0, 0.0, 0.0, 999f, null, 0f, 0f, 0L)) }
 
         val processedLocations = combine(

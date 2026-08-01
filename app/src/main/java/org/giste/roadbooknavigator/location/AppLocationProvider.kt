@@ -20,8 +20,8 @@ package org.giste.roadbooknavigator.location
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
+import org.giste.android.location.domain.LocationEvent
 import org.giste.android.location.domain.LocationProvider
-import org.giste.android.location.domain.UserLocation
 import org.giste.android.location.domain.usecase.ObserveLocationUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.ObserveLocationSettingsUseCase
 import javax.inject.Inject
@@ -38,7 +38,7 @@ internal class AppLocationProvider @Inject constructor(
 ) : LocationProvider {
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    override fun observeLocation(): Flow<UserLocation> {
+    override fun observeLocation(): Flow<LocationEvent> {
         return observeLocationSettingsUseCase().flatMapLatest { settings ->
             observeLocationUseCase(
                 pollingInterval = settings.pollingInterval,

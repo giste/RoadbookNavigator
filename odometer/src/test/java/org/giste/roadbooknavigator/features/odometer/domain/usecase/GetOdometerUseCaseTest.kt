@@ -30,6 +30,7 @@ import kotlinx.coroutines.test.runTest
 import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.odometer.domain.DistanceUtils
 import org.giste.roadbooknavigator.features.odometer.domain.Odometer
+import org.giste.android.location.domain.LocationEvent
 import org.giste.android.location.domain.UserLocation
 import org.giste.android.location.domain.LocationProvider
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerRepository
@@ -46,7 +47,7 @@ class GetOdometerUseCaseTest {
     private val odometerSettingsRepository: OdometerSettingsRepository = mockk()
     private val logger: Logger = mockk(relaxed = true)
     private val distanceUtils = DistanceUtils(logger)
-    private val gpsFlow = MutableSharedFlow<UserLocation>()
+    private val gpsFlow = MutableSharedFlow<LocationEvent>()
     private val settingsFlow = MutableSharedFlow<OdometerSettings>()
     private val testDispatcher = UnconfinedTestDispatcher()
     
@@ -67,7 +68,7 @@ class GetOdometerUseCaseTest {
         val job = backgroundScope.launch { getOdometerUseCase().collect {} }
         settingsFlow.emit(OdometerSettings())
 
-        gpsFlow.emit(createLocation(40.0, -3.0))
+        gpsFlow.emit(LocationEvent.LocationUpdated(createLocation(40.0, -3.0)))
 
         coVerify(exactly = 0) { odometerRepository.updateDistance(any()) }
         job.cancel()
@@ -83,8 +84,8 @@ class GetOdometerUseCaseTest {
         val loc2 = createLocation(40.1, -3.1, verticalAccuracy = 5f)
         val expectedDistance = distanceUtils.calculateDistance(loc1, loc2, settings.minVerticalAccuracy)
 
-        gpsFlow.emit(loc1)
-        gpsFlow.emit(loc2)
+        gpsFlow.emit(LocationEvent.LocationUpdated(loc1))
+        gpsFlow.emit(LocationEvent.LocationUpdated(loc2))
 
         coVerify(exactly = 1) { odometerRepository.updateDistance(expectedDistance) }
         job.cancel()
@@ -95,8 +96,8 @@ class GetOdometerUseCaseTest {
         val job = backgroundScope.launch { getOdometerUseCase().collect {} }
         settingsFlow.emit(OdometerSettings(minAccuracy = 20f))
 
-        gpsFlow.emit(createLocation(40.0, -3.0, accuracy = 10f))
-        gpsFlow.emit(createLocation(40.1, -3.1, accuracy = 50f)) // Poor horizontal accuracy (> 20m)
+        gpsFlow.emit(LocationEvent.LocationUpdated(createLocation(40.0, -3.0, accuracy = 10f)))
+        gpsFlow.emit(LocationEvent.LocationUpdated(createLocation(40.1, -3.1, accuracy = 50f))) // Poor horizontal accuracy (> 20m)
 
         coVerify(exactly = 0) { odometerRepository.updateDistance(any()) }
         job.cancel()
@@ -114,9 +115,9 @@ class GetOdometerUseCaseTest {
 
         val expectedDistance = distanceUtils.calculateDistance(loc1, loc3, settings.minVerticalAccuracy)
 
-        gpsFlow.emit(loc1)
-        gpsFlow.emit(loc2)
-        gpsFlow.emit(loc3)
+        gpsFlow.emit(LocationEvent.LocationUpdated(loc1))
+        gpsFlow.emit(LocationEvent.LocationUpdated(loc2))
+        gpsFlow.emit(LocationEvent.LocationUpdated(loc3))
 
         // Distance should be between Valid 1 and Valid 2
         coVerify(exactly = 1) { odometerRepository.updateDistance(expectedDistance) }
@@ -136,8 +137,8 @@ class GetOdometerUseCaseTest {
         // Distance should include the 100m climb
         val expectedDistance = distanceUtils.calculateDistance(loc1, loc2, settings.minVerticalAccuracy)
 
-        gpsFlow.emit(loc1)
-        gpsFlow.emit(loc2)
+        gpsFlow.emit(LocationEvent.LocationUpdated(loc1))
+        gpsFlow.emit(LocationEvent.LocationUpdated(loc2))
 
         coVerify(exactly = 1) { odometerRepository.updateDistance(expectedDistance) }
         job.cancel()
@@ -156,8 +157,8 @@ class GetOdometerUseCaseTest {
         // Expected distance should ignore altitude (2D)
         val expectedDistance = distanceUtils.calculateDistance(loc1, loc2, settings.minVerticalAccuracy)
 
-        gpsFlow.emit(loc1)
-        gpsFlow.emit(loc2)
+        gpsFlow.emit(LocationEvent.LocationUpdated(loc1))
+        gpsFlow.emit(LocationEvent.LocationUpdated(loc2))
 
         coVerify(exactly = 1) { odometerRepository.updateDistance(expectedDistance) }
         job.cancel()
@@ -175,8 +176,8 @@ class GetOdometerUseCaseTest {
         
         val expectedDistance = distanceUtils.calculateDistance(loc1, loc2, settings.minVerticalAccuracy)
 
-        gpsFlow.emit(loc1)
-        gpsFlow.emit(loc2)
+        gpsFlow.emit(LocationEvent.LocationUpdated(loc1))
+        gpsFlow.emit(LocationEvent.LocationUpdated(loc2))
 
         coVerify(exactly = 1) { odometerRepository.updateDistance(expectedDistance) }
         job.cancel()
@@ -190,8 +191,8 @@ class GetOdometerUseCaseTest {
         val loc1 = createLocation(40.0, -3.0, speed = 0.5f)
         val loc2 = createLocation(40.1, -3.1, speed = 0.5f)
 
-        gpsFlow.emit(loc1)
-        gpsFlow.emit(loc2)
+        gpsFlow.emit(LocationEvent.LocationUpdated(loc1))
+        gpsFlow.emit(LocationEvent.LocationUpdated(loc2))
 
         coVerify(exactly = 0) { odometerRepository.updateDistance(any()) }
         job.cancel()
@@ -207,8 +208,8 @@ class GetOdometerUseCaseTest {
         val loc1 = createLocation(40.0, -3.0, speed = 10f)
         val loc2 = createLocation(40.1, -3.1, speed = 10f)
         
-        gpsFlow.emit(loc1)
-        gpsFlow.emit(loc2)
+        gpsFlow.emit(LocationEvent.LocationUpdated(loc1))
+        gpsFlow.emit(LocationEvent.LocationUpdated(loc2))
         
         coVerify(exactly = 0) { odometerRepository.updateDistance(any()) }
         
@@ -221,7 +222,7 @@ class GetOdometerUseCaseTest {
         val loc3 = createLocation(40.2, -3.2, speed = 10f)
         val expectedDistance = distanceUtils.calculateDistance(loc1, loc3, settings.minVerticalAccuracy)
         
-        gpsFlow.emit(loc3)
+        gpsFlow.emit(LocationEvent.LocationUpdated(loc3))
         
         coVerify(exactly = 1) { odometerRepository.updateDistance(expectedDistance) }
         job.cancel()

@@ -30,6 +30,7 @@ import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.giste.roadbooknavigator.core.util.Logger
+import org.giste.android.location.domain.LocationEvent
 import org.giste.android.location.domain.UserLocation
 import org.giste.android.location.domain.LocationProvider
 import org.giste.roadbooknavigator.features.odometer.data.DataStoreOdometerRepository
@@ -62,7 +63,7 @@ class OdometerIntegrationTest {
     private val logger: Logger = mockk(relaxed = true)
     private val distanceUtils = DistanceUtils(logger)
     
-    private val gpsFlow = MutableSharedFlow<UserLocation>()
+    private val gpsFlow = MutableSharedFlow<LocationEvent>()
     private val settingsFlow = MutableSharedFlow<OdometerSettings>()
     
     private lateinit var getOdometerUseCase: GetOdometerUseCase
@@ -96,11 +97,11 @@ class OdometerIntegrationTest {
         assertTrue(results.any { it.total == 0.0 && it.partial == 0.0 })
 
         // 3. Emit first location (seed)
-        gpsFlow.emit(createLocation(40.0, -3.0))
+        gpsFlow.emit(LocationEvent.LocationUpdated(createLocation(40.0, -3.0)))
         
         // 4. Emit second location (~111m north)
         // 0.001 degrees latitude is approx 111 meters
-        gpsFlow.emit(createLocation(40.001, -3.0))
+        gpsFlow.emit(LocationEvent.LocationUpdated(createLocation(40.001, -3.0)))
 
         // 5. Verify the odometer has updated
         val lastOdometer = results.last()
@@ -125,11 +126,11 @@ class OdometerIntegrationTest {
         // Valid fix 1
         settingsFlow.emit(OdometerSettings(speedThreshold = 0.5f))
         val loc1 = createLocation(40.0, -3.0)
-        gpsFlow.emit(loc1)
+        gpsFlow.emit(LocationEvent.LocationUpdated(loc1))
 
         // Valid fix 2 -> Distance update
         val loc2 = createLocation(40.001, -3.0)
-        gpsFlow.emit(loc2)
+        gpsFlow.emit(LocationEvent.LocationUpdated(loc2))
         val firstDistance = results.last().total
         assertTrue(firstDistance > 0)
 
@@ -138,7 +139,7 @@ class OdometerIntegrationTest {
         
         // Valid fix 3 but ignored due to speed threshold
         val loc3 = createLocation(40.002, -3.0, speed = 10f) // 10 < 50
-        gpsFlow.emit(loc3)
+        gpsFlow.emit(LocationEvent.LocationUpdated(loc3))
         
         // Distance should not have changed
         assertEquals(firstDistance, results.last().total, 0.001)
@@ -148,7 +149,7 @@ class OdometerIntegrationTest {
 
         // Valid fix 4 -> Should calculate distance from loc2 (last valid point) to loc4
         val loc4 = createLocation(40.003, -3.0)
-        gpsFlow.emit(loc4)
+        gpsFlow.emit(LocationEvent.LocationUpdated(loc4))
 
         // Total distance = distance(loc1, loc2) + distance(loc2, loc4)
         // 111.194 + 222.388 = 333.582

@@ -31,6 +31,7 @@ import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.giste.roadbooknavigator.core.util.Logger
+import org.giste.android.location.domain.LocationEvent
 import org.giste.android.location.domain.UserLocation
 import org.giste.android.location.domain.LocationProvider
 import org.giste.roadbooknavigator.features.map.domain.model.MapFile
@@ -71,7 +72,7 @@ class MapViewModelTest {
 
         every { getLocalMapsUseCase() } returns flowOf(expectedMaps)
         every { getMapSettingsUseCase() } returns flowOf(expectedSettings)
-        every { locationProvider.observeLocation() } returns flowOf(expectedLocation)
+        every { locationProvider.observeLocation() } returns flowOf(LocationEvent.LocationUpdated(expectedLocation))
 
         val viewModel = MapViewModel(
             getLocalMapsUseCase,
@@ -94,7 +95,7 @@ class MapViewModelTest {
         val location1 = UserLocation(40.0, -3.0, 0.0, 1f, null, 0f, 0f, 0L)
         val location2 = UserLocation(41.0, -2.0, 0.0, 1f, null, 0f, 0f, 100L)
 
-        val locationFlow = MutableStateFlow(location1)
+        val locationFlow = MutableStateFlow<LocationEvent>(LocationEvent.LocationUpdated(location1))
         
         every { getLocalMapsUseCase() } returns flowOf(maps)
         every { getMapSettingsUseCase() } returns flowOf(settings)
@@ -114,7 +115,7 @@ class MapViewModelTest {
 
         assertEquals(location1, viewModel.uiState.value.currentLocation)
 
-        locationFlow.value = location2
+        locationFlow.value = LocationEvent.LocationUpdated(location2)
         runCurrent()
         assertEquals(location2, viewModel.uiState.value.currentLocation)
         
@@ -125,7 +126,7 @@ class MapViewModelTest {
     fun `uiState should reflect empty maps when none are downloaded`() = runTest {
         every { getLocalMapsUseCase() } returns flowOf(emptyList())
         every { getMapSettingsUseCase() } returns flowOf(MapSettings())
-        every { locationProvider.observeLocation() } returns flowOf(UserLocation(0.0, 0.0, 0.0, 0f, null, 0f, 0f, 0L))
+        every { locationProvider.observeLocation() } returns flowOf(LocationEvent.LocationUpdated(UserLocation(0.0, 0.0, 0.0, 0f, null, 0f, 0f, 0L)))
 
         val viewModel = MapViewModel(
             getLocalMapsUseCase,
@@ -140,11 +141,9 @@ class MapViewModelTest {
 
     @Test
     fun `uiState should have null location initially if use case has not emitted`() = runTest {
-        val pendingLocationFlow = MutableStateFlow(UserLocation(0.0, 0.0, 0.0, 0f, null, 0f, 0f, 0L))
-        
         every { getLocalMapsUseCase() } returns flowOf(emptyList())
         every { getMapSettingsUseCase() } returns flowOf(MapSettings())
-        every { locationProvider.observeLocation() } returns pendingLocationFlow
+        every { locationProvider.observeLocation() } returns flowOf()
         
         val viewModel = MapViewModel(
             getLocalMapsUseCase,

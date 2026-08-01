@@ -23,12 +23,14 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import org.giste.roadbooknavigator.core.util.Logger
-import org.giste.android.location.domain.UserLocation
+import org.giste.android.location.domain.LocationEvent
 import org.giste.android.location.domain.LocationProvider
+import org.giste.android.location.domain.UserLocation
 import org.giste.roadbooknavigator.features.map.domain.model.MapFile
 import org.giste.roadbooknavigator.features.map.domain.model.MapSettings
 import org.giste.roadbooknavigator.features.map.domain.usecase.GetLocalMapsUseCase
@@ -46,7 +48,10 @@ class MapViewModel @Inject constructor(
     val uiState: StateFlow<MapUiState> = combine(
         getLocalMapsUseCase(),
         getMapSettingsUseCase(),
-        locationProvider.observeLocation().map { it as UserLocation? }.onStart { emit(null) }
+        locationProvider.observeLocation()
+            .filterIsInstance<LocationEvent.LocationUpdated>()
+            .map { it.location as UserLocation? }
+            .onStart { emit(null) }
     ) { localMaps, settings, location ->
         val mapUiState = MapUiState(
             localMaps = localMaps,

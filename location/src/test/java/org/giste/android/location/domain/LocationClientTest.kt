@@ -18,51 +18,34 @@
 package org.giste.android.location.domain
 
 import android.content.Context
-import io.mockk.every
+import androidx.test.core.app.ApplicationProvider
 import io.mockk.mockk
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.TemporaryFolder
-import java.io.File
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
+@RunWith(RobolectricTestRunner::class)
+@Config(sdk = [34])
 class LocationClientTest {
 
-    @get:Rule
-    val temporaryFolder = TemporaryFolder()
-
-    private val context: Context = mockk()
-    private lateinit var dataStoreDir: File
+    private lateinit var context: Context
 
     @Before
     fun setup() {
-        dataStoreDir = temporaryFolder.newFolder()
-        every { context.applicationContext } returns context
-        // Mocking path for DataStore
-        every { context.filesDir } returns dataStoreDir
+        context = ApplicationProvider.getApplicationContext()
     }
 
     @Test
-    fun `LocationClient should respect custom configuration`() = runTest {
-        val customConfig = LocationConfig(
-            initialPollingInterval = PollingIntervalThreshold(1234L),
-            initialMinDistance = MinDistanceThreshold(5.6f),
-            coroutineScope = this
-        )
-        
+    fun `LocationClient should provide observeLocation use case`() = runTest {
         val client = LocationClient.create(
             context = context,
-            config = customConfig,
-            logger = mockk(relaxed = true),
-            dataStoreName = "test_config_datastore"
+            logger = mockk(relaxed = true)
         )
         
-        val settings = client.observeLocationSettings().first()
-        
-        assertEquals(1234L, settings.pollingInterval)
-        assertEquals(5.6f, settings.minDistance)
+        assertNotNull(client.observeLocation)
     }
 }

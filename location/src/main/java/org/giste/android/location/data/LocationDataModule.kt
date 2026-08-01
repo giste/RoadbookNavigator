@@ -25,10 +25,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import org.giste.android.location.domain.LocationClient
-import org.giste.android.location.domain.LocationConfig
 import org.giste.android.location.domain.LocationLogger
 import org.giste.android.location.domain.LocationRepository
-import org.giste.android.location.domain.LocationSettingsRepository
 import java.util.Optional
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -60,14 +58,10 @@ internal abstract class LocationDataModule {
             logger: LocationLogger
         ): LocationClient = LocationClient.create(
             context = context,
-            config = LocationConfig(),
             logger = logger
         )
 
         @Provides
         internal fun provideLocationRepository(client: LocationClient): LocationRepository = client.locationRepository
-
-        @Provides
-        internal fun provideLocationSettingsRepository(client: LocationClient): LocationSettingsRepository = client.locationSettingsRepository
     }
 }

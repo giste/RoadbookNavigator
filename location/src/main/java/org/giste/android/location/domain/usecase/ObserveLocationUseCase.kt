@@ -19,11 +19,9 @@ package org.giste.android.location.domain.usecase
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.onEach
 import org.giste.android.location.domain.LocationLogger
 import org.giste.android.location.domain.LocationRepository
-import org.giste.android.location.domain.LocationSettingsRepository
 import org.giste.android.location.domain.UserLocation
 import javax.inject.Inject
 
@@ -32,29 +30,27 @@ import javax.inject.Inject
  */
 public class ObserveLocationUseCase @Inject internal constructor(
     private val locationRepository: LocationRepository,
-    private val locationSettingsRepository: LocationSettingsRepository,
     private val logger: LocationLogger
 ) {
     @OptIn(ExperimentalCoroutinesApi::class)
-    public operator fun invoke(): Flow<UserLocation> {
-        return locationSettingsRepository.getLocationSettings()
-            .flatMapLatest { settings ->
-                logger.i(
-                    "ObserveLocationUseCase: Requesting locations with interval: %d ms, minDistance: %f m",
-                    settings.pollingInterval,
-                    settings.minDistance
-                )
-                locationRepository.getLocations(
-                    pollingInterval = settings.pollingInterval,
-                    minDistance = settings.minDistance
-                )
-            }
-            .onEach { location ->
-                logger.v(
-                    "ObserveLocationUseCase: New location received: lat=%f, lon=%f",
-                    location.latitude,
-                    location.longitude
-                )
-            }
+    public operator fun invoke(
+        pollingInterval: Long,
+        minDistance: Float
+    ): Flow<UserLocation> {
+        logger.i(
+            "ObserveLocationUseCase: Requesting locations with interval: %d ms, minDistance: %f m",
+            pollingInterval,
+            minDistance
+        )
+        return locationRepository.getLocations(
+            pollingInterval = pollingInterval,
+            minDistance = minDistance
+        ).onEach { location ->
+            logger.v(
+                "ObserveLocationUseCase: New location received: lat=%f, lon=%f",
+                location.latitude,
+                location.longitude
+            )
+        }
     }
 }

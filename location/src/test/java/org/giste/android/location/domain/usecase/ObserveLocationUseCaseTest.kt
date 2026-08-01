@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  See the <https://www.gnu.org/licenses/>.
  */
 
 package org.giste.android.location.domain.usecase
@@ -25,29 +25,20 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.giste.android.location.domain.LocationLogger
 import org.giste.android.location.domain.LocationRepository
-import org.giste.android.location.domain.LocationSettings
-import org.giste.android.location.domain.LocationSettingsRepository
 import org.junit.Test
 
 class ObserveLocationUseCaseTest {
 
     private val repository: LocationRepository = mockk()
-    private val locationSettingsRepository: LocationSettingsRepository = mockk()
     private val logger: LocationLogger = mockk(relaxed = true)
-    private val useCase = ObserveLocationUseCase(repository, locationSettingsRepository, logger)
+    private val useCase = ObserveLocationUseCase(repository, logger)
 
     @Test
-    fun `should call repository getLocations with parameters from settings`() = runTest {
-        val settings = LocationSettings(
-            pollingInterval = 2000L,
-            minDistance = 10f,
-        )
-        every { locationSettingsRepository.getLocationSettings() } returns flowOf(settings)
+    fun `should call repository getLocations with parameters`() = runTest {
         every { repository.getLocations(any(), any()) } returns flowOf(mockk(relaxed = true))
 
-        useCase().first()
+        useCase(pollingInterval = 2000L, minDistance = 10f).first()
 
-        @Suppress("UnusedFlow")
-        (verify { repository.getLocations(2000L, 10f) })
+        verify { repository.getLocations(2000L, 10f) }
     }
 }

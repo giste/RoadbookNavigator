@@ -12,24 +12,26 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  See <https://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.odometer.domain.usecase
+package org.giste.roadbooknavigator.features.odometer.di
 
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import org.giste.roadbooknavigator.features.odometer.OdometerLoggerImpl
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerLogger
-import org.giste.roadbooknavigator.features.odometer.domain.OdometerRepository
-import javax.inject.Inject
+import javax.inject.Singleton
 
-/**
- * Use case to reset the partial odometer distance.
- */
-public class ResetPartialDistanceUseCase @Inject constructor(
-    private val repository: OdometerRepository,
-    private val logger: OdometerLogger
-) {
-    public suspend operator fun invoke() {
-        logger.d("ResetPartialDistanceUseCase: Invoked")
-        repository.resetPartialDistance()
-    }
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class OdometerBridgeModule {
+
+    @Binds
+    @Singleton
+    abstract fun bindOdometerLogger(
+        impl: OdometerLoggerImpl
+    ): OdometerLogger
 }

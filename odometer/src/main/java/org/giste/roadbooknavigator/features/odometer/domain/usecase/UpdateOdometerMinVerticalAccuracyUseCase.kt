@@ -17,7 +17,7 @@
 
 package org.giste.roadbooknavigator.features.odometer.domain.usecase
 
-import org.giste.roadbooknavigator.core.util.Logger
+import org.giste.roadbooknavigator.features.odometer.domain.OdometerLogger
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettingsRepository
 import org.giste.roadbooknavigator.features.odometer.domain.VerticalAccuracyThreshold
 import javax.inject.Inject
@@ -27,7 +27,7 @@ import javax.inject.Inject
  */
 public class UpdateOdometerMinVerticalAccuracyUseCase @Inject constructor(
     private val repository: OdometerSettingsRepository,
-    private val logger: Logger
+    private val logger: OdometerLogger
 ) {
     public suspend operator fun invoke(accuracy: Float): Result<Unit> = runCatching {
         logger.d("UpdateOdometerMinVerticalAccuracyUseCase: Invoked with accuracy: %f", accuracy)

@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import org.giste.roadbooknavigator.core.util.Logger
+import org.giste.roadbooknavigator.features.odometer.domain.OdometerLogger
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -41,7 +41,7 @@ class DataStoreOdometerRepositoryTest {
     val temporaryFolder = TemporaryFolder()
 
     private lateinit var dataStore: DataStore<Preferences>
-    private lateinit var logger: Logger
+    private lateinit var logger: OdometerLogger
     private lateinit var odometerRepository: DataStoreOdometerRepository
     private val testDispatcher = UnconfinedTestDispatcher()
     private val testScope = TestScope(testDispatcher)

@@ -15,21 +15,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.odometer.domain.usecase
-
-import org.giste.roadbooknavigator.features.odometer.domain.OdometerLogger
-import org.giste.roadbooknavigator.features.odometer.domain.OdometerRepository
-import javax.inject.Inject
+package org.giste.roadbooknavigator.features.odometer.domain
 
 /**
- * Use case to set the partial odometer distance to a specific value.
+ * Logger interface for the odometer module to decouple it from specific logging implementations.
  */
-public class SetPartialDistanceUseCase @Inject constructor(
-    private val repository: OdometerRepository,
-    private val logger: OdometerLogger
-) {
-    public suspend operator fun invoke(distance: Double) {
-        logger.d("SetPartialDistanceUseCase: Invoked with distance: %f", distance)
-        repository.setPartialDistance(distance)
-    }
+public interface OdometerLogger {
+    public fun v(message: String, vararg args: Any?)
+    public fun d(message: String, vararg args: Any?)
+    public fun i(message: String, vararg args: Any?)
+    public fun w(message: String, vararg args: Any?)
+    public fun e(message: String, vararg args: Any?, throwable: Throwable? = null)
 }

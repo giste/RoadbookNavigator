@@ -18,8 +18,8 @@
 package org.giste.roadbooknavigator.features.odometer.domain
 
 import io.mockk.mockk
-import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.android.location.domain.UserLocation
+import org.giste.roadbooknavigator.features.odometer.domain.OdometerLogger
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -27,7 +27,7 @@ import kotlin.math.sqrt
 
 class DistanceUtilsTest {
 
-    private val logger: Logger = mockk(relaxed = true)
+    private val logger: OdometerLogger = mockk(relaxed = true)
     private lateinit var distanceUtils: DistanceUtils
 
     @Before

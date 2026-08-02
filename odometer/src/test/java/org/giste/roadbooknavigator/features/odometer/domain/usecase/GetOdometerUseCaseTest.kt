@@ -27,9 +27,9 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.odometer.domain.DistanceUtils
 import org.giste.roadbooknavigator.features.odometer.domain.Odometer
+import org.giste.roadbooknavigator.features.odometer.domain.OdometerLogger
 import org.giste.android.location.domain.LocationEvent
 import org.giste.android.location.domain.UserLocation
 import org.giste.android.location.domain.LocationProvider
@@ -45,7 +45,7 @@ class GetOdometerUseCaseTest {
     private val odometerRepository: OdometerRepository = mockk()
     private val locationProvider: LocationProvider = mockk()
     private val odometerSettingsRepository: OdometerSettingsRepository = mockk()
-    private val logger: Logger = mockk(relaxed = true)
+    private val logger: OdometerLogger = mockk(relaxed = true)
     private val distanceUtils = DistanceUtils(logger)
     private val gpsFlow = MutableSharedFlow<LocationEvent>()
     private val settingsFlow = MutableSharedFlow<OdometerSettings>()

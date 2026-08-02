@@ -53,6 +53,7 @@ import org.giste.roadbooknavigator.features.roadbook.domain.usecase.SaveRoadbook
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.RemoteModel
+import org.giste.roadbooknavigator.features.settings.domain.roadbook.usecase.UpdateRoadbookKeySettingsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.GetSettingsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateFullScreenUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateLandscapeDistanceSectionWeightUseCase
@@ -87,6 +88,7 @@ class SettingsViewModelTest {
     private val restoreLocationDefaultsUseCase: RestoreLocationDefaultsUseCase = mockk()
     private val updateRemoteModelUseCase: UpdateRemoteModelUseCase = mockk()
     private val updateOdometerRemoteKeysUseCase: UpdateOdometerRemoteKeysUseCase = mockk()
+    private val updateRoadbookKeySettingsUseCase: UpdateRoadbookKeySettingsUseCase = mockk()
     private val saveMapSettingsUseCase: SaveMapSettingsUseCase = mockk()
     private val updateLandscapeDistanceSectionWeightUseCase: UpdateLandscapeDistanceSectionWeightUseCase = mockk()
     private val logger: Logger = mockk(relaxed = true)
@@ -122,6 +124,7 @@ class SettingsViewModelTest {
             restoreLocationDefaultsUseCase = restoreLocationDefaultsUseCase,
             updateRemoteModelUseCase = updateRemoteModelUseCase,
             updateOdometerRemoteKeysUseCase = updateOdometerRemoteKeysUseCase,
+            updateRoadbookKeySettingsUseCase = updateRoadbookKeySettingsUseCase,
             saveMapSettingsUseCase = saveMapSettingsUseCase,
             updateLandscapeDistanceSectionWeightUseCase = updateLandscapeDistanceSectionWeightUseCase,
             logger = logger
@@ -259,14 +262,14 @@ class SettingsViewModelTest {
     @Test
     fun `setRemoteModel DND2 updates keys correctly`() = runTest {
         coEvery { updateRemoteModelUseCase(RemoteModel.DND2) } returns Result.success(Unit)
-        coEvery { saveRoadbookSettingsUseCase.updateRemoteKeys(any(), any()) } returns Unit
+        coEvery { updateRoadbookKeySettingsUseCase(any(), any()) } returns Unit
         coEvery { updateOdometerRemoteKeysUseCase(any(), any(), any()) } returns Result.success(Unit)
 
         viewModel.setRemoteModel(RemoteModel.DND2)
         advanceUntilIdle()
 
         coVerify { updateRemoteModelUseCase(RemoteModel.DND2) }
-        coVerify { saveRoadbookSettingsUseCase.updateRemoteKeys(listOf(19), listOf(20)) }
+        coVerify { updateRoadbookKeySettingsUseCase(listOf(19), listOf(20)) }
         coVerify { updateOdometerRemoteKeysUseCase(listOf(22), listOf(21), listOf(136)) }
     }
 
@@ -290,13 +293,13 @@ class SettingsViewModelTest {
         val up = listOf(1)
         val down = listOf(2)
         coEvery { updateRemoteModelUseCase(RemoteModel.CUSTOM) } returns Result.success(Unit)
-        coEvery { saveRoadbookSettingsUseCase.updateRemoteKeys(up, down) } returns Unit
+        coEvery { updateRoadbookKeySettingsUseCase(up, down) } returns Unit
 
         viewModel.setRoadbookKeys(up, down)
         advanceUntilIdle()
 
         coVerify { updateRemoteModelUseCase(RemoteModel.CUSTOM) }
-        coVerify { saveRoadbookSettingsUseCase.updateRemoteKeys(up, down) }
+        coVerify { updateRoadbookKeySettingsUseCase(up, down) }
     }
 
     @Test

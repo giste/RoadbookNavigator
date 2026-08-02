@@ -36,14 +36,13 @@ import org.giste.odometer.domain.Odometer
 import org.giste.odometer.domain.OdometerSettings
 import org.giste.odometer.domain.usecase.DecrementPartialDistanceUseCase
 import org.giste.roadbooknavigator.features.settings.domain.odometer.usecase.ObserveOdometerSettingsUseCase
+import org.giste.roadbooknavigator.features.settings.domain.roadbook.usecase.ObserveRoadbookKeySettingsUseCase
 import org.giste.odometer.domain.usecase.GetOdometerUseCase
 import org.giste.odometer.domain.usecase.IncrementPartialDistanceUseCase
 import org.giste.odometer.domain.usecase.ResetAllDistancesUseCase
 import org.giste.odometer.domain.usecase.ResetPartialDistanceUseCase
 import org.giste.odometer.domain.usecase.SetPartialDistanceUseCase
 import org.giste.roadbooknavigator.features.odometer.toOdometerLocation
-import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookSettings
-import org.giste.roadbooknavigator.features.roadbook.domain.usecase.GetRoadbookSettingsUseCase
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.MoveRoadbookDownUseCase
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.MoveRoadbookUpUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.GetSettingsUseCase
@@ -59,7 +58,7 @@ class DashboardViewModel @Inject constructor(
     private val setPartialDistanceUseCase: SetPartialDistanceUseCase,
     getSettingsUseCase: GetSettingsUseCase,
     observeOdometerSettingsUseCase: ObserveOdometerSettingsUseCase,
-    getRoadbookSettingsUseCase: GetRoadbookSettingsUseCase,
+    observeRoadbookKeySettingsUseCase: ObserveRoadbookKeySettingsUseCase,
     private val moveRoadbookUpUseCase: MoveRoadbookUpUseCase,
     private val moveRoadbookDownUseCase: MoveRoadbookDownUseCase,
     private val locationProvider: LocationProvider,
@@ -70,6 +69,7 @@ class DashboardViewModel @Inject constructor(
     private val _showResetAllDialog = MutableStateFlow(false)
 
     private val odometerSettingsFlow = observeOdometerSettingsUseCase()
+    private val roadbookKeySettingsFlow = observeRoadbookKeySettingsUseCase()
     private val odometerLocationFlow = locationProvider.observeLocation()
         .filterIsInstance<LocationEvent.LocationUpdated>()
         .map { it.location.toOdometerLocation() }
@@ -80,14 +80,15 @@ class DashboardViewModel @Inject constructor(
         _showResetAllDialog,
         getSettingsUseCase(),
         odometerSettingsFlow,
-        getRoadbookSettingsUseCase()
+        roadbookKeySettingsFlow
     ) { flows ->
         val odometer = flows[0] as Odometer
         val showPartialDialog = flows[1] as Boolean
         val showResetAllDialog = flows[2] as Boolean
         val settings = flows[3] as org.giste.roadbooknavigator.features.settings.domain.AppSettings
         val odometerSettings = flows[4] as OdometerSettings
-        val roadbookSettings = flows[5] as RoadbookSettings
+        val roadbookKeySettings =
+            flows[5] as org.giste.roadbooknavigator.features.settings.domain.roadbook.RoadbookKeySettings
 
         DashboardUiState(
             odometer = odometer,
@@ -98,8 +99,8 @@ class DashboardViewModel @Inject constructor(
             increasePartialKeys = odometerSettings.increasePartial,
             decreasePartialKeys = odometerSettings.decreasePartial,
             resetPartialKeys = odometerSettings.resetPartial,
-            roadbookUpKeys = roadbookSettings.roadbookUp,
-            roadbookDownKeys = roadbookSettings.roadbookDown
+            roadbookUpKeys = roadbookKeySettings.upKeys,
+            roadbookDownKeys = roadbookKeySettings.downKeys
         )
     }.stateIn(
         scope = viewModelScope,
@@ -185,6 +186,6 @@ data class DashboardUiState(
     val increasePartialKeys: List<Int> = OdometerSettings.DEFAULT_INCREASE_KEYS,
     val decreasePartialKeys: List<Int> = OdometerSettings.DEFAULT_DECREASE_KEYS,
     val resetPartialKeys: List<Int> = OdometerSettings.DEFAULT_RESET_KEYS,
-    val roadbookUpKeys: List<Int> = RoadbookSettings.DEFAULT_UP_KEYS,
-    val roadbookDownKeys: List<Int> = RoadbookSettings.DEFAULT_DOWN_KEYS
+    val roadbookUpKeys: List<Int> = org.giste.roadbooknavigator.features.settings.domain.roadbook.RoadbookKeySettings.DEFAULT_UP_KEYS,
+    val roadbookDownKeys: List<Int> = org.giste.roadbooknavigator.features.settings.domain.roadbook.RoadbookKeySettings.DEFAULT_DOWN_KEYS
 )

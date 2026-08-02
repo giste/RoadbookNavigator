@@ -30,11 +30,18 @@ import dagger.hilt.components.SingletonComponent
 import org.giste.roadbooknavigator.features.settings.domain.odometer.OdometerSettingsRepository
 import org.giste.roadbooknavigator.features.settings.domain.location.LocationSettingsRepository
 import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
+import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookSettingsRepository
+import javax.inject.Qualifier
 import javax.inject.Singleton
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+internal annotation class RoadbookSettingsDataStore
 
 private val Context.settingsDataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 private val Context.locationSettingsDataStore: DataStore<Preferences> by preferencesDataStore(name = "location_settings")
 private val Context.odometerSettingsDataStore: DataStore<Preferences> by preferencesDataStore(name = "odometer_settings")
+private val Context.roadbookSettingsDataStore: DataStore<Preferences> by preferencesDataStore(name = "roadbook_settings")
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -58,6 +65,12 @@ abstract class SettingsModule {
         odometerSettingsRepository: DataStoreOdometerSettingsRepository
     ): OdometerSettingsRepository
 
+    @Binds
+    @Singleton
+    internal abstract fun bindRoadbookSettingsRepository(
+        roadbookSettingsRepository: DataStoreRoadbookSettingsRepository
+    ): RoadbookSettingsRepository
+
     companion object {
         @Provides
         @Singleton
@@ -76,5 +89,11 @@ abstract class SettingsModule {
         @OdometerSettingsDataStore
         internal fun provideOdometerSettingsDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
             context.odometerSettingsDataStore
+
+        @Provides
+        @Singleton
+        @RoadbookSettingsDataStore
+        internal fun provideRoadbookSettingsDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
+            context.roadbookSettingsDataStore
     }
 }

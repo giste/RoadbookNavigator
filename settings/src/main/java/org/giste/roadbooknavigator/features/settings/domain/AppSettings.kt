@@ -18,6 +18,7 @@
 package org.giste.roadbooknavigator.features.settings.domain
 
 import org.giste.roadbooknavigator.core.settings.domain.AppTheme
+import org.giste.roadbooknavigator.features.settings.domain.roadbook.RoadbookKeySettings
 
 /**
  * Aggregate Value Object representing all user-configurable settings.
@@ -27,6 +28,7 @@ import org.giste.roadbooknavigator.core.settings.domain.AppTheme
  * @property fullScreen Whether the app should be in immersive full-screen mode.
  * @property landscapeDistanceSectionWeight Weight (0.0 to 1.0) of the distance section in landscape.
  * @property remoteKeySettings Configuration for remote control keys.
+ * @property roadbookKeySettings Configuration for roadbook-specific keys.
  */
 data class AppSettings(
     val theme: AppTheme = AppTheme.FOLLOW_SYSTEM,
@@ -34,6 +36,7 @@ data class AppSettings(
     val fullScreen: Boolean = true,
     val landscapeDistanceSectionWeight: Float = 0.3f,
     val remoteKeySettings: RemoteKeySettings = RemoteKeySettings(),
+    val roadbookKeySettings: RoadbookKeySettings = RoadbookKeySettings(),
 ) {
     companion object {
         const val MIN_LANDSCAPE_WEIGHT = 0.25f

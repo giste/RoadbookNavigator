@@ -33,6 +33,7 @@ import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.RemoteKeySettings
 import org.giste.roadbooknavigator.features.settings.domain.RemoteModel
 import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
+import org.giste.roadbooknavigator.features.settings.domain.roadbook.RoadbookKeySettings
 import javax.inject.Inject
 
 /**
@@ -52,6 +53,8 @@ internal class DataStoreSettingsRepository @Inject constructor(
         val FULL_SCREEN = booleanPreferencesKey("full_screen")
         val REMOTE_MODEL = stringPreferencesKey("remote_model")
         val LANDSCAPE_WEIGHT = floatPreferencesKey("landscape_weight")
+        val ROADBOOK_KEYS_UP = stringPreferencesKey("roadbook_keys_up")
+        val ROADBOOK_KEYS_DOWN = stringPreferencesKey("roadbook_keys_down")
     }
 
     override fun getSettings(): Flow<AppSettings> = dataStore.data.map { preferences ->
@@ -65,6 +68,12 @@ internal class DataStoreSettingsRepository @Inject constructor(
             landscapeDistanceSectionWeight = preferences[Keys.LANDSCAPE_WEIGHT] ?: 0.3f,
             remoteKeySettings = RemoteKeySettings(
                 model = remoteModel
+            ),
+            roadbookKeySettings = RoadbookKeySettings(
+                upKeys = preferences[Keys.ROADBOOK_KEYS_UP]?.toIntList()
+                    ?: RoadbookKeySettings.DEFAULT_UP_KEYS,
+                downKeys = preferences[Keys.ROADBOOK_KEYS_DOWN]?.toIntList()
+                    ?: RoadbookKeySettings.DEFAULT_DOWN_KEYS,
             )
         )
     }.onEach {
@@ -105,6 +114,19 @@ internal class DataStoreSettingsRepository @Inject constructor(
             preferences[Keys.LANDSCAPE_WEIGHT] = weight
         }
     }
+
+    override suspend fun setRoadbookRemoteKeys(up: List<Int>, down: List<Int>) {
+        logger.i("DataStoreSettingsRepository: Setting roadbook remote keys")
+        dataStore.edit { preferences ->
+            preferences[Keys.ROADBOOK_KEYS_UP] = up.toPreferenceString()
+            preferences[Keys.ROADBOOK_KEYS_DOWN] = down.toPreferenceString()
+        }
+    }
+
+    private fun List<Int>.toPreferenceString(): String = joinToString(",")
+
+    private fun String.toIntList(): List<Int> =
+        if (isEmpty()) emptyList() else split(",").mapNotNull { it.toIntOrNull() }
 
     private fun safeThemeOf(name: String): AppTheme = try {
         AppTheme.valueOf(name)

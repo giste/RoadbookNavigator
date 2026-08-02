@@ -33,9 +33,4 @@ interface RoadbookSettingsRepository {
      * Updates the short distance threshold.
      */
     suspend fun saveShortDistanceThreshold(threshold: Long)
-
-    /**
-     * Updates the remote control keys for the roadbook.
-     */
-    suspend fun saveRemoteKeys(up: List<Int>, down: List<Int>)
 }

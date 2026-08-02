@@ -15,18 +15,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.roadbook.domain.usecase
-
-import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookSettingsRepository
-import javax.inject.Inject
+package org.giste.roadbooknavigator.features.settings.domain.roadbook
 
 /**
- * Use case to save roadbook settings.
+ * Value Object representing roadbook-specific key bindings.
+ *
+ * @property upKeys Keys to navigate up in the roadbook.
+ * @property downKeys Keys to navigate down in the roadbook.
  */
-class SaveRoadbookSettingsUseCase @Inject constructor(
-    private val repository: RoadbookSettingsRepository
+public data class RoadbookKeySettings(
+    val upKeys: List<Int> = DEFAULT_UP_KEYS,
+    val downKeys: List<Int> = DEFAULT_DOWN_KEYS,
 ) {
-    suspend operator fun invoke(shortDistanceThreshold: Long) {
-        repository.saveShortDistanceThreshold(shortDistanceThreshold)
+    public companion object {
+        /** Default keys for roadbook up (DPAD_UP). */
+        public val DEFAULT_UP_KEYS: List<Int> = listOf(19)
+
+        /** Default keys for roadbook down (DPAD_DOWN). */
+        public val DEFAULT_DOWN_KEYS: List<Int> = listOf(20)
     }
 }

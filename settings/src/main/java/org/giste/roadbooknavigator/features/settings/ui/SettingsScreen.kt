@@ -243,7 +243,7 @@ fun SettingsContent(
 
                             1 -> RemoteTab(
                                 settings = settings.remoteKeySettings,
-                                roadbookSettings = uiState.roadbookSettings,
+                                roadbookKeys = settings.roadbookKeySettings,
                                 odometerSettings = uiState.odometerSettings,
                                 onModelSelected = onRemoteModelSelected,
                                 onOdometerKeysChanged = onOdometerKeysChanged,
@@ -568,7 +568,7 @@ fun SliderSettingItem(
 @Composable
 fun RemoteTab(
     settings: org.giste.roadbooknavigator.features.settings.domain.RemoteKeySettings,
-    roadbookSettings: RoadbookSettings,
+    roadbookKeys: org.giste.roadbooknavigator.features.settings.domain.roadbook.RoadbookKeySettings,
     odometerSettings: OdometerSettings,
     onModelSelected: (RemoteModel) -> Unit,
     onOdometerKeysChanged: (List<Int>, List<Int>, List<Int>) -> Unit,
@@ -593,8 +593,8 @@ fun RemoteTab(
         val isCustom = settings.model == RemoteModel.CUSTOM
         RemoteAction.entries.forEach { action ->
             val keyCodes = when (action) {
-                RemoteAction.ROADBOOK_UP -> roadbookSettings.roadbookUp
-                RemoteAction.ROADBOOK_DOWN -> roadbookSettings.roadbookDown
+                RemoteAction.ROADBOOK_UP -> roadbookKeys.upKeys
+                RemoteAction.ROADBOOK_DOWN -> roadbookKeys.downKeys
                 RemoteAction.INCREASE_PARTIAL -> odometerSettings.increasePartial
                 RemoteAction.DECREASE_PARTIAL -> odometerSettings.decreasePartial
                 RemoteAction.RESET_PARTIAL -> odometerSettings.resetPartial
@@ -616,11 +616,11 @@ fun RemoteTab(
                 when (action) {
                     RemoteAction.ROADBOOK_UP -> onRoadbookKeysChanged(
                         listOf(keyCode),
-                        roadbookSettings.roadbookDown
+                        roadbookKeys.downKeys
                     )
 
                     RemoteAction.ROADBOOK_DOWN -> onRoadbookKeysChanged(
-                        roadbookSettings.roadbookUp,
+                        roadbookKeys.upKeys,
                         listOf(keyCode)
                     )
 
@@ -1249,7 +1249,7 @@ fun RemoteTabPreview() {
     RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
         RemoteTab(
             settings = org.giste.roadbooknavigator.features.settings.domain.RemoteKeySettings(),
-            roadbookSettings = RoadbookSettings(),
+            roadbookKeys = org.giste.roadbooknavigator.features.settings.domain.roadbook.RoadbookKeySettings(),
             odometerSettings = OdometerSettings(),
             onModelSelected = {},
             onOdometerKeysChanged = { _, _, _ -> },

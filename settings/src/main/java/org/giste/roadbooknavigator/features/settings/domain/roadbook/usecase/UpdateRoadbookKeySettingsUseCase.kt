@@ -15,18 +15,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.roadbook.domain.usecase
+package org.giste.roadbooknavigator.features.settings.domain.roadbook.usecase
 
-import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookSettingsRepository
+import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
 import javax.inject.Inject
 
 /**
- * Use case to save roadbook settings.
+ * Use case to update roadbook-specific key bindings.
  */
-class SaveRoadbookSettingsUseCase @Inject constructor(
-    private val repository: RoadbookSettingsRepository
+class UpdateRoadbookKeySettingsUseCase @Inject constructor(
+    private val repository: SettingsRepository
 ) {
-    suspend operator fun invoke(shortDistanceThreshold: Long) {
-        repository.saveShortDistanceThreshold(shortDistanceThreshold)
+    suspend operator fun invoke(up: List<Int>, down: List<Int>) {
+        repository.setRoadbookRemoteKeys(up, down)
     }
 }

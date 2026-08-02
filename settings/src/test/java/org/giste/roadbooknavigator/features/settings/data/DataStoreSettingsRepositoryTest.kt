@@ -102,6 +102,23 @@ class DataStoreSettingsRepositoryTest {
     }
 
     @Test
+    fun `setRoadbookRemoteKeys should persist roadbook key values`() = runTest {
+        val up = listOf(1, 2)
+        val down = listOf(3, 4)
+        repository.setRoadbookRemoteKeys(up, down)
+
+        val settings = repository.getSettings().first()
+        assertEquals(up, settings.roadbookKeySettings.upKeys)
+        assertEquals(down, settings.roadbookKeySettings.downKeys)
+
+        // Verify with new instance
+        val newRepo = DataStoreSettingsRepository(dataStore, logger)
+        val persisted = newRepo.getSettings().first()
+        assertEquals(up, persisted.roadbookKeySettings.upKeys)
+        assertEquals(down, persisted.roadbookKeySettings.downKeys)
+    }
+
+    @Test
     fun `safe parsing should fallback to default for unknown theme string`() = runTest {
         // We need to bypass the public API to inject a corrupted string directly into DataStore
         // But since safeThemeOf is private, we verify it implicitly by ensuring it doesn't crash 

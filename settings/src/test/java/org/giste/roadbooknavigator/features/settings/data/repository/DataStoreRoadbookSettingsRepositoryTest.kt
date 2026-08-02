@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.roadbook.data.repository
+package org.giste.roadbooknavigator.features.settings.data.repository
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
@@ -26,6 +26,7 @@ import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.giste.roadbooknavigator.features.roadbook.domain.model.ShortDistanceThreshold
+import org.giste.roadbooknavigator.features.settings.data.DataStoreRoadbookSettingsRepository
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -67,17 +68,5 @@ class DataStoreRoadbookSettingsRepositoryTest {
         
         val savedSettings = repository.getSettings().first()
         assertEquals(newThreshold, savedSettings.shortDistanceThreshold.meters)
-    }
-
-    @Test
-    fun `saveRemoteKeys should persist keys`() = runTest {
-        val upKeys = listOf(1, 2)
-        val downKeys = listOf(3, 4)
-
-        repository.saveRemoteKeys(upKeys, downKeys)
-
-        val savedSettings = repository.getSettings().first()
-        assertEquals(upKeys, savedSettings.roadbookUp)
-        assertEquals(downKeys, savedSettings.roadbookDown)
     }
 }

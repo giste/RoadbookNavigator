@@ -49,6 +49,7 @@ import org.giste.roadbooknavigator.features.roadbook.domain.usecase.SaveRoadbook
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.RemoteModel
+import org.giste.roadbooknavigator.features.settings.domain.roadbook.usecase.UpdateRoadbookKeySettingsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.GetSettingsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateFullScreenUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateLandscapeDistanceSectionWeightUseCase
@@ -77,6 +78,7 @@ class SettingsViewModel @Inject constructor(
     private val restoreLocationDefaultsUseCase: RestoreLocationDefaultsUseCase,
     private val updateRemoteModelUseCase: UpdateRemoteModelUseCase,
     private val updateOdometerRemoteKeysUseCase: UpdateOdometerRemoteKeysUseCase,
+    private val updateRoadbookKeySettingsUseCase: UpdateRoadbookKeySettingsUseCase,
     private val saveMapSettingsUseCase: SaveMapSettingsUseCase,
     private val updateLandscapeDistanceSectionWeightUseCase: UpdateLandscapeDistanceSectionWeightUseCase,
     private val logger: Logger
@@ -186,7 +188,7 @@ class SettingsViewModel @Inject constructor(
                     RemoteModel.TERRA_PIRATA -> listOf(87) to listOf(88) // KEYCODE_MEDIA_NEXT/PREVIOUS
                     RemoteModel.CUSTOM -> return@launch
                 }
-                saveRoadbookSettingsUseCase.updateRemoteKeys(rbUp, rbDown)
+                updateRoadbookKeySettingsUseCase(rbUp, rbDown)
 
                 // Update Odometer keys
                 val (odoInc, odoDec, odoRes) = when (model) {
@@ -215,7 +217,7 @@ class SettingsViewModel @Inject constructor(
         logger.d("SettingsViewModel: setRoadbookKeys requested")
         viewModelScope.launch {
             updateRemoteModelUseCase(RemoteModel.CUSTOM)
-            saveRoadbookSettingsUseCase.updateRemoteKeys(up, down)
+            updateRoadbookKeySettingsUseCase(up, down)
         }
     }
 

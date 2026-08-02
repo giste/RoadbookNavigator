@@ -43,4 +43,7 @@ interface SettingsRepository {
 
     /** Updates the weight of the distance section in landscape layout. */
     suspend fun setLandscapeDistanceSectionWeight(weight: Float)
+
+    /** Updates the roadbook navigation keys. */
+    suspend fun setRoadbookRemoteKeys(up: List<Int>, down: List<Int>)
 }

@@ -27,7 +27,7 @@ package org.giste.roadbooknavigator.features.odometer.domain
  * @property decreasePartial Keys to decrease the partial distance.
  * @property resetPartial Keys to reset the partial distance.
  */
-data class OdometerSettings(
+public data class OdometerSettings(
     val speedThreshold: Float = DEFAULT_SPEED_THRESHOLD,
     val minAccuracy: Float = DEFAULT_MIN_ACCURACY,
     val minVerticalAccuracy: Float = DEFAULT_MIN_VERTICAL_ACCURACY,
@@ -35,18 +35,18 @@ data class OdometerSettings(
     val decreasePartial: List<Int> = DEFAULT_DECREASE_KEYS,
     val resetPartial: List<Int> = DEFAULT_RESET_KEYS,
 ) {
-    companion object {
-        const val DEFAULT_SPEED_THRESHOLD = 0.5f // m/s
-        const val DEFAULT_MIN_ACCURACY = 20.0f // m
-        const val DEFAULT_MIN_VERTICAL_ACCURACY = 10.0f // m
+    public companion object {
+        public const val DEFAULT_SPEED_THRESHOLD: Float = 0.5f // m/s
+        public const val DEFAULT_MIN_ACCURACY: Float = 20.0f // m
+        public const val DEFAULT_MIN_VERTICAL_ACCURACY: Float = 10.0f // m
 
         /** Default keys for increase partial (DPAD_RIGHT). */
-        val DEFAULT_INCREASE_KEYS = listOf(22)
+        public val DEFAULT_INCREASE_KEYS: List<Int> = listOf(22)
 
         /** Default keys for decrease partial (DPAD_LEFT). */
-        val DEFAULT_DECREASE_KEYS = listOf(21)
+        public val DEFAULT_DECREASE_KEYS: List<Int> = listOf(21)
 
         /** Default keys for reset partial (F6). */
-        val DEFAULT_RESET_KEYS = listOf(136)
+        public val DEFAULT_RESET_KEYS: List<Int> = listOf(136)
     }
 }

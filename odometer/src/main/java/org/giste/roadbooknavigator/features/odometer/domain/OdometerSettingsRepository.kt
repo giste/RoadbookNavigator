@@ -22,24 +22,24 @@ import kotlinx.coroutines.flow.Flow
 /**
  * Interface to provide access to odometer-specific settings.
  */
-interface OdometerSettingsRepository {
+public interface OdometerSettingsRepository {
     /**
      * Provides a reactive stream of the current [OdometerSettings].
      */
-    fun getSettings(): Flow<OdometerSettings>
+    public fun getSettings(): Flow<OdometerSettings>
 
     /** Sets the speed threshold for the GPS odometer. */
-    suspend fun setSpeedThreshold(threshold: Float)
+    public suspend fun setSpeedThreshold(threshold: Float)
 
     /** Sets the minimum horizontal accuracy required for odometer updates. */
-    suspend fun setMinAccuracy(accuracy: Float)
+    public suspend fun setMinAccuracy(accuracy: Float)
 
     /** Sets the minimum vertical accuracy required for altitude-related odometer logic. */
-    suspend fun setMinVerticalAccuracy(accuracy: Float)
+    public suspend fun setMinVerticalAccuracy(accuracy: Float)
 
     /** Sets the remote control keys for odometer actions. */
-    suspend fun setRemoteKeys(increase: List<Int>, decrease: List<Int>, reset: List<Int>)
+    public suspend fun setRemoteKeys(increase: List<Int>, decrease: List<Int>, reset: List<Int>)
 
     /** Resets all odometer-related parameters to their default values. */
-    suspend fun restoreSettingsDefaults()
+    public suspend fun restoreSettingsDefaults()
 }

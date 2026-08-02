@@ -22,24 +22,24 @@ package org.giste.roadbooknavigator.features.odometer.domain
  * Distances are in meters.
  * Values are automatically clamped to valid limits upon initialization.
  */
-class Odometer(
+public class Odometer(
     total: Double = 0.0,
     partial: Double = 0.0
 ) {
-    companion object {
-        const val MAX_TOTAL_METERS = 9999900.0 // 9999.9 km
-        const val MAX_PARTIAL_METERS = 999990.0 // 999.99 km
-        const val MIN_DISTANCE_METERS = 0.0
+    public companion object {
+        public const val MAX_TOTAL_METERS: Double = 9999900.0 // 9999.9 km
+        public const val MAX_PARTIAL_METERS: Double = 999990.0 // 999.99 km
+        public const val MIN_DISTANCE_METERS: Double = 0.0
     }
 
-    val total: Double = total.coerceIn(MIN_DISTANCE_METERS, MAX_TOTAL_METERS)
-    val partial: Double = partial.coerceIn(MIN_DISTANCE_METERS, MAX_PARTIAL_METERS)
+    public val total: Double = total.coerceIn(MIN_DISTANCE_METERS, MAX_TOTAL_METERS)
+    public val partial: Double = partial.coerceIn(MIN_DISTANCE_METERS, MAX_PARTIAL_METERS)
 
     /**
      * Returns a copy of the odometer with optionally updated values.
      * New values are automatically clamped.
      */
-    fun copy(
+    public fun copy(
         total: Double = this.total,
         partial: Double = this.partial
     ): Odometer = Odometer(total, partial)

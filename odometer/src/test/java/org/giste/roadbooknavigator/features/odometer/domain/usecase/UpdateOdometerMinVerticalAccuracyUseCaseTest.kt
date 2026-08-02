@@ -28,7 +28,8 @@ import org.junit.Test
 class UpdateOdometerMinVerticalAccuracyUseCaseTest {
 
     private val repository: OdometerSettingsRepository = mockk()
-    private val useCase = UpdateOdometerMinVerticalAccuracyUseCase(repository)
+    private val logger: org.giste.roadbooknavigator.core.util.Logger = mockk(relaxed = true)
+    private val useCase = UpdateOdometerMinVerticalAccuracyUseCase(repository, logger)
 
     @Test
     fun `invoke should call repository when accuracy is valid`() = runTest {

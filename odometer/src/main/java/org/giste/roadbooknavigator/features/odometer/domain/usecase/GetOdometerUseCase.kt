@@ -45,14 +45,14 @@ import javax.inject.Inject
  * 3. Updates the persistent storage via the repository.
  * 4. Exposes the reactive odometer state.
  */
-class GetOdometerUseCase @Inject constructor(
+public class GetOdometerUseCase @Inject constructor(
     private val odometerRepository: OdometerRepository,
     private val locationProvider: LocationProvider,
     private val odometerSettingsRepository: OdometerSettingsRepository,
     private val distanceUtils: DistanceUtils,
     private val logger: Logger
 ) {
-    operator fun invoke(): Flow<Odometer> {
+    public operator fun invoke(): Flow<Odometer> {
         logger.d("GetOdometerUseCase: Invoked")
         val locationFlow = locationProvider.observeLocation()
             .filterIsInstance<LocationEvent.LocationUpdated>()

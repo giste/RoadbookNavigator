@@ -28,15 +28,15 @@ import kotlin.math.sqrt
 /**
  * Utility to calculate distances in a platform-independent way.
  */
-class DistanceUtils @Inject constructor(
+public class DistanceUtils @Inject constructor(
     private val logger: Logger
 ) {
-    private val EARTH_RADIUS_METERS = 6371000.0
+    private val EARTH_RADIUS_METERS: Double = 6371000.0
 
     /**
      * Calculates the horizontal 2D distance between two points.
      */
-    fun calculateDistance2D(start: UserLocation, end: UserLocation): Double {
+    public fun calculateDistance2D(start: UserLocation, end: UserLocation): Double {
         val lat1 = Math.toRadians(start.latitude)
         val lon1 = Math.toRadians(start.longitude)
         val lat2 = Math.toRadians(end.latitude)
@@ -58,7 +58,7 @@ class DistanceUtils @Inject constructor(
      * Uses 3D distance if both points have good vertical accuracy,
      * otherwise falls back to 2D horizontal distance.
      */
-    fun calculateDistance(
+    public fun calculateDistance(
         start: UserLocation,
         end: UserLocation,
         verticalAccuracyThreshold: Float = 10.0f

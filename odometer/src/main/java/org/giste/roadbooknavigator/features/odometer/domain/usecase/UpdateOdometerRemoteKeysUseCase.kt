@@ -24,14 +24,16 @@ import javax.inject.Inject
 /**
  * Use case to update the remote control keys for odometer actions.
  */
-class UpdateOdometerRemoteKeysUseCase @Inject constructor(
+public class UpdateOdometerRemoteKeysUseCase @Inject constructor(
     private val repository: OdometerSettingsRepository,
     private val logger: Logger
 ) {
-    suspend operator fun invoke(increase: List<Int>, decrease: List<Int>, reset: List<Int>): Result<Unit> {
-        logger.i("UpdateOdometerRemoteKeysUseCase: Updating odometer remote keys")
-        return runCatching {
-            repository.setRemoteKeys(increase, decrease, reset)
-        }
+    public suspend operator fun invoke(
+        increase: List<Int>,
+        decrease: List<Int>,
+        reset: List<Int>
+    ): Result<Unit> = runCatching {
+        logger.d("UpdateOdometerRemoteKeysUseCase: Invoked")
+        repository.setRemoteKeys(increase, decrease, reset)
     }
 }

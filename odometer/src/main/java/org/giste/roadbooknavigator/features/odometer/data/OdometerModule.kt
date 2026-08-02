@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  See <https://www.gnu.org/licenses/>.
  */
 
 package org.giste.roadbooknavigator.features.odometer.data
@@ -54,7 +54,7 @@ internal abstract class OdometerModule {
         impl: DataStoreOdometerSettingsRepository
     ): OdometerSettingsRepository
 
-    companion object {
+    internal companion object {
         @Provides
         @Singleton
         @OdometerDataStoreQualifier

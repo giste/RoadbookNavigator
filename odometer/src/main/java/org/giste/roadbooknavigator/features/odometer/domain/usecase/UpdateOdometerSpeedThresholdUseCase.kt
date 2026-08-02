@@ -17,19 +17,21 @@
 
 package org.giste.roadbooknavigator.features.odometer.domain.usecase
 
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettingsRepository
 import org.giste.roadbooknavigator.features.odometer.domain.SpeedThreshold
 import javax.inject.Inject
 
 /**
- * Use case to update the odometer speed threshold.
- * Uses [SpeedThreshold] to ensure domain validity.
+ * Use case to update the speed threshold for the odometer.
  */
-class UpdateOdometerSpeedThresholdUseCase @Inject constructor(
-    private val repository: OdometerSettingsRepository
+public class UpdateOdometerSpeedThresholdUseCase @Inject constructor(
+    private val repository: OdometerSettingsRepository,
+    private val logger: Logger
 ) {
-    suspend operator fun invoke(threshold: Float): Result<Unit> = runCatching {
-        val validThreshold = SpeedThreshold(threshold)
-        repository.setSpeedThreshold(validThreshold.metersPerSecond)
+    public suspend operator fun invoke(threshold: Float): Result<Unit> = runCatching {
+        logger.d("UpdateOdometerSpeedThresholdUseCase: Invoked with threshold: %f", threshold)
+        SpeedThreshold(threshold) // Validation
+        repository.setSpeedThreshold(threshold)
     }
 }

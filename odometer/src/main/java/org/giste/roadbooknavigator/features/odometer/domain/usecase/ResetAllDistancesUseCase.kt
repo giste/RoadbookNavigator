@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  See <https://www.gnu.org/licenses/>.
  */
 
 package org.giste.roadbooknavigator.features.odometer.domain.usecase
@@ -24,11 +24,11 @@ import javax.inject.Inject
 /**
  * Use case to reset both total and partial odometer distances.
  */
-class ResetAllDistancesUseCase @Inject constructor(
+public class ResetAllDistancesUseCase @Inject constructor(
     private val repository: OdometerRepository,
     private val logger: Logger
 ) {
-    suspend operator fun invoke() {
+    public suspend operator fun invoke() {
         logger.d("ResetAllDistancesUseCase: Invoked")
         repository.resetAllDistances()
     }

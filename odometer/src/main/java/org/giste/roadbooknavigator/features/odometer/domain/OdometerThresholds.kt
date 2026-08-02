@@ -21,16 +21,16 @@ package org.giste.roadbooknavigator.features.odometer.domain
  * Value Object for speed threshold. Odometer will ignore updates if speed is lower than this.
  */
 @JvmInline
-value class SpeedThreshold(val metersPerSecond: Float) {
+public value class SpeedThreshold(public val metersPerSecond: Float) {
     init {
         require(metersPerSecond in MIN..MAX) {
             "Speed threshold must be between $MIN and $MAX m/s"
         }
     }
 
-    companion object {
-        const val MIN = 0.0f
-        const val MAX = 2.0f
+    public companion object {
+        public const val MIN: Float = 0.0f
+        public const val MAX: Float = 2.0f
     }
 }
 
@@ -39,16 +39,16 @@ value class SpeedThreshold(val metersPerSecond: Float) {
  * this.
  */
 @JvmInline
-value class AccuracyThreshold(val meters: Float) {
+public value class AccuracyThreshold(public val meters: Float) {
     init {
         require(meters in MIN..MAX) {
             "Accuracy threshold must be between $MIN and $MAX meters"
         }
     }
 
-    companion object {
-        const val MIN = 1.0f
-        const val MAX = 100.0f
+    public companion object {
+        public const val MIN: Float = 1.0f
+        public const val MAX: Float = 100.0f
     }
 }
 
@@ -57,15 +57,15 @@ value class AccuracyThreshold(val meters: Float) {
  * accuracy worse than this.
  */
 @JvmInline
-value class VerticalAccuracyThreshold(val meters: Float) {
+public value class VerticalAccuracyThreshold(public val meters: Float) {
     init {
         require(meters in MIN..MAX) {
             "Vertical accuracy threshold must be between $MIN and $MAX meters"
         }
     }
 
-    companion object {
-        const val MIN = 1.0f
-        const val MAX = 100.0f
+    public companion object {
+        public const val MIN: Float = 1.0f
+        public const val MAX: Float = 100.0f
     }
 }

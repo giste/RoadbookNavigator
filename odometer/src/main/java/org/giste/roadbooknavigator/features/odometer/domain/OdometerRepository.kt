@@ -22,34 +22,34 @@ import kotlinx.coroutines.flow.Flow
 /**
  * Interface to provide distance persistence (Single Source of Truth).
  */
-interface OdometerRepository {
+public interface OdometerRepository {
     /**
      * Flow of the current odometer state (total and partial distances).
      */
-    val odometer: Flow<Odometer>
+    public val odometer: Flow<Odometer>
 
     /**
      * Updates the persistent odometer by adding a delta distance to both total and partial.
      */
-    suspend fun updateDistance(delta: Double)
+    public suspend fun updateDistance(delta: Double)
 
     /**
      * Updates only the partial distance by adding a delta.
      */
-    suspend fun updatePartialDistance(delta: Double)
+    public suspend fun updatePartialDistance(delta: Double)
 
     /**
      * Resets the partial distance to zero in persistent storage.
      */
-    suspend fun resetPartialDistance()
+    public suspend fun resetPartialDistance()
 
     /**
      * Resets both total and partial distances to zero in persistent storage.
      */
-    suspend fun resetAllDistances()
+    public suspend fun resetAllDistances()
 
     /**
      * Sets the partial distance to a specific value.
      */
-    suspend fun setPartialDistance(distance: Double)
+    public suspend fun setPartialDistance(distance: Double)
 }

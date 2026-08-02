@@ -28,7 +28,8 @@ import org.junit.Test
 class UpdateOdometerSpeedThresholdUseCaseTest {
 
     private val repository: OdometerSettingsRepository = mockk()
-    private val useCase = UpdateOdometerSpeedThresholdUseCase(repository)
+    private val logger: org.giste.roadbooknavigator.core.util.Logger = mockk(relaxed = true)
+    private val useCase = UpdateOdometerSpeedThresholdUseCase(repository, logger)
 
     @Test
     fun `invoke should call repository when threshold is valid`() = runTest {

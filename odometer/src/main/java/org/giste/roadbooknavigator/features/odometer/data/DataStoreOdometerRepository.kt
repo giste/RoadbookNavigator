@@ -40,7 +40,7 @@ internal class DataStoreOdometerRepository @Inject constructor(
     private val logger: Logger
 ) : OdometerRepository {
 
-    companion object {
+    private companion object {
         private val TOTAL_DISTANCE_KEY = doublePreferencesKey("total_distance")
         private val PARTIAL_DISTANCE_KEY = doublePreferencesKey("partial_distance")
     }

@@ -25,8 +25,8 @@ import javax.inject.Inject
 /**
  * Use case to retrieve the current odometer settings.
  */
-class GetOdometerSettingsUseCase @Inject constructor(
+public class GetOdometerSettingsUseCase @Inject constructor(
     private val repository: OdometerSettingsRepository
 ) {
-    operator fun invoke(): Flow<OdometerSettings> = repository.getSettings()
+    public operator fun invoke(): Flow<OdometerSettings> = repository.getSettings()
 }

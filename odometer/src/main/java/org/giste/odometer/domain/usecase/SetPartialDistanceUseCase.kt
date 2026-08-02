@@ -15,18 +15,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.settings.domain.odometer.usecase
+package org.giste.odometer.domain.usecase
 
-import kotlinx.coroutines.flow.Flow
-import org.giste.odometer.domain.OdometerSettings
-import org.giste.roadbooknavigator.features.settings.domain.odometer.OdometerSettingsRepository
+import org.giste.odometer.domain.OdometerLogger
+import org.giste.odometer.domain.OdometerRepository
 import javax.inject.Inject
 
 /**
- * Use case to retrieve the current odometer settings.
+ * Use case to set the partial odometer distance to a specific value.
  */
-class ObserveOdometerSettingsUseCase @Inject internal constructor(
-    private val repository: OdometerSettingsRepository
+public class SetPartialDistanceUseCase @Inject internal constructor(
+    private val repository: OdometerRepository,
+    private val logger: OdometerLogger
 ) {
-    operator fun invoke(): Flow<OdometerSettings> = repository.getSettings()
+    public suspend operator fun invoke(distance: Double) {
+        logger.d("SetPartialDistanceUseCase: Invoked with distance: %f", distance)
+        repository.setPartialDistance(distance)
+    }
 }

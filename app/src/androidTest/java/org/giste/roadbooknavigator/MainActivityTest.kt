@@ -28,7 +28,7 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.giste.roadbooknavigator.features.settings.data.SettingsModule
-import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettings
+import org.giste.odometer.domain.OdometerSettings
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.location.LocationSettings

@@ -17,23 +17,17 @@
 
 package org.giste.roadbooknavigator.ui.dashboard
 
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.key.KeyEvent
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.longClick
-import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -47,15 +41,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
-import org.giste.roadbooknavigator.features.odometer.domain.Odometer
-import org.giste.roadbooknavigator.features.roadbook.domain.model.Coordinates
-import org.giste.roadbooknavigator.features.roadbook.domain.model.Distance
-import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookPosition
-import org.giste.roadbooknavigator.features.roadbook.domain.model.Route
-import org.giste.roadbooknavigator.features.roadbook.domain.model.Waypoint
-import org.giste.roadbooknavigator.features.roadbook.ui.RoadbookSection
-import org.giste.roadbooknavigator.features.roadbook.ui.RoadbookUiState
-import org.giste.roadbooknavigator.features.roadbook.ui.RoadbookViewModel
+import org.giste.odometer.domain.Odometer
 import org.junit.Rule
 import org.junit.Test
 import java.util.Locale

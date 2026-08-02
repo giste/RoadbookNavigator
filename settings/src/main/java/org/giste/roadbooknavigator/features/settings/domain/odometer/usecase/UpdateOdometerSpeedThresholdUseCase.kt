@@ -19,7 +19,7 @@ package org.giste.roadbooknavigator.features.settings.domain.odometer.usecase
 
 import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.settings.domain.odometer.OdometerSettingsRepository
-import org.giste.roadbooknavigator.features.odometer.domain.SpeedThreshold
+import org.giste.odometer.domain.SpeedThreshold
 import javax.inject.Inject
 
 /**

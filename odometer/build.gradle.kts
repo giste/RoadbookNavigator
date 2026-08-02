@@ -25,7 +25,7 @@ plugins {
 }
 
 configure<LibraryExtension> {
-    namespace = "org.giste.roadbooknavigator.feature.odometer"
+    namespace = "org.giste.odometer"
     compileSdk = 37
 
     defaultConfig {

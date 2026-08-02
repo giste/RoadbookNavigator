@@ -15,18 +15,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.settings.domain.odometer.usecase
-
-import kotlinx.coroutines.flow.Flow
-import org.giste.odometer.domain.OdometerSettings
-import org.giste.roadbooknavigator.features.settings.domain.odometer.OdometerSettingsRepository
-import javax.inject.Inject
+package org.giste.odometer.domain
 
 /**
- * Use case to retrieve the current odometer settings.
+ * Logger interface for the odometer module to decouple it from specific logging implementations.
  */
-class ObserveOdometerSettingsUseCase @Inject internal constructor(
-    private val repository: OdometerSettingsRepository
-) {
-    operator fun invoke(): Flow<OdometerSettings> = repository.getSettings()
+public interface OdometerLogger {
+    public fun v(message: String, vararg args: Any?)
+    public fun d(message: String, vararg args: Any?)
+    public fun i(message: String, vararg args: Any?)
+    public fun w(message: String, vararg args: Any?)
+    public fun e(message: String, vararg args: Any?, throwable: Throwable? = null)
 }

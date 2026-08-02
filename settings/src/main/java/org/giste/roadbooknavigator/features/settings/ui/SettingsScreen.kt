@@ -102,10 +102,10 @@ import org.giste.roadbooknavigator.features.settings.domain.location.MinDistance
 import org.giste.roadbooknavigator.features.settings.domain.location.PollingIntervalThreshold
 import org.giste.roadbooknavigator.features.map.domain.model.MapSettings
 import org.giste.roadbooknavigator.features.map.ui.management.MapManagementScreen
-import org.giste.roadbooknavigator.features.odometer.domain.AccuracyThreshold
-import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettings
-import org.giste.roadbooknavigator.features.odometer.domain.SpeedThreshold
-import org.giste.roadbooknavigator.features.odometer.domain.VerticalAccuracyThreshold
+import org.giste.odometer.domain.AccuracyThreshold
+import org.giste.odometer.domain.OdometerSettings
+import org.giste.odometer.domain.SpeedThreshold
+import org.giste.odometer.domain.VerticalAccuracyThreshold
 import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookSettings
 import org.giste.roadbooknavigator.features.roadbook.domain.model.ShortDistanceThreshold
 import org.giste.roadbooknavigator.features.settings.R

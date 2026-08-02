@@ -21,7 +21,7 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import org.giste.roadbooknavigator.features.odometer.domain.OdometerLogger
+import org.giste.odometer.domain.OdometerLogger
 import javax.inject.Singleton
 
 @Module

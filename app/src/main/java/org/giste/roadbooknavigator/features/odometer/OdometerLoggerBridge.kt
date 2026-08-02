@@ -18,7 +18,7 @@
 package org.giste.roadbooknavigator.features.odometer
 
 import org.giste.roadbooknavigator.core.util.Logger
-import org.giste.roadbooknavigator.features.odometer.domain.OdometerLogger
+import org.giste.odometer.domain.OdometerLogger
 import javax.inject.Inject
 
 /**

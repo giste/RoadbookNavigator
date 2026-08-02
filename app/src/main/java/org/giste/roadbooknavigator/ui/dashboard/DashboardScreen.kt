@@ -67,7 +67,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import org.giste.roadbooknavigator.R
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 import org.giste.roadbooknavigator.features.map.ui.MapScreen
-import org.giste.roadbooknavigator.features.odometer.domain.Odometer
+import org.giste.odometer.domain.Odometer
 import org.giste.roadbooknavigator.ui.odometer.PartialDistance
 import org.giste.roadbooknavigator.ui.odometer.ResetAllConfirmationDialog
 import org.giste.roadbooknavigator.ui.odometer.SetPartialDialog

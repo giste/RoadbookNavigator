@@ -15,18 +15,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.settings.domain.odometer.usecase
-
-import kotlinx.coroutines.flow.Flow
-import org.giste.odometer.domain.OdometerSettings
-import org.giste.roadbooknavigator.features.settings.domain.odometer.OdometerSettingsRepository
-import javax.inject.Inject
+package org.giste.odometer.domain
 
 /**
- * Use case to retrieve the current odometer settings.
+ * Generic representation of a location fix for the odometer engine.
  */
-class ObserveOdometerSettingsUseCase @Inject internal constructor(
-    private val repository: OdometerSettingsRepository
-) {
-    operator fun invoke(): Flow<OdometerSettings> = repository.getSettings()
-}
+public data class OdometerLocation(
+    public val latitude: Double,
+    public val longitude: Double,
+    public val altitude: Double,
+    public val accuracy: Float,
+    public val verticalAccuracy: Float? = null,
+    public val speed: Float,
+    public val time: Long
+)

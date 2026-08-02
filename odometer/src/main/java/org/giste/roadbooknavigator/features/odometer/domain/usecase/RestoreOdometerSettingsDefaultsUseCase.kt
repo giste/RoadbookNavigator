@@ -24,7 +24,7 @@ import javax.inject.Inject
 /**
  * Use case to restore odometer settings to their default values.
  */
-public class RestoreOdometerSettingsDefaultsUseCase @Inject constructor(
+public class RestoreOdometerSettingsDefaultsUseCase @Inject internal constructor(
     private val repository: OdometerSettingsRepository,
     private val logger: OdometerLogger
 ) {

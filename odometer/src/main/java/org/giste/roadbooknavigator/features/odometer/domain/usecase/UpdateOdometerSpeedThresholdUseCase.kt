@@ -25,7 +25,7 @@ import javax.inject.Inject
 /**
  * Use case to update the speed threshold for the odometer.
  */
-public class UpdateOdometerSpeedThresholdUseCase @Inject constructor(
+public class UpdateOdometerSpeedThresholdUseCase @Inject internal constructor(
     private val repository: OdometerSettingsRepository,
     private val logger: OdometerLogger
 ) {

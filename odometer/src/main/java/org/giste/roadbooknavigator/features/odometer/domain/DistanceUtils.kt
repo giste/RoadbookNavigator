@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  See <https://www.gnu.org/licenses/>.
  */
 
 package org.giste.roadbooknavigator.features.odometer.domain
@@ -27,7 +27,7 @@ import kotlin.math.sqrt
 /**
  * Utility to calculate distances in a platform-independent way.
  */
-public class DistanceUtils @Inject constructor(
+internal class DistanceUtils @Inject constructor(
     private val logger: OdometerLogger
 ) {
     private val EARTH_RADIUS_METERS: Double = 6371000.0
@@ -35,7 +35,7 @@ public class DistanceUtils @Inject constructor(
     /**
      * Calculates the horizontal 2D distance between two points.
      */
-    public fun calculateDistance2D(start: UserLocation, end: UserLocation): Double {
+    fun calculateDistance2D(start: UserLocation, end: UserLocation): Double {
         val lat1 = Math.toRadians(start.latitude)
         val lon1 = Math.toRadians(start.longitude)
         val lat2 = Math.toRadians(end.latitude)
@@ -57,7 +57,7 @@ public class DistanceUtils @Inject constructor(
      * Uses 3D distance if both points have good vertical accuracy,
      * otherwise falls back to 2D horizontal distance.
      */
-    public fun calculateDistance(
+    fun calculateDistance(
         start: UserLocation,
         end: UserLocation,
         verticalAccuracyThreshold: Float = 10.0f

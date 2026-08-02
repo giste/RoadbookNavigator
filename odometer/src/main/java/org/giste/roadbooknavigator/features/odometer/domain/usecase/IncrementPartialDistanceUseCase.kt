@@ -24,7 +24,7 @@ import javax.inject.Inject
 /**
  * Use case to increment the partial distance by a fixed step (10 meters).
  */
-public class IncrementPartialDistanceUseCase @Inject constructor(
+public class IncrementPartialDistanceUseCase @Inject internal constructor(
     private val repository: OdometerRepository,
     private val logger: OdometerLogger
 ) {

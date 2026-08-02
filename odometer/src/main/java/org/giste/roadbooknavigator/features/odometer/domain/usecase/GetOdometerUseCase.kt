@@ -45,7 +45,7 @@ import javax.inject.Inject
  * 3. Updates the persistent storage via the repository.
  * 4. Exposes the reactive odometer state.
  */
-public class GetOdometerUseCase @Inject constructor(
+public class GetOdometerUseCase @Inject internal constructor(
     private val odometerRepository: OdometerRepository,
     private val locationProvider: LocationProvider,
     private val odometerSettingsRepository: OdometerSettingsRepository,

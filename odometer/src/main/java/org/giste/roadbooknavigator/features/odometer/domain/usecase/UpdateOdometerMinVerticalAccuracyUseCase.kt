@@ -25,7 +25,7 @@ import javax.inject.Inject
 /**
  * Use case to update the minimum vertical accuracy required for the odometer.
  */
-public class UpdateOdometerMinVerticalAccuracyUseCase @Inject constructor(
+public class UpdateOdometerMinVerticalAccuracyUseCase @Inject internal constructor(
     private val repository: OdometerSettingsRepository,
     private val logger: OdometerLogger
 ) {

@@ -24,7 +24,7 @@ import javax.inject.Inject
 /**
  * Use case to update the remote control keys for odometer actions.
  */
-public class UpdateOdometerRemoteKeysUseCase @Inject constructor(
+public class UpdateOdometerRemoteKeysUseCase @Inject internal constructor(
     private val repository: OdometerSettingsRepository,
     private val logger: OdometerLogger
 ) {

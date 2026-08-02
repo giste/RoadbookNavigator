@@ -15,11 +15,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.settings.domain.usecase
+package org.giste.roadbooknavigator.features.settings.domain.location.usecase
 
 import androidx.annotation.IntRange
-import org.giste.roadbooknavigator.features.settings.domain.LocationSettingsRepository
-import org.giste.roadbooknavigator.features.settings.domain.PollingIntervalThreshold
+import org.giste.roadbooknavigator.features.settings.domain.location.LocationSettingsRepository
+import org.giste.roadbooknavigator.features.settings.domain.location.PollingIntervalThreshold
 import javax.inject.Inject
 
 /**

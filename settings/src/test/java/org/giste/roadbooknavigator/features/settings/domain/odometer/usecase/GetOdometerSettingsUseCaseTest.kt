@@ -15,36 +15,33 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.settings.domain.usecase.odometer
+package org.giste.roadbooknavigator.features.settings.domain.odometer.usecase
 
-import io.mockk.coEvery
-import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import org.giste.roadbooknavigator.core.util.Logger
+import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettings
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettingsRepository
-import org.junit.Assert.assertTrue
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class UpdateOdometerRemoteKeysUseCaseTest {
+class GetOdometerSettingsUseCaseTest {
 
     private val repository: OdometerSettingsRepository = mockk()
-    private val logger: Logger = mockk(relaxed = true)
-    private val useCase = UpdateOdometerRemoteKeysUseCase(repository, logger)
+    private val useCase = GetOdometerSettingsUseCase(repository)
 
     @Test
-    fun `invoke should call repository`() = runTest {
+    fun `invoke should return odometer settings flow from repository`() = runTest {
         // Given
-        val increase = listOf(1)
-        val decrease = listOf(2)
-        val reset = listOf(3)
-        coEvery { repository.setRemoteKeys(increase, decrease, reset) } returns Unit
+        val settings = OdometerSettings()
+        every { repository.getSettings() } returns flowOf(settings)
 
         // When
-        val result = useCase(increase, decrease, reset)
+        val result = useCase().first()
 
         // Then
-        assertTrue(result.isSuccess)
-        coVerify { repository.setRemoteKeys(increase, decrease, reset) }
+        assertEquals(settings, result)
     }
 }

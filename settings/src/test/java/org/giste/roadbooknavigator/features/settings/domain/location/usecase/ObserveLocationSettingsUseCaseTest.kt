@@ -15,33 +15,30 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.settings.domain.usecase.odometer
+package org.giste.roadbooknavigator.features.settings.domain.location.usecase
 
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettings
-import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettingsRepository
+import org.giste.roadbooknavigator.features.settings.domain.location.LocationSettings
+import org.giste.roadbooknavigator.features.settings.domain.location.LocationSettingsRepository
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class GetOdometerSettingsUseCaseTest {
+class ObserveLocationSettingsUseCaseTest {
 
-    private val repository: OdometerSettingsRepository = mockk()
-    private val useCase = GetOdometerSettingsUseCase(repository)
+    private val repository: LocationSettingsRepository = mockk()
+    private val useCase = ObserveLocationSettingsUseCase(repository)
 
     @Test
-    fun `invoke should return odometer settings flow from repository`() = runTest {
-        // Given
-        val settings = OdometerSettings()
-        every { repository.getSettings() } returns flowOf(settings)
+    fun `should emit settings from repository`() = runTest {
+        val settings = LocationSettings()
+        every { repository.getLocationSettings() } returns flowOf(settings)
 
-        // When
         val result = useCase().first()
 
-        // Then
         assertEquals(settings, result)
     }
 }

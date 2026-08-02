@@ -15,21 +15,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.settings.domain.usecase.odometer
+package org.giste.roadbooknavigator.features.settings.domain.odometer.usecase
 
 import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettingsRepository
+import org.giste.roadbooknavigator.features.odometer.domain.VerticalAccuracyThreshold
 import javax.inject.Inject
 
 /**
- * Use case to restore odometer settings to their default values.
+ * Use case to update the minimum vertical accuracy required for the odometer.
  */
-public class RestoreOdometerSettingsDefaultsUseCase @Inject internal constructor(
+public class UpdateOdometerMinVerticalAccuracyUseCase @Inject internal constructor(
     private val repository: OdometerSettingsRepository,
     private val logger: Logger
 ) {
-    public suspend operator fun invoke(): Result<Unit> = runCatching {
-        logger.d("RestoreOdometerSettingsDefaultsUseCase: Invoked")
-        repository.restoreSettingsDefaults()
+    public suspend operator fun invoke(accuracy: Float): Result<Unit> = runCatching {
+        logger.d("UpdateOdometerMinVerticalAccuracyUseCase: Invoked with accuracy: %f", accuracy)
+        VerticalAccuracyThreshold(accuracy) // Validation
+        repository.setMinVerticalAccuracy(accuracy)
     }
 }

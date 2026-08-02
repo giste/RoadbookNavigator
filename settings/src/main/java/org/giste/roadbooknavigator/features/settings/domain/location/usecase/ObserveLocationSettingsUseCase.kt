@@ -15,24 +15,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.settings.domain.usecase
+package org.giste.roadbooknavigator.features.settings.domain.location.usecase
 
-import androidx.annotation.FloatRange
-import org.giste.roadbooknavigator.features.settings.domain.LocationSettingsRepository
-import org.giste.roadbooknavigator.features.settings.domain.MinDistanceThreshold
+import kotlinx.coroutines.flow.Flow
+import org.giste.roadbooknavigator.features.settings.domain.location.LocationSettings
+import org.giste.roadbooknavigator.features.settings.domain.location.LocationSettingsRepository
 import javax.inject.Inject
 
 /**
- * Use case to update the minimum distance between location updates.
+ * Use case to observe location settings.
  */
-class UpdateLocationMinDistanceUseCase @Inject constructor(
+class ObserveLocationSettingsUseCase @Inject constructor(
     private val repository: LocationSettingsRepository
 ) {
-    suspend operator fun invoke(
-        @FloatRange(from = MinDistanceThreshold.MIN.toDouble(), to = MinDistanceThreshold.MAX.toDouble())
-        distance: Float
-    ): Result<Unit> = runCatching {
-        MinDistanceThreshold(distance)
-        repository.updateMinDistance(distance)
-    }
+    operator fun invoke(): Flow<LocationSettings> = repository.getLocationSettings()
 }

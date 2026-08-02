@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.settings.domain.usecase.odometer
+package org.giste.roadbooknavigator.features.settings.domain.odometer.usecase
 
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -26,37 +26,22 @@ import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettingsRepo
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-class UpdateOdometerMinAccuracyUseCaseTest {
+class RestoreOdometerSettingsDefaultsUseCaseTest {
 
     private val repository: OdometerSettingsRepository = mockk()
     private val logger: Logger = mockk(relaxed = true)
-    private val useCase = UpdateOdometerMinAccuracyUseCase(repository, logger)
+    private val useCase = RestoreOdometerSettingsDefaultsUseCase(repository, logger)
 
     @Test
-    fun `invoke should call repository when accuracy is valid`() = runTest {
+    fun `invoke should call repository`() = runTest {
         // Given
-        val accuracy = 20.0f
-        coEvery { repository.setMinAccuracy(accuracy) } returns Unit
+        coEvery { repository.restoreSettingsDefaults() } returns Unit
 
         // When
-        val result = useCase(accuracy)
+        val result = useCase()
 
         // Then
         assertTrue(result.isSuccess)
-        coVerify { repository.setMinAccuracy(accuracy) }
-    }
-
-    @Test
-    fun `invoke should return failure when accuracy is out of range`() = runTest {
-        // Given
-        val accuracy = -1.0f
-
-        // When
-        val result = useCase(accuracy)
-
-        // Then
-        assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull() is IllegalArgumentException)
-        coVerify(exactly = 0) { repository.setMinAccuracy(any()) }
+        coVerify { repository.restoreSettingsDefaults() }
     }
 }

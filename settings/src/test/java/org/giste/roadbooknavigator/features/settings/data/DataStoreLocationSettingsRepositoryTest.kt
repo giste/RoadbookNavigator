@@ -27,7 +27,7 @@ import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.giste.roadbooknavigator.core.util.Logger
-import org.giste.roadbooknavigator.features.settings.domain.LocationSettings
+import org.giste.roadbooknavigator.features.settings.domain.location.LocationSettings
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule

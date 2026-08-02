@@ -15,25 +15,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.settings.domain.usecase.odometer
+package org.giste.roadbooknavigator.features.settings.domain.odometer.usecase
 
-import org.giste.roadbooknavigator.core.util.Logger
+import kotlinx.coroutines.flow.Flow
+import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettings
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettingsRepository
 import javax.inject.Inject
 
 /**
- * Use case to update the remote control keys for odometer actions.
+ * Use case to retrieve the current odometer settings.
  */
-public class UpdateOdometerRemoteKeysUseCase @Inject internal constructor(
-    private val repository: OdometerSettingsRepository,
-    private val logger: Logger
+public class GetOdometerSettingsUseCase @Inject internal constructor(
+    private val repository: OdometerSettingsRepository
 ) {
-    public suspend operator fun invoke(
-        increase: List<Int>,
-        decrease: List<Int>,
-        reset: List<Int>
-    ): Result<Unit> = runCatching {
-        logger.d("UpdateOdometerRemoteKeysUseCase: Invoked")
-        repository.setRemoteKeys(increase, decrease, reset)
-    }
+    public operator fun invoke(): Flow<OdometerSettings> = repository.getSettings()
 }

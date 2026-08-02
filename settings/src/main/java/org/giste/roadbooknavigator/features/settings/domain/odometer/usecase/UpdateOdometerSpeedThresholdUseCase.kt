@@ -15,18 +15,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.settings.domain.usecase.odometer
+package org.giste.roadbooknavigator.features.settings.domain.odometer.usecase
 
-import kotlinx.coroutines.flow.Flow
-import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettings
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettingsRepository
+import org.giste.roadbooknavigator.features.odometer.domain.SpeedThreshold
 import javax.inject.Inject
 
 /**
- * Use case to retrieve the current odometer settings.
+ * Use case to update the speed threshold for the odometer.
  */
-public class GetOdometerSettingsUseCase @Inject internal constructor(
-    private val repository: OdometerSettingsRepository
+public class UpdateOdometerSpeedThresholdUseCase @Inject internal constructor(
+    private val repository: OdometerSettingsRepository,
+    private val logger: Logger
 ) {
-    public operator fun invoke(): Flow<OdometerSettings> = repository.getSettings()
+    public suspend operator fun invoke(threshold: Float): Result<Unit> = runCatching {
+        logger.d("UpdateOdometerSpeedThresholdUseCase: Invoked with threshold: %f", threshold)
+        SpeedThreshold(threshold) // Validation
+        repository.setSpeedThreshold(threshold)
+    }
 }

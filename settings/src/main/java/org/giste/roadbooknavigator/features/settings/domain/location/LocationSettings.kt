@@ -15,18 +15,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.settings.domain.usecase
-
-import org.giste.roadbooknavigator.features.settings.domain.LocationSettingsRepository
-import javax.inject.Inject
+package org.giste.roadbooknavigator.features.settings.domain.location
 
 /**
- * Use case to restore location settings to their default values.
+ * Domain representation of location-specific settings.
+ *
+ * @property pollingInterval Minimum time interval between location updates, in milliseconds.
+ * @property minDistance Minimum distance between location updates, in meters.
  */
-class RestoreLocationDefaultsUseCase @Inject constructor(
-    private val repository: LocationSettingsRepository
+data class LocationSettings(
+    val pollingInterval: Long = DEFAULT_POLLING_INTERVAL,
+    val minDistance: Float = DEFAULT_MIN_DISTANCE,
 ) {
-    suspend operator fun invoke(): Result<Unit> = runCatching {
-        repository.restoreDefaults()
+    companion object {
+        const val DEFAULT_POLLING_INTERVAL: Long = 500L // ms
+        const val DEFAULT_MIN_DISTANCE: Float = 2.0f // m
     }
 }

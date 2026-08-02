@@ -25,8 +25,8 @@ import androidx.datastore.preferences.core.longPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.giste.roadbooknavigator.core.util.Logger
-import org.giste.roadbooknavigator.features.settings.domain.LocationSettings
-import org.giste.roadbooknavigator.features.settings.domain.LocationSettingsRepository
+import org.giste.roadbooknavigator.features.settings.domain.location.LocationSettings
+import org.giste.roadbooknavigator.features.settings.domain.location.LocationSettingsRepository
 import javax.inject.Inject
 
 /**

@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import org.giste.android.location.domain.LocationEvent
 import org.giste.android.location.domain.LocationProvider
 import org.giste.android.location.domain.usecase.ObserveLocationUseCase
-import org.giste.roadbooknavigator.features.settings.domain.usecase.ObserveLocationSettingsUseCase
+import org.giste.roadbooknavigator.features.settings.domain.location.usecase.ObserveLocationSettingsUseCase
 import javax.inject.Inject
 import javax.inject.Singleton
 

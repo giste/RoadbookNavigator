@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.settings.domain.usecase.odometer
+package org.giste.roadbooknavigator.features.settings.domain.odometer.usecase
 
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -26,37 +26,51 @@ import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettingsRepo
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-class UpdateOdometerMinVerticalAccuracyUseCaseTest {
+class UpdateOdometerSpeedThresholdUseCaseTest {
 
     private val repository: OdometerSettingsRepository = mockk()
     private val logger: Logger = mockk(relaxed = true)
-    private val useCase = UpdateOdometerMinVerticalAccuracyUseCase(repository, logger)
+    private val useCase = UpdateOdometerSpeedThresholdUseCase(repository, logger)
 
     @Test
-    fun `invoke should call repository when accuracy is valid`() = runTest {
+    fun `invoke should call repository when threshold is valid`() = runTest {
         // Given
-        val accuracy = 10.0f
-        coEvery { repository.setMinVerticalAccuracy(accuracy) } returns Unit
+        val threshold = 0.5f
+        coEvery { repository.setSpeedThreshold(threshold) } returns Unit
 
         // When
-        val result = useCase(accuracy)
+        val result = useCase(threshold)
 
         // Then
         assertTrue(result.isSuccess)
-        coVerify { repository.setMinVerticalAccuracy(accuracy) }
+        coVerify { repository.setSpeedThreshold(threshold) }
     }
 
     @Test
-    fun `invoke should return failure when accuracy is out of range`() = runTest {
+    fun `invoke should return failure when threshold is negative`() = runTest {
         // Given
-        val accuracy = -1.0f
+        val threshold = -0.1f
 
         // When
-        val result = useCase(accuracy)
+        val result = useCase(threshold)
 
         // Then
         assertTrue(result.isFailure)
         assertTrue(result.exceptionOrNull() is IllegalArgumentException)
-        coVerify(exactly = 0) { repository.setMinVerticalAccuracy(any()) }
+        coVerify(exactly = 0) { repository.setSpeedThreshold(any()) }
+    }
+
+    @Test
+    fun `invoke should return failure when threshold is too large`() = runTest {
+        // Given
+        val threshold = 11f
+
+        // When
+        val result = useCase(threshold)
+
+        // Then
+        assertTrue(result.isFailure)
+        assertTrue(result.exceptionOrNull() is IllegalArgumentException)
+        coVerify(exactly = 0) { repository.setSpeedThreshold(any()) }
     }
 }

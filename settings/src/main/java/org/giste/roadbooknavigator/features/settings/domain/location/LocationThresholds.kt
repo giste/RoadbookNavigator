@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.settings.domain
+package org.giste.roadbooknavigator.features.settings.domain.location
 
 import androidx.annotation.FloatRange
 import androidx.annotation.IntRange

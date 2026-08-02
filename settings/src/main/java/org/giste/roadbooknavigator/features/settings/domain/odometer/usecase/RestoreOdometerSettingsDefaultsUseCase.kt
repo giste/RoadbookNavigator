@@ -15,20 +15,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.settings.domain
+package org.giste.roadbooknavigator.features.settings.domain.odometer.usecase
+
+import org.giste.roadbooknavigator.core.util.Logger
+import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettingsRepository
+import javax.inject.Inject
 
 /**
- * Domain representation of location-specific settings.
- *
- * @property pollingInterval Minimum time interval between location updates, in milliseconds.
- * @property minDistance Minimum distance between location updates, in meters.
+ * Use case to restore odometer settings to their default values.
  */
-data class LocationSettings(
-    val pollingInterval: Long = DEFAULT_POLLING_INTERVAL,
-    val minDistance: Float = DEFAULT_MIN_DISTANCE,
+public class RestoreOdometerSettingsDefaultsUseCase @Inject internal constructor(
+    private val repository: OdometerSettingsRepository,
+    private val logger: Logger
 ) {
-    companion object {
-        const val DEFAULT_POLLING_INTERVAL: Long = 500L // ms
-        const val DEFAULT_MIN_DISTANCE: Float = 2.0f // m
+    public suspend operator fun invoke(): Result<Unit> = runCatching {
+        logger.d("RestoreOdometerSettingsDefaultsUseCase: Invoked")
+        repository.restoreSettingsDefaults()
     }
 }

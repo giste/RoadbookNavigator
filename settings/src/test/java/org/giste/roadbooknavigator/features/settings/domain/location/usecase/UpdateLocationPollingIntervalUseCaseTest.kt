@@ -15,28 +15,35 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.settings.domain.usecase
+package org.giste.roadbooknavigator.features.settings.domain.location.usecase
 
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.giste.roadbooknavigator.features.settings.domain.LocationSettingsRepository
+import org.giste.roadbooknavigator.features.settings.domain.location.LocationSettingsRepository
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-class RestoreLocationDefaultsUseCaseTest {
+class UpdateLocationPollingIntervalUseCaseTest {
 
     private val repository: LocationSettingsRepository = mockk()
-    private val useCase = RestoreLocationDefaultsUseCase(repository)
+    private val useCase = UpdateLocationPollingIntervalUseCase(repository)
 
     @Test
-    fun `should call restoreDefaults on repository`() = runTest {
-        coEvery { repository.restoreDefaults() } returns Unit
+    fun `should call updatePollingInterval on repository when valid`() = runTest {
+        coEvery { repository.updatePollingInterval(any()) } returns Unit
 
-        val result = useCase()
+        val result = useCase(1000L)
 
         assertTrue(result.isSuccess)
-        coVerify { repository.restoreDefaults() }
+        coVerify { repository.updatePollingInterval(1000L) }
+    }
+
+    @Test
+    fun `should return failure when interval is invalid`() = runTest {
+        val result = useCase(50L)
+
+        assertTrue(result.isFailure)
     }
 }

@@ -15,18 +15,31 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.settings.domain.usecase
+package org.giste.roadbooknavigator.features.settings.domain.location
 
 import kotlinx.coroutines.flow.Flow
-import org.giste.roadbooknavigator.features.settings.domain.LocationSettings
-import org.giste.roadbooknavigator.features.settings.domain.LocationSettingsRepository
-import javax.inject.Inject
 
 /**
- * Use case to observe location settings.
+ * Repository for managing location-related settings.
  */
-class ObserveLocationSettingsUseCase @Inject constructor(
-    private val repository: LocationSettingsRepository
-) {
-    operator fun invoke(): Flow<LocationSettings> = repository.getLocationSettings()
+interface LocationSettingsRepository {
+    /**
+     * Emits the current location settings.
+     */
+    fun getLocationSettings(): Flow<LocationSettings>
+
+    /**
+     * Updates the polling interval.
+     */
+    suspend fun updatePollingInterval(interval: Long)
+
+    /**
+     * Updates the minimum distance.
+     */
+    suspend fun updateMinDistance(distance: Float)
+
+    /**
+     * Restores default values for all location settings.
+     */
+    suspend fun restoreDefaults()
 }

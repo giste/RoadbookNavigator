@@ -15,30 +15,28 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.settings.domain.usecase
+package org.giste.roadbooknavigator.features.settings.domain.location.usecase
 
-import io.mockk.every
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import org.giste.roadbooknavigator.features.settings.domain.LocationSettings
-import org.giste.roadbooknavigator.features.settings.domain.LocationSettingsRepository
-import org.junit.Assert.assertEquals
+import org.giste.roadbooknavigator.features.settings.domain.location.LocationSettingsRepository
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
-class ObserveLocationSettingsUseCaseTest {
+class RestoreLocationDefaultsUseCaseTest {
 
     private val repository: LocationSettingsRepository = mockk()
-    private val useCase = ObserveLocationSettingsUseCase(repository)
+    private val useCase = RestoreLocationDefaultsUseCase(repository)
 
     @Test
-    fun `should emit settings from repository`() = runTest {
-        val settings = LocationSettings()
-        every { repository.getLocationSettings() } returns flowOf(settings)
+    fun `should call restoreDefaults on repository`() = runTest {
+        coEvery { repository.restoreDefaults() } returns Unit
 
-        val result = useCase().first()
+        val result = useCase()
 
-        assertEquals(settings, result)
+        assertTrue(result.isSuccess)
+        coVerify { repository.restoreDefaults() }
     }
 }

@@ -15,10 +15,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.settings.domain
+package org.giste.roadbooknavigator.features.settings.domain.location
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertThrows
+import org.junit.Assert
 import org.junit.Test
 
 class LocationThresholdsTest {
@@ -29,17 +28,17 @@ class LocationThresholdsTest {
         val max = PollingIntervalThreshold(2000L)
         val mid = PollingIntervalThreshold(500L)
 
-        assertEquals(100L, min.milliseconds)
-        assertEquals(2000L, max.milliseconds)
-        assertEquals(500L, mid.milliseconds)
+        Assert.assertEquals(100L, min.milliseconds)
+        Assert.assertEquals(2000L, max.milliseconds)
+        Assert.assertEquals(500L, mid.milliseconds)
     }
 
     @Test
     fun `PollingIntervalThreshold should reject invalid values`() {
-        assertThrows(IllegalArgumentException::class.java) {
+        Assert.assertThrows(IllegalArgumentException::class.java) {
             PollingIntervalThreshold(99L)
         }
-        assertThrows(IllegalArgumentException::class.java) {
+        Assert.assertThrows(IllegalArgumentException::class.java) {
             PollingIntervalThreshold(2001L)
         }
     }
@@ -50,17 +49,17 @@ class LocationThresholdsTest {
         val max = MinDistanceThreshold(10.0f)
         val mid = MinDistanceThreshold(2.0f)
 
-        assertEquals(0.0f, min.meters)
-        assertEquals(10.0f, max.meters)
-        assertEquals(2.0f, mid.meters)
+        Assert.assertEquals(0.0f, min.meters)
+        Assert.assertEquals(10.0f, max.meters)
+        Assert.assertEquals(2.0f, mid.meters)
     }
 
     @Test
     fun `MinDistanceThreshold should reject invalid values`() {
-        assertThrows(IllegalArgumentException::class.java) {
+        Assert.assertThrows(IllegalArgumentException::class.java) {
             MinDistanceThreshold(-0.1f)
         }
-        assertThrows(IllegalArgumentException::class.java) {
+        Assert.assertThrows(IllegalArgumentException::class.java) {
             MinDistanceThreshold(10.1f)
         }
     }

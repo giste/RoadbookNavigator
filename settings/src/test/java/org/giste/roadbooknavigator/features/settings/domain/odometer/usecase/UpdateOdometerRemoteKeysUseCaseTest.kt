@@ -15,35 +15,36 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.settings.domain.usecase
+package org.giste.roadbooknavigator.features.settings.domain.odometer.usecase
 
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.giste.roadbooknavigator.features.settings.domain.LocationSettingsRepository
+import org.giste.roadbooknavigator.core.util.Logger
+import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettingsRepository
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-class UpdateLocationMinDistanceUseCaseTest {
+class UpdateOdometerRemoteKeysUseCaseTest {
 
-    private val repository: LocationSettingsRepository = mockk()
-    private val useCase = UpdateLocationMinDistanceUseCase(repository)
+    private val repository: OdometerSettingsRepository = mockk()
+    private val logger: Logger = mockk(relaxed = true)
+    private val useCase = UpdateOdometerRemoteKeysUseCase(repository, logger)
 
     @Test
-    fun `should call updateMinDistance on repository when valid`() = runTest {
-        coEvery { repository.updateMinDistance(any()) } returns Unit
+    fun `invoke should call repository`() = runTest {
+        // Given
+        val increase = listOf(1)
+        val decrease = listOf(2)
+        val reset = listOf(3)
+        coEvery { repository.setRemoteKeys(increase, decrease, reset) } returns Unit
 
-        val result = useCase(5.0f)
+        // When
+        val result = useCase(increase, decrease, reset)
 
+        // Then
         assertTrue(result.isSuccess)
-        coVerify { repository.updateMinDistance(5.0f) }
-    }
-
-    @Test
-    fun `should return failure when distance is invalid`() = runTest {
-        val result = useCase(-1.0f)
-
-        assertTrue(result.isFailure)
+        coVerify { repository.setRemoteKeys(increase, decrease, reset) }
     }
 }

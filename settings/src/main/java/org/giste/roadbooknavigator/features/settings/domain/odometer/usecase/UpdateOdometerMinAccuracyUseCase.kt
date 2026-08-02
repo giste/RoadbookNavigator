@@ -15,23 +15,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.settings.domain.usecase.odometer
+package org.giste.roadbooknavigator.features.settings.domain.odometer.usecase
 
+import org.giste.roadbooknavigator.features.odometer.domain.AccuracyThreshold
 import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettingsRepository
-import org.giste.roadbooknavigator.features.odometer.domain.SpeedThreshold
 import javax.inject.Inject
 
 /**
- * Use case to update the speed threshold for the odometer.
+ * Use case to update the minimum horizontal accuracy required for the odometer.
  */
-public class UpdateOdometerSpeedThresholdUseCase @Inject internal constructor(
+public class UpdateOdometerMinAccuracyUseCase @Inject internal constructor(
     private val repository: OdometerSettingsRepository,
     private val logger: Logger
 ) {
-    public suspend operator fun invoke(threshold: Float): Result<Unit> = runCatching {
-        logger.d("UpdateOdometerSpeedThresholdUseCase: Invoked with threshold: %f", threshold)
-        SpeedThreshold(threshold) // Validation
-        repository.setSpeedThreshold(threshold)
+    public suspend operator fun invoke(accuracy: Float): Result<Unit> = runCatching {
+        logger.d("UpdateOdometerMinAccuracyUseCase: Invoked with accuracy: %f", accuracy)
+        AccuracyThreshold(accuracy) // Validation
+        repository.setMinAccuracy(accuracy)
     }
 }

@@ -12,14 +12,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  See <https://www.gnu.org/licenses/>.
  */
 
 package org.giste.roadbooknavigator.features.odometer.domain
 
 import io.mockk.mockk
-import org.giste.android.location.domain.UserLocation
-import org.giste.roadbooknavigator.features.odometer.domain.OdometerLogger
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -97,14 +95,13 @@ class DistanceUtilsTest {
         lon: Double,
         altitude: Double = 0.0,
         verticalAccuracy: Float? = null
-    ) = UserLocation(
+    ) = OdometerLocation(
         latitude = lat,
         longitude = lon,
         altitude = altitude,
         accuracy = 5f,
         verticalAccuracy = verticalAccuracy,
         speed = 10f,
-        bearing = 0f,
         time = 1000L
     )
 }

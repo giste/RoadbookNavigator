@@ -20,16 +20,12 @@ package org.giste.roadbooknavigator.features.odometer.domain.usecase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filterIsInstance
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.scan
-import org.giste.android.location.domain.LocationEvent
-import org.giste.android.location.domain.LocationProvider
-import org.giste.android.location.domain.UserLocation
 import org.giste.roadbooknavigator.features.odometer.domain.DistanceUtils
 import org.giste.roadbooknavigator.features.odometer.domain.Odometer
+import org.giste.roadbooknavigator.features.odometer.domain.OdometerLocation
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerLogger
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerRepository
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettings
@@ -46,25 +42,23 @@ import javax.inject.Inject
  */
 public class GetOdometerUseCase @Inject internal constructor(
     private val odometerRepository: OdometerRepository,
-    private val locationProvider: LocationProvider,
     private val distanceUtils: DistanceUtils,
     private val logger: OdometerLogger
 ) {
-    public operator fun invoke(settingsFlow: Flow<OdometerSettings>): Flow<Odometer> {
+    public operator fun invoke(
+        settingsFlow: Flow<OdometerSettings>,
+        locationFlow: Flow<OdometerLocation>
+    ): Flow<Odometer> {
         logger.d("GetOdometerUseCase: Invoked")
-        val locationFlow = locationProvider.observeLocation()
-            .filterIsInstance<LocationEvent.LocationUpdated>()
-            .map { it.location }
-            .onStart { emit(UserLocation(0.0, 0.0, 0.0, 999f, null, 0f, 0f, 0L)) }
 
         val processedLocations = combine(
             settingsFlow,
-            locationFlow
+            locationFlow.onStart { emit(OdometerLocation(0.0, 0.0, 0.0, 999f, null, 0f, 0L)) }
         ) { settings, location ->
             settings to location
         }
             .distinctUntilChanged { old, new -> old.second === new.second }
-            .scan(null as UserLocation?) { lastValid, (settings, current) ->
+            .scan(null as OdometerLocation?) { lastValid, (settings, current) ->
                 processLocation(lastValid, current, settings)
             }
 
@@ -82,10 +76,10 @@ public class GetOdometerUseCase @Inject internal constructor(
     }
 
     private suspend fun processLocation(
-        lastValid: UserLocation?,
-        current: UserLocation,
+        lastValid: OdometerLocation?,
+        current: OdometerLocation,
         settings: OdometerSettings
-    ): UserLocation? {
+    ): OdometerLocation? {
         if (current.accuracy > settings.minAccuracy) {
             logger.v(
                 "GetOdometerUseCase: Location ignored (poor accuracy: %f > %f)",

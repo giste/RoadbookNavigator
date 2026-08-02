@@ -24,9 +24,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import org.giste.android.location.domain.LocationEvent
+import org.giste.android.location.domain.LocationProvider
 import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.odometer.domain.Odometer
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettings
@@ -37,6 +41,7 @@ import org.giste.roadbooknavigator.features.odometer.domain.usecase.IncrementPar
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.ResetAllDistancesUseCase
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.ResetPartialDistanceUseCase
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.SetPartialDistanceUseCase
+import org.giste.roadbooknavigator.features.odometer.toOdometerLocation
 import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookSettings
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.GetRoadbookSettingsUseCase
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.MoveRoadbookDownUseCase
@@ -57,6 +62,7 @@ class DashboardViewModel @Inject constructor(
     getRoadbookSettingsUseCase: GetRoadbookSettingsUseCase,
     private val moveRoadbookUpUseCase: MoveRoadbookUpUseCase,
     private val moveRoadbookDownUseCase: MoveRoadbookDownUseCase,
+    private val locationProvider: LocationProvider,
     private val logger: Logger
 ) : ViewModel() {
 
@@ -64,9 +70,12 @@ class DashboardViewModel @Inject constructor(
     private val _showResetAllDialog = MutableStateFlow(false)
 
     private val odometerSettingsFlow = observeOdometerSettingsUseCase()
+    private val odometerLocationFlow = locationProvider.observeLocation()
+        .filterIsInstance<LocationEvent.LocationUpdated>()
+        .map { it.location.toOdometerLocation() }
 
     val uiState: StateFlow<DashboardUiState> = combine(
-        getOdometerUseCase(odometerSettingsFlow).onStart { emit(Odometer()) },
+        getOdometerUseCase(odometerSettingsFlow, odometerLocationFlow).onStart { emit(Odometer()) },
         _showSetPartialDialog,
         _showResetAllDialog,
         getSettingsUseCase(),

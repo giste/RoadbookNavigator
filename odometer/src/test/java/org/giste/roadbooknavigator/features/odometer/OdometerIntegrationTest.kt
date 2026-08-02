@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  See <https://www.gnu.org/licenses/>.
  */
 
 package org.giste.roadbooknavigator.features.odometer
@@ -20,7 +20,6 @@ package org.giste.roadbooknavigator.features.odometer
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
-import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -29,12 +28,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import org.giste.android.location.domain.LocationEvent
-import org.giste.android.location.domain.LocationProvider
-import org.giste.android.location.domain.UserLocation
 import org.giste.roadbooknavigator.features.odometer.data.DataStoreOdometerRepository
 import org.giste.roadbooknavigator.features.odometer.domain.DistanceUtils
 import org.giste.roadbooknavigator.features.odometer.domain.Odometer
+import org.giste.roadbooknavigator.features.odometer.domain.OdometerLocation
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerLogger
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettings
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.GetOdometerUseCase
@@ -57,11 +54,10 @@ class OdometerIntegrationTest {
     
     private lateinit var dataStore: DataStore<Preferences>
     private lateinit var odometerRepository: DataStoreOdometerRepository
-    private val locationProvider: LocationProvider = mockk()
     private val logger: OdometerLogger = mockk(relaxed = true)
     private val distanceUtils = DistanceUtils(logger)
     
-    private val gpsFlow = MutableSharedFlow<LocationEvent>()
+    private val gpsFlow = MutableSharedFlow<OdometerLocation>()
     private val settingsFlow = MutableSharedFlow<OdometerSettings>()
     
     private lateinit var getOdometerUseCase: GetOdometerUseCase
@@ -74,9 +70,7 @@ class OdometerIntegrationTest {
         )
         odometerRepository = DataStoreOdometerRepository(dataStore, logger)
         
-        every { locationProvider.observeLocation() } returns gpsFlow
-        
-        getOdometerUseCase = GetOdometerUseCase(odometerRepository, locationProvider, distanceUtils, logger)
+        getOdometerUseCase = GetOdometerUseCase(odometerRepository, distanceUtils, logger)
     }
 
     @Test
@@ -84,7 +78,7 @@ class OdometerIntegrationTest {
         // Start observing odometer
         val results = mutableListOf<Odometer>()
         val job = backgroundScope.launch {
-            getOdometerUseCase(settingsFlow).collect { results.add(it) }
+            getOdometerUseCase(settingsFlow, gpsFlow).collect { results.add(it) }
         }
 
         // 1. Setup settings
@@ -94,11 +88,11 @@ class OdometerIntegrationTest {
         assertTrue(results.any { it.total == 0.0 && it.partial == 0.0 })
 
         // 3. Emit first location (seed)
-        gpsFlow.emit(LocationEvent.LocationUpdated(createLocation(40.0, -3.0)))
+        gpsFlow.emit(createLocation(40.0, -3.0))
         
         // 4. Emit second location (~111m north)
         // 0.001 degrees latitude is approx 111 meters
-        gpsFlow.emit(LocationEvent.LocationUpdated(createLocation(40.001, -3.0)))
+        gpsFlow.emit(createLocation(40.001, -3.0))
 
         // 5. Verify the odometer has updated
         val lastOdometer = results.last()
@@ -117,17 +111,17 @@ class OdometerIntegrationTest {
     fun `odometer should survive settings changes and keep tracking from last valid point`() = runTest(testDispatcher) {
         val results = mutableListOf<Odometer>()
         val job = backgroundScope.launch {
-            getOdometerUseCase(settingsFlow).collect { results.add(it) }
+            getOdometerUseCase(settingsFlow, gpsFlow).collect { results.add(it) }
         }
 
         // Valid fix 1
         settingsFlow.emit(OdometerSettings(speedThreshold = 0.5f))
         val loc1 = createLocation(40.0, -3.0)
-        gpsFlow.emit(LocationEvent.LocationUpdated(loc1))
+        gpsFlow.emit(loc1)
 
         // Valid fix 2 -> Distance update
         val loc2 = createLocation(40.001, -3.0)
-        gpsFlow.emit(LocationEvent.LocationUpdated(loc2))
+        gpsFlow.emit(loc2)
         val firstDistance = results.last().total
         assertTrue(firstDistance > 0)
 
@@ -136,7 +130,7 @@ class OdometerIntegrationTest {
         
         // Valid fix 3 but ignored due to speed threshold
         val loc3 = createLocation(40.002, -3.0, speed = 10f) // 10 < 50
-        gpsFlow.emit(LocationEvent.LocationUpdated(loc3))
+        gpsFlow.emit(loc3)
         
         // Distance should not have changed
         assertEquals(firstDistance, results.last().total, 0.001)
@@ -146,7 +140,7 @@ class OdometerIntegrationTest {
 
         // Valid fix 4 -> Should calculate distance from loc2 (last valid point) to loc4
         val loc4 = createLocation(40.003, -3.0)
-        gpsFlow.emit(LocationEvent.LocationUpdated(loc4))
+        gpsFlow.emit(loc4)
 
         // Total distance = distance(loc1, loc2) + distance(loc2, loc4)
         // 111.194 + 222.388 = 333.582
@@ -159,14 +153,13 @@ class OdometerIntegrationTest {
         lat: Double,
         lon: Double,
         speed: Float = 10f
-    ) = UserLocation(
+    ) = OdometerLocation(
         latitude = lat,
         longitude = lon,
         altitude = 0.0,
         accuracy = 5f,
         verticalAccuracy = 1f,
         speed = speed,
-        bearing = 0f,
         time = System.currentTimeMillis()
     )
 }

@@ -17,7 +17,6 @@
 
 package org.giste.roadbooknavigator.features.odometer.domain
 
-import org.giste.android.location.domain.UserLocation
 import javax.inject.Inject
 import kotlin.math.atan2
 import kotlin.math.cos
@@ -35,7 +34,7 @@ internal class DistanceUtils @Inject constructor(
     /**
      * Calculates the horizontal 2D distance between two points.
      */
-    fun calculateDistance2D(start: UserLocation, end: UserLocation): Double {
+    fun calculateDistance2D(start: OdometerLocation, end: OdometerLocation): Double {
         val lat1 = Math.toRadians(start.latitude)
         val lon1 = Math.toRadians(start.longitude)
         val lat2 = Math.toRadians(end.latitude)
@@ -58,8 +57,8 @@ internal class DistanceUtils @Inject constructor(
      * otherwise falls back to 2D horizontal distance.
      */
     fun calculateDistance(
-        start: UserLocation,
-        end: UserLocation,
+        start: OdometerLocation,
+        end: OdometerLocation,
         verticalAccuracyThreshold: Float = 10.0f
     ): Double {
         val horizontalDistance = calculateDistance2D(start, end)

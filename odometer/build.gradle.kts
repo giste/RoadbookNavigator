@@ -47,8 +47,6 @@ kotlin {
 }
 
 dependencies {
-    implementation(project(":location"))
-    
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.datastore)
     implementation(libs.androidx.datastore.preferences)

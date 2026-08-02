@@ -24,11 +24,13 @@ import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import org.giste.android.location.domain.LocationProvider
 import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.odometer.domain.Odometer
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettings
@@ -65,6 +67,7 @@ class DashboardViewModelTest {
     private val getRoadbookSettingsUseCase: GetRoadbookSettingsUseCase = mockk()
     private val moveRoadbookUpUseCase: MoveRoadbookUpUseCase = mockk()
     private val moveRoadbookDownUseCase: MoveRoadbookDownUseCase = mockk()
+    private val locationProvider: LocationProvider = mockk()
     private val logger: Logger = mockk(relaxed = true)
 
     private val odometerFlow = MutableStateFlow(Odometer())
@@ -78,10 +81,11 @@ class DashboardViewModelTest {
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
-        every { getOdometerUseCase(any()) } returns odometerFlow
+        every { getOdometerUseCase(any(), any()) } returns odometerFlow
         every { getSettingsUseCase() } returns settingsFlow
         every { observeOdometerSettingsUseCase() } returns odometerSettingsFlow
         every { getRoadbookSettingsUseCase() } returns roadbookSettingsFlow
+        every { locationProvider.observeLocation() } returns flowOf()
 
         viewModel = DashboardViewModel(
             getOdometerUseCase,
@@ -95,6 +99,7 @@ class DashboardViewModelTest {
             getRoadbookSettingsUseCase,
             moveRoadbookUpUseCase,
             moveRoadbookDownUseCase,
+            locationProvider,
             logger
         )
     }

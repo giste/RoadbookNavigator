@@ -21,6 +21,8 @@
     <string name="permission_location_request">Esta aplicación necesita acceso a la ubicación para funcionar correctamente. Por favor, conceda el permiso.</string>
     <string name="permission_button_grant">Conceder permisos</string>
     <string name="set_partial_title">AJUSTAR DISTANCIA PARCIAL</string>
+    <string name="reset_all_title">REINICIAR TODAS LAS DISTANCIAS</string>
+    <string name="reset_all_message">¿Estás seguro de que quieres reiniciar tanto la distancia total como la parcial a cero?</string>
     <string name="action_cancel">Cancelar</string>
     <string name="action_confirm">Confirmar</string>
     <string name="main_no_route">No hay ruta cargada</string>

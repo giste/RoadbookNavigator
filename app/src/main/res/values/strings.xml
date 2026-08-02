@@ -22,6 +22,8 @@
     <string name="permission_location_request">This app needs location access to function properly. Please grant the permission.</string>
     <string name="permission_button_grant">Grant Permissions</string>
     <string name="set_partial_title">SET PARTIAL DISTANCE</string>
+    <string name="reset_all_title">RESET ALL DISTANCES</string>
+    <string name="reset_all_message">Are you sure you want to reset both total and partial distances to zero?</string>
     <string name="action_cancel">Cancel</string>
     <string name="action_confirm">Confirm</string>
     <string name="main_no_route">No route loaded</string>

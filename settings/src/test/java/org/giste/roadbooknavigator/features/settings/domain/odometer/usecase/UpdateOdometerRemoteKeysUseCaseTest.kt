@@ -22,7 +22,7 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.giste.roadbooknavigator.core.util.Logger
-import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettingsRepository
+import org.giste.roadbooknavigator.features.settings.domain.odometer.OdometerSettingsRepository
 import org.junit.Assert.assertTrue
 import org.junit.Test
 

@@ -28,10 +28,12 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.giste.roadbooknavigator.features.settings.data.SettingsModule
+import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettings
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.location.LocationSettings
 import org.giste.roadbooknavigator.features.settings.domain.location.LocationSettingsRepository
+import org.giste.roadbooknavigator.features.settings.domain.odometer.OdometerSettingsRepository
 import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -53,6 +55,9 @@ class MainActivityTest {
     @BindValue
     val locationSettingsRepository: LocationSettingsRepository = mockk(relaxed = true)
 
+    @BindValue
+    val odometerSettingsRepository: OdometerSettingsRepository = mockk(relaxed = true)
+
     private val settingsFlow = MutableStateFlow(AppSettings())
     private val locationSettingsFlow = MutableStateFlow(LocationSettings())
 
@@ -60,6 +65,7 @@ class MainActivityTest {
     fun setup() {
         every { settingsRepository.getSettings() } returns settingsFlow
         every { locationSettingsRepository.getLocationSettings() } returns locationSettingsFlow
+        every { odometerSettingsRepository.getSettings() } returns MutableStateFlow(OdometerSettings())
     }
 
     @Test

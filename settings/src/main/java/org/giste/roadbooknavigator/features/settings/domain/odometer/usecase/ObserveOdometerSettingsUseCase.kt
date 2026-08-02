@@ -17,31 +17,16 @@
 
 package org.giste.roadbooknavigator.features.settings.domain.odometer.usecase
 
-import io.mockk.every
-import io.mockk.mockk
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.flow.Flow
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettings
-import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettingsRepository
-import org.junit.Assert.assertEquals
-import org.junit.Test
+import org.giste.roadbooknavigator.features.settings.domain.odometer.OdometerSettingsRepository
+import javax.inject.Inject
 
-class GetOdometerSettingsUseCaseTest {
-
-    private val repository: OdometerSettingsRepository = mockk()
-    private val useCase = GetOdometerSettingsUseCase(repository)
-
-    @Test
-    fun `invoke should return odometer settings flow from repository`() = runTest {
-        // Given
-        val settings = OdometerSettings()
-        every { repository.getSettings() } returns flowOf(settings)
-
-        // When
-        val result = useCase().first()
-
-        // Then
-        assertEquals(settings, result)
-    }
+/**
+ * Use case to retrieve the current odometer settings.
+ */
+class ObserveOdometerSettingsUseCase @Inject internal constructor(
+    private val repository: OdometerSettingsRepository
+) {
+    operator fun invoke(): Flow<OdometerSettings> = repository.getSettings()
 }

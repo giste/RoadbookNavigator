@@ -19,17 +19,17 @@ package org.giste.roadbooknavigator.features.settings.domain.odometer.usecase
 
 import org.giste.roadbooknavigator.features.odometer.domain.AccuracyThreshold
 import org.giste.roadbooknavigator.core.util.Logger
-import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettingsRepository
+import org.giste.roadbooknavigator.features.settings.domain.odometer.OdometerSettingsRepository
 import javax.inject.Inject
 
 /**
  * Use case to update the minimum horizontal accuracy required for the odometer.
  */
-public class UpdateOdometerMinAccuracyUseCase @Inject internal constructor(
+class UpdateOdometerMinAccuracyUseCase @Inject internal constructor(
     private val repository: OdometerSettingsRepository,
     private val logger: Logger
 ) {
-    public suspend operator fun invoke(accuracy: Float): Result<Unit> = runCatching {
+    suspend operator fun invoke(accuracy: Float): Result<Unit> = runCatching {
         logger.d("UpdateOdometerMinAccuracyUseCase: Invoked with accuracy: %f", accuracy)
         AccuracyThreshold(accuracy) // Validation
         repository.setMinAccuracy(accuracy)

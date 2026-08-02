@@ -31,7 +31,7 @@ import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.odometer.domain.Odometer
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettings
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.DecrementPartialDistanceUseCase
-import org.giste.roadbooknavigator.features.settings.domain.odometer.usecase.GetOdometerSettingsUseCase
+import org.giste.roadbooknavigator.features.settings.domain.odometer.usecase.ObserveOdometerSettingsUseCase
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.GetOdometerUseCase
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.IncrementPartialDistanceUseCase
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.ResetAllDistancesUseCase
@@ -53,7 +53,7 @@ class DashboardViewModel @Inject constructor(
     private val decrementPartialDistanceUseCase: DecrementPartialDistanceUseCase,
     private val setPartialDistanceUseCase: SetPartialDistanceUseCase,
     getSettingsUseCase: GetSettingsUseCase,
-    getOdometerSettingsUseCase: GetOdometerSettingsUseCase,
+    observeOdometerSettingsUseCase: ObserveOdometerSettingsUseCase,
     getRoadbookSettingsUseCase: GetRoadbookSettingsUseCase,
     private val moveRoadbookUpUseCase: MoveRoadbookUpUseCase,
     private val moveRoadbookDownUseCase: MoveRoadbookDownUseCase,
@@ -63,12 +63,14 @@ class DashboardViewModel @Inject constructor(
     private val _showSetPartialDialog = MutableStateFlow(false)
     private val _showResetAllDialog = MutableStateFlow(false)
 
+    private val odometerSettingsFlow = observeOdometerSettingsUseCase()
+
     val uiState: StateFlow<DashboardUiState> = combine(
-        getOdometerUseCase().onStart { emit(Odometer()) },
+        getOdometerUseCase(odometerSettingsFlow).onStart { emit(Odometer()) },
         _showSetPartialDialog,
         _showResetAllDialog,
         getSettingsUseCase(),
-        getOdometerSettingsUseCase(),
+        odometerSettingsFlow,
         getRoadbookSettingsUseCase()
     ) { flows ->
         val odometer = flows[0] as Odometer

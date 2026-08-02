@@ -37,7 +37,7 @@ import org.giste.roadbooknavigator.features.map.domain.model.MapSettings
 import org.giste.roadbooknavigator.features.map.domain.usecase.GetMapSettingsUseCase
 import org.giste.roadbooknavigator.features.map.domain.usecase.SaveMapSettingsUseCase
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettings
-import org.giste.roadbooknavigator.features.settings.domain.odometer.usecase.GetOdometerSettingsUseCase
+import org.giste.roadbooknavigator.features.settings.domain.odometer.usecase.ObserveOdometerSettingsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.odometer.usecase.RestoreOdometerSettingsDefaultsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.odometer.usecase.UpdateOdometerMinAccuracyUseCase
 import org.giste.roadbooknavigator.features.settings.domain.odometer.usecase.UpdateOdometerMinVerticalAccuracyUseCase
@@ -61,7 +61,7 @@ import javax.inject.Inject
 class SettingsViewModel @Inject constructor(
     getSettingsUseCase: GetSettingsUseCase,
     observeLocationSettingsUseCase: ObserveLocationSettingsUseCase,
-    getOdometerSettingsUseCase: GetOdometerSettingsUseCase,
+    observeOdometerSettingsUseCase: ObserveOdometerSettingsUseCase,
     getMapSettingsUseCase: GetMapSettingsUseCase,
     getRoadbookSettingsUseCase: GetRoadbookSettingsUseCase,
     private val updateThemeUseCase: UpdateThemeUseCase,
@@ -85,7 +85,7 @@ class SettingsViewModel @Inject constructor(
     val uiState: StateFlow<SettingsUiState> = combine(
         getSettingsUseCase(),
         observeLocationSettingsUseCase(),
-        getOdometerSettingsUseCase(),
+        observeOdometerSettingsUseCase(),
         getMapSettingsUseCase(),
         getRoadbookSettingsUseCase()
     ) { settings, locationSettings, odometerSettings, mapSettings, roadbookSettings ->

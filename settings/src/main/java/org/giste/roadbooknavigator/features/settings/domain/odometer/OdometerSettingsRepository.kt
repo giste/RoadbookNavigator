@@ -15,31 +15,32 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.odometer.domain
+package org.giste.roadbooknavigator.features.settings.domain.odometer
 
 import kotlinx.coroutines.flow.Flow
+import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettings
 
 /**
  * Interface to provide access to odometer-specific settings.
  */
-public interface OdometerSettingsRepository {
+interface OdometerSettingsRepository {
     /**
      * Provides a reactive stream of the current [OdometerSettings].
      */
-    public fun getSettings(): Flow<OdometerSettings>
+    fun getSettings(): Flow<OdometerSettings>
 
     /** Sets the speed threshold for the GPS odometer. */
-    public suspend fun setSpeedThreshold(threshold: Float)
+    suspend fun setSpeedThreshold(threshold: Float)
 
     /** Sets the minimum horizontal accuracy required for odometer updates. */
-    public suspend fun setMinAccuracy(accuracy: Float)
+    suspend fun setMinAccuracy(accuracy: Float)
 
     /** Sets the minimum vertical accuracy required for altitude-related odometer logic. */
-    public suspend fun setMinVerticalAccuracy(accuracy: Float)
+    suspend fun setMinVerticalAccuracy(accuracy: Float)
 
     /** Sets the remote control keys for odometer actions. */
-    public suspend fun setRemoteKeys(increase: List<Int>, decrease: List<Int>, reset: List<Int>)
+    suspend fun setRemoteKeys(increase: List<Int>, decrease: List<Int>, reset: List<Int>)
 
     /** Resets all odometer-related parameters to their default values. */
-    public suspend fun restoreSettingsDefaults()
+    suspend fun restoreSettingsDefaults()
 }

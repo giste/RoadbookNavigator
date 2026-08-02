@@ -18,17 +18,17 @@
 package org.giste.roadbooknavigator.features.settings.domain.odometer.usecase
 
 import org.giste.roadbooknavigator.core.util.Logger
-import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettingsRepository
+import org.giste.roadbooknavigator.features.settings.domain.odometer.OdometerSettingsRepository
 import javax.inject.Inject
 
 /**
  * Use case to update the remote control keys for odometer actions.
  */
-public class UpdateOdometerRemoteKeysUseCase @Inject internal constructor(
+class UpdateOdometerRemoteKeysUseCase @Inject internal constructor(
     private val repository: OdometerSettingsRepository,
     private val logger: Logger
 ) {
-    public suspend operator fun invoke(
+    suspend operator fun invoke(
         increase: List<Int>,
         decrease: List<Int>,
         reset: List<Int>

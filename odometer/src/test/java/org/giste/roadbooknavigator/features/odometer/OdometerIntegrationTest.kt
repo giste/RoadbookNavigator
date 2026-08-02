@@ -37,7 +37,6 @@ import org.giste.roadbooknavigator.features.odometer.domain.DistanceUtils
 import org.giste.roadbooknavigator.features.odometer.domain.Odometer
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerLogger
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettings
-import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettingsRepository
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.GetOdometerUseCase
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -59,7 +58,6 @@ class OdometerIntegrationTest {
     private lateinit var dataStore: DataStore<Preferences>
     private lateinit var odometerRepository: DataStoreOdometerRepository
     private val locationProvider: LocationProvider = mockk()
-    private val odometerSettingsRepository: OdometerSettingsRepository = mockk()
     private val logger: OdometerLogger = mockk(relaxed = true)
     private val distanceUtils = DistanceUtils(logger)
     
@@ -77,9 +75,8 @@ class OdometerIntegrationTest {
         odometerRepository = DataStoreOdometerRepository(dataStore, logger)
         
         every { locationProvider.observeLocation() } returns gpsFlow
-        every { odometerSettingsRepository.getSettings() } returns settingsFlow
         
-        getOdometerUseCase = GetOdometerUseCase(odometerRepository, locationProvider, odometerSettingsRepository, distanceUtils, logger)
+        getOdometerUseCase = GetOdometerUseCase(odometerRepository, locationProvider, distanceUtils, logger)
     }
 
     @Test
@@ -87,7 +84,7 @@ class OdometerIntegrationTest {
         // Start observing odometer
         val results = mutableListOf<Odometer>()
         val job = backgroundScope.launch {
-            getOdometerUseCase().collect { results.add(it) }
+            getOdometerUseCase(settingsFlow).collect { results.add(it) }
         }
 
         // 1. Setup settings
@@ -120,7 +117,7 @@ class OdometerIntegrationTest {
     fun `odometer should survive settings changes and keep tracking from last valid point`() = runTest(testDispatcher) {
         val results = mutableListOf<Odometer>()
         val job = backgroundScope.launch {
-            getOdometerUseCase().collect { results.add(it) }
+            getOdometerUseCase(settingsFlow).collect { results.add(it) }
         }
 
         // Valid fix 1

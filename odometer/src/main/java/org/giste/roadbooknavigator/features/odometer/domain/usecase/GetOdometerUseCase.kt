@@ -33,7 +33,6 @@ import org.giste.roadbooknavigator.features.odometer.domain.Odometer
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerLogger
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerRepository
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettings
-import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettingsRepository
 import javax.inject.Inject
 
 /**
@@ -48,11 +47,10 @@ import javax.inject.Inject
 public class GetOdometerUseCase @Inject internal constructor(
     private val odometerRepository: OdometerRepository,
     private val locationProvider: LocationProvider,
-    private val odometerSettingsRepository: OdometerSettingsRepository,
     private val distanceUtils: DistanceUtils,
     private val logger: OdometerLogger
 ) {
-    public operator fun invoke(): Flow<Odometer> {
+    public operator fun invoke(settingsFlow: Flow<OdometerSettings>): Flow<Odometer> {
         logger.d("GetOdometerUseCase: Invoked")
         val locationFlow = locationProvider.observeLocation()
             .filterIsInstance<LocationEvent.LocationUpdated>()
@@ -60,7 +58,7 @@ public class GetOdometerUseCase @Inject internal constructor(
             .onStart { emit(UserLocation(0.0, 0.0, 0.0, 999f, null, 0f, 0f, 0L)) }
 
         val processedLocations = combine(
-            odometerSettingsRepository.getSettings(),
+            settingsFlow,
             locationFlow
         ) { settings, location ->
             settings to location

@@ -41,7 +41,7 @@ import org.giste.roadbooknavigator.features.map.domain.model.MapSettings
 import org.giste.roadbooknavigator.features.map.domain.usecase.GetMapSettingsUseCase
 import org.giste.roadbooknavigator.features.map.domain.usecase.SaveMapSettingsUseCase
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettings
-import org.giste.roadbooknavigator.features.settings.domain.odometer.usecase.GetOdometerSettingsUseCase
+import org.giste.roadbooknavigator.features.settings.domain.odometer.usecase.ObserveOdometerSettingsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.odometer.usecase.RestoreOdometerSettingsDefaultsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.odometer.usecase.UpdateOdometerMinAccuracyUseCase
 import org.giste.roadbooknavigator.features.settings.domain.odometer.usecase.UpdateOdometerMinVerticalAccuracyUseCase
@@ -71,7 +71,7 @@ class SettingsViewModelTest {
 
     private val getSettingsUseCase: GetSettingsUseCase = mockk()
     private val observeLocationSettingsUseCase: ObserveLocationSettingsUseCase = mockk()
-    private val getOdometerSettingsUseCase: GetOdometerSettingsUseCase = mockk()
+    private val observeOdometerSettingsUseCase: ObserveOdometerSettingsUseCase = mockk()
     private val getMapSettingsUseCase: GetMapSettingsUseCase = mockk()
     private val getRoadbookSettingsUseCase: GetRoadbookSettingsUseCase = mockk()
     private val updateThemeUseCase: UpdateThemeUseCase = mockk()
@@ -99,14 +99,14 @@ class SettingsViewModelTest {
 
         every { getSettingsUseCase() } returns flowOf(AppSettings())
         every { observeLocationSettingsUseCase() } returns flowOf(LocationSettings())
-        every { getOdometerSettingsUseCase() } returns flowOf(OdometerSettings())
+        every { observeOdometerSettingsUseCase() } returns flowOf(OdometerSettings())
         every { getMapSettingsUseCase() } returns flowOf(MapSettings())
         every { getRoadbookSettingsUseCase() } returns flowOf(RoadbookSettings())
 
         viewModel = SettingsViewModel(
             getSettingsUseCase = getSettingsUseCase,
             observeLocationSettingsUseCase = observeLocationSettingsUseCase,
-            getOdometerSettingsUseCase = getOdometerSettingsUseCase,
+            observeOdometerSettingsUseCase = observeOdometerSettingsUseCase,
             getMapSettingsUseCase = getMapSettingsUseCase,
             getRoadbookSettingsUseCase = getRoadbookSettingsUseCase,
             updateThemeUseCase = updateThemeUseCase,

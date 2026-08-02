@@ -15,25 +15,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.odometer.domain.usecase
+package org.giste.roadbooknavigator.features.settings.domain.usecase.odometer
 
-import org.giste.roadbooknavigator.features.odometer.domain.OdometerLogger
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettingsRepository
+import org.giste.roadbooknavigator.features.odometer.domain.VerticalAccuracyThreshold
 import javax.inject.Inject
 
 /**
- * Use case to update the remote control keys for odometer actions.
+ * Use case to update the minimum vertical accuracy required for the odometer.
  */
-public class UpdateOdometerRemoteKeysUseCase @Inject internal constructor(
+public class UpdateOdometerMinVerticalAccuracyUseCase @Inject internal constructor(
     private val repository: OdometerSettingsRepository,
-    private val logger: OdometerLogger
+    private val logger: Logger
 ) {
-    public suspend operator fun invoke(
-        increase: List<Int>,
-        decrease: List<Int>,
-        reset: List<Int>
-    ): Result<Unit> = runCatching {
-        logger.d("UpdateOdometerRemoteKeysUseCase: Invoked")
-        repository.setRemoteKeys(increase, decrease, reset)
+    public suspend operator fun invoke(accuracy: Float): Result<Unit> = runCatching {
+        logger.d("UpdateOdometerMinVerticalAccuracyUseCase: Invoked with accuracy: %f", accuracy)
+        VerticalAccuracyThreshold(accuracy) // Validation
+        repository.setMinVerticalAccuracy(accuracy)
     }
 }

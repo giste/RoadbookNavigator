@@ -15,33 +15,48 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.odometer.domain.usecase
+package org.giste.roadbooknavigator.features.settings.domain.usecase.odometer
 
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.giste.roadbooknavigator.features.odometer.domain.OdometerLogger
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettingsRepository
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-class RestoreOdometerSettingsDefaultsUseCaseTest {
+class UpdateOdometerMinAccuracyUseCaseTest {
 
     private val repository: OdometerSettingsRepository = mockk()
-    private val logger: OdometerLogger = mockk(relaxed = true)
-    private val useCase = RestoreOdometerSettingsDefaultsUseCase(repository, logger)
+    private val logger: Logger = mockk(relaxed = true)
+    private val useCase = UpdateOdometerMinAccuracyUseCase(repository, logger)
 
     @Test
-    fun `invoke should call repository`() = runTest {
+    fun `invoke should call repository when accuracy is valid`() = runTest {
         // Given
-        coEvery { repository.restoreSettingsDefaults() } returns Unit
+        val accuracy = 20.0f
+        coEvery { repository.setMinAccuracy(accuracy) } returns Unit
 
         // When
-        val result = useCase()
+        val result = useCase(accuracy)
 
         // Then
         assertTrue(result.isSuccess)
-        coVerify { repository.restoreSettingsDefaults() }
+        coVerify { repository.setMinAccuracy(accuracy) }
+    }
+
+    @Test
+    fun `invoke should return failure when accuracy is out of range`() = runTest {
+        // Given
+        val accuracy = -1.0f
+
+        // When
+        val result = useCase(accuracy)
+
+        // Then
+        assertTrue(result.isFailure)
+        assertTrue(result.exceptionOrNull() is IllegalArgumentException)
+        coVerify(exactly = 0) { repository.setMinAccuracy(any()) }
     }
 }

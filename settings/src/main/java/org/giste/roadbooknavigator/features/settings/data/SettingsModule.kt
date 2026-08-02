@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  See <https://www.gnu.org/licenses/>.
  */
 
 package org.giste.roadbooknavigator.features.settings.data
@@ -27,12 +27,14 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettingsRepository
 import org.giste.roadbooknavigator.features.settings.domain.LocationSettingsRepository
 import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
 import javax.inject.Singleton
 
 private val Context.settingsDataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 private val Context.locationSettingsDataStore: DataStore<Preferences> by preferencesDataStore(name = "location_settings")
+private val Context.odometerSettingsDataStore: DataStore<Preferences> by preferencesDataStore(name = "odometer_settings")
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -50,6 +52,12 @@ abstract class SettingsModule {
         locationSettingsRepository: DataStoreLocationSettingsRepository
     ): LocationSettingsRepository
 
+    @Binds
+    @Singleton
+    internal abstract fun bindOdometerSettingsRepository(
+        odometerSettingsRepository: DataStoreOdometerSettingsRepository
+    ): OdometerSettingsRepository
+
     companion object {
         @Provides
         @Singleton
@@ -62,5 +70,11 @@ abstract class SettingsModule {
         @LocationSettingsDataStore
         internal fun provideLocationSettingsDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
             context.locationSettingsDataStore
+
+        @Provides
+        @Singleton
+        @OdometerSettingsDataStore
+        internal fun provideOdometerSettingsDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
+            context.odometerSettingsDataStore
     }
 }

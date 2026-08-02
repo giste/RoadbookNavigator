@@ -28,7 +28,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerRepository
-import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettingsRepository
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
@@ -47,12 +46,6 @@ internal abstract class OdometerModule {
     internal abstract fun bindOdometerRepository(
         impl: DataStoreOdometerRepository
     ): OdometerRepository
-
-    @Binds
-    @Singleton
-    internal abstract fun bindOdometerSettingsRepository(
-        impl: DataStoreOdometerSettingsRepository
-    ): OdometerSettingsRepository
 
     internal companion object {
         @Provides

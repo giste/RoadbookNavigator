@@ -15,23 +15,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.odometer.domain.usecase
+package org.giste.roadbooknavigator.features.settings.domain.usecase.odometer
 
-import org.giste.roadbooknavigator.features.odometer.domain.OdometerLogger
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettingsRepository
-import org.giste.roadbooknavigator.features.odometer.domain.VerticalAccuracyThreshold
+import org.giste.roadbooknavigator.features.odometer.domain.SpeedThreshold
 import javax.inject.Inject
 
 /**
- * Use case to update the minimum vertical accuracy required for the odometer.
+ * Use case to update the speed threshold for the odometer.
  */
-public class UpdateOdometerMinVerticalAccuracyUseCase @Inject internal constructor(
+public class UpdateOdometerSpeedThresholdUseCase @Inject internal constructor(
     private val repository: OdometerSettingsRepository,
-    private val logger: OdometerLogger
+    private val logger: Logger
 ) {
-    public suspend operator fun invoke(accuracy: Float): Result<Unit> = runCatching {
-        logger.d("UpdateOdometerMinVerticalAccuracyUseCase: Invoked with accuracy: %f", accuracy)
-        VerticalAccuracyThreshold(accuracy) // Validation
-        repository.setMinVerticalAccuracy(accuracy)
+    public suspend operator fun invoke(threshold: Float): Result<Unit> = runCatching {
+        logger.d("UpdateOdometerSpeedThresholdUseCase: Invoked with threshold: %f", threshold)
+        SpeedThreshold(threshold) // Validation
+        repository.setSpeedThreshold(threshold)
     }
 }

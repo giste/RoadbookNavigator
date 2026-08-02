@@ -15,13 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.odometer.domain.usecase
+package org.giste.roadbooknavigator.features.settings.domain.usecase.odometer
 
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.giste.roadbooknavigator.features.odometer.domain.OdometerLogger
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettingsRepository
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -29,7 +29,7 @@ import org.junit.Test
 class UpdateOdometerSpeedThresholdUseCaseTest {
 
     private val repository: OdometerSettingsRepository = mockk()
-    private val logger: OdometerLogger = mockk(relaxed = true)
+    private val logger: Logger = mockk(relaxed = true)
     private val useCase = UpdateOdometerSpeedThresholdUseCase(repository, logger)
 
     @Test

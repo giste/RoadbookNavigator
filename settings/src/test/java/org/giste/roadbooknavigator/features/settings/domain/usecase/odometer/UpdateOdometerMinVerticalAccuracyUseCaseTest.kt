@@ -15,36 +15,48 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.odometer.domain.usecase
+package org.giste.roadbooknavigator.features.settings.domain.usecase.odometer
 
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.giste.roadbooknavigator.features.odometer.domain.OdometerLogger
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettingsRepository
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-class UpdateOdometerRemoteKeysUseCaseTest {
+class UpdateOdometerMinVerticalAccuracyUseCaseTest {
 
     private val repository: OdometerSettingsRepository = mockk()
-    private val logger: OdometerLogger = mockk(relaxed = true)
-    private val useCase = UpdateOdometerRemoteKeysUseCase(repository, logger)
+    private val logger: Logger = mockk(relaxed = true)
+    private val useCase = UpdateOdometerMinVerticalAccuracyUseCase(repository, logger)
 
     @Test
-    fun `invoke should call repository`() = runTest {
+    fun `invoke should call repository when accuracy is valid`() = runTest {
         // Given
-        val increase = listOf(1)
-        val decrease = listOf(2)
-        val reset = listOf(3)
-        coEvery { repository.setRemoteKeys(increase, decrease, reset) } returns Unit
+        val accuracy = 10.0f
+        coEvery { repository.setMinVerticalAccuracy(accuracy) } returns Unit
 
         // When
-        val result = useCase(increase, decrease, reset)
+        val result = useCase(accuracy)
 
         // Then
         assertTrue(result.isSuccess)
-        coVerify { repository.setRemoteKeys(increase, decrease, reset) }
+        coVerify { repository.setMinVerticalAccuracy(accuracy) }
+    }
+
+    @Test
+    fun `invoke should return failure when accuracy is out of range`() = runTest {
+        // Given
+        val accuracy = -1.0f
+
+        // When
+        val result = useCase(accuracy)
+
+        // Then
+        assertTrue(result.isFailure)
+        assertTrue(result.exceptionOrNull() is IllegalArgumentException)
+        coVerify(exactly = 0) { repository.setMinVerticalAccuracy(any()) }
     }
 }

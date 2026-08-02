@@ -15,23 +15,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.odometer.domain.usecase
+package org.giste.roadbooknavigator.features.settings.domain.usecase.odometer
 
-import org.giste.roadbooknavigator.features.odometer.domain.AccuracyThreshold
-import org.giste.roadbooknavigator.features.odometer.domain.OdometerLogger
+import kotlinx.coroutines.flow.Flow
+import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettings
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettingsRepository
 import javax.inject.Inject
 
 /**
- * Use case to update the minimum horizontal accuracy required for the odometer.
+ * Use case to retrieve the current odometer settings.
  */
-public class UpdateOdometerMinAccuracyUseCase @Inject internal constructor(
-    private val repository: OdometerSettingsRepository,
-    private val logger: OdometerLogger
+public class GetOdometerSettingsUseCase @Inject internal constructor(
+    private val repository: OdometerSettingsRepository
 ) {
-    public suspend operator fun invoke(accuracy: Float): Result<Unit> = runCatching {
-        logger.d("UpdateOdometerMinAccuracyUseCase: Invoked with accuracy: %f", accuracy)
-        AccuracyThreshold(accuracy) // Validation
-        repository.setMinAccuracy(accuracy)
-    }
+    public operator fun invoke(): Flow<OdometerSettings> = repository.getSettings()
 }

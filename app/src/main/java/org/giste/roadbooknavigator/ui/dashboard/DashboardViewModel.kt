@@ -31,7 +31,7 @@ import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.odometer.domain.Odometer
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettings
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.DecrementPartialDistanceUseCase
-import org.giste.roadbooknavigator.features.odometer.domain.usecase.GetOdometerSettingsUseCase
+import org.giste.roadbooknavigator.features.settings.domain.usecase.odometer.GetOdometerSettingsUseCase
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.GetOdometerUseCase
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.IncrementPartialDistanceUseCase
 import org.giste.roadbooknavigator.features.odometer.domain.usecase.ResetAllDistancesUseCase

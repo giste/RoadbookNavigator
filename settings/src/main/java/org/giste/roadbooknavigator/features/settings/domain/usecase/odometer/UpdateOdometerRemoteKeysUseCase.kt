@@ -15,21 +15,25 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.odometer.domain.usecase
+package org.giste.roadbooknavigator.features.settings.domain.usecase.odometer
 
-import org.giste.roadbooknavigator.features.odometer.domain.OdometerLogger
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerSettingsRepository
 import javax.inject.Inject
 
 /**
- * Use case to restore odometer settings to their default values.
+ * Use case to update the remote control keys for odometer actions.
  */
-public class RestoreOdometerSettingsDefaultsUseCase @Inject internal constructor(
+public class UpdateOdometerRemoteKeysUseCase @Inject internal constructor(
     private val repository: OdometerSettingsRepository,
-    private val logger: OdometerLogger
+    private val logger: Logger
 ) {
-    public suspend operator fun invoke(): Result<Unit> = runCatching {
-        logger.d("RestoreOdometerSettingsDefaultsUseCase: Invoked")
-        repository.restoreSettingsDefaults()
+    public suspend operator fun invoke(
+        increase: List<Int>,
+        decrease: List<Int>,
+        reset: List<Int>
+    ): Result<Unit> = runCatching {
+        logger.d("UpdateOdometerRemoteKeysUseCase: Invoked")
+        repository.setRemoteKeys(increase, decrease, reset)
     }
 }

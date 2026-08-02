@@ -15,18 +15,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.di
+package org.giste.roadbooknavigator.features.location
 
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.android.location.data.AppLocationLogger
 import org.giste.android.location.domain.LocationLogger
 import org.giste.android.location.domain.LocationProvider
-import org.giste.roadbooknavigator.location.AppLocationProvider
-import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
@@ -40,7 +37,7 @@ internal abstract class LocationBridgeModule {
     @Singleton
     @AppLocationLogger
     internal abstract fun bindLocationLogger(
-        locationTimberBridge: LocationTimberBridge
+        locationLoggerBridge: LocationLoggerBridge
     ): LocationLogger
 
     @Binds
@@ -50,35 +47,3 @@ internal abstract class LocationBridgeModule {
     ): LocationProvider
 }
 
-internal class LocationTimberBridge @Inject constructor(
-    private val logger: Logger
-) : LocationLogger {
-
-    override fun v(message: String, vararg args: Any?) {
-        logger.v(message, *args)
-    }
-
-    override fun d(message: String, vararg args: Any?) {
-        logger.d(message, *args)
-    }
-
-    override fun i(message: String, vararg args: Any?) {
-        logger.i(message, *args)
-    }
-
-    override fun w(message: String, vararg args: Any?) {
-        logger.w(message, *args)
-    }
-
-    override fun e(message: String, vararg args: Any?) {
-        logger.e(message, *args)
-    }
-
-    override fun e(t: Throwable, message: String, vararg args: Any?) {
-        logger.e(t, message, *args)
-    }
-
-    override fun withTag(tag: String): LocationLogger {
-        return LocationTimberBridge(logger.withTag(tag))
-    }
-}

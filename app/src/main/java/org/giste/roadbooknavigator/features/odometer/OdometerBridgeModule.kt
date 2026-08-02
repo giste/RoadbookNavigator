@@ -15,13 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.odometer.di
+package org.giste.roadbooknavigator.features.odometer
 
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import org.giste.roadbooknavigator.features.odometer.OdometerLoggerImpl
 import org.giste.roadbooknavigator.features.odometer.domain.OdometerLogger
 import javax.inject.Singleton
 
@@ -32,6 +31,6 @@ abstract class OdometerBridgeModule {
     @Binds
     @Singleton
     abstract fun bindOdometerLogger(
-        impl: OdometerLoggerImpl
+        impl: OdometerLoggerBridge
     ): OdometerLogger
 }

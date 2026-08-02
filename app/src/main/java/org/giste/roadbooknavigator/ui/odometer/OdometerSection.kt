@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.odometer.ui
+package org.giste.roadbooknavigator.ui.odometer
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.location
+package org.giste.roadbooknavigator.features.location
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -28,7 +28,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * App-level implementation of [LocationProvider] that combines the stateless
+ * App-level implementation of [org.giste.android.location.domain.LocationProvider] that combines the stateless
  * location engine with the app's persistent settings.
  */
 @Singleton

@@ -68,10 +68,10 @@ import org.giste.roadbooknavigator.R
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 import org.giste.roadbooknavigator.features.map.ui.MapScreen
 import org.giste.roadbooknavigator.features.odometer.domain.Odometer
-import org.giste.roadbooknavigator.features.odometer.ui.PartialDistance
-import org.giste.roadbooknavigator.features.odometer.ui.ResetAllConfirmationDialog
-import org.giste.roadbooknavigator.features.odometer.ui.SetPartialDialog
-import org.giste.roadbooknavigator.features.odometer.ui.TotalDistance
+import org.giste.roadbooknavigator.ui.odometer.PartialDistance
+import org.giste.roadbooknavigator.ui.odometer.ResetAllConfirmationDialog
+import org.giste.roadbooknavigator.ui.odometer.SetPartialDialog
+import org.giste.roadbooknavigator.ui.odometer.TotalDistance
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Coordinates
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Distance
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Route

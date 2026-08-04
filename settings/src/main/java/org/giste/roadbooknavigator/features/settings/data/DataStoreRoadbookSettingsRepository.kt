@@ -27,7 +27,8 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookSettings
 import org.giste.roadbooknavigator.features.roadbook.domain.model.ShortDistanceThreshold
-import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookSettingsRepository
+import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookSettingsProvider
+import org.giste.roadbooknavigator.features.settings.domain.roadbook.RoadbookSettingsRepository
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -38,7 +39,7 @@ import javax.inject.Singleton
 @Singleton
 internal class DataStoreRoadbookSettingsRepository @Inject constructor(
     @param:RoadbookSettingsDataStore private val dataStore: DataStore<Preferences>
-) : RoadbookSettingsRepository {
+) : RoadbookSettingsRepository, RoadbookSettingsProvider {
 
     private object Keys {
         val SHORT_DISTANCE_THRESHOLD = longPreferencesKey("roadbook_short_distance_threshold")

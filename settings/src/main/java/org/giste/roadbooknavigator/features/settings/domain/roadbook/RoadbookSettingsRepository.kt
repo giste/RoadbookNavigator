@@ -15,18 +15,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.roadbook.domain.usecase
+package org.giste.roadbooknavigator.features.settings.domain.roadbook
 
-import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookSettingsRepository
-import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
+import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookSettings
+import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookSettingsProvider
 
 /**
- * Use case to save roadbook settings.
+ * Repository interface for managing roadbook settings in the settings module.
  */
-class SaveRoadbookSettingsUseCase @Inject constructor(
-    private val repository: RoadbookSettingsRepository
-) {
-    suspend operator fun invoke(shortDistanceThreshold: Long) {
-        repository.saveShortDistanceThreshold(shortDistanceThreshold)
-    }
+interface RoadbookSettingsRepository : RoadbookSettingsProvider {
+    /**
+     * Updates the short distance threshold.
+     */
+    suspend fun saveShortDistanceThreshold(threshold: Long)
 }

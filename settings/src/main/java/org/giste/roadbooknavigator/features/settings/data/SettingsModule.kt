@@ -30,7 +30,8 @@ import dagger.hilt.components.SingletonComponent
 import org.giste.roadbooknavigator.features.settings.domain.odometer.OdometerSettingsRepository
 import org.giste.roadbooknavigator.features.settings.domain.location.LocationSettingsRepository
 import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
-import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookSettingsRepository
+import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookSettingsProvider
+import org.giste.roadbooknavigator.features.settings.domain.roadbook.RoadbookSettingsRepository
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
@@ -70,6 +71,12 @@ abstract class SettingsModule {
     internal abstract fun bindRoadbookSettingsRepository(
         roadbookSettingsRepository: DataStoreRoadbookSettingsRepository
     ): RoadbookSettingsRepository
+
+    @Binds
+    @Singleton
+    internal abstract fun bindRoadbookSettingsProvider(
+        roadbookSettingsRepository: RoadbookSettingsRepository
+    ): RoadbookSettingsProvider
 
     companion object {
         @Provides

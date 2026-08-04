@@ -21,29 +21,49 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
 import org.giste.roadbooknavigator.features.settings.domain.input.RemoteModel
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-class UpdateRemoteModelUseCaseTest {
+class UpdateInputKeySettingsUseCaseTest {
 
     private val repository: SettingsRepository = mockk()
-    private val logger: Logger = mockk(relaxed = true)
-    private val useCase = UpdateRemoteModelUseCase(repository, logger)
+    private val useCase = UpdateInputKeySettingsUseCase(repository)
 
     @Test
-    fun `invoke should call repository`() = runTest {
-        // Given
+    fun `updateModel should call repository`() = runTest {
         val model = RemoteModel.TERRA_PIRATA
         coEvery { repository.setRemoteModel(model) } returns Unit
 
-        // When
-        val result = useCase(model)
+        val result = useCase.updateModel(model)
 
-        // Then
         assertTrue(result.isSuccess)
         coVerify { repository.setRemoteModel(model) }
+    }
+
+    @Test
+    fun `updateRoadbookKeys should call repository`() = runTest {
+        val up = listOf(1)
+        val down = listOf(2)
+        coEvery { repository.setRoadbookRemoteKeys(up, down) } returns Unit
+
+        val result = useCase.updateRoadbookKeys(up, down)
+
+        assertTrue(result.isSuccess)
+        coVerify { repository.setRoadbookRemoteKeys(up, down) }
+    }
+
+    @Test
+    fun `updateOdometerKeys should call repository`() = runTest {
+        val inc = listOf(1)
+        val dec = listOf(2)
+        val res = listOf(3)
+        coEvery { repository.setOdometerRemoteKeys(inc, dec, res) } returns Unit
+
+        val result = useCase.updateOdometerKeys(inc, dec, res)
+
+        assertTrue(result.isSuccess)
+        coVerify { repository.setOdometerRemoteKeys(inc, dec, res) }
     }
 }

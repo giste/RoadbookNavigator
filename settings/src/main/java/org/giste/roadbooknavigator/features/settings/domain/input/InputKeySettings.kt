@@ -18,14 +18,22 @@
 package org.giste.roadbooknavigator.features.settings.domain.input
 
 /**
- * Value Object representing roadbook-specific key bindings.
+ * Unified Value Object representing all hardware key bindings for the application.
  *
+ * @property model The selected remote control model.
  * @property upKeys Keys to navigate up in the roadbook.
  * @property downKeys Keys to navigate down in the roadbook.
+ * @property increasePartialKeys Keys to increase the odometer partial distance.
+ * @property decreasePartialKeys Keys to decrease the odometer partial distance.
+ * @property resetPartialKeys Keys to reset the odometer partial distance.
  */
-data class RoadbookKeySettings(
+data class InputKeySettings(
+    val model: RemoteModel = RemoteModel.DND2,
     val upKeys: List<Int> = DEFAULT_UP_KEYS,
     val downKeys: List<Int> = DEFAULT_DOWN_KEYS,
+    val increasePartialKeys: List<Int> = DEFAULT_INCREASE_KEYS,
+    val decreasePartialKeys: List<Int> = DEFAULT_DECREASE_KEYS,
+    val resetPartialKeys: List<Int> = DEFAULT_RESET_KEYS,
 ) {
     companion object {
         /** Default keys for roadbook up (DPAD_UP). */
@@ -33,5 +41,14 @@ data class RoadbookKeySettings(
 
         /** Default keys for roadbook down (DPAD_DOWN). */
         val DEFAULT_DOWN_KEYS: List<Int> = listOf(20)
+
+        /** Default keys for increase partial (DPAD_RIGHT). */
+        val DEFAULT_INCREASE_KEYS: List<Int> = listOf(22)
+
+        /** Default keys for decrease partial (DPAD_LEFT). */
+        val DEFAULT_DECREASE_KEYS: List<Int> = listOf(21)
+
+        /** Default keys for reset partial (F6). */
+        val DEFAULT_RESET_KEYS: List<Int> = listOf(136)
     }
 }

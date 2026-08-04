@@ -17,26 +17,33 @@
 
 package org.giste.roadbooknavigator.features.settings.domain.input.usecase
 
-import io.mockk.coEvery
-import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
+import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
+import org.giste.roadbooknavigator.features.settings.domain.input.InputKeySettings
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class UpdateRoadbookKeySettingsUseCaseTest {
+class ObserveInputKeySettingsUseCaseTest {
 
     private val repository: SettingsRepository = mockk()
-    private val useCase = UpdateRoadbookKeySettingsUseCase(repository)
+    private val useCase = ObserveInputKeySettingsUseCase(repository)
 
     @Test
-    fun `invoke should call repository setRoadbookRemoteKeys`() = runTest {
-        val up = listOf(1)
-        val down = listOf(2)
-        coEvery { repository.setRoadbookRemoteKeys(up, down) } returns Unit
+    fun `invoke should return input key settings from repository`() = runTest {
+        // Given
+        val inputKeys = InputKeySettings(upKeys = listOf(1), increasePartialKeys = listOf(10))
+        val appSettings = AppSettings(inputKeySettings = inputKeys)
+        every { repository.getSettings() } returns flowOf(appSettings)
 
-        useCase(up, down)
+        // When
+        val result = useCase().first()
 
-        coVerify { repository.setRoadbookRemoteKeys(up, down) }
+        // Then
+        assertEquals(inputKeys, result)
     }
 }

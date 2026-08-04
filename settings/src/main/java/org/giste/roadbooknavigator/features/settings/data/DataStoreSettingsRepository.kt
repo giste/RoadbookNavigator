@@ -31,10 +31,8 @@ import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
-import org.giste.roadbooknavigator.features.settings.domain.input.OdometerKeySettings
-import org.giste.roadbooknavigator.features.settings.domain.input.RemoteKeySettings
+import org.giste.roadbooknavigator.features.settings.domain.input.InputKeySettings
 import org.giste.roadbooknavigator.features.settings.domain.input.RemoteModel
-import org.giste.roadbooknavigator.features.settings.domain.input.RoadbookKeySettings
 import javax.inject.Inject
 
 /**
@@ -70,22 +68,18 @@ internal class DataStoreSettingsRepository @Inject constructor(
                 ?: AppOrientation.FOLLOW_SYSTEM,
             fullScreen = preferences[Keys.FULL_SCREEN] ?: true,
             landscapeDistanceSectionWeight = preferences[Keys.LANDSCAPE_WEIGHT] ?: 0.3f,
-            remoteKeySettings = RemoteKeySettings(
-                model = remoteModel
-            ),
-            roadbookKeySettings = RoadbookKeySettings(
+            inputKeySettings = InputKeySettings(
+                model = remoteModel,
                 upKeys = preferences[Keys.ROADBOOK_KEYS_UP]?.toIntList()
-                    ?: RoadbookKeySettings.DEFAULT_UP_KEYS,
+                    ?: InputKeySettings.DEFAULT_UP_KEYS,
                 downKeys = preferences[Keys.ROADBOOK_KEYS_DOWN]?.toIntList()
-                    ?: RoadbookKeySettings.DEFAULT_DOWN_KEYS,
-            ),
-            odometerKeySettings = OdometerKeySettings(
+                    ?: InputKeySettings.DEFAULT_DOWN_KEYS,
                 increasePartialKeys = preferences[Keys.ODOMETER_KEYS_INC]?.toIntList()
-                    ?: OdometerKeySettings.DEFAULT_INCREASE_KEYS,
+                    ?: InputKeySettings.DEFAULT_INCREASE_KEYS,
                 decreasePartialKeys = preferences[Keys.ODOMETER_KEYS_DEC]?.toIntList()
-                    ?: OdometerKeySettings.DEFAULT_DECREASE_KEYS,
+                    ?: InputKeySettings.DEFAULT_DECREASE_KEYS,
                 resetPartialKeys = preferences[Keys.ODOMETER_KEYS_RESET]?.toIntList()
-                    ?: OdometerKeySettings.DEFAULT_RESET_KEYS,
+                    ?: InputKeySettings.DEFAULT_RESET_KEYS,
             )
         )
     }.onEach {

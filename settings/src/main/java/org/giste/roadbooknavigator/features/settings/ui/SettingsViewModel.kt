@@ -47,9 +47,7 @@ import org.giste.roadbooknavigator.features.roadbook.domain.usecase.GetRoadbookS
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.input.RemoteModel
-import org.giste.roadbooknavigator.features.settings.domain.input.usecase.UpdateOdometerRemoteKeysUseCase
-import org.giste.roadbooknavigator.features.settings.domain.input.usecase.UpdateRemoteModelUseCase
-import org.giste.roadbooknavigator.features.settings.domain.input.usecase.UpdateRoadbookKeySettingsUseCase
+import org.giste.roadbooknavigator.features.settings.domain.input.usecase.UpdateInputKeySettingsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.roadbook.usecase.SaveRoadbookSettingsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.GetSettingsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateFullScreenUseCase
@@ -76,9 +74,7 @@ class SettingsViewModel @Inject constructor(
     private val updateLocationPollingIntervalUseCase: UpdateLocationPollingIntervalUseCase,
     private val updateLocationMinDistanceUseCase: UpdateLocationMinDistanceUseCase,
     private val restoreLocationDefaultsUseCase: RestoreLocationDefaultsUseCase,
-    private val updateRemoteModelUseCase: UpdateRemoteModelUseCase,
-    private val updateOdometerRemoteKeysUseCase: UpdateOdometerRemoteKeysUseCase,
-    private val updateRoadbookKeySettingsUseCase: UpdateRoadbookKeySettingsUseCase,
+    private val updateInputKeySettingsUseCase: UpdateInputKeySettingsUseCase,
     private val saveMapSettingsUseCase: SaveMapSettingsUseCase,
     private val updateLandscapeDistanceSectionWeightUseCase: UpdateLandscapeDistanceSectionWeightUseCase,
     private val logger: Logger
@@ -180,7 +176,7 @@ class SettingsViewModel @Inject constructor(
     fun setRemoteModel(model: RemoteModel) {
         logger.d("SettingsViewModel: setRemoteModel requested: %s", model)
         viewModelScope.launch {
-            updateRemoteModelUseCase(model)
+            updateInputKeySettingsUseCase.updateModel(model)
             if (model != RemoteModel.CUSTOM) {
                 // Update Roadbook keys
                 val (rbUp, rbDown) = when (model) {
@@ -188,7 +184,7 @@ class SettingsViewModel @Inject constructor(
                     RemoteModel.TERRA_PIRATA -> listOf(87) to listOf(88) // KEYCODE_MEDIA_NEXT/PREVIOUS
                     RemoteModel.CUSTOM -> return@launch
                 }
-                updateRoadbookKeySettingsUseCase(rbUp, rbDown)
+                updateInputKeySettingsUseCase.updateRoadbookKeys(rbUp, rbDown)
 
                 // Update Odometer keys
                 val (odoInc, odoDec, odoRes) = when (model) {
@@ -200,7 +196,7 @@ class SettingsViewModel @Inject constructor(
                     ) // VOL_UP/DOWN, PLAY_PAUSE/PLAY
                     RemoteModel.CUSTOM -> return@launch
                 }
-                updateOdometerRemoteKeysUseCase(odoInc, odoDec, odoRes)
+                updateInputKeySettingsUseCase.updateOdometerKeys(odoInc, odoDec, odoRes)
             }
         }
     }
@@ -208,16 +204,16 @@ class SettingsViewModel @Inject constructor(
     fun setOdometerKeys(increase: List<Int>, decrease: List<Int>, reset: List<Int>) {
         logger.d("SettingsViewModel: setOdometerKeys requested")
         viewModelScope.launch {
-            updateRemoteModelUseCase(RemoteModel.CUSTOM)
-            updateOdometerRemoteKeysUseCase(increase, decrease, reset)
+            updateInputKeySettingsUseCase.updateModel(RemoteModel.CUSTOM)
+            updateInputKeySettingsUseCase.updateOdometerKeys(increase, decrease, reset)
         }
     }
 
     fun setRoadbookKeys(up: List<Int>, down: List<Int>) {
         logger.d("SettingsViewModel: setRoadbookKeys requested")
         viewModelScope.launch {
-            updateRemoteModelUseCase(RemoteModel.CUSTOM)
-            updateRoadbookKeySettingsUseCase(up, down)
+            updateInputKeySettingsUseCase.updateModel(RemoteModel.CUSTOM)
+            updateInputKeySettingsUseCase.updateRoadbookKeys(up, down)
         }
     }
 

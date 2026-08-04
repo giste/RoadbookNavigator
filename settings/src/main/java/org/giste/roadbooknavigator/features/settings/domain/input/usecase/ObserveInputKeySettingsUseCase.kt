@@ -17,23 +17,18 @@
 
 package org.giste.roadbooknavigator.features.settings.domain.input.usecase
 
-import org.giste.roadbooknavigator.core.util.Logger
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
+import org.giste.roadbooknavigator.features.settings.domain.input.InputKeySettings
 import javax.inject.Inject
 
 /**
- * Use case to update the remote control keys for odometer actions.
+ * Use case to observe the unified hardware key mappings.
  */
-class UpdateOdometerRemoteKeysUseCase @Inject internal constructor(
-    private val repository: SettingsRepository,
-    private val logger: Logger
+class ObserveInputKeySettingsUseCase @Inject constructor(
+    private val repository: SettingsRepository
 ) {
-    suspend operator fun invoke(
-        increase: List<Int>,
-        decrease: List<Int>,
-        reset: List<Int>
-    ): Result<Unit> = runCatching {
-        logger.d("UpdateOdometerRemoteKeysUseCase: Invoked")
-        repository.setOdometerRemoteKeys(increase, decrease, reset)
-    }
+    operator fun invoke(): Flow<InputKeySettings> =
+        repository.getSettings().map { it.inputKeySettings }
 }

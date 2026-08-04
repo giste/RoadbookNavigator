@@ -18,15 +18,31 @@
 package org.giste.roadbooknavigator.features.settings.domain.input.usecase
 
 import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
+import org.giste.roadbooknavigator.features.settings.domain.input.RemoteModel
 import javax.inject.Inject
 
 /**
- * Use case to update roadbook-specific key bindings.
+ * Unified use case to update hardware key mappings.
  */
-class UpdateRoadbookKeySettingsUseCase @Inject constructor(
+class UpdateInputKeySettingsUseCase @Inject constructor(
     private val repository: SettingsRepository
 ) {
-    suspend operator fun invoke(up: List<Int>, down: List<Int>) {
+    /** Updates the selected remote control model. */
+    suspend fun updateModel(model: RemoteModel): Result<Unit> = runCatching {
+        repository.setRemoteModel(model)
+    }
+
+    /** Updates roadbook-specific key bindings. */
+    suspend fun updateRoadbookKeys(up: List<Int>, down: List<Int>): Result<Unit> = runCatching {
         repository.setRoadbookRemoteKeys(up, down)
+    }
+
+    /** Updates odometer-specific key bindings. */
+    suspend fun updateOdometerKeys(
+        increase: List<Int>,
+        decrease: List<Int>,
+        reset: List<Int>
+    ): Result<Unit> = runCatching {
+        repository.setOdometerRemoteKeys(increase, decrease, reset)
     }
 }

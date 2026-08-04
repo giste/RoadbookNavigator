@@ -47,41 +47,41 @@ private val Context.roadbookSettingsDataStore: DataStore<Preferences> by prefere
 
 @Module
 @InstallIn(SingletonComponent::class)
-internal abstract class SettingsModule {
+abstract class SettingsModule {
 
     @Binds
     @Singleton
-    abstract fun bindSettingsRepository(
+    internal abstract fun bindSettingsRepository(
         impl: DataStoreSettingsRepository
     ): SettingsRepository
 
     @Binds
     @Singleton
-    abstract fun bindLocationSettingsRepository(
+    internal abstract fun bindLocationSettingsRepository(
         impl: DataStoreLocationSettingsRepository
     ): LocationSettingsRepository
 
     @Binds
     @Singleton
-    abstract fun bindOdometerSettingsRepository(
+    internal abstract fun bindOdometerSettingsRepository(
         impl: DataStoreOdometerSettingsRepository
     ): OdometerSettingsRepository
 
     @Binds
     @Singleton
-    abstract fun bindRoadbookSettingsRepository(
+    internal abstract fun bindRoadbookSettingsRepository(
         impl: DataStoreRoadbookSettingsRepository
     ): RoadbookSettingsRepository
 
     @Binds
     @Singleton
-    abstract fun bindOdometerSettingsProvider(
+    internal abstract fun bindOdometerSettingsProvider(
         impl: DataStoreOdometerSettingsRepository
     ): OdometerSettingsProvider
 
     @Binds
     @Singleton
-    abstract fun bindRoadbookSettingsProvider(
+    internal abstract fun bindRoadbookSettingsProvider(
         impl: DataStoreRoadbookSettingsRepository
     ): RoadbookSettingsProvider
 

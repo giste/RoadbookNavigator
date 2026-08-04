@@ -42,6 +42,7 @@ import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.core.settings.domain.AppTheme
 import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookSettings
 import org.giste.roadbooknavigator.features.roadbook.domain.model.ShortDistanceThreshold
+import org.giste.roadbooknavigator.features.settings.domain.input.InputKeySettings
 import org.giste.roadbooknavigator.features.settings.domain.input.RemoteModel
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue

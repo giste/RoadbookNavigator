@@ -84,7 +84,7 @@ class DataStoreSettingsRepositoryTest {
         repository.setRemoteModel(RemoteModel.TERRA_PIRATA)
         
         val settings = repository.getSettings().first()
-        assertEquals(RemoteModel.TERRA_PIRATA, settings.remoteKeySettings.model)
+        assertEquals(RemoteModel.TERRA_PIRATA, settings.inputKeySettings.model)
     }
 
     @Test
@@ -108,14 +108,14 @@ class DataStoreSettingsRepositoryTest {
         repository.setRoadbookRemoteKeys(up, down)
 
         val settings = repository.getSettings().first()
-        assertEquals(up, settings.roadbookKeySettings.upKeys)
-        assertEquals(down, settings.roadbookKeySettings.downKeys)
+        assertEquals(up, settings.inputKeySettings.upKeys)
+        assertEquals(down, settings.inputKeySettings.downKeys)
 
         // Verify with new instance
         val newRepo = DataStoreSettingsRepository(dataStore, logger)
         val persisted = newRepo.getSettings().first()
-        assertEquals(up, persisted.roadbookKeySettings.upKeys)
-        assertEquals(down, persisted.roadbookKeySettings.downKeys)
+        assertEquals(up, persisted.inputKeySettings.upKeys)
+        assertEquals(down, persisted.inputKeySettings.downKeys)
     }
 
     @Test
@@ -126,16 +126,16 @@ class DataStoreSettingsRepositoryTest {
         repository.setOdometerRemoteKeys(inc, dec, res)
 
         val settings = repository.getSettings().first()
-        assertEquals(inc, settings.odometerKeySettings.increasePartialKeys)
-        assertEquals(dec, settings.odometerKeySettings.decreasePartialKeys)
-        assertEquals(res, settings.odometerKeySettings.resetPartialKeys)
+        assertEquals(inc, settings.inputKeySettings.increasePartialKeys)
+        assertEquals(dec, settings.inputKeySettings.decreasePartialKeys)
+        assertEquals(res, settings.inputKeySettings.resetPartialKeys)
 
         // Verify with new instance
         val newRepo = DataStoreSettingsRepository(dataStore, logger)
         val persisted = newRepo.getSettings().first()
-        assertEquals(inc, persisted.odometerKeySettings.increasePartialKeys)
-        assertEquals(dec, persisted.odometerKeySettings.decreasePartialKeys)
-        assertEquals(res, persisted.odometerKeySettings.resetPartialKeys)
+        assertEquals(inc, persisted.inputKeySettings.increasePartialKeys)
+        assertEquals(dec, persisted.inputKeySettings.decreasePartialKeys)
+        assertEquals(res, persisted.inputKeySettings.resetPartialKeys)
     }
 
     @Test

@@ -17,7 +17,6 @@
 
 package org.giste.roadbooknavigator.features.settings.domain.input.usecase
 
-import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
@@ -28,42 +27,61 @@ import org.junit.Test
 
 class UpdateInputKeySettingsUseCaseTest {
 
-    private val repository: SettingsRepository = mockk()
+    private val repository: SettingsRepository = mockk(relaxed = true)
     private val useCase = UpdateInputKeySettingsUseCase(repository)
 
     @Test
-    fun `updateModel should call repository`() = runTest {
-        val model = RemoteModel.TERRA_PIRATA
-        coEvery { repository.setRemoteModel(model) } returns Unit
-
-        val result = useCase.updateModel(model)
+    fun `selectRemoteModel DND2 should update model and apply defaults`() = runTest {
+        val result = useCase.selectRemoteModel(RemoteModel.DND2)
 
         assertTrue(result.isSuccess)
-        coVerify { repository.setRemoteModel(model) }
+        coVerify { repository.setRemoteModel(RemoteModel.DND2) }
+        coVerify { repository.setRoadbookRemoteKeys(listOf(19), listOf(20)) }
+        coVerify { repository.setOdometerRemoteKeys(listOf(22), listOf(21), listOf(136)) }
     }
 
     @Test
-    fun `updateRoadbookKeys should call repository`() = runTest {
+    fun `selectRemoteModel TERRA_PIRATA should update model and apply defaults`() = runTest {
+        val result = useCase.selectRemoteModel(RemoteModel.TERRA_PIRATA)
+
+        assertTrue(result.isSuccess)
+        coVerify { repository.setRemoteModel(RemoteModel.TERRA_PIRATA) }
+        coVerify { repository.setRoadbookRemoteKeys(listOf(87), listOf(88)) }
+        coVerify { repository.setOdometerRemoteKeys(listOf(24), listOf(25), listOf(85, 126)) }
+    }
+
+    @Test
+    fun `selectRemoteModel CUSTOM should only update model`() = runTest {
+        val result = useCase.selectRemoteModel(RemoteModel.CUSTOM)
+
+        assertTrue(result.isSuccess)
+        coVerify { repository.setRemoteModel(RemoteModel.CUSTOM) }
+        coVerify(exactly = 0) { repository.setRoadbookRemoteKeys(any(), any()) }
+        coVerify(exactly = 0) { repository.setOdometerRemoteKeys(any(), any(), any()) }
+    }
+
+    @Test
+    fun `updateRoadbookKeys should update keys and set model to CUSTOM`() = runTest {
         val up = listOf(1)
         val down = listOf(2)
-        coEvery { repository.setRoadbookRemoteKeys(up, down) } returns Unit
 
         val result = useCase.updateRoadbookKeys(up, down)
 
         assertTrue(result.isSuccess)
+        coVerify { repository.setRemoteModel(RemoteModel.CUSTOM) }
         coVerify { repository.setRoadbookRemoteKeys(up, down) }
     }
 
     @Test
-    fun `updateOdometerKeys should call repository`() = runTest {
+    fun `updateOdometerKeys should update keys and set model to CUSTOM`() = runTest {
         val inc = listOf(1)
         val dec = listOf(2)
         val res = listOf(3)
-        coEvery { repository.setOdometerRemoteKeys(inc, dec, res) } returns Unit
 
         val result = useCase.updateOdometerKeys(inc, dec, res)
 
         assertTrue(result.isSuccess)
+        coVerify { repository.setRemoteModel(RemoteModel.CUSTOM) }
         coVerify { repository.setOdometerRemoteKeys(inc, dec, res) }
     }
 }

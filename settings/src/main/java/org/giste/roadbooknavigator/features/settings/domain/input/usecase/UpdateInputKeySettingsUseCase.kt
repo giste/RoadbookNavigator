@@ -27,22 +27,47 @@ import javax.inject.Inject
 class UpdateInputKeySettingsUseCase @Inject constructor(
     private val repository: SettingsRepository
 ) {
-    /** Updates the selected remote control model. */
-    suspend fun updateModel(model: RemoteModel): Result<Unit> = runCatching {
+    /**
+     * Updates the selected remote control model and applies its default key mappings
+     * if the model is not [RemoteModel.CUSTOM].
+     */
+    suspend fun selectRemoteModel(model: RemoteModel): Result<Unit> = runCatching {
         repository.setRemoteModel(model)
+
+        if (model != RemoteModel.CUSTOM) {
+            val (rbUp, rbDown) = when (model) {
+                RemoteModel.DND2 -> listOf(19) to listOf(20) // KEYCODE_DPAD_UP/DOWN
+                RemoteModel.TERRA_PIRATA -> listOf(87) to listOf(88) // KEYCODE_MEDIA_NEXT/PREVIOUS
+                RemoteModel.CUSTOM -> return@runCatching // Should not happen due to check above
+            }
+            repository.setRoadbookRemoteKeys(rbUp, rbDown)
+
+            val (odoInc, odoDec, odoRes) = when (model) {
+                RemoteModel.DND2 -> Triple(listOf(22), listOf(21), listOf(136)) // DPAD_RIGHT/LEFT, F6
+                RemoteModel.TERRA_PIRATA -> Triple(
+                    listOf(24),
+                    listOf(25),
+                    listOf(85, 126)
+                ) // VOL_UP/DOWN, PLAY_PAUSE/PLAY
+                RemoteModel.CUSTOM -> return@runCatching
+            }
+            repository.setOdometerRemoteKeys(odoInc, odoDec, odoRes)
+        }
     }
 
-    /** Updates roadbook-specific key bindings. */
+    /** Updates roadbook-specific key bindings and sets model to CUSTOM. */
     suspend fun updateRoadbookKeys(up: List<Int>, down: List<Int>): Result<Unit> = runCatching {
+        repository.setRemoteModel(RemoteModel.CUSTOM)
         repository.setRoadbookRemoteKeys(up, down)
     }
 
-    /** Updates odometer-specific key bindings. */
+    /** Updates odometer-specific key bindings and sets model to CUSTOM. */
     suspend fun updateOdometerKeys(
         increase: List<Int>,
         decrease: List<Int>,
         reset: List<Int>
     ): Result<Unit> = runCatching {
+        repository.setRemoteModel(RemoteModel.CUSTOM)
         repository.setOdometerRemoteKeys(increase, decrease, reset)
     }
 }

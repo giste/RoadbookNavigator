@@ -254,45 +254,37 @@ class SettingsViewModelTest {
     }
 
     @Test
-    fun `setRemoteModel DND2 updates keys correctly`() = runTest {
-        coEvery { updateInputKeySettingsUseCase.updateModel(RemoteModel.DND2) } returns Result.success(Unit)
-        coEvery { updateInputKeySettingsUseCase.updateRoadbookKeys(any(), any()) } returns Result.success(Unit)
-        coEvery { updateInputKeySettingsUseCase.updateOdometerKeys(any(), any(), any()) } returns Result.success(Unit)
+    fun `setRemoteModel updates keys via unified use case`() = runTest {
+        coEvery { updateInputKeySettingsUseCase.selectRemoteModel(any()) } returns Result.success(Unit)
 
         viewModel.setRemoteModel(RemoteModel.DND2)
         advanceUntilIdle()
 
-        coVerify { updateInputKeySettingsUseCase.updateModel(RemoteModel.DND2) }
-        coVerify { updateInputKeySettingsUseCase.updateRoadbookKeys(listOf(19), listOf(20)) }
-        coVerify { updateInputKeySettingsUseCase.updateOdometerKeys(listOf(22), listOf(21), listOf(136)) }
+        coVerify { updateInputKeySettingsUseCase.selectRemoteModel(RemoteModel.DND2) }
     }
 
     @Test
-    fun `setOdometerKeys calls use case and sets custom model`() = runTest {
+    fun `setOdometerKeys calls use case`() = runTest {
         val inc = listOf(1)
         val dec = listOf(2)
         val res = listOf(3)
-        coEvery { updateInputKeySettingsUseCase.updateModel(RemoteModel.CUSTOM) } returns Result.success(Unit)
         coEvery { updateInputKeySettingsUseCase.updateOdometerKeys(inc, dec, res) } returns Result.success(Unit)
 
         viewModel.setOdometerKeys(inc, dec, res)
         advanceUntilIdle()
 
-        coVerify { updateInputKeySettingsUseCase.updateModel(RemoteModel.CUSTOM) }
         coVerify { updateInputKeySettingsUseCase.updateOdometerKeys(inc, dec, res) }
     }
 
     @Test
-    fun `setRoadbookKeys calls use case and sets custom model`() = runTest {
+    fun `setRoadbookKeys calls use case`() = runTest {
         val up = listOf(1)
         val down = listOf(2)
-        coEvery { updateInputKeySettingsUseCase.updateModel(RemoteModel.CUSTOM) } returns Result.success(Unit)
         coEvery { updateInputKeySettingsUseCase.updateRoadbookKeys(up, down) } returns Result.success(Unit)
 
         viewModel.setRoadbookKeys(up, down)
         advanceUntilIdle()
 
-        coVerify { updateInputKeySettingsUseCase.updateModel(RemoteModel.CUSTOM) }
         coVerify { updateInputKeySettingsUseCase.updateRoadbookKeys(up, down) }
     }
 

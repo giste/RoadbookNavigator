@@ -176,35 +176,13 @@ class SettingsViewModel @Inject constructor(
     fun setRemoteModel(model: RemoteModel) {
         logger.d("SettingsViewModel: setRemoteModel requested: %s", model)
         viewModelScope.launch {
-            updateInputKeySettingsUseCase.updateModel(model)
-            if (model != RemoteModel.CUSTOM) {
-                // Update Roadbook keys
-                val (rbUp, rbDown) = when (model) {
-                    RemoteModel.DND2 -> listOf(19) to listOf(20) // KEYCODE_DPAD_UP/DOWN
-                    RemoteModel.TERRA_PIRATA -> listOf(87) to listOf(88) // KEYCODE_MEDIA_NEXT/PREVIOUS
-                    RemoteModel.CUSTOM -> return@launch
-                }
-                updateInputKeySettingsUseCase.updateRoadbookKeys(rbUp, rbDown)
-
-                // Update Odometer keys
-                val (odoInc, odoDec, odoRes) = when (model) {
-                    RemoteModel.DND2 -> Triple(listOf(22), listOf(21), listOf(136)) // DPAD_RIGHT/LEFT, F6
-                    RemoteModel.TERRA_PIRATA -> Triple(
-                        listOf(24),
-                        listOf(25),
-                        listOf(85, 126)
-                    ) // VOL_UP/DOWN, PLAY_PAUSE/PLAY
-                    RemoteModel.CUSTOM -> return@launch
-                }
-                updateInputKeySettingsUseCase.updateOdometerKeys(odoInc, odoDec, odoRes)
-            }
+            updateInputKeySettingsUseCase.selectRemoteModel(model)
         }
     }
 
     fun setOdometerKeys(increase: List<Int>, decrease: List<Int>, reset: List<Int>) {
         logger.d("SettingsViewModel: setOdometerKeys requested")
         viewModelScope.launch {
-            updateInputKeySettingsUseCase.updateModel(RemoteModel.CUSTOM)
             updateInputKeySettingsUseCase.updateOdometerKeys(increase, decrease, reset)
         }
     }
@@ -212,7 +190,6 @@ class SettingsViewModel @Inject constructor(
     fun setRoadbookKeys(up: List<Int>, down: List<Int>) {
         logger.d("SettingsViewModel: setRoadbookKeys requested")
         viewModelScope.launch {
-            updateInputKeySettingsUseCase.updateModel(RemoteModel.CUSTOM)
             updateInputKeySettingsUseCase.updateRoadbookKeys(up, down)
         }
     }

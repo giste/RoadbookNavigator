@@ -15,18 +15,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.roadbook.domain.usecase
+package org.giste.roadbooknavigator.features.roadbook.domain.repository
 
 import kotlinx.coroutines.flow.Flow
 import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookSettings
-import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookSettingsProvider
-import javax.inject.Inject
 
 /**
- * Use case to observe roadbook settings.
+ * Interface that defines the settings required by the Roadbook module.
+ * This allows the module to be decoupled from the actual settings persistence.
  */
-class GetRoadbookSettingsUseCase @Inject constructor(
-    private val provider: RoadbookSettingsProvider
-) {
-    operator fun invoke(): Flow<RoadbookSettings> = provider.getSettings()
+interface RoadbookSettingsProvider {
+    /**
+     * Observes roadbook-related settings.
+     */
+    fun getSettings(): Flow<RoadbookSettings>
 }

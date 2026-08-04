@@ -23,12 +23,7 @@ import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookSettin
 /**
  * Repository interface for managing roadbook settings.
  */
-interface RoadbookSettingsRepository {
-    /**
-     * Observes roadbook settings.
-     */
-    fun getSettings(): Flow<RoadbookSettings>
-
+interface RoadbookSettingsRepository : RoadbookSettingsProvider {
     /**
      * Updates the short distance threshold.
      */

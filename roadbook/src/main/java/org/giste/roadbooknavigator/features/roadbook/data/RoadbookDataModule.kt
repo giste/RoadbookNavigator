@@ -37,6 +37,7 @@ import org.giste.roadbooknavigator.features.roadbook.data.persistence.Persistenc
 import org.giste.roadbooknavigator.features.roadbook.data.persistence.dto.PersistentRoute
 import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookRepository
 import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookSessionRepository
+import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookSettingsProvider
 import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookSettingsRepository
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -66,6 +67,12 @@ internal abstract class RoadbookDataModule {
     abstract fun bindRoadbookSessionRepository(
         dataStoreRoadbookSessionRepository: DataStoreRoadbookSessionRepository
     ): RoadbookSessionRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindRoadbookSettingsProvider(
+        roadbookSettingsRepository: RoadbookSettingsRepository
+    ): RoadbookSettingsProvider
 
     companion object {
         @Volatile

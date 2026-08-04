@@ -24,20 +24,20 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookSettings
 import org.giste.roadbooknavigator.features.roadbook.domain.model.ShortDistanceThreshold
-import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookSettingsRepository
+import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookSettingsProvider
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class GetRoadbookSettingsUseCaseTest {
 
-    private val repository: RoadbookSettingsRepository = mockk()
-    private val useCase = GetRoadbookSettingsUseCase(repository)
+    private val provider: RoadbookSettingsProvider = mockk()
+    private val useCase = GetRoadbookSettingsUseCase(provider)
 
     @Test
-    fun `invoke should return settings flow from repository`() = runTest {
+    fun `invoke should return settings flow from provider`() = runTest {
         // Given
         val settings = RoadbookSettings(shortDistanceThreshold = ShortDistanceThreshold(500L))
-        every { repository.getSettings() } returns flowOf(settings)
+        every { provider.getSettings() } returns flowOf(settings)
 
         // When
         val result = useCase().first()

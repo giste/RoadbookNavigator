@@ -33,10 +33,9 @@ import org.giste.android.location.domain.LocationEvent
 import org.giste.android.location.domain.LocationProvider
 import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.odometer.domain.Odometer
-import org.giste.odometer.domain.OdometerSettings
 import org.giste.odometer.domain.usecase.DecrementPartialDistanceUseCase
+import org.giste.roadbooknavigator.features.settings.domain.input.OdometerKeySettings
 import org.giste.roadbooknavigator.features.settings.domain.input.RoadbookKeySettings
-import org.giste.roadbooknavigator.features.settings.domain.input.usecase.ObserveRoadbookKeySettingsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.odometer.usecase.ObserveOdometerSettingsUseCase
 import org.giste.odometer.domain.usecase.GetOdometerUseCase
 import org.giste.odometer.domain.usecase.IncrementPartialDistanceUseCase
@@ -59,7 +58,6 @@ class DashboardViewModel @Inject constructor(
     private val setPartialDistanceUseCase: SetPartialDistanceUseCase,
     getSettingsUseCase: GetSettingsUseCase,
     observeOdometerSettingsUseCase: ObserveOdometerSettingsUseCase,
-    observeRoadbookKeySettingsUseCase: ObserveRoadbookKeySettingsUseCase,
     private val moveRoadbookUpUseCase: MoveRoadbookUpUseCase,
     private val moveRoadbookDownUseCase: MoveRoadbookDownUseCase,
     locationProvider: LocationProvider,
@@ -70,7 +68,6 @@ class DashboardViewModel @Inject constructor(
     private val _showResetAllDialog = MutableStateFlow(false)
 
     private val odometerSettingsFlow = observeOdometerSettingsUseCase()
-    private val roadbookKeySettingsFlow = observeRoadbookKeySettingsUseCase()
     private val odometerLocationFlow = locationProvider.observeLocation()
         .filterIsInstance<LocationEvent.LocationUpdated>()
         .map { it.location.toOdometerLocation() }
@@ -81,15 +78,11 @@ class DashboardViewModel @Inject constructor(
         _showResetAllDialog,
         getSettingsUseCase(),
         odometerSettingsFlow,
-        roadbookKeySettingsFlow
     ) { flows ->
         val odometer = flows[0] as Odometer
         val showPartialDialog = flows[1] as Boolean
         val showResetAllDialog = flows[2] as Boolean
         val settings = flows[3] as org.giste.roadbooknavigator.features.settings.domain.AppSettings
-        val odometerSettings = flows[4] as OdometerSettings
-        val roadbookKeySettings =
-            flows[5] as RoadbookKeySettings
 
         DashboardUiState(
             odometer = odometer,
@@ -97,11 +90,11 @@ class DashboardViewModel @Inject constructor(
             showResetAllDialog = showResetAllDialog,
             isFullScreen = settings.fullScreen,
             landscapeDistanceSectionWeight = settings.landscapeDistanceSectionWeight,
-            increasePartialKeys = odometerSettings.increasePartial,
-            decreasePartialKeys = odometerSettings.decreasePartial,
-            resetPartialKeys = odometerSettings.resetPartial,
-            roadbookUpKeys = roadbookKeySettings.upKeys,
-            roadbookDownKeys = roadbookKeySettings.downKeys
+            increasePartialKeys = settings.odometerKeySettings.increasePartialKeys,
+            decreasePartialKeys = settings.odometerKeySettings.decreasePartialKeys,
+            resetPartialKeys = settings.odometerKeySettings.resetPartialKeys,
+            roadbookUpKeys = settings.roadbookKeySettings.upKeys,
+            roadbookDownKeys = settings.roadbookKeySettings.downKeys
         )
     }.stateIn(
         scope = viewModelScope,
@@ -184,9 +177,9 @@ data class DashboardUiState(
     val showResetAllDialog: Boolean = false,
     val isFullScreen: Boolean = false,
     val landscapeDistanceSectionWeight: Float = 0.3f,
-    val increasePartialKeys: List<Int> = OdometerSettings.DEFAULT_INCREASE_KEYS,
-    val decreasePartialKeys: List<Int> = OdometerSettings.DEFAULT_DECREASE_KEYS,
-    val resetPartialKeys: List<Int> = OdometerSettings.DEFAULT_RESET_KEYS,
+    val increasePartialKeys: List<Int> = OdometerKeySettings.DEFAULT_INCREASE_KEYS,
+    val decreasePartialKeys: List<Int> = OdometerKeySettings.DEFAULT_DECREASE_KEYS,
+    val resetPartialKeys: List<Int> = OdometerKeySettings.DEFAULT_RESET_KEYS,
     val roadbookUpKeys: List<Int> = RoadbookKeySettings.DEFAULT_UP_KEYS,
     val roadbookDownKeys: List<Int> = RoadbookKeySettings.DEFAULT_DOWN_KEYS
 )

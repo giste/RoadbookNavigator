@@ -15,18 +15,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.settings.domain.odometer.usecase
+package org.giste.roadbooknavigator.features.settings.domain.input.usecase
 
 import kotlinx.coroutines.flow.Flow
-import org.giste.odometer.domain.OdometerSettings
-import org.giste.odometer.domain.OdometerSettingsProvider
+import kotlinx.coroutines.flow.map
+import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
+import org.giste.roadbooknavigator.features.settings.domain.input.OdometerKeySettings
 import javax.inject.Inject
 
 /**
- * Use case to retrieve the current odometer settings.
+ * Use case to observe odometer-specific key bindings.
  */
-class ObserveOdometerSettingsUseCase @Inject internal constructor(
-    private val provider: OdometerSettingsProvider
+class ObserveOdometerKeySettingsUseCase @Inject constructor(
+    private val repository: SettingsRepository
 ) {
-    operator fun invoke(): Flow<OdometerSettings> = provider.getSettings()
+    operator fun invoke(): Flow<OdometerKeySettings> =
+        repository.getSettings().map { it.odometerKeySettings }
 }

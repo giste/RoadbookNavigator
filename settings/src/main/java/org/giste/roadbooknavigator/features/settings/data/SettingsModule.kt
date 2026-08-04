@@ -30,6 +30,7 @@ import dagger.hilt.components.SingletonComponent
 import org.giste.roadbooknavigator.features.settings.domain.odometer.OdometerSettingsRepository
 import org.giste.roadbooknavigator.features.settings.domain.location.LocationSettingsRepository
 import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
+import org.giste.odometer.domain.OdometerSettingsProvider
 import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookSettingsProvider
 import org.giste.roadbooknavigator.features.settings.domain.roadbook.RoadbookSettingsRepository
 import javax.inject.Qualifier
@@ -46,36 +47,42 @@ private val Context.roadbookSettingsDataStore: DataStore<Preferences> by prefere
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class SettingsModule {
+internal abstract class SettingsModule {
 
     @Binds
     @Singleton
-    internal abstract fun bindSettingsRepository(
-        settingsRepository: DataStoreSettingsRepository
+    abstract fun bindSettingsRepository(
+        impl: DataStoreSettingsRepository
     ): SettingsRepository
 
     @Binds
     @Singleton
-    internal abstract fun bindLocationSettingsRepository(
-        locationSettingsRepository: DataStoreLocationSettingsRepository
+    abstract fun bindLocationSettingsRepository(
+        impl: DataStoreLocationSettingsRepository
     ): LocationSettingsRepository
 
     @Binds
     @Singleton
-    internal abstract fun bindOdometerSettingsRepository(
-        odometerSettingsRepository: DataStoreOdometerSettingsRepository
+    abstract fun bindOdometerSettingsRepository(
+        impl: DataStoreOdometerSettingsRepository
     ): OdometerSettingsRepository
 
     @Binds
     @Singleton
-    internal abstract fun bindRoadbookSettingsRepository(
-        roadbookSettingsRepository: DataStoreRoadbookSettingsRepository
+    abstract fun bindRoadbookSettingsRepository(
+        impl: DataStoreRoadbookSettingsRepository
     ): RoadbookSettingsRepository
 
     @Binds
     @Singleton
-    internal abstract fun bindRoadbookSettingsProvider(
-        roadbookSettingsRepository: RoadbookSettingsRepository
+    abstract fun bindOdometerSettingsProvider(
+        impl: DataStoreOdometerSettingsRepository
+    ): OdometerSettingsProvider
+
+    @Binds
+    @Singleton
+    abstract fun bindRoadbookSettingsProvider(
+        impl: DataStoreRoadbookSettingsRepository
     ): RoadbookSettingsProvider
 
     companion object {

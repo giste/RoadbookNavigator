@@ -23,30 +23,15 @@ package org.giste.odometer.domain
  * @property speedThreshold Minimum speed in m/s below which the odometer might ignore updates to prevent "jitter".
  * @property minAccuracy Maximum allowed horizontal GPS accuracy in meters.
  * @property minVerticalAccuracy Maximum allowed vertical GPS accuracy in meters.
- * @property increasePartial Keys to increase the partial distance.
- * @property decreasePartial Keys to decrease the partial distance.
- * @property resetPartial Keys to reset the partial distance.
  */
 public data class OdometerSettings(
     val speedThreshold: Float = DEFAULT_SPEED_THRESHOLD,
     val minAccuracy: Float = DEFAULT_MIN_ACCURACY,
     val minVerticalAccuracy: Float = DEFAULT_MIN_VERTICAL_ACCURACY,
-    val increasePartial: List<Int> = DEFAULT_INCREASE_KEYS,
-    val decreasePartial: List<Int> = DEFAULT_DECREASE_KEYS,
-    val resetPartial: List<Int> = DEFAULT_RESET_KEYS,
 ) {
     public companion object {
         public const val DEFAULT_SPEED_THRESHOLD: Float = 0.5f // m/s
         public const val DEFAULT_MIN_ACCURACY: Float = 20.0f // m
         public const val DEFAULT_MIN_VERTICAL_ACCURACY: Float = 10.0f // m
-
-        /** Default keys for increase partial (DPAD_RIGHT). */
-        public val DEFAULT_INCREASE_KEYS: List<Int> = listOf(22)
-
-        /** Default keys for decrease partial (DPAD_LEFT). */
-        public val DEFAULT_DECREASE_KEYS: List<Int> = listOf(21)
-
-        /** Default keys for reset partial (F6). */
-        public val DEFAULT_RESET_KEYS: List<Int> = listOf(136)
     }
 }

@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  See <https://www.gnu.org/licenses/>.
  */
 
 package org.giste.roadbooknavigator.features.settings.data
@@ -116,6 +116,26 @@ class DataStoreSettingsRepositoryTest {
         val persisted = newRepo.getSettings().first()
         assertEquals(up, persisted.roadbookKeySettings.upKeys)
         assertEquals(down, persisted.roadbookKeySettings.downKeys)
+    }
+
+    @Test
+    fun `setOdometerRemoteKeys should persist odometer key values`() = runTest {
+        val inc = listOf(1, 2)
+        val dec = listOf(3, 4)
+        val res = listOf(5, 6)
+        repository.setOdometerRemoteKeys(inc, dec, res)
+
+        val settings = repository.getSettings().first()
+        assertEquals(inc, settings.odometerKeySettings.increasePartialKeys)
+        assertEquals(dec, settings.odometerKeySettings.decreasePartialKeys)
+        assertEquals(res, settings.odometerKeySettings.resetPartialKeys)
+
+        // Verify with new instance
+        val newRepo = DataStoreSettingsRepository(dataStore, logger)
+        val persisted = newRepo.getSettings().first()
+        assertEquals(inc, persisted.odometerKeySettings.increasePartialKeys)
+        assertEquals(dec, persisted.odometerKeySettings.decreasePartialKeys)
+        assertEquals(res, persisted.odometerKeySettings.resetPartialKeys)
     }
 
     @Test

@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  See <https://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package org.giste.roadbooknavigator.features.settings.ui
@@ -45,7 +45,7 @@ import org.giste.roadbooknavigator.features.settings.domain.odometer.usecase.Obs
 import org.giste.roadbooknavigator.features.settings.domain.odometer.usecase.RestoreOdometerSettingsDefaultsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.odometer.usecase.UpdateOdometerMinAccuracyUseCase
 import org.giste.roadbooknavigator.features.settings.domain.odometer.usecase.UpdateOdometerMinVerticalAccuracyUseCase
-import org.giste.roadbooknavigator.features.settings.domain.odometer.usecase.UpdateOdometerRemoteKeysUseCase
+import org.giste.roadbooknavigator.features.settings.domain.input.usecase.UpdateOdometerRemoteKeysUseCase
 import org.giste.roadbooknavigator.features.settings.domain.odometer.usecase.UpdateOdometerSpeedThresholdUseCase
 import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookSettings
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.GetRoadbookSettingsUseCase

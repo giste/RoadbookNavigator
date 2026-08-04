@@ -15,17 +15,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.settings.domain.odometer.usecase
+package org.giste.roadbooknavigator.features.settings.domain.input.usecase
 
 import org.giste.roadbooknavigator.core.util.Logger
-import org.giste.roadbooknavigator.features.settings.domain.odometer.OdometerSettingsRepository
+import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
 import javax.inject.Inject
 
 /**
  * Use case to update the remote control keys for odometer actions.
  */
 class UpdateOdometerRemoteKeysUseCase @Inject internal constructor(
-    private val repository: OdometerSettingsRepository,
+    private val repository: SettingsRepository,
     private val logger: Logger
 ) {
     suspend operator fun invoke(
@@ -34,6 +34,6 @@ class UpdateOdometerRemoteKeysUseCase @Inject internal constructor(
         reset: List<Int>
     ): Result<Unit> = runCatching {
         logger.d("UpdateOdometerRemoteKeysUseCase: Invoked")
-        repository.setRemoteKeys(increase, decrease, reset)
+        repository.setOdometerRemoteKeys(increase, decrease, reset)
     }
 }

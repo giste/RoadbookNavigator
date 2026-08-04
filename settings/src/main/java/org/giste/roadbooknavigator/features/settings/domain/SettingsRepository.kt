@@ -47,4 +47,7 @@ interface SettingsRepository {
 
     /** Updates the roadbook navigation keys. */
     suspend fun setRoadbookRemoteKeys(up: List<Int>, down: List<Int>)
+
+    /** Updates the odometer navigation keys. */
+    suspend fun setOdometerRemoteKeys(increase: List<Int>, decrease: List<Int>, reset: List<Int>)
 }

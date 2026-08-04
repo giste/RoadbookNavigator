@@ -31,6 +31,7 @@ import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
+import org.giste.roadbooknavigator.features.settings.domain.input.OdometerKeySettings
 import org.giste.roadbooknavigator.features.settings.domain.input.RemoteKeySettings
 import org.giste.roadbooknavigator.features.settings.domain.input.RemoteModel
 import org.giste.roadbooknavigator.features.settings.domain.input.RoadbookKeySettings
@@ -55,6 +56,9 @@ internal class DataStoreSettingsRepository @Inject constructor(
         val LANDSCAPE_WEIGHT = floatPreferencesKey("landscape_weight")
         val ROADBOOK_KEYS_UP = stringPreferencesKey("roadbook_keys_up")
         val ROADBOOK_KEYS_DOWN = stringPreferencesKey("roadbook_keys_down")
+        val ODOMETER_KEYS_INC = stringPreferencesKey("odometer_keys_inc")
+        val ODOMETER_KEYS_DEC = stringPreferencesKey("odometer_keys_dec")
+        val ODOMETER_KEYS_RESET = stringPreferencesKey("odometer_keys_reset")
     }
 
     override fun getSettings(): Flow<AppSettings> = dataStore.data.map { preferences ->
@@ -74,6 +78,14 @@ internal class DataStoreSettingsRepository @Inject constructor(
                     ?: RoadbookKeySettings.DEFAULT_UP_KEYS,
                 downKeys = preferences[Keys.ROADBOOK_KEYS_DOWN]?.toIntList()
                     ?: RoadbookKeySettings.DEFAULT_DOWN_KEYS,
+            ),
+            odometerKeySettings = OdometerKeySettings(
+                increasePartialKeys = preferences[Keys.ODOMETER_KEYS_INC]?.toIntList()
+                    ?: OdometerKeySettings.DEFAULT_INCREASE_KEYS,
+                decreasePartialKeys = preferences[Keys.ODOMETER_KEYS_DEC]?.toIntList()
+                    ?: OdometerKeySettings.DEFAULT_DECREASE_KEYS,
+                resetPartialKeys = preferences[Keys.ODOMETER_KEYS_RESET]?.toIntList()
+                    ?: OdometerKeySettings.DEFAULT_RESET_KEYS,
             )
         )
     }.onEach {
@@ -120,6 +132,19 @@ internal class DataStoreSettingsRepository @Inject constructor(
         dataStore.edit { preferences ->
             preferences[Keys.ROADBOOK_KEYS_UP] = up.toPreferenceString()
             preferences[Keys.ROADBOOK_KEYS_DOWN] = down.toPreferenceString()
+        }
+    }
+
+    override suspend fun setOdometerRemoteKeys(
+        increase: List<Int>,
+        decrease: List<Int>,
+        reset: List<Int>
+    ) {
+        logger.i("DataStoreSettingsRepository: Setting odometer remote keys")
+        dataStore.edit { preferences ->
+            preferences[Keys.ODOMETER_KEYS_INC] = increase.toPreferenceString()
+            preferences[Keys.ODOMETER_KEYS_DEC] = decrease.toPreferenceString()
+            preferences[Keys.ODOMETER_KEYS_RESET] = reset.toPreferenceString()
         }
     }
 

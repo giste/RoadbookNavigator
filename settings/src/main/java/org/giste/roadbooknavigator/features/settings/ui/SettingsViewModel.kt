@@ -47,14 +47,14 @@ import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookSettin
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.GetRoadbookSettingsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
-import org.giste.roadbooknavigator.features.settings.domain.RemoteModel
+import org.giste.roadbooknavigator.features.settings.domain.input.RemoteModel
+import org.giste.roadbooknavigator.features.settings.domain.input.usecase.UpdateRemoteModelUseCase
+import org.giste.roadbooknavigator.features.settings.domain.input.usecase.UpdateRoadbookKeySettingsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.roadbook.usecase.SaveRoadbookSettingsUseCase
-import org.giste.roadbooknavigator.features.settings.domain.roadbook.usecase.UpdateRoadbookKeySettingsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.GetSettingsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateFullScreenUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateLandscapeDistanceSectionWeightUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateOrientationUseCase
-import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateRemoteModelUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateThemeUseCase
 import javax.inject.Inject
 

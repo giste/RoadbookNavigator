@@ -15,18 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.settings.domain.roadbook.usecase
-
-import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
-import javax.inject.Inject
+package org.giste.roadbooknavigator.features.settings.domain.input
 
 /**
- * Use case to update roadbook-specific key bindings.
+ * Represents the configuration for remote control keys.
+ *
+ * @property model The selected remote model.
  */
-class UpdateRoadbookKeySettingsUseCase @Inject constructor(
-    private val repository: SettingsRepository
-) {
-    suspend operator fun invoke(up: List<Int>, down: List<Int>) {
-        repository.setRoadbookRemoteKeys(up, down)
-    }
-}
+data class RemoteKeySettings(
+    val model: RemoteModel = RemoteModel.DND2
+)

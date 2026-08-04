@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.settings.domain.roadbook.usecase
+package org.giste.roadbooknavigator.features.settings.domain.input.usecase
 
 import io.mockk.every
 import io.mockk.mockk
@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
-import org.giste.roadbooknavigator.features.settings.domain.roadbook.RoadbookKeySettings
+import org.giste.roadbooknavigator.features.settings.domain.input.RoadbookKeySettings
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

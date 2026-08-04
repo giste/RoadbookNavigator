@@ -41,11 +41,11 @@ import org.giste.odometer.domain.usecase.ResetAllDistancesUseCase
 import org.giste.odometer.domain.usecase.ResetPartialDistanceUseCase
 import org.giste.odometer.domain.usecase.SetPartialDistanceUseCase
 import org.giste.roadbooknavigator.features.settings.domain.odometer.usecase.ObserveOdometerSettingsUseCase
-import org.giste.roadbooknavigator.features.settings.domain.roadbook.usecase.ObserveRoadbookKeySettingsUseCase
+import org.giste.roadbooknavigator.features.settings.domain.input.usecase.ObserveRoadbookKeySettingsUseCase
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.MoveRoadbookDownUseCase
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.MoveRoadbookUpUseCase
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
-import org.giste.roadbooknavigator.features.settings.domain.roadbook.RoadbookKeySettings
+import org.giste.roadbooknavigator.features.settings.domain.input.RoadbookKeySettings
 import org.giste.roadbooknavigator.features.settings.domain.usecase.GetSettingsUseCase
 import org.junit.After
 import org.junit.Assert.assertEquals

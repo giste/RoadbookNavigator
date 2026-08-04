@@ -42,7 +42,7 @@ import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.core.settings.domain.AppTheme
 import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookSettings
 import org.giste.roadbooknavigator.features.roadbook.domain.model.ShortDistanceThreshold
-import org.giste.roadbooknavigator.features.settings.domain.RemoteModel
+import org.giste.roadbooknavigator.features.settings.domain.input.RemoteModel
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -1126,7 +1126,7 @@ class SettingsScreenTest {
         
         // Check if value is multiple of 0.1 (accounting for float precision)
         val remainder = (newValue!! * 10f) % 1f
-        assertTrue("Value $newValue should be multiple of 0.1", remainder < 0.01f || remainder > 0.99f)
+        assertTrue("Value $newValue should be multiple of 0.1", remainder !in 0.01f..0.99f)
     }
 
     @Test
@@ -1200,7 +1200,7 @@ class SettingsScreenTest {
             .performTouchInput { click(percentOffset(0.66f, 0.5f)) }
         
         val remainder = (newValue!! * 100f) % 1f
-        assertTrue("Value $newValue should be multiple of 0.01", remainder < 0.01f || remainder > 0.99f)
+        assertTrue("Value $newValue should be multiple of 0.01", remainder !in 0.01f..0.99f)
     }
 
     @Test
@@ -1238,7 +1238,9 @@ class SettingsScreenTest {
             .performTouchInput { click(percentOffset(0.88f, 0.5f)) }
         
         val remainder = (newValue!! - 1f) % 5f
-        assertTrue("Value $newValue should be an increment of 5 starting from 1.0", remainder < 0.01f || remainder > 4.99f)
+        assertTrue("Value $newValue should be an increment of 5 starting from 1.0",
+            remainder !in 0.01f..4.99f
+        )
     }
 
     @Test
@@ -1276,7 +1278,9 @@ class SettingsScreenTest {
             .performTouchInput { click(percentOffset(0.17f, 0.5f)) }
         
         val remainder = (newValue!! - 1f) % 5f
-        assertTrue("Value $newValue should be an increment of 5 starting from 1.0", remainder < 0.01f || remainder > 4.99f)
+        assertTrue("Value $newValue should be an increment of 5 starting from 1.0",
+            remainder !in 0.01f..4.99f
+        )
     }
 
     @Test
@@ -1314,6 +1318,6 @@ class SettingsScreenTest {
             .performTouchInput { click(percentOffset(0.55f, 0.5f)) }
         
         val remainder = newValue!! % 1f
-        assertTrue("Value $newValue should be multiple of 1.0", remainder < 0.01f || remainder > 0.99f)
+        assertTrue("Value $newValue should be multiple of 1.0", remainder !in 0.01f..0.99f)
     }
 }

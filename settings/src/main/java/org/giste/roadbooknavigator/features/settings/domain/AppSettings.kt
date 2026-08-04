@@ -18,7 +18,8 @@
 package org.giste.roadbooknavigator.features.settings.domain
 
 import org.giste.roadbooknavigator.core.settings.domain.AppTheme
-import org.giste.roadbooknavigator.features.settings.domain.roadbook.RoadbookKeySettings
+import org.giste.roadbooknavigator.features.settings.domain.input.RemoteKeySettings
+import org.giste.roadbooknavigator.features.settings.domain.input.RoadbookKeySettings
 
 /**
  * Aggregate Value Object representing all user-configurable settings.

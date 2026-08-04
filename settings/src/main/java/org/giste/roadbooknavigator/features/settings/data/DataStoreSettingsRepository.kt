@@ -30,10 +30,10 @@ import org.giste.roadbooknavigator.core.settings.domain.AppTheme
 import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
-import org.giste.roadbooknavigator.features.settings.domain.RemoteKeySettings
-import org.giste.roadbooknavigator.features.settings.domain.RemoteModel
 import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
-import org.giste.roadbooknavigator.features.settings.domain.roadbook.RoadbookKeySettings
+import org.giste.roadbooknavigator.features.settings.domain.input.RemoteKeySettings
+import org.giste.roadbooknavigator.features.settings.domain.input.RemoteModel
+import org.giste.roadbooknavigator.features.settings.domain.input.RoadbookKeySettings
 import javax.inject.Inject
 
 /**

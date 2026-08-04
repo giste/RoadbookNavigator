@@ -15,35 +15,28 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.settings.domain.usecase
+package org.giste.roadbooknavigator.features.settings.domain.input.usecase
 
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.giste.roadbooknavigator.core.util.Logger
-import org.giste.roadbooknavigator.features.settings.domain.RemoteModel
 import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
-import org.junit.Assert.assertTrue
 import org.junit.Test
 
-class UpdateRemoteModelUseCaseTest {
+class UpdateRoadbookKeySettingsUseCaseTest {
 
     private val repository: SettingsRepository = mockk()
-    private val logger: Logger = mockk(relaxed = true)
-    private val useCase = UpdateRemoteModelUseCase(repository, logger)
+    private val useCase = UpdateRoadbookKeySettingsUseCase(repository)
 
     @Test
-    fun `invoke should call repository`() = runTest {
-        // Given
-        val model = RemoteModel.TERRA_PIRATA
-        coEvery { repository.setRemoteModel(model) } returns Unit
+    fun `invoke should call repository setRoadbookRemoteKeys`() = runTest {
+        val up = listOf(1)
+        val down = listOf(2)
+        coEvery { repository.setRoadbookRemoteKeys(up, down) } returns Unit
 
-        // When
-        val result = useCase(model)
+        useCase(up, down)
 
-        // Then
-        assertTrue(result.isSuccess)
-        coVerify { repository.setRemoteModel(model) }
+        coVerify { repository.setRoadbookRemoteKeys(up, down) }
     }
 }

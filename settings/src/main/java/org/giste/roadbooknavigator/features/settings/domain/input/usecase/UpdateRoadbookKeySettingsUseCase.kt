@@ -15,20 +15,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.settings.domain.roadbook.usecase
+package org.giste.roadbooknavigator.features.settings.domain.input.usecase
 
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
-import org.giste.roadbooknavigator.features.settings.domain.roadbook.RoadbookKeySettings
 import javax.inject.Inject
 
 /**
- * Use case to observe roadbook-specific key bindings.
+ * Use case to update roadbook-specific key bindings.
  */
-class ObserveRoadbookKeySettingsUseCase @Inject constructor(
+class UpdateRoadbookKeySettingsUseCase @Inject constructor(
     private val repository: SettingsRepository
 ) {
-    operator fun invoke(): Flow<RoadbookKeySettings> =
-        repository.getSettings().map { it.roadbookKeySettings }
+    suspend operator fun invoke(up: List<Int>, down: List<Int>) {
+        repository.setRoadbookRemoteKeys(up, down)
+    }
 }

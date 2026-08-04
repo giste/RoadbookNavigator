@@ -19,6 +19,7 @@ package org.giste.roadbooknavigator.features.settings.domain
 
 import kotlinx.coroutines.flow.Flow
 import org.giste.roadbooknavigator.core.settings.domain.AppTheme
+import org.giste.roadbooknavigator.features.settings.domain.input.RemoteModel
 
 /**
  * Domain interface defining the contract for accessing and modifying application settings.

@@ -111,7 +111,9 @@ import org.giste.roadbooknavigator.features.roadbook.domain.model.ShortDistanceT
 import org.giste.roadbooknavigator.features.settings.R
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
-import org.giste.roadbooknavigator.features.settings.domain.RemoteModel
+import org.giste.roadbooknavigator.features.settings.domain.input.RemoteKeySettings
+import org.giste.roadbooknavigator.features.settings.domain.input.RemoteModel
+import org.giste.roadbooknavigator.features.settings.domain.input.RoadbookKeySettings
 import kotlin.math.roundToInt
 import org.giste.roadbooknavigator.core.R as CoreR
 
@@ -567,8 +569,8 @@ fun SliderSettingItem(
 
 @Composable
 fun RemoteTab(
-    settings: org.giste.roadbooknavigator.features.settings.domain.RemoteKeySettings,
-    roadbookKeys: org.giste.roadbooknavigator.features.settings.domain.roadbook.RoadbookKeySettings,
+    settings: RemoteKeySettings,
+    roadbookKeys: RoadbookKeySettings,
     odometerSettings: OdometerSettings,
     onModelSelected: (RemoteModel) -> Unit,
     onOdometerKeysChanged: (List<Int>, List<Int>, List<Int>) -> Unit,
@@ -1248,8 +1250,8 @@ fun RemoteTabPreview() {
     val windowSizeClass = WindowSizeClass.calculateFromSize(size)
     RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
         RemoteTab(
-            settings = org.giste.roadbooknavigator.features.settings.domain.RemoteKeySettings(),
-            roadbookKeys = org.giste.roadbooknavigator.features.settings.domain.roadbook.RoadbookKeySettings(),
+            settings = RemoteKeySettings(),
+            roadbookKeys = RoadbookKeySettings(),
             odometerSettings = OdometerSettings(),
             onModelSelected = {},
             onOdometerKeysChanged = { _, _, _ -> },

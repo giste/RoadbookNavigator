@@ -42,6 +42,7 @@ import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.core.settings.domain.AppTheme
 import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookSettings
 import org.giste.roadbooknavigator.features.roadbook.domain.model.ShortDistanceThreshold
+import org.giste.roadbooknavigator.features.settings.domain.input.InputSettings
 import org.giste.roadbooknavigator.features.settings.domain.input.RemoteModel
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -984,6 +985,92 @@ class SettingsScreenTest {
             .performClick()
 
         assertEquals(LocationSettings.DEFAULT_MIN_DISTANCE, restoredValue!!, 0.01f)
+    }
+
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+    @Test
+    fun keyMapping_triggersDialog_whenModelIsCustom() {
+        composeTestRule.setContent {
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                SettingsContent(
+                    uiState = SettingsUiState.Success(
+                        inputSettings = InputSettings(model = RemoteModel.CUSTOM)
+                    ),
+                    onBackClick = {},
+                    onThemeSelected = {},
+                    onOrientationSelected = {},
+                    onFullScreenChange = {},
+                    onShortDistanceThresholdChange = {},
+                    onOdometerSpeedThresholdChange = {},
+                    onOdometerMinAccuracyChange = {},
+                    onOdometerMinVerticalAccuracyChange = {},
+                    onLocationPollingIntervalChange = {},
+                    onLocationMinDistanceChange = {},
+                    onRestoreOdometerDefaults = {},
+                    onRemoteModelSelected = {},
+                    onOdometerKeysChanged = { _, _, _ -> },
+                    onRoadbookKeysChanged = { _, _ -> },
+                    onMapInitialZoomChange = {},
+                    onMapInitialTiltChange = {},
+                    onLandscapeWeightChange = {},
+                    mapManagementContent = {}
+                )
+            }
+        }
+
+        // Switch to Remote tab
+        composeTestRule.onNodeWithTag("SettingsTab_1").performClick()
+
+        // Click on "Roadbook Up" mapping
+        composeTestRule.onNodeWithText(context.getString(R.string.settings_remote_action_rb_up))
+            .performClick()
+
+        // Verify dialog is displayed
+        composeTestRule.onNodeWithText(context.getString(R.string.settings_remote_capture_title))
+            .assertIsDisplayed()
+    }
+
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+    @Test
+    fun keyMappings_areDisabled_whenModelIsNotCustom() {
+        composeTestRule.setContent {
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                SettingsContent(
+                    uiState = SettingsUiState.Success(
+                        inputSettings = InputSettings(model = RemoteModel.DND2)
+                    ),
+                    onBackClick = {},
+                    onThemeSelected = {},
+                    onOrientationSelected = {},
+                    onFullScreenChange = {},
+                    onShortDistanceThresholdChange = {},
+                    onOdometerSpeedThresholdChange = {},
+                    onOdometerMinAccuracyChange = {},
+                    onOdometerMinVerticalAccuracyChange = {},
+                    onLocationPollingIntervalChange = {},
+                    onLocationMinDistanceChange = {},
+                    onRestoreOdometerDefaults = {},
+                    onRemoteModelSelected = {},
+                    onOdometerKeysChanged = { _, _, _ -> },
+                    onRoadbookKeysChanged = { _, _ -> },
+                    onMapInitialZoomChange = {},
+                    onMapInitialTiltChange = {},
+                    onLandscapeWeightChange = {},
+                    mapManagementContent = {}
+                )
+            }
+        }
+
+        // Switch to Remote tab
+        composeTestRule.onNodeWithTag("SettingsTab_1").performClick()
+
+        // Click on "Roadbook Up" mapping
+        composeTestRule.onNodeWithText(context.getString(R.string.settings_remote_action_rb_up))
+            .performClick()
+
+        // Verify dialog is NOT displayed
+        composeTestRule.onNodeWithText(context.getString(R.string.settings_remote_capture_title))
+            .assertDoesNotExist()
     }
 
     @Test

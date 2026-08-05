@@ -53,7 +53,9 @@ import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.input.InputSettings
 import org.giste.roadbooknavigator.features.settings.domain.input.RemoteModel
 import org.giste.roadbooknavigator.features.settings.domain.input.usecase.ObserveInputSettingsUseCase
-import org.giste.roadbooknavigator.features.settings.domain.input.usecase.UpdateInputSettingsUseCase
+import org.giste.roadbooknavigator.features.settings.domain.input.usecase.SelectRemoteModelUseCase
+import org.giste.roadbooknavigator.features.settings.domain.input.usecase.UpdateOdometerKeysUseCase
+import org.giste.roadbooknavigator.features.settings.domain.input.usecase.UpdateRoadbookKeysUseCase
 import org.giste.roadbooknavigator.features.settings.domain.roadbook.usecase.SaveRoadbookSettingsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.ObserveAppSettingsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateFullScreenUseCase
@@ -87,7 +89,9 @@ class SettingsViewModelTest {
     private val updateLocationPollingIntervalUseCase: UpdateLocationPollingIntervalUseCase = mockk()
     private val updateLocationMinDistanceUseCase: UpdateLocationMinDistanceUseCase = mockk()
     private val restoreLocationDefaultsUseCase: RestoreLocationDefaultsUseCase = mockk()
-    private val updateInputSettingsUseCase: UpdateInputSettingsUseCase = mockk()
+    private val selectRemoteModelUseCase: SelectRemoteModelUseCase = mockk()
+    private val updateRoadbookKeysUseCase: UpdateRoadbookKeysUseCase = mockk()
+    private val updateOdometerKeysUseCase: UpdateOdometerKeysUseCase = mockk()
     private val saveMapSettingsUseCase: SaveMapSettingsUseCase = mockk()
     private val updateLandscapeDistanceSectionWeightUseCase: UpdateLandscapeDistanceSectionWeightUseCase = mockk()
     private val logger: Logger = mockk(relaxed = true)
@@ -123,7 +127,9 @@ class SettingsViewModelTest {
             updateLocationPollingIntervalUseCase = updateLocationPollingIntervalUseCase,
             updateLocationMinDistanceUseCase = updateLocationMinDistanceUseCase,
             restoreLocationDefaultsUseCase = restoreLocationDefaultsUseCase,
-            updateInputSettingsUseCase = updateInputSettingsUseCase,
+            selectRemoteModelUseCase = selectRemoteModelUseCase,
+            updateRoadbookKeysUseCase = updateRoadbookKeysUseCase,
+            updateOdometerKeysUseCase = updateOdometerKeysUseCase,
             saveMapSettingsUseCase = saveMapSettingsUseCase,
             updateLandscapeDistanceSectionWeightUseCase = updateLandscapeDistanceSectionWeightUseCase,
             logger = logger
@@ -260,12 +266,12 @@ class SettingsViewModelTest {
 
     @Test
     fun `setRemoteModel updates keys via unified use case`() = runTest {
-        coEvery { updateInputSettingsUseCase.selectRemoteModel(any()) } returns Result.success(Unit)
+        coEvery { selectRemoteModelUseCase(any()) } returns Result.success(Unit)
 
         viewModel.setRemoteModel(RemoteModel.DND2)
         advanceUntilIdle()
 
-        coVerify { updateInputSettingsUseCase.selectRemoteModel(RemoteModel.DND2) }
+        coVerify { selectRemoteModelUseCase(RemoteModel.DND2) }
     }
 
     @Test
@@ -273,24 +279,24 @@ class SettingsViewModelTest {
         val inc = listOf(1)
         val dec = listOf(2)
         val res = listOf(3)
-        coEvery { updateInputSettingsUseCase.updateOdometerKeys(inc, dec, res) } returns Result.success(Unit)
+        coEvery { updateOdometerKeysUseCase(inc, dec, res) } returns Result.success(Unit)
 
         viewModel.setOdometerKeys(inc, dec, res)
         advanceUntilIdle()
 
-        coVerify { updateInputSettingsUseCase.updateOdometerKeys(inc, dec, res) }
+        coVerify { updateOdometerKeysUseCase(inc, dec, res) }
     }
 
     @Test
     fun `setRoadbookKeys calls use case`() = runTest {
         val up = listOf(1)
         val down = listOf(2)
-        coEvery { updateInputSettingsUseCase.updateRoadbookKeys(up, down) } returns Result.success(Unit)
+        coEvery { updateRoadbookKeysUseCase(up, down) } returns Result.success(Unit)
 
         viewModel.setRoadbookKeys(up, down)
         advanceUntilIdle()
 
-        coVerify { updateInputSettingsUseCase.updateRoadbookKeys(up, down) }
+        coVerify { updateRoadbookKeysUseCase(up, down) }
     }
 
     @Test

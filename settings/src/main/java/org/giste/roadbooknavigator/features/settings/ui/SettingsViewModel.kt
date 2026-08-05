@@ -49,7 +49,9 @@ import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.input.InputSettings
 import org.giste.roadbooknavigator.features.settings.domain.input.RemoteModel
 import org.giste.roadbooknavigator.features.settings.domain.input.usecase.ObserveInputSettingsUseCase
-import org.giste.roadbooknavigator.features.settings.domain.input.usecase.UpdateInputSettingsUseCase
+import org.giste.roadbooknavigator.features.settings.domain.input.usecase.SelectRemoteModelUseCase
+import org.giste.roadbooknavigator.features.settings.domain.input.usecase.UpdateOdometerKeysUseCase
+import org.giste.roadbooknavigator.features.settings.domain.input.usecase.UpdateRoadbookKeysUseCase
 import org.giste.roadbooknavigator.features.settings.domain.roadbook.usecase.SaveRoadbookSettingsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.ObserveAppSettingsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateFullScreenUseCase
@@ -77,7 +79,9 @@ class SettingsViewModel @Inject constructor(
     private val updateLocationPollingIntervalUseCase: UpdateLocationPollingIntervalUseCase,
     private val updateLocationMinDistanceUseCase: UpdateLocationMinDistanceUseCase,
     private val restoreLocationDefaultsUseCase: RestoreLocationDefaultsUseCase,
-    private val updateInputSettingsUseCase: UpdateInputSettingsUseCase,
+    private val selectRemoteModelUseCase: SelectRemoteModelUseCase,
+    private val updateRoadbookKeysUseCase: UpdateRoadbookKeysUseCase,
+    private val updateOdometerKeysUseCase: UpdateOdometerKeysUseCase,
     private val saveMapSettingsUseCase: SaveMapSettingsUseCase,
     private val updateLandscapeDistanceSectionWeightUseCase: UpdateLandscapeDistanceSectionWeightUseCase,
     private val logger: Logger
@@ -181,21 +185,21 @@ class SettingsViewModel @Inject constructor(
     fun setRemoteModel(model: RemoteModel) {
         logger.d("SettingsViewModel: setRemoteModel requested: %s", model)
         viewModelScope.launch {
-            updateInputSettingsUseCase.selectRemoteModel(model)
+            selectRemoteModelUseCase(model)
         }
     }
 
     fun setOdometerKeys(increase: List<Int>, decrease: List<Int>, reset: List<Int>) {
         logger.d("SettingsViewModel: setOdometerKeys requested")
         viewModelScope.launch {
-            updateInputSettingsUseCase.updateOdometerKeys(increase, decrease, reset)
+            updateOdometerKeysUseCase(increase, decrease, reset)
         }
     }
 
     fun setRoadbookKeys(up: List<Int>, down: List<Int>) {
         logger.d("SettingsViewModel: setRoadbookKeys requested")
         viewModelScope.launch {
-            updateInputSettingsUseCase.updateRoadbookKeys(up, down)
+            updateRoadbookKeysUseCase(up, down)
         }
     }
 

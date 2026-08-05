@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  See <https://www.gnu.org/licenses/>.
  */
 
 package org.giste.roadbooknavigator.features.settings.domain.input.usecase
@@ -22,17 +22,18 @@ import org.giste.roadbooknavigator.features.settings.domain.input.RemoteModel
 import javax.inject.Inject
 
 /**
- * Unified use case to update hardware key mappings.
+ * Use case to select a remote control model and apply its default key mappings.
  */
-class UpdateInputSettingsUseCase @Inject constructor(
-    private val repository: InputSettingsRepository
+class SelectRemoteModelUseCase @Inject constructor(
+    private val repository: InputSettingsRepository,
+    private val updateRemoteModelUseCase: UpdateRemoteModelUseCase
 ) {
     /**
      * Updates the selected remote control model and applies its default key mappings
      * if the model is not [RemoteModel.CUSTOM].
      */
-    suspend fun selectRemoteModel(model: RemoteModel): Result<Unit> = runCatching {
-        repository.setRemoteModel(model)
+    suspend operator fun invoke(model: RemoteModel): Result<Unit> = runCatching {
+        updateRemoteModelUseCase(model).getOrThrow()
 
         if (model != RemoteModel.CUSTOM) {
             val (rbUp, rbDown) = when (model) {
@@ -53,21 +54,5 @@ class UpdateInputSettingsUseCase @Inject constructor(
             }
             repository.setOdometerKeys(odoInc, odoDec, odoRes)
         }
-    }
-
-    /** Updates roadbook-specific key bindings and sets model to CUSTOM. */
-    suspend fun updateRoadbookKeys(up: List<Int>, down: List<Int>): Result<Unit> = runCatching {
-        repository.setRemoteModel(RemoteModel.CUSTOM)
-        repository.setRoadbookKeys(up, down)
-    }
-
-    /** Updates odometer-specific key bindings and sets model to CUSTOM. */
-    suspend fun updateOdometerKeys(
-        increase: List<Int>,
-        decrease: List<Int>,
-        reset: List<Int>
-    ): Result<Unit> = runCatching {
-        repository.setRemoteModel(RemoteModel.CUSTOM)
-        repository.setOdometerKeys(increase, decrease, reset)
     }
 }

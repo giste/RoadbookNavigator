@@ -32,9 +32,11 @@ import org.giste.odometer.domain.OdometerSettings
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.location.LocationSettings
-import org.giste.roadbooknavigator.features.settings.domain.location.LocationSettingsRepository
 import org.giste.roadbooknavigator.features.settings.domain.odometer.OdometerSettingsRepository
+import org.giste.roadbooknavigator.features.settings.domain.location.LocationSettingsRepository
 import org.giste.roadbooknavigator.features.settings.domain.AppSettingsRepository
+import org.giste.roadbooknavigator.features.settings.domain.input.InputSettingsRepository
+import org.giste.roadbooknavigator.features.settings.domain.input.InputSettings
 import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookSettings
 import org.giste.odometer.domain.OdometerSettingsProvider
 import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookSettingsProvider
@@ -57,6 +59,9 @@ class MainActivityTest {
     val appSettingsRepository: AppSettingsRepository = mockk(relaxed = true)
 
     @BindValue
+    val inputSettingsRepository: InputSettingsRepository = mockk(relaxed = true)
+
+    @BindValue
     val locationSettingsRepository: LocationSettingsRepository = mockk(relaxed = true)
 
     @BindValue
@@ -76,7 +81,9 @@ class MainActivityTest {
 
     @Before
     fun setup() {
+        hiltRule.inject()
         every { appSettingsRepository.getSettings() } returns settingsFlow
+        every { inputSettingsRepository.getInputSettings() } returns MutableStateFlow(InputSettings())
         every { locationSettingsRepository.getLocationSettings() } returns locationSettingsFlow
         every { odometerSettingsRepository.getSettings() } returns MutableStateFlow(OdometerSettings())
         every { roadbookSettingsRepository.getSettings() } returns MutableStateFlow(RoadbookSettings())

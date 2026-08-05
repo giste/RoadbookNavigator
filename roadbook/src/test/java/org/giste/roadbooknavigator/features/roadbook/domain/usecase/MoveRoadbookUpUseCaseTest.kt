@@ -23,7 +23,7 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import org.giste.roadbooknavigator.core.util.Logger
+import org.giste.roadbooknavigator.features.roadbook.domain.util.RoadbookLogger
 import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookPosition
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Route
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Waypoint
@@ -35,7 +35,7 @@ class MoveRoadbookUpUseCaseTest {
 
     private val getActiveRoadbookUseCase: GetActiveRoadbookUseCase = mockk()
     private val repository: RoadbookSessionRepository = mockk()
-    private val logger: Logger = mockk(relaxed = true)
+    private val logger: RoadbookLogger = mockk(relaxed = true)
     private lateinit var useCase: MoveRoadbookUpUseCase
 
     @Before

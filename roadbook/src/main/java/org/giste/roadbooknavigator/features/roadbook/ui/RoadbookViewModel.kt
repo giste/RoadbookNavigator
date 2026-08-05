@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import org.giste.roadbooknavigator.core.util.Logger
+import org.giste.roadbooknavigator.features.roadbook.domain.util.RoadbookLogger
 import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookPosition
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.GetActiveRoadbookUseCase
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.GetRoadbookPositionUseCase
@@ -47,7 +47,7 @@ class RoadbookViewModel @Inject constructor(
     private val moveRoadbookUpUseCase: MoveRoadbookUpUseCase,
     private val moveRoadbookDownUseCase: MoveRoadbookDownUseCase,
     getRoadbookSettingsUseCase: GetRoadbookSettingsUseCase,
-    private val logger: Logger
+    private val logger: RoadbookLogger
 ) : ViewModel() {
 
     private val _transientState = MutableStateFlow<RoadbookUiState?>(null)

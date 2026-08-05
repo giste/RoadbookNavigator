@@ -23,8 +23,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.withContext
-import org.giste.roadbooknavigator.core.di.IoDispatcher
-import org.giste.roadbooknavigator.core.util.Logger
+import org.giste.roadbooknavigator.features.roadbook.domain.util.RoadbookLogger
 import org.giste.roadbooknavigator.features.roadbook.data.persistence.PersistenceMapper
 import org.giste.roadbooknavigator.features.roadbook.data.persistence.dto.PersistentRoute
 import org.giste.roadbooknavigator.features.roadbook.data.rn2.Rn2Mapper
@@ -41,8 +40,8 @@ internal class DataStoreRoadbookRepository @Inject constructor(
     private val mapper: Rn2Mapper,
     private val persistenceMapper: PersistenceMapper,
     @param:RoadbookDataStoreQualifier private val dataStore: DataStore<PersistentRoute>,
-    @param:IoDispatcher private val ioDispatcher: CoroutineDispatcher,
-    private val logger: Logger
+    @param:RoadbookIoDispatcher private val ioDispatcher: CoroutineDispatcher,
+    private val logger: RoadbookLogger
 ) : RoadbookRepository {
 
     override val activeRoadbook: Flow<Route?> = dataStore.data.map { persistentRoute ->

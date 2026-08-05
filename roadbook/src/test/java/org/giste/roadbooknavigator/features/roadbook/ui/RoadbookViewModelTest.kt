@@ -30,7 +30,7 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import org.giste.roadbooknavigator.core.util.Logger
+import org.giste.roadbooknavigator.features.roadbook.domain.util.RoadbookLogger
 import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookPosition
 import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookSettings
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Route
@@ -59,7 +59,7 @@ class RoadbookViewModelTest {
     private val moveRoadbookUpUseCase: MoveRoadbookUpUseCase = mockk()
     private val moveRoadbookDownUseCase: MoveRoadbookDownUseCase = mockk()
     private val getRoadbookSettingsUseCase: GetRoadbookSettingsUseCase = mockk()
-    private val logger: Logger = mockk(relaxed = true)
+    private val logger: RoadbookLogger = mockk(relaxed = true)
 
     private val activeRoadbookFlow = MutableStateFlow<Route?>(null)
     private val scrollPositionFlow = MutableStateFlow(RoadbookPosition(0, 0))

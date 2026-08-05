@@ -18,7 +18,7 @@
 package org.giste.roadbooknavigator.features.roadbook.domain.usecase
 
 import kotlinx.coroutines.flow.first
-import org.giste.roadbooknavigator.core.util.Logger
+import org.giste.roadbooknavigator.features.roadbook.domain.util.RoadbookLogger
 import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookPosition
 import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookSessionRepository
 import javax.inject.Inject
@@ -29,7 +29,7 @@ import javax.inject.Inject
  */
 class MoveRoadbookDownUseCase @Inject constructor(
     private val repository: RoadbookSessionRepository,
-    private val logger: Logger
+    private val logger: RoadbookLogger
 ) {
     suspend operator fun invoke() {
         val currentPosition = repository.scrollPosition.first()

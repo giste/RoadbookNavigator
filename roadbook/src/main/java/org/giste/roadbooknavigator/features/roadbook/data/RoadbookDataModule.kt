@@ -24,6 +24,7 @@ import androidx.datastore.dataStoreFile
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.Binds
+import dagger.BindsOptionalOf
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,15 +32,23 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import org.giste.roadbooknavigator.core.di.IoDispatcher
 import org.giste.roadbooknavigator.features.roadbook.data.persistence.PersistenceRoadbookSerializer
 import org.giste.roadbooknavigator.features.roadbook.data.persistence.dto.PersistentRoute
+import org.giste.roadbooknavigator.features.roadbook.data.util.AndroidRoadbookLogger
+import org.giste.roadbooknavigator.features.roadbook.di.AppRoadbookIoDispatcher
+import org.giste.roadbooknavigator.features.roadbook.di.AppRoadbookLogger
 import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookRepository
 import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookSessionRepository
-import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookSettingsProvider
+import org.giste.roadbooknavigator.features.roadbook.domain.util.RoadbookLogger
+import java.util.Optional
 import javax.inject.Qualifier
 import javax.inject.Singleton
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+internal annotation class RoadbookIoDispatcher
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
@@ -67,7 +76,29 @@ internal abstract class RoadbookDataModule {
         dataStoreRoadbookSessionRepository: DataStoreRoadbookSessionRepository
     ): RoadbookSessionRepository
 
+    @BindsOptionalOf
+    @AppRoadbookIoDispatcher
+    internal abstract fun optionalIoDispatcher(): CoroutineDispatcher
+
+    @BindsOptionalOf
+    @AppRoadbookLogger
+    internal abstract fun optionalRoadbookLogger(): RoadbookLogger
+
     companion object {
+        @Provides
+        @Singleton
+        @RoadbookIoDispatcher
+        internal fun provideIoDispatcher(
+            @AppRoadbookIoDispatcher optionalDispatcher: Optional<CoroutineDispatcher>
+        ): CoroutineDispatcher = if (optionalDispatcher.isPresent) optionalDispatcher.get() else Dispatchers.IO
+
+        @Provides
+        @Singleton
+        internal fun provideRoadbookLogger(
+            @AppRoadbookLogger optionalLogger: Optional<RoadbookLogger>,
+            androidRoadbookLogger: AndroidRoadbookLogger
+        ): RoadbookLogger = if (optionalLogger.isPresent) optionalLogger.get() else androidRoadbookLogger
+
         @Volatile
         private var roadbookDataStore: DataStore<PersistentRoute>? = null
 
@@ -76,7 +107,7 @@ internal abstract class RoadbookDataModule {
         @RoadbookDataStoreQualifier
         internal fun provideRoadbookDataStore(
             @ApplicationContext context: Context,
-            @IoDispatcher ioDispatcher: CoroutineDispatcher,
+            @RoadbookIoDispatcher ioDispatcher: CoroutineDispatcher,
             serializer: PersistenceRoadbookSerializer
         ): DataStore<PersistentRoute> {
             return roadbookDataStore ?: synchronized(this) {

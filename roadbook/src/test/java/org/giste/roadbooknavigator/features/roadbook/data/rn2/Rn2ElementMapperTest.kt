@@ -18,7 +18,7 @@
 package org.giste.roadbooknavigator.features.roadbook.data.rn2
 
 import io.mockk.mockk
-import org.giste.roadbooknavigator.core.util.Logger
+import org.giste.roadbooknavigator.features.roadbook.domain.util.RoadbookLogger
 import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2Icon
 import org.giste.roadbooknavigator.features.roadbook.data.rn2.dto.Rn2Waypoint
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Icon
@@ -32,7 +32,7 @@ import kotlin.reflect.full.primaryConstructor
 class Rn2ElementMapperTest {
 
     private lateinit var mapper: Rn2ElementMapper
-    private val logger: Logger = mockk(relaxed = true)
+    private val logger: RoadbookLogger = mockk(relaxed = true)
 
     @Before
     fun setup() {

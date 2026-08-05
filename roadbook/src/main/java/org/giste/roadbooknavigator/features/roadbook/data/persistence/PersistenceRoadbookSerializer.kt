@@ -18,13 +18,14 @@
 package org.giste.roadbooknavigator.features.roadbook.data.persistence
 
 import androidx.datastore.core.Serializer
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
-import org.giste.roadbooknavigator.core.util.Logger
+import org.giste.roadbooknavigator.features.roadbook.data.RoadbookIoDispatcher
+import org.giste.roadbooknavigator.features.roadbook.domain.util.RoadbookLogger
 import org.giste.roadbooknavigator.features.roadbook.data.persistence.dto.PersistentElement
 import org.giste.roadbooknavigator.features.roadbook.data.persistence.dto.PersistentIcon
 import org.giste.roadbooknavigator.features.roadbook.data.persistence.dto.PersistentRoad
@@ -39,7 +40,8 @@ import javax.inject.Inject
  * Serializer for [PersistentRoute] using kotlinx.serialization JSON.
  */
 internal class PersistenceRoadbookSerializer @Inject constructor(
-    private val logger: Logger
+    private val logger: RoadbookLogger,
+    @RoadbookIoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : Serializer<PersistentRoute> {
 
     private val json = Json {
@@ -75,7 +77,7 @@ internal class PersistenceRoadbookSerializer @Inject constructor(
     }
 
     override suspend fun writeTo(t: PersistentRoute, output: OutputStream) {
-        withContext(Dispatchers.IO) {
+        withContext(ioDispatcher) {
             try {
                 output.write(
                     json.encodeToString(

@@ -27,7 +27,7 @@ package org.giste.roadbooknavigator.features.settings.domain.input
  * @property decreasePartialKeys Keys to decrease the odometer partial distance.
  * @property resetPartialKeys Keys to reset the odometer partial distance.
  */
-data class InputKeySettings(
+data class InputSettings(
     val model: RemoteModel = RemoteModel.DND2,
     val upKeys: List<Int> = DEFAULT_UP_KEYS,
     val downKeys: List<Int> = DEFAULT_DOWN_KEYS,

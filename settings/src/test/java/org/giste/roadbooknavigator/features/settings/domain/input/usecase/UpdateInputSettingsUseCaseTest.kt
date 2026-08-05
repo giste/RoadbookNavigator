@@ -20,15 +20,15 @@ package org.giste.roadbooknavigator.features.settings.domain.input.usecase
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.giste.roadbooknavigator.features.settings.domain.input.InputKeySettingsRepository
+import org.giste.roadbooknavigator.features.settings.domain.input.InputSettingsRepository
 import org.giste.roadbooknavigator.features.settings.domain.input.RemoteModel
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-class UpdateInputKeySettingsUseCaseTest {
+class UpdateInputSettingsUseCaseTest {
 
-    private val repository: InputKeySettingsRepository = mockk(relaxed = true)
-    private val useCase = UpdateInputKeySettingsUseCase(repository)
+    private val repository: InputSettingsRepository = mockk(relaxed = true)
+    private val useCase = UpdateInputSettingsUseCase(repository)
 
     @Test
     fun `selectRemoteModel DND2 should update model and apply defaults`() = runTest {
@@ -36,8 +36,8 @@ class UpdateInputKeySettingsUseCaseTest {
 
         assertTrue(result.isSuccess)
         coVerify { repository.setRemoteModel(RemoteModel.DND2) }
-        coVerify { repository.setRoadbookRemoteKeys(listOf(19), listOf(20)) }
-        coVerify { repository.setOdometerRemoteKeys(listOf(22), listOf(21), listOf(136)) }
+        coVerify { repository.setRoadbookKeys(listOf(19), listOf(20)) }
+        coVerify { repository.setOdometerKeys(listOf(22), listOf(21), listOf(136)) }
     }
 
     @Test
@@ -46,8 +46,8 @@ class UpdateInputKeySettingsUseCaseTest {
 
         assertTrue(result.isSuccess)
         coVerify { repository.setRemoteModel(RemoteModel.TERRA_PIRATA) }
-        coVerify { repository.setRoadbookRemoteKeys(listOf(87), listOf(88)) }
-        coVerify { repository.setOdometerRemoteKeys(listOf(24), listOf(25), listOf(85, 126)) }
+        coVerify { repository.setRoadbookKeys(listOf(87), listOf(88)) }
+        coVerify { repository.setOdometerKeys(listOf(24), listOf(25), listOf(85, 126)) }
     }
 
     @Test
@@ -56,8 +56,8 @@ class UpdateInputKeySettingsUseCaseTest {
 
         assertTrue(result.isSuccess)
         coVerify { repository.setRemoteModel(RemoteModel.CUSTOM) }
-        coVerify(exactly = 0) { repository.setRoadbookRemoteKeys(any(), any()) }
-        coVerify(exactly = 0) { repository.setOdometerRemoteKeys(any(), any(), any()) }
+        coVerify(exactly = 0) { repository.setRoadbookKeys(any(), any()) }
+        coVerify(exactly = 0) { repository.setOdometerKeys(any(), any(), any()) }
     }
 
     @Test
@@ -69,7 +69,7 @@ class UpdateInputKeySettingsUseCaseTest {
 
         assertTrue(result.isSuccess)
         coVerify { repository.setRemoteModel(RemoteModel.CUSTOM) }
-        coVerify { repository.setRoadbookRemoteKeys(up, down) }
+        coVerify { repository.setRoadbookKeys(up, down) }
     }
 
     @Test
@@ -82,6 +82,6 @@ class UpdateInputKeySettingsUseCaseTest {
 
         assertTrue(result.isSuccess)
         coVerify { repository.setRemoteModel(RemoteModel.CUSTOM) }
-        coVerify { repository.setOdometerRemoteKeys(inc, dec, res) }
+        coVerify { repository.setOdometerKeys(inc, dec, res) }
     }
 }

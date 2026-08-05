@@ -22,21 +22,21 @@ import io.mockk.mockk
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import org.giste.roadbooknavigator.features.settings.domain.input.InputKeySettings
-import org.giste.roadbooknavigator.features.settings.domain.input.InputKeySettingsRepository
+import org.giste.roadbooknavigator.features.settings.domain.input.InputSettings
+import org.giste.roadbooknavigator.features.settings.domain.input.InputSettingsRepository
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class ObserveInputKeySettingsUseCaseTest {
+class ObserveInputSettingsUseCaseTest {
 
-    private val repository: InputKeySettingsRepository = mockk()
-    private val useCase = ObserveInputKeySettingsUseCase(repository)
+    private val repository: InputSettingsRepository = mockk()
+    private val useCase = ObserveInputSettingsUseCase(repository)
 
     @Test
     fun `invoke should return input key settings from repository`() = runTest {
         // Given
-        val inputKeys = InputKeySettings(upKeys = listOf(1), increasePartialKeys = listOf(10))
-        every { repository.getInputKeySettings() } returns flowOf(inputKeys)
+        val inputKeys = InputSettings(upKeys = listOf(1), increasePartialKeys = listOf(10))
+        every { repository.getInputSettings() } returns flowOf(inputKeys)
 
         // When
         val result = useCase().first()

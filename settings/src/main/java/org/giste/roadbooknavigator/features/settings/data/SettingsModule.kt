@@ -33,7 +33,7 @@ import org.giste.roadbooknavigator.features.settings.domain.AppSettingsRepositor
 import org.giste.odometer.domain.OdometerSettingsProvider
 import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookSettingsProvider
 import org.giste.roadbooknavigator.features.settings.domain.roadbook.RoadbookSettingsRepository
-import org.giste.roadbooknavigator.features.settings.domain.input.InputKeySettingsRepository
+import org.giste.roadbooknavigator.features.settings.domain.input.InputSettingsRepository
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
@@ -76,8 +76,8 @@ abstract class SettingsModule {
     @Binds
     @Singleton
     internal abstract fun bindInputKeySettingsRepository(
-        impl: DataStoreInputKeySettingsRepository
-    ): InputKeySettingsRepository
+        impl: DataStoreInputSettingsRepository
+    ): InputSettingsRepository
 
     @Binds
     @Singleton

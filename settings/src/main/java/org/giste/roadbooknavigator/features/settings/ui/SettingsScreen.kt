@@ -111,7 +111,7 @@ import org.giste.roadbooknavigator.features.roadbook.domain.model.ShortDistanceT
 import org.giste.roadbooknavigator.features.settings.R
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
-import org.giste.roadbooknavigator.features.settings.domain.input.InputKeySettings
+import org.giste.roadbooknavigator.features.settings.domain.input.InputSettings
 import org.giste.roadbooknavigator.features.settings.domain.input.RemoteModel
 import kotlin.math.roundToInt
 import org.giste.roadbooknavigator.core.R as CoreR
@@ -243,7 +243,7 @@ fun SettingsContent(
                             )
 
                             1 -> RemoteTab(
-                                inputKeys = uiState.inputKeySettings,
+                                inputKeys = uiState.inputSettings,
                                 onModelSelected = onRemoteModelSelected,
                                 onOdometerKeysChanged = onOdometerKeysChanged,
                                 onRoadbookKeysChanged = onRoadbookKeysChanged
@@ -566,7 +566,7 @@ fun SliderSettingItem(
 
 @Composable
 fun RemoteTab(
-    inputKeys: InputKeySettings,
+    inputKeys: InputSettings,
     onModelSelected: (RemoteModel) -> Unit,
     onOdometerKeysChanged: (List<Int>, List<Int>, List<Int>) -> Unit,
     onRoadbookKeysChanged: (List<Int>, List<Int>) -> Unit
@@ -1105,7 +1105,7 @@ fun SettingsPreviewLight() {
         SettingsContent(
             uiState = SettingsUiState.Success(
                 appSettings = AppSettings(),
-                inputKeySettings = InputKeySettings(),
+                inputSettings = InputSettings(),
                 locationSettings = LocationSettings(),
                 odometerSettings = OdometerSettings(),
                 mapSettings = MapSettings(),
@@ -1148,7 +1148,7 @@ fun SettingsPreviewDark() {
         SettingsContent(
             uiState = SettingsUiState.Success(
                 appSettings = AppSettings(),
-                inputKeySettings = InputKeySettings(),
+                inputSettings = InputSettings(),
                 locationSettings = LocationSettings(),
                 odometerSettings = OdometerSettings(),
                 mapSettings = MapSettings(),
@@ -1190,7 +1190,7 @@ fun SettingsPreviewTablet() {
         SettingsContent(
             uiState = SettingsUiState.Success(
                 appSettings = AppSettings(),
-                inputKeySettings = InputKeySettings(),
+                inputSettings = InputSettings(),
                 locationSettings = LocationSettings(),
                 odometerSettings = OdometerSettings(),
                 mapSettings = MapSettings(),
@@ -1248,7 +1248,7 @@ fun RemoteTabPreview() {
     val windowSizeClass = WindowSizeClass.calculateFromSize(size)
     RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
         RemoteTab(
-            inputKeys = InputKeySettings(),
+            inputKeys = InputSettings(),
             onModelSelected = {},
             onOdometerKeysChanged = { _, _, _ -> },
             onRoadbookKeysChanged = { _, _ -> }

@@ -44,8 +44,8 @@ import org.giste.roadbooknavigator.features.settings.domain.odometer.usecase.Obs
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.MoveRoadbookDownUseCase
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.MoveRoadbookUpUseCase
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
-import org.giste.roadbooknavigator.features.settings.domain.input.InputKeySettings
-import org.giste.roadbooknavigator.features.settings.domain.input.usecase.ObserveInputKeySettingsUseCase
+import org.giste.roadbooknavigator.features.settings.domain.input.InputSettings
+import org.giste.roadbooknavigator.features.settings.domain.input.usecase.ObserveInputSettingsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.ObserveAppSettingsUseCase
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -64,7 +64,7 @@ class DashboardViewModelTest {
     private val setPartialDistanceUseCase: SetPartialDistanceUseCase = mockk()
     private val observeAppSettingsUseCase: ObserveAppSettingsUseCase = mockk()
     private val observeOdometerSettingsUseCase: ObserveOdometerSettingsUseCase = mockk()
-    private val observeInputKeySettingsUseCase: ObserveInputKeySettingsUseCase = mockk()
+    private val observeInputSettingsUseCase: ObserveInputSettingsUseCase = mockk()
     private val moveRoadbookUpUseCase: MoveRoadbookUpUseCase = mockk()
     private val moveRoadbookDownUseCase: MoveRoadbookDownUseCase = mockk()
     private val locationProvider: LocationProvider = mockk()
@@ -73,7 +73,7 @@ class DashboardViewModelTest {
     private val odometerFlow = MutableStateFlow(Odometer())
     private val settingsFlow = MutableStateFlow(AppSettings())
     private val odometerSettingsFlow = MutableStateFlow(OdometerSettings())
-    private val inputKeySettingsFlow = MutableStateFlow(InputKeySettings())
+    private val inputSettingsFlow = MutableStateFlow(InputSettings())
     private val testDispatcher = UnconfinedTestDispatcher()
 
     private lateinit var viewModel: DashboardViewModel
@@ -84,7 +84,7 @@ class DashboardViewModelTest {
         every { getOdometerUseCase(any(), any()) } returns odometerFlow
         every { observeAppSettingsUseCase() } returns settingsFlow
         every { observeOdometerSettingsUseCase() } returns odometerSettingsFlow
-        every { observeInputKeySettingsUseCase() } returns inputKeySettingsFlow
+        every { observeInputSettingsUseCase() } returns inputSettingsFlow
         every { locationProvider.observeLocation() } returns flowOf()
 
         viewModel = DashboardViewModel(
@@ -96,7 +96,7 @@ class DashboardViewModelTest {
             setPartialDistanceUseCase,
             observeAppSettingsUseCase,
             observeOdometerSettingsUseCase,
-            observeInputKeySettingsUseCase,
+            observeInputSettingsUseCase,
             moveRoadbookUpUseCase,
             moveRoadbookDownUseCase,
             locationProvider,
@@ -117,8 +117,8 @@ class DashboardViewModelTest {
         assertEquals(false, viewModel.uiState.value.showSetPartialDialog)
         assertEquals(false, viewModel.uiState.value.showResetAllDialog)
         assertEquals(true, viewModel.uiState.value.isFullScreen)
-        assertEquals(InputKeySettings.DEFAULT_INCREASE_KEYS, viewModel.uiState.value.increasePartialKeys)
-        assertEquals(InputKeySettings.DEFAULT_UP_KEYS, viewModel.uiState.value.roadbookUpKeys)
+        assertEquals(InputSettings.DEFAULT_INCREASE_KEYS, viewModel.uiState.value.increasePartialKeys)
+        assertEquals(InputSettings.DEFAULT_UP_KEYS, viewModel.uiState.value.roadbookUpKeys)
     }
 
     @Test

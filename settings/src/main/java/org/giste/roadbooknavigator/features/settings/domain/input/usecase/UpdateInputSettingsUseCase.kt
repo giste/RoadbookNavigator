@@ -17,15 +17,15 @@
 
 package org.giste.roadbooknavigator.features.settings.domain.input.usecase
 
-import org.giste.roadbooknavigator.features.settings.domain.input.InputKeySettingsRepository
+import org.giste.roadbooknavigator.features.settings.domain.input.InputSettingsRepository
 import org.giste.roadbooknavigator.features.settings.domain.input.RemoteModel
 import javax.inject.Inject
 
 /**
  * Unified use case to update hardware key mappings.
  */
-class UpdateInputKeySettingsUseCase @Inject constructor(
-    private val repository: InputKeySettingsRepository
+class UpdateInputSettingsUseCase @Inject constructor(
+    private val repository: InputSettingsRepository
 ) {
     /**
      * Updates the selected remote control model and applies its default key mappings
@@ -40,7 +40,7 @@ class UpdateInputKeySettingsUseCase @Inject constructor(
                 RemoteModel.TERRA_PIRATA -> listOf(87) to listOf(88) // KEYCODE_MEDIA_NEXT/PREVIOUS
                 RemoteModel.CUSTOM -> return@runCatching // Should not happen due to check above
             }
-            repository.setRoadbookRemoteKeys(rbUp, rbDown)
+            repository.setRoadbookKeys(rbUp, rbDown)
 
             val (odoInc, odoDec, odoRes) = when (model) {
                 RemoteModel.DND2 -> Triple(listOf(22), listOf(21), listOf(136)) // DPAD_RIGHT/LEFT, F6
@@ -51,14 +51,14 @@ class UpdateInputKeySettingsUseCase @Inject constructor(
                 ) // VOL_UP/DOWN, PLAY_PAUSE/PLAY
                 RemoteModel.CUSTOM -> return@runCatching
             }
-            repository.setOdometerRemoteKeys(odoInc, odoDec, odoRes)
+            repository.setOdometerKeys(odoInc, odoDec, odoRes)
         }
     }
 
     /** Updates roadbook-specific key bindings and sets model to CUSTOM. */
     suspend fun updateRoadbookKeys(up: List<Int>, down: List<Int>): Result<Unit> = runCatching {
         repository.setRemoteModel(RemoteModel.CUSTOM)
-        repository.setRoadbookRemoteKeys(up, down)
+        repository.setRoadbookKeys(up, down)
     }
 
     /** Updates odometer-specific key bindings and sets model to CUSTOM. */
@@ -68,6 +68,6 @@ class UpdateInputKeySettingsUseCase @Inject constructor(
         reset: List<Int>
     ): Result<Unit> = runCatching {
         repository.setRemoteModel(RemoteModel.CUSTOM)
-        repository.setOdometerRemoteKeys(increase, decrease, reset)
+        repository.setOdometerKeys(increase, decrease, reset)
     }
 }

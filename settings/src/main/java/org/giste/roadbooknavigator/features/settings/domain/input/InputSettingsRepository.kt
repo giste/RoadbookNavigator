@@ -15,19 +15,31 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.settings.domain.input.usecase
+package org.giste.roadbooknavigator.features.settings.domain.input
 
 import kotlinx.coroutines.flow.Flow
-import org.giste.roadbooknavigator.features.settings.domain.input.InputKeySettings
-import org.giste.roadbooknavigator.features.settings.domain.input.InputKeySettingsRepository
-import javax.inject.Inject
 
 /**
- * Use case to observe the unified hardware key mappings.
+ * Domain interface defining the contract for accessing and modifying hardware input key settings.
  */
-class ObserveInputKeySettingsUseCase @Inject constructor(
-    private val repository: InputKeySettingsRepository
-) {
-    operator fun invoke(): Flow<InputKeySettings> =
-        repository.getInputKeySettings()
+interface InputSettingsRepository {
+    /**
+     * Provides a reactive stream of the current [InputSettings].
+     */
+    fun getInputSettings(): Flow<InputSettings>
+
+    /**
+     * Updates the selected remote control model.
+     */
+    suspend fun setRemoteModel(model: RemoteModel)
+
+    /**
+     * Updates the roadbook navigation keys.
+     */
+    suspend fun setRoadbookKeys(up: List<Int>, down: List<Int>)
+
+    /**
+     * Updates the odometer navigation keys.
+     */
+    suspend fun setOdometerKeys(increase: List<Int>, decrease: List<Int>, reset: List<Int>)
 }

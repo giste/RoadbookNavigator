@@ -25,18 +25,18 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import org.giste.roadbooknavigator.core.util.Logger
-import org.giste.roadbooknavigator.features.settings.domain.input.InputKeySettings
-import org.giste.roadbooknavigator.features.settings.domain.input.InputKeySettingsRepository
+import org.giste.roadbooknavigator.features.settings.domain.input.InputSettings
+import org.giste.roadbooknavigator.features.settings.domain.input.InputSettingsRepository
 import org.giste.roadbooknavigator.features.settings.domain.input.RemoteModel
 import javax.inject.Inject
 
 /**
- * Jetpack DataStore implementation of [InputKeySettingsRepository].
+ * Jetpack DataStore implementation of [InputSettingsRepository].
  */
-internal class DataStoreInputKeySettingsRepository @Inject constructor(
+internal class DataStoreInputSettingsRepository @Inject constructor(
     @param:InputKeySettingsDataStore private val dataStore: DataStore<Preferences>,
     private val logger: Logger
-) : InputKeySettingsRepository {
+) : InputSettingsRepository {
 
     private object Keys {
         val REMOTE_MODEL = stringPreferencesKey("remote_model")
@@ -47,21 +47,21 @@ internal class DataStoreInputKeySettingsRepository @Inject constructor(
         val ODOMETER_KEYS_RESET = stringPreferencesKey("odometer_keys_reset")
     }
 
-    override fun getInputKeySettings(): Flow<InputKeySettings> = dataStore.data.map { preferences ->
+    override fun getInputSettings(): Flow<InputSettings> = dataStore.data.map { preferences ->
         val remoteModel =
             preferences[Keys.REMOTE_MODEL]?.let { safeRemoteModelOf(it) } ?: RemoteModel.DND2
-        InputKeySettings(
+        InputSettings(
             model = remoteModel,
             upKeys = preferences[Keys.ROADBOOK_KEYS_UP]?.toIntList()
-                ?: InputKeySettings.DEFAULT_UP_KEYS,
+                ?: InputSettings.DEFAULT_UP_KEYS,
             downKeys = preferences[Keys.ROADBOOK_KEYS_DOWN]?.toIntList()
-                ?: InputKeySettings.DEFAULT_DOWN_KEYS,
+                ?: InputSettings.DEFAULT_DOWN_KEYS,
             increasePartialKeys = preferences[Keys.ODOMETER_KEYS_INC]?.toIntList()
-                ?: InputKeySettings.DEFAULT_INCREASE_KEYS,
+                ?: InputSettings.DEFAULT_INCREASE_KEYS,
             decreasePartialKeys = preferences[Keys.ODOMETER_KEYS_DEC]?.toIntList()
-                ?: InputKeySettings.DEFAULT_DECREASE_KEYS,
+                ?: InputSettings.DEFAULT_DECREASE_KEYS,
             resetPartialKeys = preferences[Keys.ODOMETER_KEYS_RESET]?.toIntList()
-                ?: InputKeySettings.DEFAULT_RESET_KEYS,
+                ?: InputSettings.DEFAULT_RESET_KEYS,
         )
     }.onEach {
         logger.v("DataStoreInputKeySettingsRepository: Settings updated: %s", it)
@@ -74,7 +74,7 @@ internal class DataStoreInputKeySettingsRepository @Inject constructor(
         }
     }
 
-    override suspend fun setRoadbookRemoteKeys(up: List<Int>, down: List<Int>) {
+    override suspend fun setRoadbookKeys(up: List<Int>, down: List<Int>) {
         logger.i("DataStoreInputKeySettingsRepository: Setting roadbook remote keys")
         dataStore.edit { preferences ->
             preferences[Keys.ROADBOOK_KEYS_UP] = up.toPreferenceString()
@@ -82,7 +82,7 @@ internal class DataStoreInputKeySettingsRepository @Inject constructor(
         }
     }
 
-    override suspend fun setOdometerRemoteKeys(
+    override suspend fun setOdometerKeys(
         increase: List<Int>,
         decrease: List<Int>,
         reset: List<Int>

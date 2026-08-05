@@ -46,10 +46,10 @@ import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookSettin
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.GetRoadbookSettingsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
-import org.giste.roadbooknavigator.features.settings.domain.input.InputKeySettings
+import org.giste.roadbooknavigator.features.settings.domain.input.InputSettings
 import org.giste.roadbooknavigator.features.settings.domain.input.RemoteModel
-import org.giste.roadbooknavigator.features.settings.domain.input.usecase.ObserveInputKeySettingsUseCase
-import org.giste.roadbooknavigator.features.settings.domain.input.usecase.UpdateInputKeySettingsUseCase
+import org.giste.roadbooknavigator.features.settings.domain.input.usecase.ObserveInputSettingsUseCase
+import org.giste.roadbooknavigator.features.settings.domain.input.usecase.UpdateInputSettingsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.roadbook.usecase.SaveRoadbookSettingsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.ObserveAppSettingsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateFullScreenUseCase
@@ -61,7 +61,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     observeAppSettingsUseCase: ObserveAppSettingsUseCase,
-    observeInputKeySettingsUseCase: ObserveInputKeySettingsUseCase,
+    observeInputSettingsUseCase: ObserveInputSettingsUseCase,
     observeLocationSettingsUseCase: ObserveLocationSettingsUseCase,
     observeOdometerSettingsUseCase: ObserveOdometerSettingsUseCase,
     getMapSettingsUseCase: GetMapSettingsUseCase,
@@ -77,7 +77,7 @@ class SettingsViewModel @Inject constructor(
     private val updateLocationPollingIntervalUseCase: UpdateLocationPollingIntervalUseCase,
     private val updateLocationMinDistanceUseCase: UpdateLocationMinDistanceUseCase,
     private val restoreLocationDefaultsUseCase: RestoreLocationDefaultsUseCase,
-    private val updateInputKeySettingsUseCase: UpdateInputKeySettingsUseCase,
+    private val updateInputSettingsUseCase: UpdateInputSettingsUseCase,
     private val saveMapSettingsUseCase: SaveMapSettingsUseCase,
     private val updateLandscapeDistanceSectionWeightUseCase: UpdateLandscapeDistanceSectionWeightUseCase,
     private val logger: Logger
@@ -85,7 +85,7 @@ class SettingsViewModel @Inject constructor(
 
     val uiState: StateFlow<SettingsUiState> = combine(
         observeAppSettingsUseCase(),
-        observeInputKeySettingsUseCase(),
+        observeInputSettingsUseCase(),
         observeLocationSettingsUseCase(),
         observeOdometerSettingsUseCase(),
         getMapSettingsUseCase(),
@@ -93,7 +93,7 @@ class SettingsViewModel @Inject constructor(
     ) { flows ->
         SettingsUiState.Success(
             appSettings = flows[0] as AppSettings,
-            inputKeySettings = flows[1] as InputKeySettings,
+            inputSettings = flows[1] as InputSettings,
             locationSettings = flows[2] as LocationSettings,
             odometerSettings = flows[3] as OdometerSettings,
             mapSettings = flows[4] as MapSettings,
@@ -181,21 +181,21 @@ class SettingsViewModel @Inject constructor(
     fun setRemoteModel(model: RemoteModel) {
         logger.d("SettingsViewModel: setRemoteModel requested: %s", model)
         viewModelScope.launch {
-            updateInputKeySettingsUseCase.selectRemoteModel(model)
+            updateInputSettingsUseCase.selectRemoteModel(model)
         }
     }
 
     fun setOdometerKeys(increase: List<Int>, decrease: List<Int>, reset: List<Int>) {
         logger.d("SettingsViewModel: setOdometerKeys requested")
         viewModelScope.launch {
-            updateInputKeySettingsUseCase.updateOdometerKeys(increase, decrease, reset)
+            updateInputSettingsUseCase.updateOdometerKeys(increase, decrease, reset)
         }
     }
 
     fun setRoadbookKeys(up: List<Int>, down: List<Int>) {
         logger.d("SettingsViewModel: setRoadbookKeys requested")
         viewModelScope.launch {
-            updateInputKeySettingsUseCase.updateRoadbookKeys(up, down)
+            updateInputSettingsUseCase.updateRoadbookKeys(up, down)
         }
     }
 
@@ -229,7 +229,7 @@ sealed interface SettingsUiState {
     data object Loading : SettingsUiState
     data class Success(
         val appSettings: AppSettings = AppSettings(),
-        val inputKeySettings: InputKeySettings = InputKeySettings(),
+        val inputSettings: InputSettings = InputSettings(),
         val locationSettings: LocationSettings = LocationSettings(),
         val odometerSettings: OdometerSettings = OdometerSettings(),
         val mapSettings: MapSettings = MapSettings(),

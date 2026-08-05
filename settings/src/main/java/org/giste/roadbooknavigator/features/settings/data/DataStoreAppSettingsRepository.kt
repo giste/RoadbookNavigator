@@ -31,8 +31,6 @@ import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.AppSettingsRepository
-import org.giste.roadbooknavigator.features.settings.domain.input.InputKeySettings
-import org.giste.roadbooknavigator.features.settings.domain.input.RemoteModel
 import javax.inject.Inject
 
 /**
@@ -50,37 +48,16 @@ internal class DataStoreAppSettingsRepository @Inject constructor(
         val THEME = stringPreferencesKey("app_theme")
         val ORIENTATION = stringPreferencesKey("app_orientation")
         val FULL_SCREEN = booleanPreferencesKey("full_screen")
-        val REMOTE_MODEL = stringPreferencesKey("remote_model")
         val LANDSCAPE_WEIGHT = floatPreferencesKey("landscape_weight")
-        val ROADBOOK_KEYS_UP = stringPreferencesKey("roadbook_keys_up")
-        val ROADBOOK_KEYS_DOWN = stringPreferencesKey("roadbook_keys_down")
-        val ODOMETER_KEYS_INC = stringPreferencesKey("odometer_keys_inc")
-        val ODOMETER_KEYS_DEC = stringPreferencesKey("odometer_keys_dec")
-        val ODOMETER_KEYS_RESET = stringPreferencesKey("odometer_keys_reset")
     }
 
     override fun getSettings(): Flow<AppSettings> = dataStore.data.map { preferences ->
-        val remoteModel =
-            preferences[Keys.REMOTE_MODEL]?.let { safeRemoteModelOf(it) } ?: RemoteModel.DND2
         AppSettings(
             theme = preferences[Keys.THEME]?.let { safeThemeOf(it) } ?: AppTheme.FOLLOW_SYSTEM,
             orientation = preferences[Keys.ORIENTATION]?.let { safeOrientationOf(it) }
                 ?: AppOrientation.FOLLOW_SYSTEM,
             fullScreen = preferences[Keys.FULL_SCREEN] ?: true,
             landscapeDistanceSectionWeight = preferences[Keys.LANDSCAPE_WEIGHT] ?: 0.3f,
-            inputKeySettings = InputKeySettings(
-                model = remoteModel,
-                upKeys = preferences[Keys.ROADBOOK_KEYS_UP]?.toIntList()
-                    ?: InputKeySettings.DEFAULT_UP_KEYS,
-                downKeys = preferences[Keys.ROADBOOK_KEYS_DOWN]?.toIntList()
-                    ?: InputKeySettings.DEFAULT_DOWN_KEYS,
-                increasePartialKeys = preferences[Keys.ODOMETER_KEYS_INC]?.toIntList()
-                    ?: InputKeySettings.DEFAULT_INCREASE_KEYS,
-                decreasePartialKeys = preferences[Keys.ODOMETER_KEYS_DEC]?.toIntList()
-                    ?: InputKeySettings.DEFAULT_DECREASE_KEYS,
-                resetPartialKeys = preferences[Keys.ODOMETER_KEYS_RESET]?.toIntList()
-                    ?: InputKeySettings.DEFAULT_RESET_KEYS,
-            )
         )
     }.onEach {
         logger.v("DataStoreSettingsRepository: Settings updated: %s", it)
@@ -107,45 +84,12 @@ internal class DataStoreAppSettingsRepository @Inject constructor(
         }
     }
 
-    override suspend fun setRemoteModel(model: RemoteModel) {
-        logger.i("DataStoreSettingsRepository: Setting remote model to %s", model)
-        dataStore.edit { preferences ->
-            preferences[Keys.REMOTE_MODEL] = model.name
-        }
-    }
-
     override suspend fun setLandscapeDistanceSectionWeight(weight: Float) {
         logger.i("DataStoreSettingsRepository: Setting landscape weight to %f", weight)
         dataStore.edit { preferences ->
             preferences[Keys.LANDSCAPE_WEIGHT] = weight
         }
     }
-
-    override suspend fun setRoadbookRemoteKeys(up: List<Int>, down: List<Int>) {
-        logger.i("DataStoreSettingsRepository: Setting roadbook remote keys")
-        dataStore.edit { preferences ->
-            preferences[Keys.ROADBOOK_KEYS_UP] = up.toPreferenceString()
-            preferences[Keys.ROADBOOK_KEYS_DOWN] = down.toPreferenceString()
-        }
-    }
-
-    override suspend fun setOdometerRemoteKeys(
-        increase: List<Int>,
-        decrease: List<Int>,
-        reset: List<Int>
-    ) {
-        logger.i("DataStoreSettingsRepository: Setting odometer remote keys")
-        dataStore.edit { preferences ->
-            preferences[Keys.ODOMETER_KEYS_INC] = increase.toPreferenceString()
-            preferences[Keys.ODOMETER_KEYS_DEC] = decrease.toPreferenceString()
-            preferences[Keys.ODOMETER_KEYS_RESET] = reset.toPreferenceString()
-        }
-    }
-
-    private fun List<Int>.toPreferenceString(): String = joinToString(",")
-
-    private fun String.toIntList(): List<Int> =
-        if (isEmpty()) emptyList() else split(",").mapNotNull { it.toIntOrNull() }
 
     private fun safeThemeOf(name: String): AppTheme = try {
         AppTheme.valueOf(name)
@@ -157,11 +101,5 @@ internal class DataStoreAppSettingsRepository @Inject constructor(
         AppOrientation.valueOf(name)
     } catch (_: IllegalArgumentException) {
         AppOrientation.FOLLOW_SYSTEM
-    }
-
-    private fun safeRemoteModelOf(name: String): RemoteModel = try {
-        RemoteModel.valueOf(name)
-    } catch (_: IllegalArgumentException) {
-        RemoteModel.DND2
     }
 }

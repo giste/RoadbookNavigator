@@ -243,7 +243,7 @@ fun SettingsContent(
                             )
 
                             1 -> RemoteTab(
-                                inputKeys = settings.inputKeySettings,
+                                inputKeys = uiState.inputKeySettings,
                                 onModelSelected = onRemoteModelSelected,
                                 onOdometerKeysChanged = onOdometerKeysChanged,
                                 onRoadbookKeysChanged = onRoadbookKeysChanged
@@ -1105,6 +1105,7 @@ fun SettingsPreviewLight() {
         SettingsContent(
             uiState = SettingsUiState.Success(
                 appSettings = AppSettings(),
+                inputKeySettings = InputKeySettings(),
                 locationSettings = LocationSettings(),
                 odometerSettings = OdometerSettings(),
                 mapSettings = MapSettings(),
@@ -1147,6 +1148,7 @@ fun SettingsPreviewDark() {
         SettingsContent(
             uiState = SettingsUiState.Success(
                 appSettings = AppSettings(),
+                inputKeySettings = InputKeySettings(),
                 locationSettings = LocationSettings(),
                 odometerSettings = OdometerSettings(),
                 mapSettings = MapSettings(),
@@ -1188,6 +1190,7 @@ fun SettingsPreviewTablet() {
         SettingsContent(
             uiState = SettingsUiState.Success(
                 appSettings = AppSettings(),
+                inputKeySettings = InputKeySettings(),
                 locationSettings = LocationSettings(),
                 odometerSettings = OdometerSettings(),
                 mapSettings = MapSettings(),

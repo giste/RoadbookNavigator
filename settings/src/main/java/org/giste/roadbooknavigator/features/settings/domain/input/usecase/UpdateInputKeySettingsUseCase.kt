@@ -17,7 +17,7 @@
 
 package org.giste.roadbooknavigator.features.settings.domain.input.usecase
 
-import org.giste.roadbooknavigator.features.settings.domain.AppSettingsRepository
+import org.giste.roadbooknavigator.features.settings.domain.input.InputKeySettingsRepository
 import org.giste.roadbooknavigator.features.settings.domain.input.RemoteModel
 import javax.inject.Inject
 
@@ -25,7 +25,7 @@ import javax.inject.Inject
  * Unified use case to update hardware key mappings.
  */
 class UpdateInputKeySettingsUseCase @Inject constructor(
-    private val repository: AppSettingsRepository
+    private val repository: InputKeySettingsRepository
 ) {
     /**
      * Updates the selected remote control model and applies its default key mappings

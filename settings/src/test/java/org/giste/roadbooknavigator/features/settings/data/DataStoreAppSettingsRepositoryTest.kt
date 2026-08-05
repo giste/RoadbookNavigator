@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  See <https://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package org.giste.roadbooknavigator.features.settings.data
@@ -29,7 +29,6 @@ import kotlinx.coroutines.test.runTest
 import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.core.settings.domain.AppTheme
-import org.giste.roadbooknavigator.features.settings.domain.input.RemoteModel
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -81,10 +80,15 @@ class DataStoreAppSettingsRepositoryTest {
 
     @Test
     fun `setOrientation should persist orientation value`() = runTest {
-        repository.setRemoteModel(RemoteModel.TERRA_PIRATA)
+        repository.setOrientation(AppOrientation.HORIZONTAL)
         
         val settings = repository.getSettings().first()
-        assertEquals(RemoteModel.TERRA_PIRATA, settings.inputKeySettings.model)
+        assertEquals(AppOrientation.HORIZONTAL, settings.orientation)
+
+        // Verify with new instance
+        val newRepo = DataStoreAppSettingsRepository(dataStore, logger)
+        val persisted = newRepo.getSettings().first()
+        assertEquals(AppOrientation.HORIZONTAL, persisted.orientation)
     }
 
     @Test
@@ -102,48 +106,7 @@ class DataStoreAppSettingsRepositoryTest {
     }
 
     @Test
-    fun `setRoadbookRemoteKeys should persist roadbook key values`() = runTest {
-        val up = listOf(1, 2)
-        val down = listOf(3, 4)
-        repository.setRoadbookRemoteKeys(up, down)
-
-        val settings = repository.getSettings().first()
-        assertEquals(up, settings.inputKeySettings.upKeys)
-        assertEquals(down, settings.inputKeySettings.downKeys)
-
-        // Verify with new instance
-        val newRepo = DataStoreAppSettingsRepository(dataStore, logger)
-        val persisted = newRepo.getSettings().first()
-        assertEquals(up, persisted.inputKeySettings.upKeys)
-        assertEquals(down, persisted.inputKeySettings.downKeys)
-    }
-
-    @Test
-    fun `setOdometerRemoteKeys should persist odometer key values`() = runTest {
-        val inc = listOf(1, 2)
-        val dec = listOf(3, 4)
-        val res = listOf(5, 6)
-        repository.setOdometerRemoteKeys(inc, dec, res)
-
-        val settings = repository.getSettings().first()
-        assertEquals(inc, settings.inputKeySettings.increasePartialKeys)
-        assertEquals(dec, settings.inputKeySettings.decreasePartialKeys)
-        assertEquals(res, settings.inputKeySettings.resetPartialKeys)
-
-        // Verify with new instance
-        val newRepo = DataStoreAppSettingsRepository(dataStore, logger)
-        val persisted = newRepo.getSettings().first()
-        assertEquals(inc, persisted.inputKeySettings.increasePartialKeys)
-        assertEquals(dec, persisted.inputKeySettings.decreasePartialKeys)
-        assertEquals(res, persisted.inputKeySettings.resetPartialKeys)
-    }
-
-    @Test
     fun `safe parsing should fallback to default for unknown theme string`() = runTest {
-        // We need to bypass the public API to inject a corrupted string directly into DataStore
-        // But since safeThemeOf is private, we verify it implicitly by ensuring it doesn't crash 
-        // if we ever add a test case for data corruption.
-        // For now, verified initial defaults are correct.
         val settings = repository.getSettings().first()
         assertEquals(AppTheme.FOLLOW_SYSTEM, settings.theme)
     }

@@ -46,7 +46,9 @@ import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookSettin
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.GetRoadbookSettingsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
+import org.giste.roadbooknavigator.features.settings.domain.input.InputKeySettings
 import org.giste.roadbooknavigator.features.settings.domain.input.RemoteModel
+import org.giste.roadbooknavigator.features.settings.domain.input.usecase.ObserveInputKeySettingsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.input.usecase.UpdateInputKeySettingsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.roadbook.usecase.SaveRoadbookSettingsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.ObserveAppSettingsUseCase
@@ -59,6 +61,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     observeAppSettingsUseCase: ObserveAppSettingsUseCase,
+    observeInputKeySettingsUseCase: ObserveInputKeySettingsUseCase,
     observeLocationSettingsUseCase: ObserveLocationSettingsUseCase,
     observeOdometerSettingsUseCase: ObserveOdometerSettingsUseCase,
     getMapSettingsUseCase: GetMapSettingsUseCase,
@@ -82,17 +85,19 @@ class SettingsViewModel @Inject constructor(
 
     val uiState: StateFlow<SettingsUiState> = combine(
         observeAppSettingsUseCase(),
+        observeInputKeySettingsUseCase(),
         observeLocationSettingsUseCase(),
         observeOdometerSettingsUseCase(),
         getMapSettingsUseCase(),
         getRoadbookSettingsUseCase()
-    ) { settings, locationSettings, odometerSettings, mapSettings, roadbookSettings ->
+    ) { flows ->
         SettingsUiState.Success(
-            settings,
-            locationSettings,
-            odometerSettings,
-            mapSettings,
-            roadbookSettings
+            appSettings = flows[0] as AppSettings,
+            inputKeySettings = flows[1] as InputKeySettings,
+            locationSettings = flows[2] as LocationSettings,
+            odometerSettings = flows[3] as OdometerSettings,
+            mapSettings = flows[4] as MapSettings,
+            roadbookSettings = flows[5] as RoadbookSettings
         )
     }
         .onEach { logger.v("SettingsViewModel: Settings stream emitted: %s", it) }
@@ -224,6 +229,7 @@ sealed interface SettingsUiState {
     data object Loading : SettingsUiState
     data class Success(
         val appSettings: AppSettings = AppSettings(),
+        val inputKeySettings: InputKeySettings = InputKeySettings(),
         val locationSettings: LocationSettings = LocationSettings(),
         val odometerSettings: OdometerSettings = OdometerSettings(),
         val mapSettings: MapSettings = MapSettings(),

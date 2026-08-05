@@ -19,7 +19,6 @@ package org.giste.roadbooknavigator.features.settings.domain
 
 import kotlinx.coroutines.flow.Flow
 import org.giste.roadbooknavigator.core.settings.domain.AppTheme
-import org.giste.roadbooknavigator.features.settings.domain.input.RemoteModel
 
 /**
  * Domain interface defining the contract for accessing and modifying application settings.
@@ -39,15 +38,6 @@ interface AppSettingsRepository {
     /** Updates the full-screen mode setting. */
     suspend fun setFullScreen(enabled: Boolean)
 
-    /** Updates the selected remote control model. */
-    suspend fun setRemoteModel(model: RemoteModel)
-
     /** Updates the weight of the distance section in landscape layout. */
     suspend fun setLandscapeDistanceSectionWeight(weight: Float)
-
-    /** Updates the roadbook navigation keys. */
-    suspend fun setRoadbookRemoteKeys(up: List<Int>, down: List<Int>)
-
-    /** Updates the odometer navigation keys. */
-    suspend fun setOdometerRemoteKeys(increase: List<Int>, decrease: List<Int>, reset: List<Int>)
 }

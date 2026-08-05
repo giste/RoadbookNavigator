@@ -50,7 +50,9 @@ import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookSettin
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.GetRoadbookSettingsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
+import org.giste.roadbooknavigator.features.settings.domain.input.InputKeySettings
 import org.giste.roadbooknavigator.features.settings.domain.input.RemoteModel
+import org.giste.roadbooknavigator.features.settings.domain.input.usecase.ObserveInputKeySettingsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.input.usecase.UpdateInputKeySettingsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.roadbook.usecase.SaveRoadbookSettingsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.ObserveAppSettingsUseCase
@@ -69,6 +71,7 @@ class SettingsViewModelTest {
     private val testDispatcher = StandardTestDispatcher()
 
     private val observeAppSettingsUseCase: ObserveAppSettingsUseCase = mockk()
+    private val observeInputKeySettingsUseCase: ObserveInputKeySettingsUseCase = mockk()
     private val observeLocationSettingsUseCase: ObserveLocationSettingsUseCase = mockk()
     private val observeOdometerSettingsUseCase: ObserveOdometerSettingsUseCase = mockk()
     private val getMapSettingsUseCase: GetMapSettingsUseCase = mockk()
@@ -96,6 +99,7 @@ class SettingsViewModelTest {
         Dispatchers.setMain(testDispatcher)
 
         every { observeAppSettingsUseCase() } returns flowOf(AppSettings())
+        every { observeInputKeySettingsUseCase() } returns flowOf(InputKeySettings())
         every { observeLocationSettingsUseCase() } returns flowOf(LocationSettings())
         every { observeOdometerSettingsUseCase() } returns flowOf(OdometerSettings())
         every { getMapSettingsUseCase() } returns flowOf(MapSettings())
@@ -103,6 +107,7 @@ class SettingsViewModelTest {
 
         viewModel = SettingsViewModel(
             observeAppSettingsUseCase = observeAppSettingsUseCase,
+            observeInputKeySettingsUseCase = observeInputKeySettingsUseCase,
             observeLocationSettingsUseCase = observeLocationSettingsUseCase,
             observeOdometerSettingsUseCase = observeOdometerSettingsUseCase,
             getMapSettingsUseCase = getMapSettingsUseCase,

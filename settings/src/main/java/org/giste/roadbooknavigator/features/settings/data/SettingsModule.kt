@@ -33,6 +33,7 @@ import org.giste.roadbooknavigator.features.settings.domain.AppSettingsRepositor
 import org.giste.odometer.domain.OdometerSettingsProvider
 import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookSettingsProvider
 import org.giste.roadbooknavigator.features.settings.domain.roadbook.RoadbookSettingsRepository
+import org.giste.roadbooknavigator.features.settings.domain.input.InputKeySettingsRepository
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
@@ -50,9 +51,14 @@ internal annotation class AppSettingsDataStore
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
+internal annotation class InputKeySettingsDataStore
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
 internal annotation class OdometerSettingsDataStore
 
 private val Context.settingsDataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
+private val Context.inputKeySettingsDataStore: DataStore<Preferences> by preferencesDataStore(name = "input_settings")
 private val Context.locationSettingsDataStore: DataStore<Preferences> by preferencesDataStore(name = "location_settings")
 private val Context.odometerSettingsDataStore: DataStore<Preferences> by preferencesDataStore(name = "odometer_settings")
 private val Context.roadbookSettingsDataStore: DataStore<Preferences> by preferencesDataStore(name = "roadbook_settings")
@@ -66,6 +72,12 @@ abstract class SettingsModule {
     internal abstract fun bindSettingsRepository(
         impl: DataStoreAppSettingsRepository
     ): AppSettingsRepository
+
+    @Binds
+    @Singleton
+    internal abstract fun bindInputKeySettingsRepository(
+        impl: DataStoreInputKeySettingsRepository
+    ): InputKeySettingsRepository
 
     @Binds
     @Singleton
@@ -103,6 +115,12 @@ abstract class SettingsModule {
         @AppSettingsDataStore
         internal fun provideSettingsDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
             context.settingsDataStore
+
+        @Provides
+        @Singleton
+        @InputKeySettingsDataStore
+        internal fun provideInputKeySettingsDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
+            context.inputKeySettingsDataStore
 
         @Provides
         @Singleton

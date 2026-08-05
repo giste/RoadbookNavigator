@@ -49,7 +49,7 @@ import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.input.RemoteModel
 import org.giste.roadbooknavigator.features.settings.domain.input.usecase.UpdateInputKeySettingsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.roadbook.usecase.SaveRoadbookSettingsUseCase
-import org.giste.roadbooknavigator.features.settings.domain.usecase.GetSettingsUseCase
+import org.giste.roadbooknavigator.features.settings.domain.usecase.ObserveAppSettingsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateFullScreenUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateLandscapeDistanceSectionWeightUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateOrientationUseCase
@@ -58,7 +58,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    getSettingsUseCase: GetSettingsUseCase,
+    observeAppSettingsUseCase: ObserveAppSettingsUseCase,
     observeLocationSettingsUseCase: ObserveLocationSettingsUseCase,
     observeOdometerSettingsUseCase: ObserveOdometerSettingsUseCase,
     getMapSettingsUseCase: GetMapSettingsUseCase,
@@ -81,7 +81,7 @@ class SettingsViewModel @Inject constructor(
 ) : ViewModel() {
 
     val uiState: StateFlow<SettingsUiState> = combine(
-        getSettingsUseCase(),
+        observeAppSettingsUseCase(),
         observeLocationSettingsUseCase(),
         observeOdometerSettingsUseCase(),
         getMapSettingsUseCase(),

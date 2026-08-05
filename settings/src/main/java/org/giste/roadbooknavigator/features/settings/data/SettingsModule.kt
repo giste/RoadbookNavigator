@@ -29,7 +29,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import org.giste.roadbooknavigator.features.settings.domain.odometer.OdometerSettingsRepository
 import org.giste.roadbooknavigator.features.settings.domain.location.LocationSettingsRepository
-import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
+import org.giste.roadbooknavigator.features.settings.domain.AppSettingsRepository
 import org.giste.odometer.domain.OdometerSettingsProvider
 import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookSettingsProvider
 import org.giste.roadbooknavigator.features.settings.domain.roadbook.RoadbookSettingsRepository
@@ -39,6 +39,18 @@ import javax.inject.Singleton
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 internal annotation class RoadbookSettingsDataStore
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+internal annotation class LocationSettingsDataStore
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+internal annotation class AppSettingsDataStore
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+internal annotation class OdometerSettingsDataStore
 
 private val Context.settingsDataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 private val Context.locationSettingsDataStore: DataStore<Preferences> by preferencesDataStore(name = "location_settings")
@@ -52,8 +64,8 @@ abstract class SettingsModule {
     @Binds
     @Singleton
     internal abstract fun bindSettingsRepository(
-        impl: DataStoreSettingsRepository
-    ): SettingsRepository
+        impl: DataStoreAppSettingsRepository
+    ): AppSettingsRepository
 
     @Binds
     @Singleton
@@ -88,7 +100,7 @@ abstract class SettingsModule {
     companion object {
         @Provides
         @Singleton
-        @SettingsDataStore
+        @AppSettingsDataStore
         internal fun provideSettingsDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
             context.settingsDataStore
 

@@ -19,7 +19,7 @@ package org.giste.roadbooknavigator.features.settings.domain.input.usecase
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
+import org.giste.roadbooknavigator.features.settings.domain.AppSettingsRepository
 import org.giste.roadbooknavigator.features.settings.domain.input.InputKeySettings
 import javax.inject.Inject
 
@@ -27,7 +27,7 @@ import javax.inject.Inject
  * Use case to observe the unified hardware key mappings.
  */
 class ObserveInputKeySettingsUseCase @Inject constructor(
-    private val repository: SettingsRepository
+    private val repository: AppSettingsRepository
 ) {
     operator fun invoke(): Flow<InputKeySettings> =
         repository.getSettings().map { it.inputKeySettings }

@@ -17,13 +17,31 @@
 
 package org.giste.roadbooknavigator.features.settings.domain.usecase
 
-import kotlinx.coroutines.flow.Flow
+import io.mockk.every
+import io.mockk.mockk
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.runTest
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
-import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
-import javax.inject.Inject
+import org.giste.roadbooknavigator.features.settings.domain.AppSettingsRepository
+import org.junit.Assert.assertEquals
+import org.junit.Test
 
-class GetSettingsUseCase @Inject constructor(
-    private val repository: SettingsRepository
-) {
-    operator fun invoke(): Flow<AppSettings> = repository.getSettings()
+class ObserveAppSettingsUseCaseTest {
+
+    private val repository: AppSettingsRepository = mockk()
+    private val useCase = ObserveAppSettingsUseCase(repository)
+
+    @Test
+    fun `invoke should return settings flow from repository`() = runTest {
+        // Given
+        val settings = AppSettings()
+        every { repository.getSettings() } returns flowOf(settings)
+
+        // When
+        val result = useCase().first()
+
+        // Then
+        assertEquals(settings, result)
+    }
 }

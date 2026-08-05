@@ -20,14 +20,14 @@ package org.giste.roadbooknavigator.features.settings.domain.input.usecase
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
+import org.giste.roadbooknavigator.features.settings.domain.AppSettingsRepository
 import org.giste.roadbooknavigator.features.settings.domain.input.RemoteModel
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class UpdateInputKeySettingsUseCaseTest {
 
-    private val repository: SettingsRepository = mockk(relaxed = true)
+    private val repository: AppSettingsRepository = mockk(relaxed = true)
     private val useCase = UpdateInputKeySettingsUseCase(repository)
 
     @Test

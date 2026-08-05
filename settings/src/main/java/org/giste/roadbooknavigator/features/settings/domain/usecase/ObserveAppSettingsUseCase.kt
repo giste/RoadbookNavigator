@@ -15,10 +15,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.settings.data
+package org.giste.roadbooknavigator.features.settings.domain.usecase
 
-import javax.inject.Qualifier
+import kotlinx.coroutines.flow.Flow
+import org.giste.roadbooknavigator.features.settings.domain.AppSettings
+import org.giste.roadbooknavigator.features.settings.domain.AppSettingsRepository
+import javax.inject.Inject
 
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-internal annotation class OdometerSettingsDataStore
+class ObserveAppSettingsUseCase @Inject constructor(
+    private val repository: AppSettingsRepository
+) {
+    operator fun invoke(): Flow<AppSettings> = repository.getSettings()
+}

@@ -30,21 +30,21 @@ import org.giste.roadbooknavigator.core.settings.domain.AppTheme
 import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
-import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
+import org.giste.roadbooknavigator.features.settings.domain.AppSettingsRepository
 import org.giste.roadbooknavigator.features.settings.domain.input.InputKeySettings
 import org.giste.roadbooknavigator.features.settings.domain.input.RemoteModel
 import javax.inject.Inject
 
 /**
- * Jetpack DataStore implementation of [SettingsRepository].
+ * Jetpack DataStore implementation of [AppSettingsRepository].
  *
  * This class handles the persistence of user preferences in a reactive way
  * using a key-value pair storage system.
  */
-internal class DataStoreSettingsRepository @Inject constructor(
-    @param:SettingsDataStore private val dataStore: DataStore<Preferences>,
+internal class DataStoreAppSettingsRepository @Inject constructor(
+    @param:AppSettingsDataStore private val dataStore: DataStore<Preferences>,
     private val logger: Logger
-) : SettingsRepository {
+) : AppSettingsRepository {
 
     private object Keys {
         val THEME = stringPreferencesKey("app_theme")

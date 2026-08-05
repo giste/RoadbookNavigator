@@ -18,14 +18,14 @@
 package org.giste.roadbooknavigator.features.settings.domain.usecase
 
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
-import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
+import org.giste.roadbooknavigator.features.settings.domain.AppSettingsRepository
 import javax.inject.Inject
 
 /**
  * Use case to update the application orientation setting.
  */
 class UpdateOrientationUseCase @Inject constructor(
-    private val repository: SettingsRepository
+    private val repository: AppSettingsRepository
 ) {
     suspend operator fun invoke(orientation: AppOrientation): Result<Unit> = runCatching {
         repository.setOrientation(orientation)

@@ -18,14 +18,14 @@
 package org.giste.roadbooknavigator.features.settings.domain.usecase
 
 import org.giste.roadbooknavigator.core.util.Logger
-import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
+import org.giste.roadbooknavigator.features.settings.domain.AppSettingsRepository
 import javax.inject.Inject
 
 /**
  * Use case to update the weight of the distance section in landscape layout.
  */
 class UpdateLandscapeDistanceSectionWeightUseCase @Inject constructor(
-    private val repository: SettingsRepository,
+    private val repository: AppSettingsRepository,
     private val logger: Logger
 ) {
     suspend operator fun invoke(weight: Float): Result<Unit> {

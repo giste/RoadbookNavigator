@@ -24,7 +24,7 @@ import org.giste.roadbooknavigator.features.settings.domain.input.RemoteModel
 /**
  * Domain interface defining the contract for accessing and modifying application settings.
  */
-interface SettingsRepository {
+interface AppSettingsRepository {
     /**
      * Provides a reactive stream of the current [AppSettings].
      */

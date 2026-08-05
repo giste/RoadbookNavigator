@@ -17,14 +17,14 @@
 
 package org.giste.roadbooknavigator.features.settings.domain.usecase
 
-import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
+import org.giste.roadbooknavigator.features.settings.domain.AppSettingsRepository
 import javax.inject.Inject
 
 /**
  * Use case to update the full-screen mode setting.
  */
 class UpdateFullScreenUseCase @Inject constructor(
-    private val repository: SettingsRepository
+    private val repository: AppSettingsRepository
 ) {
     suspend operator fun invoke(enabled: Boolean): Result<Unit> = runCatching {
         repository.setFullScreen(enabled)

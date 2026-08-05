@@ -22,13 +22,13 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
-import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
+import org.giste.roadbooknavigator.features.settings.domain.AppSettingsRepository
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class UpdateOrientationUseCaseTest {
 
-    private val repository: SettingsRepository = mockk()
+    private val repository: AppSettingsRepository = mockk()
     private val useCase = UpdateOrientationUseCase(repository)
 
     @Test

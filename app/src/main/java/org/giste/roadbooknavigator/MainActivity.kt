@@ -43,7 +43,7 @@ import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
-import org.giste.roadbooknavigator.features.settings.domain.usecase.GetSettingsUseCase
+import org.giste.roadbooknavigator.features.settings.domain.usecase.ObserveAppSettingsUseCase
 import org.giste.roadbooknavigator.features.settings.ui.SettingsScreen
 import org.giste.roadbooknavigator.ui.Screen
 import org.giste.roadbooknavigator.ui.dashboard.DashboardScreen
@@ -53,7 +53,7 @@ import javax.inject.Inject
 class MainActivity : ComponentActivity() {
 
     @Inject
-    lateinit var getSettingsUseCase: GetSettingsUseCase
+    lateinit var observeAppSettingsUseCase: ObserveAppSettingsUseCase
 
     @Inject
     lateinit var logger: Logger
@@ -70,7 +70,7 @@ class MainActivity : ComponentActivity() {
         logger.i("MainActivity: onCreate")
         enableEdgeToEdge()
         setContent {
-            val settings by getSettingsUseCase().collectAsState(initial = AppSettings())
+            val settings by observeAppSettingsUseCase().collectAsState(initial = AppSettings())
 
             LaunchedEffect(settings.orientation) {
                 logger.d("MainActivity: Applying orientation setting: %s", settings.orientation)

@@ -34,7 +34,7 @@ import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.location.LocationSettings
 import org.giste.roadbooknavigator.features.settings.domain.location.LocationSettingsRepository
 import org.giste.roadbooknavigator.features.settings.domain.odometer.OdometerSettingsRepository
-import org.giste.roadbooknavigator.features.settings.domain.SettingsRepository
+import org.giste.roadbooknavigator.features.settings.domain.AppSettingsRepository
 import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookSettings
 import org.giste.odometer.domain.OdometerSettingsProvider
 import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookSettingsProvider
@@ -54,7 +54,7 @@ class MainActivityTest {
     val hiltRule = HiltAndroidRule(this)
 
     @BindValue
-    val settingsRepository: SettingsRepository = mockk(relaxed = true)
+    val appSettingsRepository: AppSettingsRepository = mockk(relaxed = true)
 
     @BindValue
     val locationSettingsRepository: LocationSettingsRepository = mockk(relaxed = true)
@@ -76,7 +76,7 @@ class MainActivityTest {
 
     @Before
     fun setup() {
-        every { settingsRepository.getSettings() } returns settingsFlow
+        every { appSettingsRepository.getSettings() } returns settingsFlow
         every { locationSettingsRepository.getLocationSettings() } returns locationSettingsFlow
         every { odometerSettingsRepository.getSettings() } returns MutableStateFlow(OdometerSettings())
         every { roadbookSettingsRepository.getSettings() } returns MutableStateFlow(RoadbookSettings())

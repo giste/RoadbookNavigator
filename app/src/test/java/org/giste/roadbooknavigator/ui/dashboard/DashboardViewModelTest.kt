@@ -46,7 +46,7 @@ import org.giste.roadbooknavigator.features.roadbook.domain.usecase.MoveRoadbook
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.input.InputKeySettings
 import org.giste.roadbooknavigator.features.settings.domain.input.usecase.ObserveInputKeySettingsUseCase
-import org.giste.roadbooknavigator.features.settings.domain.usecase.GetSettingsUseCase
+import org.giste.roadbooknavigator.features.settings.domain.usecase.ObserveAppSettingsUseCase
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -62,7 +62,7 @@ class DashboardViewModelTest {
     private val incrementPartialDistanceUseCase: IncrementPartialDistanceUseCase = mockk()
     private val decrementPartialDistanceUseCase: DecrementPartialDistanceUseCase = mockk()
     private val setPartialDistanceUseCase: SetPartialDistanceUseCase = mockk()
-    private val getSettingsUseCase: GetSettingsUseCase = mockk()
+    private val observeAppSettingsUseCase: ObserveAppSettingsUseCase = mockk()
     private val observeOdometerSettingsUseCase: ObserveOdometerSettingsUseCase = mockk()
     private val observeInputKeySettingsUseCase: ObserveInputKeySettingsUseCase = mockk()
     private val moveRoadbookUpUseCase: MoveRoadbookUpUseCase = mockk()
@@ -82,7 +82,7 @@ class DashboardViewModelTest {
     fun setup() {
         Dispatchers.setMain(testDispatcher)
         every { getOdometerUseCase(any(), any()) } returns odometerFlow
-        every { getSettingsUseCase() } returns settingsFlow
+        every { observeAppSettingsUseCase() } returns settingsFlow
         every { observeOdometerSettingsUseCase() } returns odometerSettingsFlow
         every { observeInputKeySettingsUseCase() } returns inputKeySettingsFlow
         every { locationProvider.observeLocation() } returns flowOf()
@@ -94,7 +94,7 @@ class DashboardViewModelTest {
             incrementPartialDistanceUseCase,
             decrementPartialDistanceUseCase,
             setPartialDistanceUseCase,
-            getSettingsUseCase,
+            observeAppSettingsUseCase,
             observeOdometerSettingsUseCase,
             observeInputKeySettingsUseCase,
             moveRoadbookUpUseCase,

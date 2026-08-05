@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.settings.data.repository
+package org.giste.roadbooknavigator.features.settings.data
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
@@ -26,8 +26,7 @@ import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.giste.roadbooknavigator.features.roadbook.domain.model.ShortDistanceThreshold
-import org.giste.roadbooknavigator.features.settings.data.DataStoreRoadbookSettingsRepository
-import org.junit.Assert.assertEquals
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -49,7 +48,12 @@ class DataStoreRoadbookSettingsRepositoryTest {
     fun setup() {
         dataStore = PreferenceDataStoreFactory.create(
             scope = testScope,
-            produceFile = { File(temporaryFolder.newFolder(), "test_roadbook_settings.preferences_pb") }
+            produceFile = {
+                File(
+                    temporaryFolder.newFolder(),
+                    "test_roadbook_settings.preferences_pb"
+                )
+            }
         )
         repository = DataStoreRoadbookSettingsRepository(dataStore)
     }
@@ -57,16 +61,16 @@ class DataStoreRoadbookSettingsRepositoryTest {
     @Test
     fun `getSettings should return default settings when empty`() = runTest {
         val settings = repository.getSettings().first()
-        assertEquals(ShortDistanceThreshold.DEFAULT, settings.shortDistanceThreshold.meters)
+        Assert.assertEquals(ShortDistanceThreshold.DEFAULT, settings.shortDistanceThreshold.meters)
     }
 
     @Test
     fun `saveShortDistanceThreshold should persist threshold`() = runTest {
         val newThreshold = 450L
-        
+
         repository.saveShortDistanceThreshold(newThreshold)
-        
+
         val savedSettings = repository.getSettings().first()
-        assertEquals(newThreshold, savedSettings.shortDistanceThreshold.meters)
+        Assert.assertEquals(newThreshold, savedSettings.shortDistanceThreshold.meters)
     }
 }

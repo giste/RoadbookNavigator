@@ -45,7 +45,7 @@ import org.giste.odometer.domain.usecase.SetPartialDistanceUseCase
 import org.giste.roadbooknavigator.features.odometer.toOdometerLocation
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.MoveRoadbookDownUseCase
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.MoveRoadbookUpUseCase
-import org.giste.roadbooknavigator.features.settings.domain.usecase.GetSettingsUseCase
+import org.giste.roadbooknavigator.features.settings.domain.usecase.ObserveAppSettingsUseCase
 import javax.inject.Inject
 
 @HiltViewModel
@@ -56,7 +56,7 @@ class DashboardViewModel @Inject constructor(
     private val incrementPartialDistanceUseCase: IncrementPartialDistanceUseCase,
     private val decrementPartialDistanceUseCase: DecrementPartialDistanceUseCase,
     private val setPartialDistanceUseCase: SetPartialDistanceUseCase,
-    getSettingsUseCase: GetSettingsUseCase,
+    observeAppSettingsUseCase: ObserveAppSettingsUseCase,
     observeOdometerSettingsUseCase: ObserveOdometerSettingsUseCase,
     observeInputKeySettingsUseCase: ObserveInputKeySettingsUseCase,
     private val moveRoadbookUpUseCase: MoveRoadbookUpUseCase,
@@ -78,7 +78,7 @@ class DashboardViewModel @Inject constructor(
         getOdometerUseCase(odometerSettingsFlow, odometerLocationFlow).onStart { emit(Odometer()) },
         _showSetPartialDialog,
         _showResetAllDialog,
-        getSettingsUseCase(),
+        observeAppSettingsUseCase(),
         odometerSettingsFlow,
         inputKeySettingsFlow
     ) { flows ->

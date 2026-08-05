@@ -53,7 +53,7 @@ import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.input.RemoteModel
 import org.giste.roadbooknavigator.features.settings.domain.input.usecase.UpdateInputKeySettingsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.roadbook.usecase.SaveRoadbookSettingsUseCase
-import org.giste.roadbooknavigator.features.settings.domain.usecase.GetSettingsUseCase
+import org.giste.roadbooknavigator.features.settings.domain.usecase.ObserveAppSettingsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateFullScreenUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateLandscapeDistanceSectionWeightUseCase
 import org.giste.roadbooknavigator.features.settings.domain.usecase.UpdateOrientationUseCase
@@ -68,7 +68,7 @@ class SettingsViewModelTest {
 
     private val testDispatcher = StandardTestDispatcher()
 
-    private val getSettingsUseCase: GetSettingsUseCase = mockk()
+    private val observeAppSettingsUseCase: ObserveAppSettingsUseCase = mockk()
     private val observeLocationSettingsUseCase: ObserveLocationSettingsUseCase = mockk()
     private val observeOdometerSettingsUseCase: ObserveOdometerSettingsUseCase = mockk()
     private val getMapSettingsUseCase: GetMapSettingsUseCase = mockk()
@@ -95,14 +95,14 @@ class SettingsViewModelTest {
     fun setup() {
         Dispatchers.setMain(testDispatcher)
 
-        every { getSettingsUseCase() } returns flowOf(AppSettings())
+        every { observeAppSettingsUseCase() } returns flowOf(AppSettings())
         every { observeLocationSettingsUseCase() } returns flowOf(LocationSettings())
         every { observeOdometerSettingsUseCase() } returns flowOf(OdometerSettings())
         every { getMapSettingsUseCase() } returns flowOf(MapSettings())
         every { getRoadbookSettingsUseCase() } returns flowOf(RoadbookSettings())
 
         viewModel = SettingsViewModel(
-            getSettingsUseCase = getSettingsUseCase,
+            observeAppSettingsUseCase = observeAppSettingsUseCase,
             observeLocationSettingsUseCase = observeLocationSettingsUseCase,
             observeOdometerSettingsUseCase = observeOdometerSettingsUseCase,
             getMapSettingsUseCase = getMapSettingsUseCase,

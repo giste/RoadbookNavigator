@@ -38,14 +38,14 @@ import org.junit.rules.TemporaryFolder
 import java.io.File
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class DataStoreSettingsRepositoryTest {
+class DataStoreAppSettingsRepositoryTest {
 
     @get:Rule
     val temporaryFolder = TemporaryFolder()
 
     private lateinit var dataStore: DataStore<Preferences>
     private lateinit var logger: Logger
-    private lateinit var repository: DataStoreSettingsRepository
+    private lateinit var repository: DataStoreAppSettingsRepository
     private val testDispatcher = UnconfinedTestDispatcher()
     private val testScope = TestScope(testDispatcher)
 
@@ -56,7 +56,7 @@ class DataStoreSettingsRepositoryTest {
             produceFile = { File(temporaryFolder.newFolder(), "test_settings.preferences_pb") }
         )
         logger = mockk(relaxed = true)
-        repository = DataStoreSettingsRepository(dataStore, logger)
+        repository = DataStoreAppSettingsRepository(dataStore, logger)
     }
 
     @Test
@@ -74,7 +74,7 @@ class DataStoreSettingsRepositoryTest {
         assertEquals(AppTheme.DARK, settings.theme)
 
         // Verify with new instance
-        val newRepo = DataStoreSettingsRepository(dataStore, logger)
+        val newRepo = DataStoreAppSettingsRepository(dataStore, logger)
         val persisted = newRepo.getSettings().first()
         assertEquals(AppTheme.DARK, persisted.theme)
     }
@@ -96,7 +96,7 @@ class DataStoreSettingsRepositoryTest {
         assertEquals(testWeight, settings.landscapeDistanceSectionWeight)
 
         // Verify with new instance
-        val newRepo = DataStoreSettingsRepository(dataStore, logger)
+        val newRepo = DataStoreAppSettingsRepository(dataStore, logger)
         val persisted = newRepo.getSettings().first()
         assertEquals(testWeight, persisted.landscapeDistanceSectionWeight)
     }
@@ -112,7 +112,7 @@ class DataStoreSettingsRepositoryTest {
         assertEquals(down, settings.inputKeySettings.downKeys)
 
         // Verify with new instance
-        val newRepo = DataStoreSettingsRepository(dataStore, logger)
+        val newRepo = DataStoreAppSettingsRepository(dataStore, logger)
         val persisted = newRepo.getSettings().first()
         assertEquals(up, persisted.inputKeySettings.upKeys)
         assertEquals(down, persisted.inputKeySettings.downKeys)
@@ -131,7 +131,7 @@ class DataStoreSettingsRepositoryTest {
         assertEquals(res, settings.inputKeySettings.resetPartialKeys)
 
         // Verify with new instance
-        val newRepo = DataStoreSettingsRepository(dataStore, logger)
+        val newRepo = DataStoreAppSettingsRepository(dataStore, logger)
         val persisted = newRepo.getSettings().first()
         assertEquals(inc, persisted.inputKeySettings.increasePartialKeys)
         assertEquals(dec, persisted.inputKeySettings.decreasePartialKeys)

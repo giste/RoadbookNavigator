@@ -46,11 +46,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import org.giste.roadbooknavigator.core.ui.components.RoadbookAutoSizeText
-import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Coordinates
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Distance
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Waypoint
+import org.giste.roadbooknavigator.features.roadbook.ui.components.RoadbookAutoSizeText
+import org.giste.roadbooknavigator.features.roadbook.ui.theme.RoadbookTheme
+import org.giste.roadbooknavigator.features.roadbook.ui.theme.compactRoadbookDimensions
 
 @Composable
 internal fun DistanceSection(
@@ -99,7 +100,7 @@ internal fun DistanceSection(
         // Reset divider
         Box(
             modifier = Modifier
-                .padding(horizontal = RoadbookNavigatorTheme.dimensions.paddingLarge)
+                .padding(horizontal = RoadbookTheme.dimensions.paddingLarge)
                 .weight(0.02f)
                 .fillMaxWidth()
                 .background(color = if (waypoint.reset) contentColor else surfaceColor)
@@ -108,7 +109,7 @@ internal fun DistanceSection(
         // Medium danger divider
         Box(
             modifier = Modifier
-                .padding(horizontal = RoadbookNavigatorTheme.dimensions.paddingMedium)
+                .padding(horizontal = RoadbookTheme.dimensions.paddingMedium)
                 .weight(0.05f)
                 .fillMaxWidth()
                 .background(
@@ -150,10 +151,10 @@ internal fun DistanceSection(
                 modifier = Modifier
                     .weight(0.5f)
                     .border(
-                        width = RoadbookNavigatorTheme.dimensions.sectionBorder,
+                        width = RoadbookTheme.dimensions.sectionBorder,
                         color = contentColor
                     )
-                    .padding(horizontal = RoadbookNavigatorTheme.dimensions.paddingMinimal),
+                    .padding(horizontal = RoadbookTheme.dimensions.paddingMinimal),
                 color = contentColor,
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.titleLarge,
@@ -175,7 +176,7 @@ internal fun DistanceSection(
                     modifier = Modifier
                         .background(color = MaterialTheme.colorScheme.inverseSurface)
                         .weight(0.7f)
-                        .padding(horizontal = RoadbookNavigatorTheme.dimensions.paddingMinimal)
+                        .padding(horizontal = RoadbookTheme.dimensions.paddingMinimal)
                         .fillMaxWidth(),
                     color = MaterialTheme.colorScheme.inverseOnSurface,
                     textAlign = TextAlign.Center,
@@ -191,8 +192,9 @@ internal fun DistanceSection(
 @Preview(showBackground = true, name = "Standard Waypoint")
 @Composable
 private fun DistanceSectionStandardPreview() {
-    RoadbookNavigatorTheme(
-        windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(400.dp, 800.dp))
+    RoadbookTheme(
+        dimensions = compactRoadbookDimensions,
+        useDarkTheme = false
     ) {
         Surface {
             DistanceSection(
@@ -216,8 +218,9 @@ private fun DistanceSectionStandardPreview() {
 @Preview(showBackground = true, name = "Reset Waypoint")
 @Composable
 private fun DistanceSectionResetPreview() {
-    RoadbookNavigatorTheme(
-        windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(400.dp, 800.dp))
+    RoadbookTheme(
+        dimensions = compactRoadbookDimensions,
+        useDarkTheme = false
     ) {
         Surface {
             DistanceSection(
@@ -242,8 +245,9 @@ private fun DistanceSectionResetPreview() {
 @Preview(showBackground = true, name = "Danger Medium")
 @Composable
 private fun DistanceSectionDangerPreview() {
-    RoadbookNavigatorTheme(
-        windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(400.dp, 800.dp))
+    RoadbookTheme(
+        dimensions = compactRoadbookDimensions,
+        useDarkTheme = false
     ) {
         Surface {
             DistanceSection(
@@ -268,8 +272,9 @@ private fun DistanceSectionDangerPreview() {
 @Preview(showBackground = true, name = "Short Distance")
 @Composable
 private fun DistanceSectionShortDistancePreview() {
-    RoadbookNavigatorTheme(
-        windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(400.dp, 800.dp))
+    RoadbookTheme(
+        dimensions = compactRoadbookDimensions,
+        useDarkTheme = false
     ) {
         Surface {
             DistanceSection(
@@ -293,8 +298,9 @@ private fun DistanceSectionShortDistancePreview() {
 @Preview(showBackground = true, name = "Reset + Danger Medium")
 @Composable
 private fun DistanceSectionResetDangerPreview() {
-    RoadbookNavigatorTheme(
-        windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(400.dp, 800.dp))
+    RoadbookTheme(
+        dimensions = compactRoadbookDimensions,
+        useDarkTheme = false
     ) {
         Surface {
             DistanceSection(
@@ -320,8 +326,9 @@ private fun DistanceSectionResetDangerPreview() {
 @Preview(showBackground = true, name = "Large Distance Auto-size")
 @Composable
 private fun DistanceSectionLargeDistancePreview() {
-    RoadbookNavigatorTheme(
-        windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(400.dp, 800.dp))
+    RoadbookTheme(
+        dimensions = compactRoadbookDimensions,
+        useDarkTheme = false
     ) {
         Surface {
             DistanceSection(

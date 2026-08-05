@@ -37,8 +37,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 import org.giste.roadbooknavigator.features.roadbook.ui.icons.RoadbookIcons
+import org.giste.roadbooknavigator.features.roadbook.ui.theme.RoadbookTheme
 
 @Composable
 private fun IconItem(name: String, icon: ImageVector) {
@@ -66,9 +66,7 @@ private fun IconItem(name: String, icon: ImageVector) {
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, name = "Dark Mode")
 @Composable
 private fun LandmarkIconsGallery() {
-    RoadbookNavigatorTheme(
-        windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(400.dp, 800.dp))
-    ) {
+    RoadbookTheme {
         val onSurface = MaterialTheme.colorScheme.onSurface
         val iconSurface = MaterialTheme.colorScheme.surface
 

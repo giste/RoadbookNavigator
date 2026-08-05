@@ -49,6 +49,7 @@ import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookPositi
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Route
 import org.giste.roadbooknavigator.features.roadbook.domain.model.ShortDistanceThreshold
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Waypoint
+import org.giste.roadbooknavigator.features.roadbook.ui.theme.RoadbookTheme
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -74,13 +75,15 @@ class RoadbookUiTest {
     @Test
     fun loadingState_displaysLoadingIndicator() {
         composeTestRule.setContent {
-            RoadbookContent(
-                state = RoadbookUiState.Loading,
-                listState = rememberLazyListState(),
-                onFileSelected = {},
-                onSetPartialClick = {},
-                onWaypointVisible = { _, _ -> }
-            )
+            RoadbookTheme {
+                RoadbookContent(
+                    state = RoadbookUiState.Loading,
+                    listState = rememberLazyListState(),
+                    onFileSelected = {},
+                    onSetPartialClick = {},
+                    onWaypointVisible = { _, _ -> }
+                )
+            }
         }
 
         composeTestRule.onNodeWithTag("LoadingIndicator").assertIsDisplayed()
@@ -89,13 +92,15 @@ class RoadbookUiTest {
     @Test
     fun emptyState_displaysImportButton() {
         composeTestRule.setContent {
-            RoadbookContent(
-                state = RoadbookUiState.Empty,
-                listState = rememberLazyListState(),
-                onFileSelected = {},
-                onSetPartialClick = {},
-                onWaypointVisible = { _, _ -> }
-            )
+            RoadbookTheme {
+                RoadbookContent(
+                    state = RoadbookUiState.Empty,
+                    listState = rememberLazyListState(),
+                    onFileSelected = {},
+                    onSetPartialClick = {},
+                    onWaypointVisible = { _, _ -> }
+                )
+            }
         }
 
         composeTestRule.onNodeWithText(context.getString(R.string.main_no_route)).assertIsDisplayed()
@@ -106,13 +111,15 @@ class RoadbookUiTest {
     fun errorState_displaysErrorMessageAndImportButton() {
         val errorMessage = "Test Error"
         composeTestRule.setContent {
-            RoadbookContent(
-                state = RoadbookUiState.Error(errorMessage),
-                listState = rememberLazyListState(),
-                onFileSelected = {},
-                onSetPartialClick = {},
-                onWaypointVisible = { _, _ -> }
-            )
+            RoadbookTheme {
+                RoadbookContent(
+                    state = RoadbookUiState.Error(errorMessage),
+                    listState = rememberLazyListState(),
+                    onFileSelected = {},
+                    onSetPartialClick = {},
+                    onWaypointVisible = { _, _ -> }
+                )
+            }
         }
 
         val expectedMessage = context.getString(R.string.main_error_prefix, errorMessage)
@@ -124,13 +131,15 @@ class RoadbookUiTest {
     fun successState_displaysImportFab() {
         val route = Route(name = "Test Route", waypoints = emptyList())
         composeTestRule.setContent {
-            RoadbookContent(
-                state = RoadbookUiState.Success(route),
-                listState = rememberLazyListState(),
-                onFileSelected = {},
-                onSetPartialClick = {},
-                onWaypointVisible = { _, _ -> }
-            )
+            RoadbookTheme {
+                RoadbookContent(
+                    state = RoadbookUiState.Success(route),
+                    listState = rememberLazyListState(),
+                    onFileSelected = {},
+                    onSetPartialClick = {},
+                    onWaypointVisible = { _, _ -> }
+                )
+            }
         }
 
         composeTestRule.onNodeWithContentDescription(context.getString(R.string.action_import)).assertIsDisplayed()
@@ -144,13 +153,15 @@ class RoadbookUiTest {
         intending(hasAction(Intent.ACTION_GET_CONTENT)).respondWith(result)
 
         composeTestRule.setContent {
-            RoadbookContent(
-                state = RoadbookUiState.Empty,
-                listState = rememberLazyListState(),
-                onFileSelected = {},
-                onSetPartialClick = {},
-                onWaypointVisible = { _, _ -> }
-            )
+            RoadbookTheme {
+                RoadbookContent(
+                    state = RoadbookUiState.Empty,
+                    listState = rememberLazyListState(),
+                    onFileSelected = {},
+                    onSetPartialClick = {},
+                    onWaypointVisible = { _, _ -> }
+                )
+            }
         }
 
         composeTestRule.onNodeWithContentDescription(context.getString(R.string.action_import)).performClick()
@@ -179,13 +190,15 @@ class RoadbookUiTest {
         val route = Route(name = "Test", waypoints = listOf(waypoint))
 
         composeTestRule.setContent {
-            RoadbookContent(
-                state = RoadbookUiState.Success(route),
-                listState = rememberLazyListState(),
-                onFileSelected = {},
-                onSetPartialClick = {},
-                onWaypointVisible = { _, _ -> }
-            )
+            RoadbookTheme {
+                RoadbookContent(
+                    state = RoadbookUiState.Success(route),
+                    listState = rememberLazyListState(),
+                    onFileSelected = {},
+                    onSetPartialClick = {},
+                    onWaypointVisible = { _, _ -> }
+                )
+            }
         }
 
         // If it renders without crashing, we consider it a pass for this basic check
@@ -206,13 +219,15 @@ class RoadbookUiTest {
         val route = Route(name = "Test", waypoints = listOf(waypoint))
 
         composeTestRule.setContent {
-            RoadbookContent(
-                state = RoadbookUiState.Success(route),
-                listState = rememberLazyListState(),
-                onFileSelected = {},
-                onSetPartialClick = { capturedDistance = it },
-                onWaypointVisible = { _, _ -> }
-            )
+            RoadbookTheme {
+                RoadbookContent(
+                    state = RoadbookUiState.Success(route),
+                    listState = rememberLazyListState(),
+                    onFileSelected = {},
+                    onSetPartialClick = { capturedDistance = it },
+                    onWaypointVisible = { _, _ -> }
+                )
+            }
         }
 
         composeTestRule.onNodeWithTag("WaypointDistanceInfo_1").performTouchInput {
@@ -236,13 +251,15 @@ class RoadbookUiTest {
         val route = Route(name = "Test", waypoints = listOf(waypoint))
 
         composeTestRule.setContent {
-            RoadbookContent(
-                state = RoadbookUiState.Success(route),
-                listState = rememberLazyListState(),
-                onFileSelected = {},
-                onSetPartialClick = { capturedDistance = it },
-                onWaypointVisible = { _, _ -> }
-            )
+            RoadbookTheme {
+                RoadbookContent(
+                    state = RoadbookUiState.Success(route),
+                    listState = rememberLazyListState(),
+                    onFileSelected = {},
+                    onSetPartialClick = { capturedDistance = it },
+                    onWaypointVisible = { _, _ -> }
+                )
+            }
         }
 
         composeTestRule.onNodeWithTag("WaypointDistanceInfo_1").performTouchInput {
@@ -275,16 +292,18 @@ class RoadbookUiTest {
         val route = Route(name = "Test", waypoints = listOf(waypointShort, waypointNormal))
 
         composeTestRule.setContent {
-            RoadbookContent(
-                state = RoadbookUiState.Success(
-                    route = route,
-                    shortDistanceThreshold = ShortDistanceThreshold(shortThreshold)
-                ),
-                listState = rememberLazyListState(),
-                onFileSelected = {},
-                onSetPartialClick = {},
-                onWaypointVisible = { _, _ -> }
-            )
+            RoadbookTheme {
+                RoadbookContent(
+                    state = RoadbookUiState.Success(
+                        route = route,
+                        shortDistanceThreshold = ShortDistanceThreshold(shortThreshold)
+                    ),
+                    listState = rememberLazyListState(),
+                    onFileSelected = {},
+                    onSetPartialClick = {},
+                    onWaypointVisible = { _, _ -> }
+                )
+            }
         }
 
         // Verify that the first waypoint (short) has the highlight tag
@@ -308,13 +327,15 @@ class RoadbookUiTest {
         val route = Route(name = "Test", waypoints = waypoints)
 
         composeTestRule.setContent {
-            RoadbookContent(
-                state = RoadbookUiState.Success(route),
-                listState = rememberLazyListState(),
-                onFileSelected = {},
-                onSetPartialClick = {},
-                onWaypointVisible = { index, _ -> visibleIndex = index }
-            )
+            RoadbookTheme {
+                RoadbookContent(
+                    state = RoadbookUiState.Success(route),
+                    listState = rememberLazyListState(),
+                    onFileSelected = {},
+                    onSetPartialClick = {},
+                    onWaypointVisible = { index, _ -> visibleIndex = index }
+                )
+            }
         }
 
         // Initially index 0 should be notified (or not, depending on hasStartedScrolling logic)

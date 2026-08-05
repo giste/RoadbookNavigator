@@ -59,8 +59,8 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import org.giste.roadbooknavigator.core.settings.domain.AppTheme
-import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
+import org.giste.roadbooknavigator.features.roadbook.ui.theme.RoadbookTheme
+import org.giste.roadbooknavigator.features.roadbook.ui.theme.compactRoadbookDimensions
 import org.giste.roadbooknavigator.features.roadbook.R
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Coordinates
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Distance
@@ -133,7 +133,7 @@ fun RoadbookContent(
         modifier = modifier
             .fillMaxSize()
             .border(
-                RoadbookNavigatorTheme.dimensions.sectionBorder,
+                RoadbookTheme.dimensions.sectionBorder,
                 MaterialTheme.colorScheme.outline
             )
     ) {
@@ -272,9 +272,9 @@ fun RoadbookList(
 )
 @Composable
 fun RoadbookSectionEmptyPreview() {
-    RoadbookNavigatorTheme(
-        windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(1200.dp, 1920.dp)),
-        appTheme = AppTheme.LIGHT
+    RoadbookTheme(
+        dimensions = compactRoadbookDimensions,
+        useDarkTheme = false
     ) {
         Surface {
             RoadbookContent(
@@ -328,9 +328,9 @@ fun RoadbookSectionSuccessPreview() {
         )
     )
 
-    RoadbookNavigatorTheme(
-        windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(1200.dp, 1920.dp)),
-        appTheme = AppTheme.LIGHT
+    RoadbookTheme(
+        dimensions = compactRoadbookDimensions,
+        useDarkTheme = false
     ) {
         Surface {
             RoadbookContent(
@@ -384,9 +384,9 @@ fun RoadbookSectionSuccessDarkPreview() {
         )
     )
 
-    RoadbookNavigatorTheme(
-        windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(1200.dp, 1920.dp)),
-        appTheme = AppTheme.DARK
+    RoadbookTheme(
+        dimensions = compactRoadbookDimensions,
+        useDarkTheme = true
     ) {
         Surface {
             RoadbookContent(

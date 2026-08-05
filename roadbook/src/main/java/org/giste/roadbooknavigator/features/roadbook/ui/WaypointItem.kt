@@ -42,7 +42,8 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
+import org.giste.roadbooknavigator.features.roadbook.ui.theme.RoadbookTheme
+import org.giste.roadbooknavigator.features.roadbook.ui.theme.compactRoadbookDimensions
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Coordinates
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Distance
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Icon
@@ -61,7 +62,7 @@ fun WaypointItem(
 ) {
     val isHighDanger = waypoint.dangerLevel == Waypoint.DangerLevel.HIGH
     val borderWidth =
-        if (isHighDanger) RoadbookNavigatorTheme.dimensions.dangerHighThickness else RoadbookNavigatorTheme.dimensions.sectionBorder
+        if (isHighDanger) RoadbookTheme.dimensions.dangerHighThickness else RoadbookTheme.dimensions.sectionBorder
     val borderColor =
         if (isHighDanger) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
     val isShortDistance = waypoint.distanceFromPrevious.meters in 1..<shortDistanceThreshold
@@ -84,7 +85,7 @@ fun WaypointItem(
                 Spacer(
                     modifier = Modifier
                         .fillMaxHeight()
-                        .width(RoadbookNavigatorTheme.dimensions.sectionBorder)
+                        .width(RoadbookTheme.dimensions.sectionBorder)
                 )
                 Spacer(
                     modifier = Modifier
@@ -94,7 +95,7 @@ fun WaypointItem(
                 Spacer(
                     modifier = Modifier
                         .fillMaxHeight()
-                        .width(RoadbookNavigatorTheme.dimensions.sectionBorder)
+                        .width(RoadbookTheme.dimensions.sectionBorder)
                 )
                 Spacer(
                     modifier = Modifier
@@ -129,7 +130,7 @@ fun WaypointItem(
             VerticalDivider(
                 modifier = Modifier.fillMaxHeight(),
                 color = MaterialTheme.colorScheme.onSurface,
-                thickness = RoadbookNavigatorTheme.dimensions.sectionBorder
+                thickness = RoadbookTheme.dimensions.sectionBorder
             )
 
             // Second part: Tulip elements
@@ -141,7 +142,7 @@ fun WaypointItem(
             VerticalDivider(
                 modifier = Modifier.fillMaxHeight(),
                 color = MaterialTheme.colorScheme.onSurface,
-                thickness = RoadbookNavigatorTheme.dimensions.sectionBorder
+                thickness = RoadbookTheme.dimensions.sectionBorder
             )
 
             // Third part: Notes elements
@@ -359,12 +360,12 @@ fun WaypointItemPreview() {
         ),
     )
 
-    RoadbookNavigatorTheme(
-        windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(1200.dp, 1920.dp)),
+    RoadbookTheme(
+        dimensions = compactRoadbookDimensions,
     ) {
         Surface {
             Column(
-                modifier = Modifier.padding(RoadbookNavigatorTheme.dimensions.paddingMinimal),
+                modifier = Modifier.padding(RoadbookTheme.dimensions.paddingMinimal),
             ) {
                 WaypointItem(
                     waypoint = waypointWithLowDangerAndRoadTypes,

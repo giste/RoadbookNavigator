@@ -20,12 +20,16 @@ package org.giste.roadbooknavigator.features.roadbook.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import org.giste.roadbooknavigator.features.roadbook.RoadbookController
+import org.giste.roadbooknavigator.features.roadbook.RoadbookEvent
 import org.giste.roadbooknavigator.features.roadbook.domain.util.RoadbookLogger
 import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookPosition
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.GetActiveRoadbookUseCase
@@ -48,7 +52,18 @@ class RoadbookViewModel @Inject constructor(
     private val moveRoadbookDownUseCase: MoveRoadbookDownUseCase,
     getRoadbookSettingsUseCase: GetRoadbookSettingsUseCase,
     private val logger: RoadbookLogger
-) : ViewModel() {
+) : ViewModel(), RoadbookController {
+
+    private val _events = MutableSharedFlow<RoadbookEvent>()
+    override val events = _events
+
+    override val routeName: StateFlow<String?> = getActiveRoadbookUseCase()
+        .map { it?.name }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = null
+        )
 
     private val _transientState = MutableStateFlow<RoadbookUiState?>(null)
 
@@ -91,11 +106,19 @@ class RoadbookViewModel @Inject constructor(
             importRoadbookUseCase(inputStream)
                 .onSuccess {
                     _transientState.value = null
+                    _events.emit(RoadbookEvent.RouteImported)
                 }
                 .onFailure { error ->
                     _transientState.value =
                         RoadbookUiState.Error(error.message ?: "Failed to process file")
                 }
+        }
+    }
+
+    fun onDistanceSectionLongPressed(distance: Double) {
+        logger.i("RoadbookViewModel: Requesting partial distance sync: %f", distance)
+        viewModelScope.launch {
+            _events.emit(RoadbookEvent.DistanceSectionLongPressed(distance))
         }
     }
 
@@ -105,14 +128,14 @@ class RoadbookViewModel @Inject constructor(
         }
     }
 
-    fun scrollUp() {
+    override fun scrollUp() {
         logger.d("RoadbookViewModel: Scrolling up")
         viewModelScope.launch {
             moveRoadbookUpUseCase()
         }
     }
 
-    fun scrollDown() {
+    override fun scrollDown() {
         logger.d("RoadbookViewModel: Scrolling down")
         viewModelScope.launch {
             moveRoadbookDownUseCase()

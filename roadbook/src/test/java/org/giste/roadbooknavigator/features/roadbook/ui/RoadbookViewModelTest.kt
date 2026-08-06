@@ -30,6 +30,7 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import org.giste.roadbooknavigator.features.roadbook.RoadbookEvent
 import org.giste.roadbooknavigator.features.roadbook.domain.util.RoadbookLogger
 import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookPosition
 import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookSettings
@@ -146,6 +147,48 @@ class RoadbookViewModelTest {
 
         // Should return to success (or whatever repository emits)
         assertTrue(viewModel.roadbookState.value is RoadbookUiState.Success)
+    }
+
+    @Test
+    fun `routeName should update when active roadbook changes`() = runTest {
+        val route = mockk<Route> {
+            every { name } returns "Test Route"
+        }
+        backgroundScope.launch(testDispatcher) { viewModel.routeName.collect {} }
+
+        activeRoadbookFlow.value = route
+        assertEquals("Test Route", viewModel.routeName.value)
+
+        activeRoadbookFlow.value = null
+        assertEquals(null, viewModel.routeName.value)
+    }
+
+    @Test
+    fun `importRoute should emit RouteImported event on success`() = runTest {
+        val inputStream = mockk<InputStream>()
+        coEvery { importRoadbookUseCase(any()) } returns Result.success(mockk(relaxed = true))
+
+        val events = mutableListOf<RoadbookEvent>()
+        val job = launch(testDispatcher) { viewModel.events.collect { events.add(it) } }
+
+        viewModel.importRoute(inputStream)
+
+        assertEquals(1, events.size)
+        assertTrue(events[0] is RoadbookEvent.RouteImported)
+        job.cancel()
+    }
+
+    @Test
+    fun `onDistanceSectionLongPressed should emit DistanceSectionLongPressed event`() = runTest {
+        val distance = 123.45
+        val events = mutableListOf<RoadbookEvent>()
+        val job = launch(testDispatcher) { viewModel.events.collect { events.add(it) } }
+
+        viewModel.onDistanceSectionLongPressed(distance)
+
+        assertEquals(1, events.size)
+        assertEquals(RoadbookEvent.DistanceSectionLongPressed(distance), events[0])
+        job.cancel()
     }
 
     @Test

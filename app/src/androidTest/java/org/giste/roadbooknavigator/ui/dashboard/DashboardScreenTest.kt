@@ -45,7 +45,7 @@ import org.giste.odometer.domain.Odometer
 import org.junit.Rule
 import org.junit.Test
 import java.util.Locale
-import org.giste.roadbooknavigator.features.roadbook.R as RoadbookR
+import org.giste.roadbook.R as RoadbookR
 
 class DashboardScreenTest {
 

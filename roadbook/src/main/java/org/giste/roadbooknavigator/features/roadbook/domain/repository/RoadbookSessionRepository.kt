@@ -23,7 +23,7 @@ import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookPositi
 /**
  * Interface for managing the transient session state of a roadbook.
  */
-interface RoadbookSessionRepository {
+internal interface RoadbookSessionRepository {
 
     /**
      * Stream of the last saved scroll position.

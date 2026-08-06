@@ -25,7 +25,7 @@ import javax.inject.Inject
 /**
  * Use case to observe the currently active roadbook.
  */
-class GetActiveRoadbookUseCase @Inject constructor(
+internal class GetActiveRoadbookUseCase @Inject constructor(
     private val repository: RoadbookRepository
 ) {
     operator fun invoke(): Flow<Route?> = repository.activeRoadbook

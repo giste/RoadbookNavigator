@@ -21,8 +21,10 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
@@ -41,8 +43,8 @@ import org.giste.odometer.domain.usecase.ResetAllDistancesUseCase
 import org.giste.odometer.domain.usecase.ResetPartialDistanceUseCase
 import org.giste.odometer.domain.usecase.SetPartialDistanceUseCase
 import org.giste.roadbooknavigator.features.settings.domain.odometer.usecase.ObserveOdometerSettingsUseCase
-import org.giste.roadbooknavigator.features.roadbook.domain.usecase.MoveRoadbookDownUseCase
-import org.giste.roadbooknavigator.features.roadbook.domain.usecase.MoveRoadbookUpUseCase
+import org.giste.roadbooknavigator.features.roadbook.RoadbookController
+import org.giste.roadbooknavigator.features.roadbook.RoadbookEvent
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.input.InputSettings
 import org.giste.roadbooknavigator.features.settings.domain.input.usecase.ObserveInputSettingsUseCase
@@ -65,8 +67,6 @@ class DashboardViewModelTest {
     private val observeAppSettingsUseCase: ObserveAppSettingsUseCase = mockk()
     private val observeOdometerSettingsUseCase: ObserveOdometerSettingsUseCase = mockk()
     private val observeInputSettingsUseCase: ObserveInputSettingsUseCase = mockk()
-    private val moveRoadbookUpUseCase: MoveRoadbookUpUseCase = mockk()
-    private val moveRoadbookDownUseCase: MoveRoadbookDownUseCase = mockk()
     private val locationProvider: LocationProvider = mockk()
     private val logger: Logger = mockk(relaxed = true)
 
@@ -97,8 +97,6 @@ class DashboardViewModelTest {
             observeAppSettingsUseCase,
             observeOdometerSettingsUseCase,
             observeInputSettingsUseCase,
-            moveRoadbookUpUseCase,
-            moveRoadbookDownUseCase,
             locationProvider,
             logger
         )
@@ -157,15 +155,32 @@ class DashboardViewModelTest {
     }
 
     @Test
-    fun `roadbook actions should call respective use cases`() = runTest {
-        coEvery { moveRoadbookUpUseCase() } returns Unit
-        coEvery { moveRoadbookDownUseCase() } returns Unit
+    fun `roadbook actions should call respective controller methods`() = runTest {
+        val controller: RoadbookController = mockk(relaxed = true)
+        every { controller.events } returns MutableSharedFlow()
+        
+        viewModel.onRoadbookControllerReady(controller)
 
         viewModel.moveRoadbookUp()
-        coVerify { moveRoadbookUpUseCase() }
+        verify { controller.scrollUp() }
 
         viewModel.moveRoadbookDown()
-        coVerify { moveRoadbookDownUseCase() }
+        verify { controller.scrollDown() }
+    }
+
+    @Test
+    fun `roadbook DistanceSectionLongPressed event should trigger setPartialDistance`() = runTest {
+        val events = MutableSharedFlow<RoadbookEvent>()
+        val controller: RoadbookController = mockk(relaxed = true)
+        every { controller.events } returns events
+        coEvery { setPartialDistanceUseCase(any()) } returns Unit
+
+        viewModel.onRoadbookControllerReady(controller)
+
+        val distance = 500.0
+        events.emit(RoadbookEvent.DistanceSectionLongPressed(distance))
+
+        coVerify { setPartialDistanceUseCase(distance) }
     }
 
     @Test

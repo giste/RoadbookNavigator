@@ -106,8 +106,8 @@ import org.giste.odometer.domain.AccuracyThreshold
 import org.giste.odometer.domain.OdometerSettings
 import org.giste.odometer.domain.SpeedThreshold
 import org.giste.odometer.domain.VerticalAccuracyThreshold
-import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookSettings
-import org.giste.roadbooknavigator.features.roadbook.domain.model.ShortDistanceThreshold
+import org.giste.roadbooknavigator.features.roadbook.RoadbookSettings
+import org.giste.roadbooknavigator.features.roadbook.ShortDistanceThreshold
 import org.giste.roadbooknavigator.features.settings.R
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings

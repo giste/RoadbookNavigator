@@ -25,7 +25,7 @@ import javax.inject.Inject
 /**
  * Use case to reset the roadbook scroll position to the beginning.
  */
-class ResetRoadbookPositionUseCase @Inject constructor(
+internal class ResetRoadbookPositionUseCase @Inject constructor(
     private val repository: RoadbookSessionRepository,
     private val logger: RoadbookLogger
 ) {

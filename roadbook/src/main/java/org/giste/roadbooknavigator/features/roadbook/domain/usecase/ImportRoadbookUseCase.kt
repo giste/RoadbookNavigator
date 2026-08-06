@@ -26,7 +26,7 @@ import javax.inject.Inject
 /**
  * Use case to import and process a new roadbook from a stream.
  */
-class ImportRoadbookUseCase @Inject constructor(
+internal class ImportRoadbookUseCase @Inject constructor(
     private val repository: RoadbookRepository,
     private val resetRoadbookPositionUseCase: ResetRoadbookPositionUseCase,
     private val logger: RoadbookLogger

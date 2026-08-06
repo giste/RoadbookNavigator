@@ -25,8 +25,8 @@ import androidx.datastore.preferences.core.longPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
-import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookSettings
-import org.giste.roadbooknavigator.features.roadbook.domain.model.ShortDistanceThreshold
+import org.giste.roadbooknavigator.features.roadbook.RoadbookSettings
+import org.giste.roadbooknavigator.features.roadbook.ShortDistanceThreshold
 import org.giste.roadbooknavigator.features.settings.domain.roadbook.RoadbookSettingsRepository
 import java.io.IOException
 import javax.inject.Inject

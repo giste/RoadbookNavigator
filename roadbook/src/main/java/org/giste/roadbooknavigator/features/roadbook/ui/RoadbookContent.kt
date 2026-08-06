@@ -18,7 +18,6 @@
 package org.giste.roadbooknavigator.features.roadbook.ui
 
 import android.content.res.Configuration
-import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.border
@@ -40,14 +39,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
-import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -55,12 +51,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import org.giste.roadbooknavigator.features.roadbook.ui.theme.RoadbookTheme
-import org.giste.roadbooknavigator.features.roadbook.ui.theme.compactRoadbookDimensions
 import org.giste.roadbooknavigator.features.roadbook.R
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Coordinates
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Distance
@@ -69,50 +60,12 @@ import org.giste.roadbooknavigator.features.roadbook.domain.model.Road
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Route
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Track
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Waypoint
+import org.giste.roadbooknavigator.features.roadbook.ui.theme.RoadbookTheme
+import org.giste.roadbooknavigator.features.roadbook.ui.theme.compactRoadbookDimensions
 import java.io.InputStream
 
 @Composable
-fun RoadbookSection(
-    modifier: Modifier = Modifier,
-    viewModel: RoadbookViewModel = hiltViewModel(),
-    onSetPartialClick: (Double) -> Unit,
-) {
-    val state by viewModel.roadbookState.collectAsStateWithLifecycle()
-    val initialPosition by viewModel.initialScrollPosition.collectAsState()
-
-    val routeKey = remember((state as? RoadbookUiState.Success)?.route) {
-        (state as? RoadbookUiState.Success)?.let {
-            "route_${it.route.name}_${it.route.waypoints.size}"
-        }
-    }
-
-    val listState = rememberSaveable(routeKey, saver = LazyListState.Saver) {
-        LazyListState(
-            firstVisibleItemIndex = initialPosition.index,
-            firstVisibleItemScrollOffset = initialPosition.offset
-        )
-    }
-
-    LaunchedEffect(initialPosition) {
-        if (listState.firstVisibleItemIndex != initialPosition.index ||
-            listState.firstVisibleItemScrollOffset != initialPosition.offset
-        ) {
-            listState.animateScrollToItem(initialPosition.index, initialPosition.offset)
-        }
-    }
-
-    RoadbookContent(
-        state = state,
-        listState = listState,
-        modifier = modifier,
-        onFileSelected = viewModel::importRoute,
-        onSetPartialClick = onSetPartialClick,
-        onWaypointVisible = viewModel::onWaypointVisible
-    )
-}
-
-@Composable
-fun RoadbookContent(
+internal fun RoadbookContent(
     state: RoadbookUiState,
     listState: LazyListState,
     modifier: Modifier = Modifier,
@@ -123,7 +76,7 @@ fun RoadbookContent(
     val context = LocalContext.current
     val filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
+    ) { uri ->
         uri?.let {
             context.contentResolver.openInputStream(it)?.let(onFileSelected)
         }
@@ -222,15 +175,13 @@ fun RoadbookContent(
 }
 
 @Composable
-fun RoadbookList(
+internal fun RoadbookList(
     waypoints: List<Waypoint>,
     shortDistanceThreshold: Long,
     listState: LazyListState,
     onSetPartialClick: (Double) -> Unit,
     onWaypointVisible: (Int, Int) -> Unit
 ) {
-    // Monitor visible items to save current position ONLY when scrolling stops
-    // We use a flag to skip the initial 'false' emission which could overwrite saved data with 0/0
     var hasStartedScrolling by remember(listState) { mutableStateOf(false) }
 
     LaunchedEffect(listState.isScrollInProgress) {
@@ -271,7 +222,7 @@ fun RoadbookList(
     showBackground = true,
 )
 @Composable
-fun RoadbookSectionEmptyPreview() {
+internal fun RoadbookSectionEmptyPreview() {
     RoadbookTheme(
         dimensions = compactRoadbookDimensions,
         useDarkTheme = false
@@ -296,7 +247,7 @@ fun RoadbookSectionEmptyPreview() {
     showBackground = true,
 )
 @Composable
-fun RoadbookSectionSuccessPreview() {
+internal fun RoadbookSectionSuccessPreview() {
     val sampleRoute = Route(
         name = "Sample Route",
         waypoints = listOf(
@@ -352,7 +303,7 @@ fun RoadbookSectionSuccessPreview() {
     showBackground = true,
 )
 @Composable
-fun RoadbookSectionSuccessDarkPreview() {
+internal fun RoadbookSectionSuccessDarkPreview() {
     val sampleRoute = Route(
         name = "Sample Route",
         waypoints = listOf(

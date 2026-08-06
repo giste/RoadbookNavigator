@@ -37,8 +37,8 @@ import kotlinx.coroutines.SupervisorJob
 import org.giste.roadbooknavigator.features.roadbook.data.persistence.PersistenceRoadbookSerializer
 import org.giste.roadbooknavigator.features.roadbook.data.persistence.dto.PersistentRoute
 import org.giste.roadbooknavigator.features.roadbook.data.util.AndroidRoadbookLogger
-import org.giste.roadbooknavigator.features.roadbook.di.AppRoadbookIoDispatcher
-import org.giste.roadbooknavigator.features.roadbook.di.AppRoadbookLogger
+import org.giste.roadbooknavigator.features.roadbook.AppRoadbookIoDispatcher
+import org.giste.roadbooknavigator.features.roadbook.AppRoadbookLogger
 import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookRepository
 import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookSessionRepository
 import org.giste.roadbooknavigator.features.roadbook.domain.util.RoadbookLogger

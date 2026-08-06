@@ -25,7 +25,7 @@ import java.io.InputStream
  * Interface defining the contract for roadbook data operations.
  * Following Clean Architecture, this sits in the Domain layer.
  */
-interface RoadbookRepository {
+internal interface RoadbookRepository {
 
     /**
      * A stream of the currently active roadbook.

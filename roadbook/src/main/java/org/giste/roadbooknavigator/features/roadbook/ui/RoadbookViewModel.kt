@@ -43,7 +43,7 @@ import java.io.InputStream
 import javax.inject.Inject
 
 @HiltViewModel
-class RoadbookViewModel @Inject constructor(
+internal class RoadbookViewModel @Inject constructor(
     getActiveRoadbookUseCase: GetActiveRoadbookUseCase,
     private val importRoadbookUseCase: ImportRoadbookUseCase,
     getRoadbookPositionUseCase: GetRoadbookPositionUseCase,

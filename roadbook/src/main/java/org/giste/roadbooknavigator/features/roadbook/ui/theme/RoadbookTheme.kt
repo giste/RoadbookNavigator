@@ -27,7 +27,7 @@ import androidx.compose.runtime.ReadOnlyComposable
 /**
  * Access object for the Roadbook specific theme properties.
  */
-public object RoadbookTheme {
+internal object RoadbookTheme {
     public val dimensions: RoadbookDimensions
         @Composable
         @ReadOnlyComposable
@@ -43,7 +43,7 @@ public object RoadbookTheme {
  * @param content The composable content.
  */
 @Composable
-public fun RoadbookTheme(
+internal fun RoadbookTheme(
     dimensions: RoadbookDimensions = compactRoadbookDimensions,
     useDarkTheme: Boolean? = null,
     content: @Composable () -> Unit

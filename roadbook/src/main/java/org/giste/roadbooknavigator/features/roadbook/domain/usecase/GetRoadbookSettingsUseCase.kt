@@ -18,14 +18,14 @@
 package org.giste.roadbooknavigator.features.roadbook.domain.usecase
 
 import kotlinx.coroutines.flow.Flow
-import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookSettings
-import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookSettingsProvider
+import org.giste.roadbooknavigator.features.roadbook.RoadbookSettings
+import org.giste.roadbooknavigator.features.roadbook.RoadbookSettingsProvider
 import javax.inject.Inject
 
 /**
  * Use case to observe roadbook settings.
  */
-class GetRoadbookSettingsUseCase @Inject constructor(
+internal class GetRoadbookSettingsUseCase @Inject constructor(
     private val provider: RoadbookSettingsProvider
 ) {
     operator fun invoke(): Flow<RoadbookSettings> = provider.getSettings()

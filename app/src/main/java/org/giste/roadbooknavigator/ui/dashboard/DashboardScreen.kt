@@ -31,13 +31,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
@@ -64,21 +64,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import org.giste.odometer.domain.Odometer
 import org.giste.roadbooknavigator.R
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 import org.giste.roadbooknavigator.features.map.ui.MapScreen
-import org.giste.odometer.domain.Odometer
+import org.giste.roadbooknavigator.features.roadbook.Roadbook
 import org.giste.roadbooknavigator.ui.odometer.PartialDistance
 import org.giste.roadbooknavigator.ui.odometer.ResetAllConfirmationDialog
 import org.giste.roadbooknavigator.ui.odometer.SetPartialDialog
 import org.giste.roadbooknavigator.ui.odometer.TotalDistance
-import org.giste.roadbooknavigator.features.roadbook.domain.model.Coordinates
-import org.giste.roadbooknavigator.features.roadbook.domain.model.Distance
-import org.giste.roadbooknavigator.features.roadbook.domain.model.Route
-import org.giste.roadbooknavigator.features.roadbook.domain.model.Waypoint
-import org.giste.roadbooknavigator.features.roadbook.ui.RoadbookContent
-import org.giste.roadbooknavigator.features.roadbook.ui.RoadbookSection
-import org.giste.roadbooknavigator.features.roadbook.ui.RoadbookUiState
 
 @Composable
 fun DashboardScreen(
@@ -114,9 +108,9 @@ fun DashboardScreen(
         )
     },
     roadbookSlot: @Composable (Modifier) -> Unit = { modifier ->
-        RoadbookSection(
+        Roadbook(
             modifier = modifier,
-            onSetPartialClick = { viewModel.setPartialDistance(it) },
+            onControllerReady = { viewModel.onRoadbookControllerReady(it) }
         )
     },
     mapSlot: @Composable (Modifier) -> Unit = { modifier -> MapScreen(modifier = modifier) }
@@ -454,51 +448,10 @@ fun SettingsButton(
 
 // --- PREVIEWS ---
 
-private val sampleWaypoints = listOf(
-    Waypoint(
-        number = 1,
-        coordinates = Coordinates(40.0, -3.0),
-        distance = Distance(0),
-        distanceFromPrevious = Distance(0),
-    ),
-    Waypoint(
-        number = 2,
-        coordinates = Coordinates(40.01, -3.01),
-        distance = Distance(1250),
-        distanceFromPrevious = Distance(1250),
-    ),
-    Waypoint(
-        number = 999,
-        coordinates = Coordinates(40.02, -3.02),
-        distance = Distance(240000),
-        distanceFromPrevious = Distance(11500),
-        reset = true,
-    ),
-    Waypoint(
-        number = 4,
-        coordinates = Coordinates(40.03, -3.03),
-        distance = Distance(3800),
-        distanceFromPrevious = Distance(1400),
-    ),
-    Waypoint(
-        number = 5,
-        coordinates = Coordinates(40.04, -3.04),
-        distance = Distance(5100),
-        distanceFromPrevious = Distance(1300),
-    ),
-)
-
 private val sampleUiState = DashboardUiState(
     odometer = Odometer(
         total = 2400.0,
         partial = 1150.0
-    )
-)
-
-private val sampleRoadbookState = RoadbookUiState.Success(
-    route = Route(
-        name = "Test Route",
-        waypoints = sampleWaypoints
     )
 )
 
@@ -529,14 +482,9 @@ fun TabletLandPreview() {
             primaryOdometerSlot = { modifier -> PartialDistance(distance = "999.99", modifier = modifier, onLongClick = {}) },
             secondaryOdometerSlot = { modifier -> TotalDistance("9,999.9", modifier) },
             roadbookSlot = { modifier -> 
-                RoadbookContent(
-                    state = sampleRoadbookState,
-                    listState = rememberLazyListState(),
-                    modifier = modifier,
-                    onSetPartialClick = {},
-                    onWaypointVisible = { _, _ -> },
-                    onFileSelected = {},
-                )
+                Box(modifier = modifier.background(MaterialTheme.colorScheme.surface)) {
+                    Text(text = "Roadbook Placeholder", modifier = Modifier.align(Alignment.Center))
+                }
             },
             mapSlot = { modifier -> Box(modifier.background(MaterialTheme.colorScheme.tertiary)) },
             landscapeDistanceSectionWeight = 0.3f
@@ -570,14 +518,9 @@ fun TabletPortPreview() {
             primaryOdometerSlot = { modifier -> PartialDistance(distance = "999.99", modifier = modifier, onLongClick = {}) },
             secondaryOdometerSlot = { modifier -> TotalDistance("9,999.9", modifier) },
             roadbookSlot = { modifier -> 
-                RoadbookContent(
-                    state = sampleRoadbookState,
-                    listState = rememberLazyListState(),
-                    modifier = modifier,
-                    onSetPartialClick = {},
-                    onWaypointVisible = { _, _ -> },
-                    onFileSelected = {},
-                )
+                Box(modifier = modifier.background(MaterialTheme.colorScheme.surface)) {
+                    Text(text = "Roadbook Placeholder", modifier = Modifier.align(Alignment.Center))
+                }
             },
             mapSlot = { modifier -> Box(modifier.background(MaterialTheme.colorScheme.tertiary)) },
             landscapeDistanceSectionWeight = 0.3f
@@ -611,14 +554,9 @@ fun PhonePortPreview() {
             primaryOdometerSlot = { modifier -> PartialDistance(distance = "999.99", modifier = modifier, onLongClick = {}) },
             secondaryOdometerSlot = { modifier -> TotalDistance("9,999.9", modifier) },
             roadbookSlot = { modifier -> 
-                RoadbookContent(
-                    state = sampleRoadbookState,
-                    listState = rememberLazyListState(),
-                    modifier = modifier,
-                    onSetPartialClick = {},
-                    onWaypointVisible = { _, _ -> },
-                    onFileSelected = {},
-                )
+                Box(modifier = modifier.background(MaterialTheme.colorScheme.surface)) {
+                    Text(text = "Roadbook Placeholder", modifier = Modifier.align(Alignment.Center))
+                }
             },
             mapSlot = { modifier -> Box(modifier.background(MaterialTheme.colorScheme.tertiary)) },
             landscapeDistanceSectionWeight = 0.3f
@@ -652,14 +590,9 @@ fun PhoneLandPreview() {
             primaryOdometerSlot = { modifier -> PartialDistance(distance = "999.99", modifier = modifier, onLongClick = {}) },
             secondaryOdometerSlot = { modifier -> TotalDistance("9,999.9", modifier) },
             roadbookSlot = { modifier -> 
-                RoadbookContent(
-                    state = sampleRoadbookState,
-                    listState = rememberLazyListState(),
-                    modifier = modifier,
-                    onSetPartialClick = {},
-                    onWaypointVisible = { _, _ -> },
-                    onFileSelected = {},
-                )
+                Box(modifier = modifier.background(MaterialTheme.colorScheme.surface)) {
+                    Text(text = "Roadbook Placeholder", modifier = Modifier.align(Alignment.Center))
+                }
             },
             mapSlot = { modifier -> Box(modifier.background(MaterialTheme.colorScheme.tertiary)) },
             landscapeDistanceSectionWeight = 0.3f

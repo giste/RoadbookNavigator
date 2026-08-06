@@ -21,7 +21,7 @@ package org.giste.roadbooknavigator.features.roadbook.domain.model
  * Base class for all graphical or structural elements in a roadbook page.
  * Elements can be tracks, roads, icons, or text annotations.
  */
-sealed class Element {
+internal sealed class Element {
     abstract val elementType: ElementType
 
     enum class ElementType(val value: String) {
@@ -36,7 +36,7 @@ sealed class Element {
  * A complex road structure usually representing an intersection.
  * It combines an incoming road and an outgoing road to show the main path.
  */
-data class Track(
+internal data class Track(
     val roadIn: Road,
     val roadOut: Road,
 ) : Element() {
@@ -50,7 +50,7 @@ data class Track(
  * @property end Ending point on the canvas.
  * @property handles Bezier control points for drawing curves.
  */
-data class Road(
+internal data class Road(
     val start: Point?,
     val end: Point?,
     val roadType: RoadType = RoadType.Track,
@@ -76,7 +76,7 @@ data class Road(
  * @property scaleX Horizontal scaling factor for drawing.
  * @property originalId The raw ID from the source file, used for debugging or unknown icons.
  */
-data class Icon(
+internal data class Icon(
     val type: IconType,
     val width: Int,
     val height: Int,
@@ -107,7 +107,7 @@ data class Icon(
     }
 }
 
-data class Text(
+internal data class Text(
     val text: String,
     val fontSize: Int = 18,
     val lineHeight: Double,
@@ -124,7 +124,7 @@ data class Text(
  * Represents a 2D point in the drawing canvas (tulips/icons).
  * This is different from geographic Coordinates.
  */
-data class Point(
+internal data class Point(
     val x: Double,
     val y: Double,
 )

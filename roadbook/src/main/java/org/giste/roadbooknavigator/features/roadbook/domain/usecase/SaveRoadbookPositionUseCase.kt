@@ -25,7 +25,7 @@ import javax.inject.Inject
 /**
  * Use case to save the current roadbook scroll position.
  */
-class SaveRoadbookPositionUseCase @Inject constructor(
+internal class SaveRoadbookPositionUseCase @Inject constructor(
     private val repository: RoadbookSessionRepository,
     private val logger: RoadbookLogger
 ) {

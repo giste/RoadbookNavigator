@@ -12,26 +12,23 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  6See <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.roadbook.domain.model
+package org.giste.roadbooknavigator.features.roadbook
 
 /**
- * Value Object for short distance threshold. Waypoint with distance from previous lower than this
- * will be marked as "short distance".
+ * Value object representing a threshold for "short" distances in the roadbook.
+ * Distances below this value are typically highlighted to alert the user of upcoming fast waypoints.
  */
 @JvmInline
-value class ShortDistanceThreshold(val meters: Long) {
-    init {
-        require(meters.toDouble() in MIN..MAX) {
-            "Short distance threshold must be between $MIN and $MAX meters"
-        }
-    }
-
+public value class ShortDistanceThreshold(val meters: Long) {
     companion object {
-        const val MIN = 100.0
-        const val MAX = 500.0
-        const val DEFAULT = 300L
+        /** Default threshold in meters (250m). */
+        public const val DEFAULT: Long = 250L
+        /** Minimum threshold in meters (50m). */
+        public const val MIN: Long = 50L
+        /** Maximum threshold in meters (1000m). */
+        public const val MAX: Long = 1000L
     }
 }

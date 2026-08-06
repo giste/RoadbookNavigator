@@ -23,7 +23,7 @@ package org.giste.roadbooknavigator.features.roadbook.domain.model
  * @property index The index of the first visible waypoint.
  * @property offset The pixel offset of the first visible waypoint.
  */
-data class RoadbookPosition(
+internal data class RoadbookPosition(
     val index: Int = 0,
     val offset: Int = 0
 ) {

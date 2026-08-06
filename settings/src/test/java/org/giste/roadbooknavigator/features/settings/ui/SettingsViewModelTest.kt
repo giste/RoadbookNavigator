@@ -46,8 +46,8 @@ import org.giste.roadbooknavigator.features.settings.domain.odometer.usecase.Res
 import org.giste.roadbooknavigator.features.settings.domain.odometer.usecase.UpdateOdometerMinAccuracyUseCase
 import org.giste.roadbooknavigator.features.settings.domain.odometer.usecase.UpdateOdometerMinVerticalAccuracyUseCase
 import org.giste.roadbooknavigator.features.settings.domain.odometer.usecase.UpdateOdometerSpeedThresholdUseCase
-import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookSettings
-import org.giste.roadbooknavigator.features.roadbook.domain.usecase.GetRoadbookSettingsUseCase
+import org.giste.roadbooknavigator.features.roadbook.RoadbookSettings
+import org.giste.roadbooknavigator.features.roadbook.RoadbookSettingsProvider
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.input.InputSettings
@@ -77,7 +77,7 @@ class SettingsViewModelTest {
     private val observeLocationSettingsUseCase: ObserveLocationSettingsUseCase = mockk()
     private val observeOdometerSettingsUseCase: ObserveOdometerSettingsUseCase = mockk()
     private val getMapSettingsUseCase: GetMapSettingsUseCase = mockk()
-    private val getRoadbookSettingsUseCase: GetRoadbookSettingsUseCase = mockk()
+    private val roadbookSettingsProvider: RoadbookSettingsProvider = mockk()
     private val updateThemeUseCase: UpdateThemeUseCase = mockk()
     private val updateOrientationUseCase: UpdateOrientationUseCase = mockk()
     private val updateFullScreenUseCase: UpdateFullScreenUseCase = mockk()
@@ -107,7 +107,7 @@ class SettingsViewModelTest {
         every { observeLocationSettingsUseCase() } returns flowOf(LocationSettings())
         every { observeOdometerSettingsUseCase() } returns flowOf(OdometerSettings())
         every { getMapSettingsUseCase() } returns flowOf(MapSettings())
-        every { getRoadbookSettingsUseCase() } returns flowOf(RoadbookSettings())
+        every { roadbookSettingsProvider.getSettings() } returns flowOf(RoadbookSettings())
 
         viewModel = SettingsViewModel(
             observeAppSettingsUseCase = observeAppSettingsUseCase,
@@ -115,7 +115,7 @@ class SettingsViewModelTest {
             observeLocationSettingsUseCase = observeLocationSettingsUseCase,
             observeOdometerSettingsUseCase = observeOdometerSettingsUseCase,
             getMapSettingsUseCase = getMapSettingsUseCase,
-            getRoadbookSettingsUseCase = getRoadbookSettingsUseCase,
+            roadbookSettingsProvider = roadbookSettingsProvider,
             updateThemeUseCase = updateThemeUseCase,
             updateOrientationUseCase = updateOrientationUseCase,
             updateFullScreenUseCase = updateFullScreenUseCase,

@@ -15,18 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.roadbook.domain.repository
-
-import kotlinx.coroutines.flow.Flow
-import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookSettings
+package org.giste.roadbooknavigator.features.roadbook
 
 /**
- * Interface that defines the settings required by the Roadbook module.
- * This allows the module to be decoupled from the actual settings persistence.
+ * Value object representing configuration settings for the Roadbook module.
+ *
+ * @property shortDistanceThreshold Threshold below which distances are highlighted to warn the user.
  */
-interface RoadbookSettingsProvider {
-    /**
-     * Observes roadbook-related settings.
-     */
-    fun getSettings(): Flow<RoadbookSettings>
-}
+public data class RoadbookSettings(
+    val shortDistanceThreshold: ShortDistanceThreshold = ShortDistanceThreshold(ShortDistanceThreshold.DEFAULT),
+)

@@ -17,9 +17,7 @@
 
 package org.giste.roadbooknavigator.features.settings.domain.roadbook
 
-import kotlinx.coroutines.flow.Flow
-import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookSettings
-import org.giste.roadbooknavigator.features.roadbook.domain.repository.RoadbookSettingsProvider
+import org.giste.roadbooknavigator.features.roadbook.RoadbookSettingsProvider
 
 /**
  * Repository interface for managing roadbook settings in the settings module.

@@ -33,9 +33,9 @@ import kotlinx.coroutines.test.setMain
 import org.giste.roadbooknavigator.features.roadbook.RoadbookEvent
 import org.giste.roadbooknavigator.features.roadbook.domain.util.RoadbookLogger
 import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookPosition
-import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookSettings
+import org.giste.roadbooknavigator.features.roadbook.RoadbookSettings
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Route
-import org.giste.roadbooknavigator.features.roadbook.domain.model.ShortDistanceThreshold
+import org.giste.roadbooknavigator.features.roadbook.ShortDistanceThreshold
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.GetActiveRoadbookUseCase
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.GetRoadbookPositionUseCase
 import org.giste.roadbooknavigator.features.roadbook.domain.usecase.GetRoadbookSettingsUseCase

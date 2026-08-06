@@ -34,16 +34,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
-import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.DpSize
-import androidx.compose.ui.unit.dp
-import org.giste.roadbooknavigator.features.roadbook.ui.theme.RoadbookTheme
-import org.giste.roadbooknavigator.features.roadbook.ui.theme.compactRoadbookDimensions
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Coordinates
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Distance
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Icon
@@ -51,10 +46,12 @@ import org.giste.roadbooknavigator.features.roadbook.domain.model.Point
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Road
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Track
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Waypoint
+import org.giste.roadbooknavigator.features.roadbook.ui.theme.RoadbookTheme
+import org.giste.roadbooknavigator.features.roadbook.ui.theme.compactRoadbookDimensions
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Text as TulipText
 
 @Composable
-fun WaypointItem(
+internal fun WaypointItem(
     waypoint: Waypoint,
     shortDistanceThreshold: Long,
     onSetPartialClick: (Double) -> Unit,

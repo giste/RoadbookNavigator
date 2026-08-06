@@ -27,7 +27,7 @@ import javax.inject.Inject
  * Use case to move the roadbook scroll position one waypoint backward.
  * If the current item is partially scrolled, it first resets to the top of that item.
  */
-class MoveRoadbookDownUseCase @Inject constructor(
+internal class MoveRoadbookDownUseCase @Inject constructor(
     private val repository: RoadbookSessionRepository,
     private val logger: RoadbookLogger
 ) {

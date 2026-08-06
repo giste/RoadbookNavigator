@@ -18,9 +18,9 @@
 package org.giste.roadbooknavigator.features.roadbook.ui
 
 import org.giste.roadbooknavigator.features.roadbook.domain.model.Route
-import org.giste.roadbooknavigator.features.roadbook.domain.model.ShortDistanceThreshold
+import org.giste.roadbooknavigator.features.roadbook.ShortDistanceThreshold
 
-sealed interface RoadbookUiState {
+internal sealed interface RoadbookUiState {
     data object Loading : RoadbookUiState
     data object Empty : RoadbookUiState
     data class Success(

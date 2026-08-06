@@ -19,7 +19,7 @@ package org.giste.roadbooknavigator.features.roadbook.domain.model
 
 import kotlin.math.roundToLong
 
-data class Route(
+internal data class Route(
     val name: String = "",
     val description: String = "",
     val startLocation: String = "",
@@ -39,7 +39,7 @@ data class Route(
  * @property tulipElements Graphical components used to draw the "tulip" direction diagram.
  * @property notesElements Graphical or text components for the "notes" column.
  */
-data class Waypoint(
+internal data class Waypoint(
     val number: Int,
     val coordinates: Coordinates,
     val distance: Distance,
@@ -69,7 +69,7 @@ data class Waypoint(
  * @property longitude Degrees east or west of the prime meridian (-180 to 180).
  * @property elevation Meters above sea level.
  */
-data class Coordinates(
+internal data class Coordinates(
     val latitude: Double,
     val longitude: Double,
     val elevation: Double = 0.0,
@@ -89,7 +89,7 @@ data class Coordinates(
  * @property meters The absolute distance in meters. Must be non-negative.
  */
 @JvmInline
-value class Distance(val meters: Long) : Comparable<Distance> {
+internal value class Distance(val meters: Long) : Comparable<Distance> {
 
     val kilometers: Double get() = meters / 1000.0
 

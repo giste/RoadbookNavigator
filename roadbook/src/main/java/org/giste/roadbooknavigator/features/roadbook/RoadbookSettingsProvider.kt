@@ -15,22 +15,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.roadbook.di
+package org.giste.roadbooknavigator.features.roadbook
 
-import javax.inject.Qualifier
-
-/**
- * Qualifier for providing a custom CoroutineDispatcher for the roadbook module.
- * If provided by the app, it will override the default Dispatchers.IO.
- */
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-public annotation class AppRoadbookIoDispatcher
+import kotlinx.coroutines.flow.Flow
 
 /**
- * Qualifier for providing a custom Logger for the roadbook module.
- * If provided by the app, it will override the default AndroidRoadbookLogger.
+ * Interface to be implemented by the consumer (e.g. Settings module)
+ * to provide live settings to the Roadbook module.
  */
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-public annotation class AppRoadbookLogger
+public interface RoadbookSettingsProvider {
+    /**
+     * Returns a reactive stream of the current [RoadbookSettings].
+     */
+    public fun getSettings(): Flow<RoadbookSettings>
+}

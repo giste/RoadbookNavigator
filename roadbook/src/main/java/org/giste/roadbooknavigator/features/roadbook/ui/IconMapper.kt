@@ -53,7 +53,7 @@ import org.giste.roadbooknavigator.features.roadbook.ui.icons.speed.Limit140
 import org.giste.roadbooknavigator.features.roadbook.ui.icons.speed.Limit150
 import org.giste.roadbooknavigator.features.roadbook.ui.icons.terrain.river
 
-object IconMapper {
+internal object IconMapper {
     fun getIcon(type: Icon.IconType, onSurface: Color, surface: Color): ImageVector? {
         return when (type) {
             // Cross

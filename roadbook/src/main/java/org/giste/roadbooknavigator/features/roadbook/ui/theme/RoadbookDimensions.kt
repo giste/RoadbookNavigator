@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
  * Dimensions specific to the Roadbook module.
  */
 @Immutable
-public data class RoadbookDimensions(
+internal data class RoadbookDimensions(
     val sectionBorder: Dp,
     val dangerHighThickness: Dp,
     val paddingMinimal: Dp,
@@ -56,4 +56,4 @@ internal val expandedRoadbookDimensions = RoadbookDimensions(
     paddingLarge = 24.dp,
 )
 
-public val LocalRoadbookDimensions = staticCompositionLocalOf { compactRoadbookDimensions }
+internal val LocalRoadbookDimensions = staticCompositionLocalOf { compactRoadbookDimensions }

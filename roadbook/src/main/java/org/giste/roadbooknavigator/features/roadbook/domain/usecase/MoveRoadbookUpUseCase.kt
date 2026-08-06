@@ -26,7 +26,7 @@ import javax.inject.Inject
 /**
  * Use case to move the roadbook scroll position one waypoint forward.
  */
-class MoveRoadbookUpUseCase @Inject constructor(
+internal class MoveRoadbookUpUseCase @Inject constructor(
     private val getActiveRoadbookUseCase: GetActiveRoadbookUseCase,
     private val repository: RoadbookSessionRepository,
     private val logger: RoadbookLogger

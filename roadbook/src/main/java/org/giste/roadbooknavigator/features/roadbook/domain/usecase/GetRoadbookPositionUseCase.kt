@@ -25,7 +25,7 @@ import javax.inject.Inject
 /**
  * Use case to retrieve the last saved roadbook scroll position.
  */
-class GetRoadbookPositionUseCase @Inject constructor(
+internal class GetRoadbookPositionUseCase @Inject constructor(
     private val repository: RoadbookSessionRepository
 ) {
     operator fun invoke(): Flow<RoadbookPosition> = repository.scrollPosition

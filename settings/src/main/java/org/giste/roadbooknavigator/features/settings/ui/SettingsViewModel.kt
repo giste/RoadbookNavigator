@@ -42,8 +42,8 @@ import org.giste.roadbooknavigator.features.settings.domain.odometer.usecase.Res
 import org.giste.roadbooknavigator.features.settings.domain.odometer.usecase.UpdateOdometerMinAccuracyUseCase
 import org.giste.roadbooknavigator.features.settings.domain.odometer.usecase.UpdateOdometerMinVerticalAccuracyUseCase
 import org.giste.roadbooknavigator.features.settings.domain.odometer.usecase.UpdateOdometerSpeedThresholdUseCase
-import org.giste.roadbooknavigator.features.roadbook.domain.model.RoadbookSettings
-import org.giste.roadbooknavigator.features.roadbook.domain.usecase.GetRoadbookSettingsUseCase
+import org.giste.roadbooknavigator.features.roadbook.RoadbookSettings
+import org.giste.roadbooknavigator.features.roadbook.RoadbookSettingsProvider
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.input.InputSettings
@@ -67,7 +67,7 @@ class SettingsViewModel @Inject constructor(
     observeLocationSettingsUseCase: ObserveLocationSettingsUseCase,
     observeOdometerSettingsUseCase: ObserveOdometerSettingsUseCase,
     getMapSettingsUseCase: GetMapSettingsUseCase,
-    getRoadbookSettingsUseCase: GetRoadbookSettingsUseCase,
+    roadbookSettingsProvider: RoadbookSettingsProvider,
     private val updateThemeUseCase: UpdateThemeUseCase,
     private val updateOrientationUseCase: UpdateOrientationUseCase,
     private val updateFullScreenUseCase: UpdateFullScreenUseCase,
@@ -93,7 +93,7 @@ class SettingsViewModel @Inject constructor(
         observeLocationSettingsUseCase(),
         observeOdometerSettingsUseCase(),
         getMapSettingsUseCase(),
-        getRoadbookSettingsUseCase()
+        roadbookSettingsProvider.getSettings()
     ) { flows ->
         SettingsUiState.Success(
             appSettings = flows[0] as AppSettings,

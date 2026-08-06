@@ -15,13 +15,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.roadbook.domain.model
+package org.giste.roadbooknavigator.features.roadbook
+
+import javax.inject.Qualifier
 
 /**
- * Domain model for roadbook-specific settings.
- *
- * @property shortDistanceThreshold Threshold in meters to highlight "short distance" instructions.
+ * Qualifier for providing a custom CoroutineDispatcher for the roadbook module.
+ * If provided by the app, it will override the default Dispatchers.IO.
  */
-data class RoadbookSettings(
-    val shortDistanceThreshold: ShortDistanceThreshold = ShortDistanceThreshold(ShortDistanceThreshold.DEFAULT),
-)
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+public annotation class AppRoadbookIoDispatcher
+
+/**
+ * Qualifier for providing a custom Logger for the roadbook module.
+ * If provided by the app, it will override the default AndroidRoadbookLogger.
+ */
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+public annotation class AppRoadbookLogger

@@ -43,8 +43,8 @@ import org.giste.odometer.domain.usecase.ResetAllDistancesUseCase
 import org.giste.odometer.domain.usecase.ResetPartialDistanceUseCase
 import org.giste.odometer.domain.usecase.SetPartialDistanceUseCase
 import org.giste.roadbooknavigator.features.odometer.toOdometerLocation
-import org.giste.roadbooknavigator.features.roadbook.domain.usecase.MoveRoadbookDownUseCase
-import org.giste.roadbooknavigator.features.roadbook.domain.usecase.MoveRoadbookUpUseCase
+import org.giste.roadbooknavigator.features.roadbook.RoadbookController
+import org.giste.roadbooknavigator.features.roadbook.RoadbookEvent
 import org.giste.roadbooknavigator.features.settings.domain.usecase.ObserveAppSettingsUseCase
 import javax.inject.Inject
 
@@ -59,11 +59,11 @@ class DashboardViewModel @Inject constructor(
     observeAppSettingsUseCase: ObserveAppSettingsUseCase,
     observeOdometerSettingsUseCase: ObserveOdometerSettingsUseCase,
     observeInputSettingsUseCase: ObserveInputSettingsUseCase,
-    private val moveRoadbookUpUseCase: MoveRoadbookUpUseCase,
-    private val moveRoadbookDownUseCase: MoveRoadbookDownUseCase,
     locationProvider: LocationProvider,
     private val logger: Logger
 ) : ViewModel() {
+
+    private var roadbookController: RoadbookController? = null
 
     private val _showSetPartialDialog = MutableStateFlow(false)
     private val _showResetAllDialog = MutableStateFlow(false)
@@ -157,18 +157,33 @@ class DashboardViewModel @Inject constructor(
         }
     }
 
-    fun moveRoadbookUp() {
-        logger.d("DashboardViewModel: Moving roadbook up")
+    fun onRoadbookControllerReady(controller: RoadbookController) {
+        logger.i("DashboardViewModel: Roadbook controller ready")
+        this.roadbookController = controller
         viewModelScope.launch {
-            moveRoadbookUpUseCase()
+            controller.events.collect { event ->
+                when (event) {
+                    is RoadbookEvent.DistanceSectionLongPressed -> {
+                        logger.i("DashboardViewModel: Received DistanceSectionLongPressed from roadbook")
+                        setPartialDistance(event.distance)
+                    }
+
+                    RoadbookEvent.RouteImported -> {
+                        logger.i("DashboardViewModel: Received RouteImported from roadbook")
+                    }
+                }
+            }
         }
     }
 
+    fun moveRoadbookUp() {
+        logger.d("DashboardViewModel: Moving roadbook up via controller")
+        roadbookController?.scrollUp()
+    }
+
     fun moveRoadbookDown() {
-        logger.d("DashboardViewModel: Moving roadbook down")
-        viewModelScope.launch {
-            moveRoadbookDownUseCase()
-        }
+        logger.d("DashboardViewModel: Moving roadbook down via controller")
+        roadbookController?.scrollDown()
     }
 }
 

@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import org.giste.roadbook.ui.icons.RoadbookIcons
 
 @Suppress("UnusedReceiverParameter")
-fun RoadbookIcons.Landmark.house(onSurface: Color, surface: Color): ImageVector {
+fun RoadbookIcons.Landmark.house(onBackground: Color, background: Color): ImageVector {
     return ImageVector.Builder(
         name = "Landmark.House",
         defaultWidth = 48.dp,
@@ -46,7 +46,7 @@ fun RoadbookIcons.Landmark.house(onSurface: Color, surface: Color): ImageVector 
         ) {
             path(
                 fill = SolidColor(Color(0xFF757575)),
-                stroke = SolidColor(onSurface),
+                stroke = SolidColor(onBackground),
                 strokeLineWidth = 2f
             ) {
                 moveTo(35f, 10f)
@@ -56,8 +56,8 @@ fun RoadbookIcons.Landmark.house(onSurface: Color, surface: Color): ImageVector 
                 close()
             }
             path(
-                fill = SolidColor(surface),
-                stroke = SolidColor(onSurface),
+                fill = SolidColor(background),
+                stroke = SolidColor(onBackground),
                 strokeLineWidth = 2f
             ) {
                 moveTo(5f, 25f)
@@ -68,7 +68,7 @@ fun RoadbookIcons.Landmark.house(onSurface: Color, surface: Color): ImageVector 
             }
             path(
                 fill = SolidColor(Color(0xFF757575)),
-                stroke = SolidColor(onSurface),
+                stroke = SolidColor(onBackground),
                 strokeLineWidth = 2f
             ) {
                 moveTo(2.5f, 25f)
@@ -78,8 +78,8 @@ fun RoadbookIcons.Landmark.house(onSurface: Color, surface: Color): ImageVector 
                 close()
             }
             path(
-                fill = SolidColor(surface),
-                stroke = SolidColor(onSurface),
+                fill = SolidColor(background),
+                stroke = SolidColor(onBackground),
                 strokeLineWidth = 2f
             ) {
                 moveTo(19f, 33f)

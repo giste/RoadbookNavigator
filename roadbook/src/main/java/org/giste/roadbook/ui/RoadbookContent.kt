@@ -61,7 +61,7 @@ import org.giste.roadbook.domain.model.Route
 import org.giste.roadbook.domain.model.Track
 import org.giste.roadbook.domain.model.Waypoint
 import org.giste.roadbook.ui.theme.RoadbookTheme
-import org.giste.roadbook.ui.theme.compactRoadbookDimensions
+import org.giste.roadbook.compactRoadbookDimensions
 import java.io.InputStream
 
 @Composable
@@ -87,7 +87,7 @@ internal fun RoadbookContent(
             .fillMaxSize()
             .border(
                 RoadbookTheme.dimensions.sectionBorder,
-                MaterialTheme.colorScheme.outline
+                RoadbookTheme.colors.border
             )
     ) {
         when (state) {
@@ -106,7 +106,8 @@ internal fun RoadbookContent(
                 ) {
                     Text(
                         text = stringResource(R.string.main_no_route),
-                        style = MaterialTheme.typography.titleLarge
+                        style = MaterialTheme.typography.titleLarge,
+                        color = RoadbookTheme.colors.onBackground
                     )
                     Button(
                         onClick = {
@@ -129,7 +130,7 @@ internal fun RoadbookContent(
                 ) {
                     Text(
                         text = stringResource(R.string.main_error_prefix, state.message),
-                        color = MaterialTheme.colorScheme.error,
+                        color = RoadbookTheme.colors.danger,
                         style = MaterialTheme.typography.titleMedium
                     )
                     Button(

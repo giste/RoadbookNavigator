@@ -21,7 +21,6 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.drawscope.clipRect
@@ -30,13 +29,14 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.text.rememberTextMeasurer
 import org.giste.roadbook.domain.model.Icon
 import org.giste.roadbook.domain.model.Waypoint
+import org.giste.roadbook.ui.theme.RoadbookTheme
 import org.giste.roadbook.domain.model.Text as TulipText
 
 @Composable
 internal fun NotesSection(waypoint: Waypoint, modifier: Modifier = Modifier) {
-    val onSurfaceColor = MaterialTheme.colorScheme.onSurface
-    val surfaceColor = MaterialTheme.colorScheme.surface
-    val errorColor = MaterialTheme.colorScheme.error
+    val onSurfaceColor = RoadbookTheme.colors.onBackground
+    val surfaceColor = RoadbookTheme.colors.background
+    val errorColor = RoadbookTheme.colors.danger
     val textMeasurer = rememberTextMeasurer()
 
     // Preload painters for icons in notes to use them inside Canvas

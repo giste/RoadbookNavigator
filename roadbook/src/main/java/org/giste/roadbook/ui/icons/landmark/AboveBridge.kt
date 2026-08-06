@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import org.giste.roadbook.ui.icons.RoadbookIcons
 
 @Suppress("UnusedReceiverParameter")
-fun RoadbookIcons.Landmark.aboveBridge(onSurface: Color, surface: Color): ImageVector {
+fun RoadbookIcons.Landmark.aboveBridge(onBackground: Color, background: Color): ImageVector {
     return ImageVector.Builder(
         name = "Landmark.AboveBridge",
         defaultWidth = 48.dp,
@@ -34,7 +34,7 @@ fun RoadbookIcons.Landmark.aboveBridge(onSurface: Color, surface: Color): ImageV
         viewportHeight = 48f
     ).apply {
         // Bridge floor
-        path(fill = SolidColor(surface)) {
+        path(fill = SolidColor(background)) {
             moveTo(16f, 7f)
             horizontalLineToRelative(16f)
             verticalLineToRelative(34f)
@@ -43,7 +43,7 @@ fun RoadbookIcons.Landmark.aboveBridge(onSurface: Color, surface: Color): ImageV
         }
         // Bridge structure - Left
         path(
-            stroke = SolidColor(onSurface),
+            stroke = SolidColor(onBackground),
             strokeLineWidth = 3f
         ) {
             moveTo(10f, 1f)
@@ -53,7 +53,7 @@ fun RoadbookIcons.Landmark.aboveBridge(onSurface: Color, surface: Color): ImageV
         }
         // Bridge structure - Right
         path(
-            stroke = SolidColor(onSurface),
+            stroke = SolidColor(onBackground),
             strokeLineWidth = 3f
         ) {
             moveTo(38f, 1f)

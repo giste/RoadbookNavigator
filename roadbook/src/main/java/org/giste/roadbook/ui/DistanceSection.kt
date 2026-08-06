@@ -49,7 +49,7 @@ import org.giste.roadbook.domain.model.Distance
 import org.giste.roadbook.domain.model.Waypoint
 import org.giste.roadbook.ui.components.RoadbookAutoSizeText
 import org.giste.roadbook.ui.theme.RoadbookTheme
-import org.giste.roadbook.ui.theme.compactRoadbookDimensions
+import org.giste.roadbook.compactRoadbookDimensions
 
 @Composable
 internal fun DistanceSection(
@@ -61,14 +61,14 @@ internal fun DistanceSection(
     val locale = LocalConfiguration.current.locales[0]
     val isShortDistance = waypoint.distanceFromPrevious.meters in 1..<shortDistanceThreshold
     val contentColor = if (isShortDistance) {
-        MaterialTheme.colorScheme.onTertiaryContainer
+        RoadbookTheme.colors.onShortDistanceBackground
     } else {
-        MaterialTheme.colorScheme.onSurface
+        RoadbookTheme.colors.onBackground
     }
     val surfaceColor = if (isShortDistance) {
-        MaterialTheme.colorScheme.tertiaryContainer
+        RoadbookTheme.colors.shortDistanceBackground
     } else {
-        MaterialTheme.colorScheme.surface
+        RoadbookTheme.colors.background
     }
 
     Column(
@@ -112,7 +112,7 @@ internal fun DistanceSection(
                 .fillMaxWidth()
                 .background(
                     color = if (waypoint.dangerLevel == Waypoint.DangerLevel.MEDIUM) {
-                        MaterialTheme.colorScheme.error
+                        RoadbookTheme.colors.danger
                     } else {
                         surfaceColor
                     }
@@ -134,7 +134,7 @@ internal fun DistanceSection(
             modifier = Modifier
                 .weight(0.12f)
                 .width(IntrinsicSize.Min),
-            color = surfaceColor
+            color = RoadbookTheme.colors.divider
         )
 
         Row(
@@ -162,7 +162,7 @@ internal fun DistanceSection(
                 modifier = Modifier
                     .weight(0.25f)
                     .height(IntrinsicSize.Min),
-                color = contentColor
+                color = RoadbookTheme.colors.divider
             )
 
             Column(modifier = Modifier.weight(0.25f)) {
@@ -172,11 +172,11 @@ internal fun DistanceSection(
                 RoadbookAutoSizeText(
                     text = waypoint.number.toString(),
                     modifier = Modifier
-                        .background(color = MaterialTheme.colorScheme.inverseSurface)
+                        .background(color = RoadbookTheme.colors.waypointNumberBackground)
                         .weight(0.7f)
                         .padding(horizontal = RoadbookTheme.dimensions.paddingMinimal)
                         .fillMaxWidth(),
-                    color = MaterialTheme.colorScheme.inverseOnSurface,
+                    color = RoadbookTheme.colors.onWaypointNumberBackground,
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.titleMedium,
                 )

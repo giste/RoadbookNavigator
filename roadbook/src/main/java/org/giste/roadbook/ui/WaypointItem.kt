@@ -30,7 +30,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
@@ -39,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
+import org.giste.roadbook.compactRoadbookDimensions
 import org.giste.roadbook.domain.model.Coordinates
 import org.giste.roadbook.domain.model.Distance
 import org.giste.roadbook.domain.model.Icon
@@ -47,7 +47,6 @@ import org.giste.roadbook.domain.model.Road
 import org.giste.roadbook.domain.model.Track
 import org.giste.roadbook.domain.model.Waypoint
 import org.giste.roadbook.ui.theme.RoadbookTheme
-import org.giste.roadbook.ui.theme.compactRoadbookDimensions
 import org.giste.roadbook.domain.model.Text as TulipText
 
 @Composable
@@ -61,7 +60,7 @@ internal fun WaypointItem(
     val borderWidth =
         if (isHighDanger) RoadbookTheme.dimensions.dangerHighThickness else RoadbookTheme.dimensions.sectionBorder
     val borderColor =
-        if (isHighDanger) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
+        if (isHighDanger) RoadbookTheme.colors.danger else RoadbookTheme.colors.onBackground
     val isShortDistance = waypoint.distanceFromPrevious.meters in 1..<shortDistanceThreshold
 
     Box(
@@ -76,7 +75,7 @@ internal fun WaypointItem(
                     modifier = Modifier
                         .weight(weight = 1f, fill = true)
                         .fillMaxHeight()
-                        .background(MaterialTheme.colorScheme.tertiaryContainer)
+                        .background(RoadbookTheme.colors.shortDistanceBackground)
                         .testTag("ShortDistanceHighlight")
                 )
                 Spacer(
@@ -126,7 +125,7 @@ internal fun WaypointItem(
 
             VerticalDivider(
                 modifier = Modifier.fillMaxHeight(),
-                color = MaterialTheme.colorScheme.onSurface,
+                color = RoadbookTheme.colors.divider,
                 thickness = RoadbookTheme.dimensions.sectionBorder
             )
 
@@ -138,7 +137,7 @@ internal fun WaypointItem(
 
             VerticalDivider(
                 modifier = Modifier.fillMaxHeight(),
-                color = MaterialTheme.colorScheme.onSurface,
+                color = RoadbookTheme.colors.divider,
                 thickness = RoadbookTheme.dimensions.sectionBorder
             )
 

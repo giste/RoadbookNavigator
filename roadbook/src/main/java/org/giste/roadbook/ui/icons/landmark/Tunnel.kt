@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import org.giste.roadbook.ui.icons.RoadbookIcons
 
 @Suppress("UnusedReceiverParameter")
-fun RoadbookIcons.Landmark.tunnel(onSurface: Color): ImageVector {
+fun RoadbookIcons.Landmark.tunnel(onBackground: Color): ImageVector {
     return ImageVector.Builder(
         name = "Landmark.Tunnel",
         defaultWidth = 48.dp,
@@ -33,7 +33,7 @@ fun RoadbookIcons.Landmark.tunnel(onSurface: Color): ImageVector {
         viewportWidth = 48f,
         viewportHeight = 48f
     ).apply {
-        val onSurfaceColor = SolidColor(onSurface)
+        val onSurfaceColor = SolidColor(onBackground)
         path(
             fill = SolidColor(Color(0xFF757575)),
             stroke = onSurfaceColor,

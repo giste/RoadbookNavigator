@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import org.giste.roadbook.ui.icons.RoadbookIcons
 
 @Suppress("UnusedReceiverParameter")
-fun RoadbookIcons.Cross.resetDistance(onSurface: Color, surface: Color): ImageVector {
+fun RoadbookIcons.Cross.resetDistance(onBackground: Color, background: Color): ImageVector {
     return ImageVector.Builder(
         name = "Cross.ResetDistance",
         defaultWidth = 48.dp,
@@ -33,10 +33,10 @@ fun RoadbookIcons.Cross.resetDistance(onSurface: Color, surface: Color): ImageVe
         viewportWidth = 48f,
         viewportHeight = 48f
     ).apply {
-        val onSurfaceColor = SolidColor(onSurface)
-        val surfaceColor = SolidColor(surface)
+        val onBackgroundColor = SolidColor(onBackground)
+        val backgroundColor = SolidColor(background)
 
-        path(fill = onSurfaceColor) {
+        path(fill = onBackgroundColor) {
             moveTo(43.016f, 29.364f)
             verticalLineTo(30.955f)
             horizontalLineTo(38.418f)
@@ -60,7 +60,7 @@ fun RoadbookIcons.Cross.resetDistance(onSurface: Color, surface: Color): ImageVe
             verticalLineTo(27.534f)
             close()
         }
-        path(fill = onSurfaceColor) {
+        path(fill = onBackgroundColor) {
             moveTo(34.068f, 37.149f)
             curveTo(33.282f, 37.149f, 32.606f, 36.99f, 32.039f, 36.672f)
             curveTo(31.476f, 36.35f, 31.041f, 35.896f, 30.736f, 35.31f)
@@ -95,7 +95,7 @@ fun RoadbookIcons.Cross.resetDistance(onSurface: Color, surface: Color): ImageVe
             curveTo(35.252f, 37.053f, 34.697f, 37.149f, 34.068f, 37.149f)
             close()
         }
-        path(fill = onSurfaceColor) {
+        path(fill = onBackgroundColor) {
             moveTo(29.08f, 31.541f)
             lineTo(27.141f, 31.66f)
             curveTo(27.108f, 31.495f, 27.036f, 31.346f, 26.927f, 31.213f)
@@ -130,7 +130,7 @@ fun RoadbookIcons.Cross.resetDistance(onSurface: Color, surface: Color): ImageVe
             curveTo(28.662f, 30.283f, 28.987f, 30.838f, 29.08f, 31.541f)
             close()
         }
-        path(fill = onSurfaceColor) {
+        path(fill = onBackgroundColor) {
             moveTo(17.839f, 37.149f)
             curveTo(17.053f, 37.149f, 16.377f, 36.99f, 15.811f, 36.672f)
             curveTo(15.247f, 36.35f, 14.813f, 35.896f, 14.508f, 35.31f)
@@ -165,7 +165,7 @@ fun RoadbookIcons.Cross.resetDistance(onSurface: Color, surface: Color): ImageVe
             curveTo(19.024f, 37.053f, 18.469f, 37.149f, 17.839f, 37.149f)
             close()
         }
-        path(fill = onSurfaceColor) {
+        path(fill = onBackgroundColor) {
             moveTo(5.334f, 37f)
             verticalLineTo(26.818f)
             horizontalLineTo(9.351f)
@@ -195,14 +195,14 @@ fun RoadbookIcons.Cross.resetDistance(onSurface: Color, surface: Color): ImageVe
             horizontalLineTo(10.833f)
             close()
         }
-        path(fill = onSurfaceColor) {
+        path(fill = onBackgroundColor) {
             moveTo(37f, 11f)
             horizontalLineToRelative(10f)
             verticalLineToRelative(14f)
             horizontalLineToRelative(-10f)
             close()
         }
-        path(fill = surfaceColor) {
+        path(fill = backgroundColor) {
             moveTo(41.998f, 23.224f)
             curveTo(41.143f, 23.22f, 40.407f, 23.01f, 39.791f, 22.592f)
             curveTo(39.178f, 22.175f, 38.705f, 21.57f, 38.374f, 20.778f)
@@ -230,14 +230,14 @@ fun RoadbookIcons.Cross.resetDistance(onSurface: Color, surface: Color): ImageVe
             curveTo(41.272f, 21.31f, 41.61f, 21.439f, 41.998f, 21.439f)
             close()
         }
-        path(fill = onSurfaceColor) {
+        path(fill = onBackgroundColor) {
             moveTo(25f, 11f)
             horizontalLineToRelative(10f)
             verticalLineToRelative(14f)
             horizontalLineToRelative(-10f)
             close()
         }
-        path(fill = surfaceColor) {
+        path(fill = backgroundColor) {
             moveTo(29.998f, 23.224f)
             curveTo(29.143f, 23.22f, 28.407f, 23.01f, 27.791f, 22.592f)
             curveTo(27.178f, 22.175f, 26.705f, 21.57f, 26.374f, 20.778f)
@@ -265,14 +265,14 @@ fun RoadbookIcons.Cross.resetDistance(onSurface: Color, surface: Color): ImageVe
             curveTo(29.272f, 21.31f, 29.61f, 21.439f, 29.998f, 21.439f)
             close()
         }
-        path(fill = onSurfaceColor) {
+        path(fill = onBackgroundColor) {
             moveTo(13f, 11f)
             horizontalLineToRelative(10f)
             verticalLineToRelative(14f)
             horizontalLineToRelative(-10f)
             close()
         }
-        path(fill = surfaceColor) {
+        path(fill = backgroundColor) {
             moveTo(17.998f, 23.224f)
             curveTo(17.143f, 23.22f, 16.407f, 23.01f, 15.791f, 22.592f)
             curveTo(15.178f, 22.175f, 14.705f, 21.57f, 14.374f, 20.778f)
@@ -300,14 +300,14 @@ fun RoadbookIcons.Cross.resetDistance(onSurface: Color, surface: Color): ImageVe
             curveTo(17.272f, 21.31f, 17.61f, 21.439f, 17.998f, 21.439f)
             close()
         }
-        path(fill = onSurfaceColor) {
+        path(fill = onBackgroundColor) {
             moveTo(1f, 11f)
             horizontalLineToRelative(10f)
             verticalLineToRelative(14f)
             horizontalLineToRelative(-10f)
             close()
         }
-        path(fill = surfaceColor) {
+        path(fill = backgroundColor) {
             moveTo(5.998f, 23.224f)
             curveTo(5.143f, 23.22f, 4.407f, 23.01f, 3.791f, 22.592f)
             curveTo(3.178f, 22.175f, 2.705f, 21.57f, 2.374f, 20.778f)

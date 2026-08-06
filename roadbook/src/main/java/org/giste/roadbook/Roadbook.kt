@@ -28,17 +28,22 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.giste.roadbook.ui.RoadbookContent
 import org.giste.roadbook.ui.RoadbookUiState
 import org.giste.roadbook.ui.RoadbookViewModel
+import org.giste.roadbook.ui.theme.RoadbookTheme
 
 /**
  * The main UI entry point for the Roadbook module.
  *
  * @param onControllerReady Callback providing a [RoadbookController] to the consumer for external control.
  * @param modifier Modifier for the root container.
+ * @param dimensions Custom dimensions for the roadbook. Defaults to compact.
+ * @param colors Custom semantic colors for the roadbook. If null, they are mapped from MaterialTheme.
  */
 @Composable
 public fun Roadbook(
     onControllerReady: (RoadbookController) -> Unit,
     modifier: Modifier = Modifier,
+    dimensions: RoadbookDimensions = compactRoadbookDimensions,
+    colors: RoadbookColors? = null,
 ) {
     // Phase 2 will make RoadbookViewModel internal, for now we just use it.
     val viewModel: RoadbookViewModel = hiltViewModel()
@@ -70,12 +75,17 @@ public fun Roadbook(
         }
     }
 
-    RoadbookContent(
-        state = state,
-        listState = listState,
-        modifier = modifier,
-        onFileSelected = viewModel::importRoute,
-        onSetPartialClick = viewModel::onDistanceSectionLongPressed,
-        onWaypointVisible = viewModel::onWaypointVisible
-    )
+    RoadbookTheme(
+        dimensions = dimensions,
+        colors = colors
+    ) {
+        RoadbookContent(
+            state = state,
+            listState = listState,
+            modifier = modifier,
+            onFileSelected = viewModel::importRoute,
+            onSetPartialClick = viewModel::onDistanceSectionLongPressed,
+            onWaypointVisible = viewModel::onWaypointVisible
+        )
+    }
 }

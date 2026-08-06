@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbook.ui.theme
+package org.giste.roadbook
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
  * Dimensions specific to the Roadbook module.
  */
 @Immutable
-internal data class RoadbookDimensions(
+public data class RoadbookDimensions(
     val sectionBorder: Dp,
     val dangerHighThickness: Dp,
     val paddingMinimal: Dp,
@@ -36,7 +36,7 @@ internal data class RoadbookDimensions(
     val paddingLarge: Dp,
 )
 
-internal val compactRoadbookDimensions = RoadbookDimensions(
+public val compactRoadbookDimensions: RoadbookDimensions = RoadbookDimensions(
     sectionBorder = 1.dp,
     dangerHighThickness = 8.dp,
     paddingMinimal = 1.dp,
@@ -46,7 +46,7 @@ internal val compactRoadbookDimensions = RoadbookDimensions(
     paddingLarge = 16.dp,
 )
 
-internal val expandedRoadbookDimensions = RoadbookDimensions(
+public val expandedRoadbookDimensions: RoadbookDimensions = RoadbookDimensions(
     sectionBorder = 1.dp,
     dangerHighThickness = 12.dp,
     paddingMinimal = 1.dp,

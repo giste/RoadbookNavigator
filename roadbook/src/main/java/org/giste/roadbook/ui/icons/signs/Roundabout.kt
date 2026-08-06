@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import org.giste.roadbook.ui.icons.RoadbookIcons
 
 @Suppress("UnusedReceiverParameter")
-fun RoadbookIcons.Signs.roundabout(onSurface: Color): ImageVector {
+fun RoadbookIcons.Signs.roundabout(onBackground: Color): ImageVector {
     return ImageVector.Builder(
         name = "Signs.Roundabout",
         defaultWidth = 48.dp,
@@ -46,7 +46,7 @@ fun RoadbookIcons.Signs.roundabout(onSurface: Color): ImageVector {
         ) {
             path(
                 fill = SolidColor(Color(0xFF376FDE)),
-                stroke = SolidColor(onSurface),
+                stroke = SolidColor(onBackground),
                 strokeLineWidth = 2f
             ) {
                 moveTo(24f, 24f)

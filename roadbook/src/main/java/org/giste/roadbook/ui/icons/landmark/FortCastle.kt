@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import org.giste.roadbook.ui.icons.RoadbookIcons
 
 @Suppress("UnusedReceiverParameter")
-fun RoadbookIcons.Landmark.fortCastle(onSurface: Color): ImageVector {
+fun RoadbookIcons.Landmark.fortCastle(onBackground: Color): ImageVector {
     return ImageVector.Builder(
         name = "Landmark.FortCastle",
         defaultWidth = 48.dp,
@@ -35,7 +35,7 @@ fun RoadbookIcons.Landmark.fortCastle(onSurface: Color): ImageVector {
     ).apply {
         path(
             fill = SolidColor(Color(0xFF757575)),
-            stroke = SolidColor(onSurface),
+            stroke = SolidColor(onBackground),
             strokeLineWidth = 2f
         ) {
             moveTo(11f, 8f)

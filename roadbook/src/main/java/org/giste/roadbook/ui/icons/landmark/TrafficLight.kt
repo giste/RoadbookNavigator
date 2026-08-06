@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import org.giste.roadbook.ui.icons.RoadbookIcons
 
 @Suppress("UnusedReceiverParameter")
-fun RoadbookIcons.Landmark.trafficLight(onSurface: Color, surface: Color): ImageVector {
+fun RoadbookIcons.Landmark.trafficLight(onBackground: Color, background: Color): ImageVector {
     return ImageVector.Builder(
         name = "Landmark.TrafficLight",
         defaultWidth = 48.dp,
@@ -33,7 +33,7 @@ fun RoadbookIcons.Landmark.trafficLight(onSurface: Color, surface: Color): Image
         viewportWidth = 48f,
         viewportHeight = 48f
     ).apply {
-        path(fill = SolidColor(onSurface)) {
+        path(fill = SolidColor(onBackground)) {
             moveTo(23f, 0f)
             lineTo(23f, 0f)
             arcTo(5f, 5f, 0f, isMoreThanHalf = false, isPositiveArc = true, 28f, 5f)
@@ -45,26 +45,26 @@ fun RoadbookIcons.Landmark.trafficLight(onSurface: Color, surface: Color): Image
             arcTo(5f, 5f, 0f, isMoreThanHalf = false, isPositiveArc = true, 23f, 0f)
             close()
         }
-        path(fill = SolidColor(surface)) {
+        path(fill = SolidColor(background)) {
             moveTo(23f, 5f)
             moveToRelative(-4f, 0f)
             arcToRelative(4f, 4f, 0f, isMoreThanHalf = true, isPositiveArc = true, 8f, 0f)
             arcToRelative(4f, 4f, 0f, isMoreThanHalf = true, isPositiveArc = true, -8f, 0f)
         }
-        path(fill = SolidColor(surface)) {
+        path(fill = SolidColor(background)) {
             moveTo(23f, 14f)
             moveToRelative(-4f, 0f)
             arcToRelative(4f, 4f, 0f, isMoreThanHalf = true, isPositiveArc = true, 8f, 0f)
             arcToRelative(4f, 4f, 0f, isMoreThanHalf = true, isPositiveArc = true, -8f, 0f)
         }
-        path(fill = SolidColor(surface)) {
+        path(fill = SolidColor(background)) {
             moveTo(23f, 23f)
             moveToRelative(-4f, 0f)
             arcToRelative(4f, 4f, 0f, isMoreThanHalf = true, isPositiveArc = true, 8f, 0f)
             arcToRelative(4f, 4f, 0f, isMoreThanHalf = true, isPositiveArc = true, -8f, 0f)
         }
         path(
-            stroke = SolidColor(onSurface),
+            stroke = SolidColor(onBackground),
             strokeLineWidth = 2f
         ) {
             moveTo(23f, 27f)

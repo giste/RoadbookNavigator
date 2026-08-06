@@ -54,28 +54,28 @@ import org.giste.roadbook.ui.icons.speed.Limit150
 import org.giste.roadbook.ui.icons.terrain.river
 
 internal object IconMapper {
-    fun getIcon(type: Icon.IconType, onSurface: Color, surface: Color): ImageVector? {
+    fun getIcon(type: Icon.IconType, onBackground: Color, background: Color): ImageVector? {
         return when (type) {
             // Cross
             Icon.IconType.Danger1 -> RoadbookIcons.Cross.DangerLevel1
             Icon.IconType.Danger2 -> RoadbookIcons.Cross.DangerLevel2
             Icon.IconType.Danger3 -> RoadbookIcons.Cross.DangerLevel3
-            Icon.IconType.FuelZone -> RoadbookIcons.Cross.fuelZone(onSurface)
-            Icon.IconType.ResetDistance -> RoadbookIcons.Cross.resetDistance(onSurface, surface)
+            Icon.IconType.FuelZone -> RoadbookIcons.Cross.fuelZone(onBackground)
+            Icon.IconType.ResetDistance -> RoadbookIcons.Cross.resetDistance(onBackground, background)
             // Landmark
-            Icon.IconType.AboveBridge -> RoadbookIcons.Landmark.aboveBridge(onSurface, surface)
-            Icon.IconType.FortCastle -> RoadbookIcons.Landmark.fortCastle(onSurface)
-            Icon.IconType.House -> RoadbookIcons.Landmark.house(onSurface, surface)
-            Icon.IconType.TrafficLight -> RoadbookIcons.Landmark.trafficLight(onSurface, surface)
-            Icon.IconType.Tree -> RoadbookIcons.Landmark.tree(onSurface)
-            Icon.IconType.Tunnel -> RoadbookIcons.Landmark.tunnel(onSurface)
-            Icon.IconType.UnderBridge -> RoadbookIcons.Landmark.underBridge(onSurface, surface)
+            Icon.IconType.AboveBridge -> RoadbookIcons.Landmark.aboveBridge(onBackground, background)
+            Icon.IconType.FortCastle -> RoadbookIcons.Landmark.fortCastle(onBackground)
+            Icon.IconType.House -> RoadbookIcons.Landmark.house(onBackground, background)
+            Icon.IconType.TrafficLight -> RoadbookIcons.Landmark.trafficLight(onBackground, background)
+            Icon.IconType.Tree -> RoadbookIcons.Landmark.tree(onBackground)
+            Icon.IconType.Tunnel -> RoadbookIcons.Landmark.tunnel(onBackground)
+            Icon.IconType.UnderBridge -> RoadbookIcons.Landmark.underBridge(onBackground, background)
             // Signs
             Icon.IconType.Alert -> RoadbookIcons.Signs.Alert
-            Icon.IconType.Roundabout -> RoadbookIcons.Signs.roundabout(onSurface)
+            Icon.IconType.Roundabout -> RoadbookIcons.Signs.roundabout(onBackground)
             Icon.IconType.Stop -> RoadbookIcons.Signs.Stop
             // Terrain
-            Icon.IconType.RiverWater -> RoadbookIcons.Terrain.river(onSurface)
+            Icon.IconType.RiverWater -> RoadbookIcons.Terrain.river(onBackground)
             // Speed
             Icon.IconType.SpeedLimit10 -> RoadbookIcons.Speed.Limit10
             Icon.IconType.SpeedLimit20 -> RoadbookIcons.Speed.Limit20

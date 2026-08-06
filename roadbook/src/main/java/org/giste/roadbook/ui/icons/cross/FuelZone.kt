@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import org.giste.roadbook.ui.icons.RoadbookIcons
 
 @Suppress("UnusedReceiverParameter")
-fun RoadbookIcons.Cross.fuelZone(onSurface: Color): ImageVector {
+fun RoadbookIcons.Cross.fuelZone(onBackground: Color): ImageVector {
     return ImageVector.Builder(
         name = "Cross.FuelZone",
         defaultWidth = 48.dp,
@@ -36,7 +36,7 @@ fun RoadbookIcons.Cross.fuelZone(onSurface: Color): ImageVector {
         viewportWidth = 48f,
         viewportHeight = 48f
     ).apply {
-        val onSurfaceColor = SolidColor(onSurface)
+        val onBackgroundColor = SolidColor(onBackground)
 
         group(
             clipPathData = PathData {
@@ -49,7 +49,7 @@ fun RoadbookIcons.Cross.fuelZone(onSurface: Color): ImageVector {
         ) {
             path(
                 fill = SolidColor(Color(0xFF3D93D0)),
-                stroke = onSurfaceColor,
+                stroke = onBackgroundColor,
                 strokeLineWidth = 3f
             ) {
                 moveTo(24f, 24f)

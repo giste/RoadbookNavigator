@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import org.giste.roadbook.ui.icons.RoadbookIcons
 
 @Suppress("UnusedReceiverParameter")
-fun RoadbookIcons.Landmark.tree(onSurface: Color): ImageVector {
+fun RoadbookIcons.Landmark.tree(onBackground: Color): ImageVector {
     return ImageVector.Builder(
         name = "Landmark.Tree",
         defaultWidth = 48.dp,
@@ -36,7 +36,7 @@ fun RoadbookIcons.Landmark.tree(onSurface: Color): ImageVector {
         // Foliage
         path(
             fill = SolidColor(Color(red = 0, green = 128, blue = 0)),
-            stroke = SolidColor(onSurface),
+            stroke = SolidColor(onBackground),
             strokeLineWidth = 2f
         ) {
             moveTo(24f, 4f)
@@ -51,7 +51,7 @@ fun RoadbookIcons.Landmark.tree(onSurface: Color): ImageVector {
         }
         // Foliage detail (texture)
         path(
-            stroke = SolidColor(onSurface),
+            stroke = SolidColor(onBackground),
             strokeLineWidth = 2f
         ) {
             moveTo(16f, 18f)
@@ -63,7 +63,7 @@ fun RoadbookIcons.Landmark.tree(onSurface: Color): ImageVector {
         }
         // Trunk
         path(
-            stroke = SolidColor(onSurface),
+            stroke = SolidColor(onBackground),
             strokeLineWidth = 4f
         ) {
             moveTo(24f, 32f)

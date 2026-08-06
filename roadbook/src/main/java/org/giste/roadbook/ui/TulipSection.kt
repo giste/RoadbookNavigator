@@ -21,7 +21,6 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -34,16 +33,17 @@ import org.giste.roadbook.domain.model.Icon
 import org.giste.roadbook.domain.model.Road
 import org.giste.roadbook.domain.model.Track
 import org.giste.roadbook.domain.model.Waypoint
+import org.giste.roadbook.ui.theme.RoadbookTheme
 import org.giste.roadbook.domain.model.Text as TulipText
 
 @Composable
 internal fun TulipSection(waypoint: Waypoint, modifier: Modifier = Modifier) {
-    val onSurfaceColor = MaterialTheme.colorScheme.onSurface
-    val surfaceColor = MaterialTheme.colorScheme.surface
-    val trackColor = MaterialTheme.colorScheme.primary
-    val secondaryTrackColor = MaterialTheme.colorScheme.secondary
-    val errorColor = MaterialTheme.colorScheme.error
-    val disabledOnSurface = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+    val onSurfaceColor = RoadbookTheme.colors.onBackground
+    val surfaceColor = RoadbookTheme.colors.background
+    val trackColor = RoadbookTheme.colors.track
+    val secondaryTrackColor = RoadbookTheme.colors.trackSecondary
+    val errorColor = RoadbookTheme.colors.danger
+    val disabledOnSurface = RoadbookTheme.colors.onBackground.copy(alpha = 0.5f)
     val textMeasurer = rememberTextMeasurer()
 
     // Preload painters for icons to use them inside Canvas

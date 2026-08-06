@@ -47,7 +47,7 @@ configure<LibraryExtension> {
 
 kotlin {
     compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_21)
+        jvmTarget = JvmTarget.JVM_21
     }
 }
 
@@ -75,7 +75,6 @@ dependencies {
     testImplementation(libs.robolectric)
     testImplementation(libs.reflect)
     
-    androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.test.core)
     androidTestImplementation(libs.androidx.junit)

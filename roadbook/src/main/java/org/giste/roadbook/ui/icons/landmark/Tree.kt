@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import org.giste.roadbook.ui.icons.RoadbookIcons
 
 @Suppress("UnusedReceiverParameter")
-fun RoadbookIcons.Landmark.tree(onBackground: Color): ImageVector {
+internal fun RoadbookIcons.Landmark.tree(onBackground: Color): ImageVector {
     return ImageVector.Builder(
         name = "Landmark.Tree",
         defaultWidth = 48.dp,

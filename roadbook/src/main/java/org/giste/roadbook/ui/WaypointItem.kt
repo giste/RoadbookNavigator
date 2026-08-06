@@ -164,7 +164,7 @@ internal fun WaypointItem(
     showBackground = true,
 )
 @Composable
-fun WaypointItemPreview() {
+internal fun WaypointItemPreview() {
     val waypointWithLowDangerAndRoadTypes = Waypoint(
         number = 1,
         coordinates = Coordinates(40.0, -3.0),

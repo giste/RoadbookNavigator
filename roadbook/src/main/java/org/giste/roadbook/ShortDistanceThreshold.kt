@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  6See <https://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package org.giste.roadbook
@@ -22,8 +22,8 @@ package org.giste.roadbook
  * Distances below this value are typically highlighted to alert the user of upcoming fast waypoints.
  */
 @JvmInline
-public value class ShortDistanceThreshold(val meters: Long) {
-    companion object {
+public value class ShortDistanceThreshold(public val meters: Long) {
+    public companion object {
         /** Default threshold in meters (250m). */
         public const val DEFAULT: Long = 250L
         /** Minimum threshold in meters (50m). */

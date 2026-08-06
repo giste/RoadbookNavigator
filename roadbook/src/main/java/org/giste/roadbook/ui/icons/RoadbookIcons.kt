@@ -26,7 +26,7 @@ package org.giste.roadbook.ui.icons
  * - Speed: Speed limits and zones.
  * - Terrain: Geographical features.
  */
-object RoadbookIcons {
+internal object RoadbookIcons {
     object Cross
 
     object Landmark

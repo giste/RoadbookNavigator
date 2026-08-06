@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import org.giste.roadbook.ui.icons.RoadbookIcons
 
 @get:Suppress("UnusedReceiverParameter")
-val RoadbookIcons.Speed.Limit130: ImageVector
+internal val RoadbookIcons.Speed.Limit130: ImageVector
     get() {
         if (_Limit130 != null) {
             return _Limit130!!

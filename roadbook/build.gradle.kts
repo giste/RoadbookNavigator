@@ -46,6 +46,7 @@ configure<LibraryExtension> {
 }
 
 kotlin {
+    explicitApi()
     compilerOptions {
         jvmTarget = JvmTarget.JVM_21
     }

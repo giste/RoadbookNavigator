@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import org.giste.roadbook.ui.icons.RoadbookIcons
 
 @get:Suppress("UnusedReceiverParameter")
-val RoadbookIcons.Signs.Stop: ImageVector
+internal val RoadbookIcons.Signs.Stop: ImageVector
     get() {
         if (_Stop != null) {
             return _Stop!!

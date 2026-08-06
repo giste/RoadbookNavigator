@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import org.giste.roadbook.ui.icons.RoadbookIcons
 
 @Suppress("UnusedReceiverParameter")
-fun RoadbookIcons.Landmark.underBridge(onBackground: Color, background: Color): ImageVector {
+internal fun RoadbookIcons.Landmark.underBridge(onBackground: Color, background: Color): ImageVector {
     return ImageVector.Builder(
         name = "Landmark.UnderBridge",
         defaultWidth = 48.dp,

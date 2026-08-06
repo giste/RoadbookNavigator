@@ -17,7 +17,7 @@
 
 package org.giste.roadbooknavigator.features.settings.domain.roadbook
 
-import org.giste.roadbooknavigator.features.roadbook.RoadbookSettingsProvider
+import org.giste.roadbook.RoadbookSettingsProvider
 
 /**
  * Repository interface for managing roadbook settings in the settings module.

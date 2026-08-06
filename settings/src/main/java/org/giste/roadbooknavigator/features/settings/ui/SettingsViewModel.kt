@@ -42,8 +42,8 @@ import org.giste.roadbooknavigator.features.settings.domain.odometer.usecase.Res
 import org.giste.roadbooknavigator.features.settings.domain.odometer.usecase.UpdateOdometerMinAccuracyUseCase
 import org.giste.roadbooknavigator.features.settings.domain.odometer.usecase.UpdateOdometerMinVerticalAccuracyUseCase
 import org.giste.roadbooknavigator.features.settings.domain.odometer.usecase.UpdateOdometerSpeedThresholdUseCase
-import org.giste.roadbooknavigator.features.roadbook.RoadbookSettings
-import org.giste.roadbooknavigator.features.roadbook.RoadbookSettingsProvider
+import org.giste.roadbook.RoadbookSettings
+import org.giste.roadbook.RoadbookSettingsProvider
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.input.InputSettings

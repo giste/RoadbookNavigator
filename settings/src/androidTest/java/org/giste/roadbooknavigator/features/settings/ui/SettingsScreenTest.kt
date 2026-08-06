@@ -40,8 +40,8 @@ import org.giste.odometer.domain.OdometerSettings
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.core.settings.domain.AppTheme
-import org.giste.roadbooknavigator.features.roadbook.RoadbookSettings
-import org.giste.roadbooknavigator.features.roadbook.ShortDistanceThreshold
+import org.giste.roadbook.RoadbookSettings
+import org.giste.roadbook.ShortDistanceThreshold
 import org.giste.roadbooknavigator.features.settings.domain.input.InputSettings
 import org.giste.roadbooknavigator.features.settings.domain.input.RemoteModel
 import org.junit.Assert.assertEquals

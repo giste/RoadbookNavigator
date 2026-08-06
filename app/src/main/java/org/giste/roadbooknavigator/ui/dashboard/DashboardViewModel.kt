@@ -43,8 +43,8 @@ import org.giste.odometer.domain.usecase.ResetAllDistancesUseCase
 import org.giste.odometer.domain.usecase.ResetPartialDistanceUseCase
 import org.giste.odometer.domain.usecase.SetPartialDistanceUseCase
 import org.giste.roadbooknavigator.features.odometer.toOdometerLocation
-import org.giste.roadbooknavigator.features.roadbook.RoadbookController
-import org.giste.roadbooknavigator.features.roadbook.RoadbookEvent
+import org.giste.roadbook.RoadbookController
+import org.giste.roadbook.RoadbookEvent
 import org.giste.roadbooknavigator.features.settings.domain.usecase.ObserveAppSettingsUseCase
 import javax.inject.Inject
 

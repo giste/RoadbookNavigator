@@ -20,6 +20,7 @@ package org.giste.roadbook.ui.icons.landmark
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -49,7 +50,7 @@ private fun IconItem(name: String, icon: ImageVector) {
             contentDescription = name,
             modifier = Modifier
                 .size(48.dp)
-                .background(MaterialTheme.colorScheme.surface),
+                .background(RoadbookTheme.colors.background),
         )
         Text(
             text = name,
@@ -64,12 +65,12 @@ private fun IconItem(name: String, icon: ImageVector) {
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, name = "Dark Mode")
 @Composable
 private fun LandmarkIconsGallery() {
-    RoadbookTheme {
-        val onSurface = MaterialTheme.colorScheme.onSurface
-        val iconSurface = MaterialTheme.colorScheme.surface
+    RoadbookTheme(useDarkTheme = isSystemInDarkTheme()) {
+        val onBackground = RoadbookTheme.colors.onBackground
+        val background = RoadbookTheme.colors.background
 
         Surface(
-            color = MaterialTheme.colorScheme.surfaceVariant,
+            color = RoadbookTheme.colors.shortDistanceBackground,
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
@@ -80,13 +81,13 @@ private fun LandmarkIconsGallery() {
 
                 // Grid implementation using Rows
                 val icons = listOf(
-                    "Above Bridge" to RoadbookIcons.Landmark.aboveBridge(onSurface, iconSurface),
-                    "Under Bridge" to RoadbookIcons.Landmark.underBridge(onSurface, iconSurface),
-                    "House" to RoadbookIcons.Landmark.house(onSurface, iconSurface),
-                    "Tunnel" to RoadbookIcons.Landmark.tunnel(onSurface),
-                    "Fort/Castle" to RoadbookIcons.Landmark.fortCastle(onSurface),
-                    "Traffic Light" to RoadbookIcons.Landmark.trafficLight(onSurface, iconSurface),
-                    "Tree" to RoadbookIcons.Landmark.tree(onSurface)
+                    "Above Bridge" to RoadbookIcons.Landmark.aboveBridge(onBackground, background),
+                    "Under Bridge" to RoadbookIcons.Landmark.underBridge(onBackground, background),
+                    "House" to RoadbookIcons.Landmark.house(onBackground, background),
+                    "Tunnel" to RoadbookIcons.Landmark.tunnel(onBackground),
+                    "Fort/Castle" to RoadbookIcons.Landmark.fortCastle(onBackground),
+                    "Traffic Light" to RoadbookIcons.Landmark.trafficLight(onBackground, background),
+                    "Tree" to RoadbookIcons.Landmark.tree(onBackground)
                 )
 
                 icons.chunked(3).forEach { rowIcons ->

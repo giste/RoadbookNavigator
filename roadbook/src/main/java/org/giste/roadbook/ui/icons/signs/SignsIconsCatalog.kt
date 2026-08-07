@@ -20,6 +20,7 @@ package org.giste.roadbook.ui.icons.signs
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -49,7 +50,7 @@ private fun IconItem(name: String, icon: ImageVector) {
             contentDescription = name,
             modifier = Modifier
                 .size(48.dp)
-                .background(MaterialTheme.colorScheme.surface),
+                .background(RoadbookTheme.colors.background),
         )
         Text(
             text = name,
@@ -64,11 +65,11 @@ private fun IconItem(name: String, icon: ImageVector) {
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, name = "Dark Mode")
 @Composable
 private fun SignsIconsGallery() {
-    RoadbookTheme {
-        val onSurface = MaterialTheme.colorScheme.onSurface
+    RoadbookTheme(useDarkTheme = isSystemInDarkTheme()) {
+        val onBackground = RoadbookTheme.colors.onBackground
 
         Surface(
-            color = MaterialTheme.colorScheme.surfaceVariant,
+            color = RoadbookTheme.colors.shortDistanceBackground,
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
@@ -80,7 +81,7 @@ private fun SignsIconsGallery() {
                 val icons = listOf(
                     "Stop" to RoadbookIcons.Signs.Stop,
                     "Alert" to RoadbookIcons.Signs.Alert,
-                    "Roundabout" to RoadbookIcons.Signs.roundabout(onSurface)
+                    "Roundabout" to RoadbookIcons.Signs.roundabout(onBackground)
                 )
 
                 icons.chunked(3).forEach { rowIcons ->

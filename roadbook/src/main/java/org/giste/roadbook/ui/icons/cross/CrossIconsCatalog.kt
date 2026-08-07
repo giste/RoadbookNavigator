@@ -20,6 +20,7 @@ package org.giste.roadbook.ui.icons.cross
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -49,7 +50,7 @@ private fun IconItem(name: String, icon: ImageVector) {
             contentDescription = name,
             modifier = Modifier
                 .size(48.dp)
-                .background(MaterialTheme.colorScheme.surface),
+                .background(RoadbookTheme.colors.background),
         )
         Text(
             text = name,
@@ -64,12 +65,12 @@ private fun IconItem(name: String, icon: ImageVector) {
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, name = "Dark Mode")
 @Composable
 private fun CrossIconsGallery() {
-    RoadbookTheme {
-        val onSurface = MaterialTheme.colorScheme.onSurface
-        val iconSurface = MaterialTheme.colorScheme.surface
+    RoadbookTheme(useDarkTheme = isSystemInDarkTheme()) {
+        val onBackground = RoadbookTheme.colors.onBackground
+        val background = RoadbookTheme.colors.background
 
         Surface(
-            color = MaterialTheme.colorScheme.surfaceVariant,
+            color = RoadbookTheme.colors.shortDistanceBackground,
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
@@ -79,11 +80,11 @@ private fun CrossIconsGallery() {
                 )
                 
                 val icons = listOf(
-                    "Fuel Zone" to RoadbookIcons.Cross.fuelZone(onSurface),
+                    "Fuel Zone" to RoadbookIcons.Cross.fuelZone(onBackground),
                     "Danger Level 1" to RoadbookIcons.Cross.DangerLevel1,
                     "Danger Level 2" to RoadbookIcons.Cross.DangerLevel2,
                     "Danger Level 3" to RoadbookIcons.Cross.DangerLevel3,
-                    "Reset Distance" to RoadbookIcons.Cross.resetDistance(onSurface, iconSurface)
+                    "Reset Distance" to RoadbookIcons.Cross.resetDistance(onBackground, background)
                 )
 
                 icons.chunked(3).forEach { rowIcons ->

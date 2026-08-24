@@ -26,47 +26,46 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 import org.giste.roadbook.ui.icons.RoadbookIcons
 
-@get:Suppress("UnusedReceiverParameter")
-internal val RoadbookIcons.Signs.Alert: ImageVector
-    get() {
-        if (_Alert != null) {
-            return _Alert!!
-        }
-        _Alert = ImageVector.Builder(
-            name = "Signs.Alert",
-            defaultWidth = 48.dp,
-            defaultHeight = 48.dp,
-            viewportWidth = 48f,
-            viewportHeight = 48f
-        ).apply {
-            group(
-                clipPathData = PathData {
-                    moveTo(0f, 0f)
-                    horizontalLineToRelative(48f)
-                    verticalLineToRelative(48f)
-                    horizontalLineToRelative(-48f)
-                    close()
-                }
-            ) {
-                path(
-                    fill = SolidColor(Color(0xFFD9D9D9)),
-                    stroke = SolidColor(Color.Red),
-                    strokeLineWidth = 3f
-                ) {
-                    moveTo(23.567f, 5.75f)
-                    curveTo(23.76f, 5.417f, 24.24f, 5.417f, 24.433f, 5.75f)
-                    lineTo(45.218f, 41.75f)
-                    curveTo(45.41f, 42.083f, 45.169f, 42.5f, 44.784f, 42.5f)
-                    horizontalLineTo(3.216f)
-                    curveTo(2.831f, 42.5f, 2.59f, 42.083f, 2.782f, 41.75f)
-                    lineTo(23.567f, 5.75f)
-                    close()
-                }
+@Suppress("UnusedReceiverParameter")
+internal fun RoadbookIcons.Signs.alert(onBackground: Color): ImageVector {
+    return ImageVector.Builder(
+        name = "Alert",
+        defaultWidth = 48.dp,
+        defaultHeight = 48.dp,
+        viewportWidth = 48f,
+        viewportHeight = 48f
+    ).apply {
+        group(
+            clipPathData = PathData {
+                moveTo(0f, 0f)
+                horizontalLineToRelative(48f)
+                verticalLineToRelative(48f)
+                horizontalLineToRelative(-48f)
+                close()
             }
-        }.build()
-
-        return _Alert!!
-    }
-
-@Suppress("ObjectPropertyName")
-private var _Alert: ImageVector? = null
+        ) {
+            path(
+                fill = SolidColor(Color.Red),
+                stroke = SolidColor(onBackground),
+                strokeLineWidth = 1f
+            ) {
+                moveTo(22.701f, 5.25f)
+                curveTo(23.278f, 4.25f, 24.722f, 4.25f, 25.299f, 5.25f)
+                lineTo(46.084f, 41.25f)
+                curveTo(46.661f, 42.25f, 45.939f, 43.5f, 44.784f, 43.5f)
+                horizontalLineTo(3.216f)
+                curveTo(2.133f, 43.5f, 1.431f, 42.402f, 1.823f, 41.44f)
+                lineTo(1.916f, 41.25f)
+                lineTo(22.701f, 5.25f)
+                close()
+            }
+            path(fill = SolidColor(Color(0xFFD9D9D9))) {
+                moveTo(24f, 10f)
+                lineTo(41.32f, 40f)
+                horizontalLineTo(6.679f)
+                lineTo(24f, 10f)
+                close()
+            }
+        }
+    }.build()
+}

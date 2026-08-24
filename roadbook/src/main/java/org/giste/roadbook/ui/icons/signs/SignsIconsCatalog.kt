@@ -80,7 +80,7 @@ private fun SignsIconsGallery() {
                 
                 val icons = listOf(
                     "Stop" to RoadbookIcons.Signs.Stop,
-                    "Alert" to RoadbookIcons.Signs.Alert,
+                    "Alert" to RoadbookIcons.Signs.alert(onBackground),
                     "Roundabout" to RoadbookIcons.Signs.roundabout(onBackground)
                 )
 

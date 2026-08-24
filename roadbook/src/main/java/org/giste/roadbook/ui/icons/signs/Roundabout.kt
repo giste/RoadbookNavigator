@@ -47,7 +47,7 @@ internal fun RoadbookIcons.Signs.roundabout(onBackground: Color): ImageVector {
             path(
                 fill = SolidColor(Color(0xFF376FDE)),
                 stroke = SolidColor(onBackground),
-                strokeLineWidth = 2f
+                strokeLineWidth = 1f
             ) {
                 moveTo(24f, 24f)
                 moveToRelative(-23f, 0f)

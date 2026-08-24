@@ -26,13 +26,9 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 import org.giste.roadbook.ui.icons.RoadbookIcons
 
-@get:Suppress("UnusedReceiverParameter")
-internal val RoadbookIcons.Signs.Stop: ImageVector
-    get() {
-        if (_Stop != null) {
-            return _Stop!!
-        }
-        _Stop = ImageVector.Builder(
+@Suppress("UnusedReceiverParameter")
+internal fun RoadbookIcons.Signs.stop(onBackground: Color): ImageVector {
+    return ImageVector.Builder(
             name = "Signs.Stop",
             defaultWidth = 48.dp,
             defaultHeight = 48.dp,
@@ -48,7 +44,11 @@ internal val RoadbookIcons.Signs.Stop: ImageVector
                     close()
                 }
             ) {
-                path(fill = SolidColor(Color(0xFFFB0000))) {
+                path(
+                    fill = SolidColor(Color(0xFFFB0000)),
+                    stroke = SolidColor(onBackground),
+                    strokeLineWidth = 1f,
+                ) {
                     moveTo(14.433f, 0.903f)
                     lineTo(33.567f, 0.903f)
                     lineTo(47.097f, 14.433f)
@@ -60,21 +60,21 @@ internal val RoadbookIcons.Signs.Stop: ImageVector
                     lineTo(14.433f, 0.903f)
                     close()
                 }
-                path(
-                    stroke = SolidColor(Color.White),
-                    strokeLineWidth = 1f
-                ) {
-                    moveTo(32.977f, 2.326f)
-                    lineTo(45.672f, 15.023f)
-                    lineTo(45.673f, 32.977f)
-                    lineTo(32.977f, 45.672f)
-                    lineTo(15.022f, 45.674f)
-                    lineTo(2.327f, 32.977f)
-                    lineTo(2.326f, 15.022f)
-                    lineTo(15.023f, 2.327f)
-                    lineTo(32.977f, 2.326f)
-                    close()
-                }
+//                path(
+//                    stroke = SolidColor(Color.White),
+//                    strokeLineWidth = 1f
+//                ) {
+//                    moveTo(32.977f, 2.326f)
+//                    lineTo(45.672f, 15.023f)
+//                    lineTo(45.673f, 32.977f)
+//                    lineTo(32.977f, 45.672f)
+//                    lineTo(15.022f, 45.674f)
+//                    lineTo(2.327f, 32.977f)
+//                    lineTo(2.326f, 15.022f)
+//                    lineTo(15.023f, 2.327f)
+//                    lineTo(32.977f, 2.326f)
+//                    close()
+//                }
                 path(fill = SolidColor(Color.White)) {
                     moveTo(10.609f, 21.273f)
                     curveTo(10.54f, 20.697f, 10.264f, 20.25f, 9.779f, 19.932f)
@@ -181,9 +181,4 @@ internal val RoadbookIcons.Signs.Stop: ImageVector
                 }
             }
         }.build()
-
-        return _Stop!!
     }
-
-@Suppress("ObjectPropertyName")
-private var _Stop: ImageVector? = null

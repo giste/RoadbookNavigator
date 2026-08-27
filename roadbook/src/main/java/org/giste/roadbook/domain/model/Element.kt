@@ -93,7 +93,7 @@ internal data class Icon(
         // Cross
         Danger1, Danger2, Danger3, FuelZone, ResetDistance,
         // Landmark
-        AboveBridge, FortCastle, House, TrafficLight, Tree, Tunnel, UnderBridge,
+        AboveBridge, Church, FortCastle, House, TrafficLight, Tree, Tunnel, UnderBridge,
         // Signs
         Alert, Roundabout, Stop,
         // Speed

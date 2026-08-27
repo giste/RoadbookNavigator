@@ -87,7 +87,8 @@ private fun LandmarkIconsGallery() {
                     "Tunnel" to RoadbookIcons.Landmark.tunnel(onBackground),
                     "Fort/Castle" to RoadbookIcons.Landmark.fortCastle(onBackground),
                     "Traffic Light" to RoadbookIcons.Landmark.trafficLight(onBackground, background),
-                    "Tree" to RoadbookIcons.Landmark.tree(onBackground)
+                    "Tree" to RoadbookIcons.Landmark.tree(onBackground),
+                    "Church" to RoadbookIcons.Landmark.church(onBackground, background),
                 )
 
                 icons.chunked(3).forEach { rowIcons ->

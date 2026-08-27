@@ -179,6 +179,7 @@ internal class Rn2ElementMapper @Inject constructor(
             is Rn2Icon.ResetDistance -> Icon.IconType.ResetDistance
             // Landmark
             is Rn2Icon.AboveBridge -> Icon.IconType.AboveBridge
+            is Rn2Icon.Church -> Icon.IconType.Church
             is Rn2Icon.FortCastle -> Icon.IconType.FortCastle
             is Rn2Icon.House -> Icon.IconType.House
             is Rn2Icon.TrafficLight -> Icon.IconType.TrafficLight

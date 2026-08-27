@@ -53,6 +53,7 @@ internal sealed class Rn2Icon : Rn2Element() {
         const val LANDMARK_TREE_ID = "75b46651-d46d-4655-b4ab-6a0dcff4fb38"
         const val LANDMARK_TUNNEL_ID = "0539c8e3-393b-4416-8002-b30700cf68de"
         const val LANDMARK_UNDER_BRIDGE_ID = "79f8c10f-d67b-4ba5-bf12-6a801ed79ed3"
+        const val LANDMARK_CHURCH_ID = "2b631045-4022-44d0-b966-c27c992fd7a2"
 
         // Signs
         const val SIGN_ALERT_ID = "2598a2c0-6a8b-4dc5-8211-8ad64d986bde"
@@ -152,6 +153,20 @@ internal sealed class Rn2Icon : Rn2Element() {
 
     @Serializable
     internal data class AboveBridge(
+        override val id: String,
+        override val name: String,
+        override val angle: Double? = null,
+        override val w: Double = 50.0,
+        override val width: Double? = null,
+        override val height: Double? = null,
+        override val x: Double? = null,
+        override val y: Double? = null,
+        override val scaleX: Double? = null,
+        override val scaleY: Double? = null
+    ) : Rn2Icon()
+
+    @Serializable
+    internal data class Church(
         override val id: String,
         override val name: String,
         override val angle: Double? = null,
@@ -543,6 +558,7 @@ internal object Rn2IconSerializer : JsonContentPolymorphicSerializer<Rn2Icon>(Rn
             Rn2Icon.CROSS_RESET_DISTANCE_ID -> Rn2Icon.ResetDistance.serializer()
             // Landmark
             Rn2Icon.LANDMARK_ABOVE_BRIDGE_ID -> Rn2Icon.AboveBridge.serializer()
+            Rn2Icon.LANDMARK_CHURCH_ID -> Rn2Icon.Church.serializer()
             Rn2Icon.LANDMARK_FORT_CASTLE_ID -> Rn2Icon.FortCastle.serializer()
             Rn2Icon.LANDMARK_HOUSE_ID -> Rn2Icon.House.serializer()
             Rn2Icon.LANDMARK_TRAFFIC_LIGHT_ID -> Rn2Icon.TrafficLight.serializer()

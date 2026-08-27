@@ -27,6 +27,7 @@ import org.giste.roadbook.ui.icons.cross.DangerLevel3
 import org.giste.roadbook.ui.icons.cross.fuelZone
 import org.giste.roadbook.ui.icons.cross.resetDistance
 import org.giste.roadbook.ui.icons.landmark.aboveBridge
+import org.giste.roadbook.ui.icons.landmark.church
 import org.giste.roadbook.ui.icons.landmark.fortCastle
 import org.giste.roadbook.ui.icons.landmark.house
 import org.giste.roadbook.ui.icons.landmark.trafficLight
@@ -64,6 +65,7 @@ internal object IconMapper {
             Icon.IconType.ResetDistance -> RoadbookIcons.Cross.resetDistance(onBackground, background)
             // Landmark
             Icon.IconType.AboveBridge -> RoadbookIcons.Landmark.aboveBridge(onBackground, background)
+            Icon.IconType.Church -> RoadbookIcons.Landmark.church(onBackground, background)
             Icon.IconType.FortCastle -> RoadbookIcons.Landmark.fortCastle(onBackground)
             Icon.IconType.House -> RoadbookIcons.Landmark.house(onBackground, background)
             Icon.IconType.TrafficLight -> RoadbookIcons.Landmark.trafficLight(onBackground, background)

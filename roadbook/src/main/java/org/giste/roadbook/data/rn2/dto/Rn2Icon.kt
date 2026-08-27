@@ -47,16 +47,17 @@ internal sealed class Rn2Icon : Rn2Element() {
 
         // Landmark
         const val LANDMARK_ABOVE_BRIDGE_ID = "a49a0b2e-3be5-4659-8251-8205fd4e9571"
+        const val LANDMARK_CHURCH_ID = "2b631045-4022-44d0-b966-c27c992fd7a2"
         const val LANDMARK_FORT_CASTLE_ID = "da5ec2a7-612a-411f-aeb2-d1f9514d3dc7"
         const val LANDMARK_HOUSE_ID = "3965bf45-97ee-4c6b-b087-0e128510c4e3"
         const val LANDMARK_TRAFFIC_LIGHT_ID = "1d752896-09fd-498d-b416-21f31a356be5"
         const val LANDMARK_TREE_ID = "75b46651-d46d-4655-b4ab-6a0dcff4fb38"
         const val LANDMARK_TUNNEL_ID = "0539c8e3-393b-4416-8002-b30700cf68de"
         const val LANDMARK_UNDER_BRIDGE_ID = "79f8c10f-d67b-4ba5-bf12-6a801ed79ed3"
-        const val LANDMARK_CHURCH_ID = "2b631045-4022-44d0-b966-c27c992fd7a2"
 
         // Signs
         const val SIGN_ALERT_ID = "2598a2c0-6a8b-4dc5-8211-8ad64d986bde"
+        const val SIGN_DO_NOT_ENTER_ID = "2a0a575d-b1b7-4307-864f-e4a9df1618eb"
         const val SIGN_ROUNDABOUT_ID = "5d157992-6013-4bef-86cb-92fea891944c"
         const val SIGN_STOP_ID = "5a4ced4c-68e2-41d3-a1b4-9c8b86ec2109"
 
@@ -265,6 +266,20 @@ internal sealed class Rn2Icon : Rn2Element() {
 
     @Serializable
     internal data class Alert(
+        override val id: String,
+        override val name: String,
+        override val angle: Double? = null,
+        override val w: Double = 50.0,
+        override val width: Double? = null,
+        override val height: Double? = null,
+        override val x: Double? = null,
+        override val y: Double? = null,
+        override val scaleX: Double? = null,
+        override val scaleY: Double? = null
+    ) : Rn2Icon()
+
+    @Serializable
+    internal data class DoNotEnter(
         override val id: String,
         override val name: String,
         override val angle: Double? = null,
@@ -567,6 +582,7 @@ internal object Rn2IconSerializer : JsonContentPolymorphicSerializer<Rn2Icon>(Rn
             Rn2Icon.LANDMARK_UNDER_BRIDGE_ID -> Rn2Icon.UnderBridge.serializer()
             // Signs
             Rn2Icon.SIGN_ALERT_ID -> Rn2Icon.Alert.serializer()
+            Rn2Icon.SIGN_DO_NOT_ENTER_ID -> Rn2Icon.DoNotEnter.serializer()
             Rn2Icon.SIGN_ROUNDABOUT_ID -> Rn2Icon.Roundabout.serializer()
             Rn2Icon.SIGN_STOP_ID -> Rn2Icon.Stop.serializer()
             // Terrain
@@ -594,22 +610,26 @@ internal object Rn2IconSerializer : JsonContentPolymorphicSerializer<Rn2Icon>(Rn
 
         val name = json["name"]?.jsonPrimitive?.content
         return when (name) {
+            // Cross
             "Danger Level 1" -> Rn2Icon.Danger1.serializer()
             "Danger Level 2" -> Rn2Icon.Danger2.serializer()
             "Danger Level 3" -> Rn2Icon.Danger3.serializer()
+            // Landmark
             "Fuel Zone" -> Rn2Icon.FuelZone.serializer()
             "Reset to Distance to Zero" -> Rn2Icon.ResetDistance.serializer()
             "Above Bridge" -> Rn2Icon.AboveBridge.serializer()
+            "Church" -> Rn2Icon.Church.serializer()
             "Fort / Castle" -> Rn2Icon.FortCastle.serializer()
             "House" -> Rn2Icon.House.serializer()
             "Traffic Light" -> Rn2Icon.TrafficLight.serializer()
             "Tree" -> Rn2Icon.Tree.serializer()
             "Tunnel" -> Rn2Icon.Tunnel.serializer()
             "Under Bridge" -> Rn2Icon.UnderBridge.serializer()
+            // Signs
             "Alert" -> Rn2Icon.Alert.serializer()
+            "Do Not Enter" -> Rn2Icon.DoNotEnter.serializer()
             "Roundabout" -> Rn2Icon.Roundabout.serializer()
             "Stop" -> Rn2Icon.Stop.serializer()
-            "River / Water" -> Rn2Icon.RiverWater.serializer()
             // Speed Limits
             "Speed Limit 10" -> Rn2Icon.Limit10.serializer()
             "Speed Limit 20" -> Rn2Icon.Limit20.serializer()
@@ -626,6 +646,8 @@ internal object Rn2IconSerializer : JsonContentPolymorphicSerializer<Rn2Icon>(Rn
             "Speed Limit 130" -> Rn2Icon.Limit130.serializer()
             "Speed Limit 140" -> Rn2Icon.Limit140.serializer()
             "Speed Limit 150" -> Rn2Icon.Limit150.serializer()
+            // Terrain
+            "River / Water" -> Rn2Icon.RiverWater.serializer()
             else -> Rn2Icon.Unknown.serializer()
         }
     }

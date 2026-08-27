@@ -95,7 +95,7 @@ internal data class Icon(
         // Landmark
         AboveBridge, Church, FortCastle, House, TrafficLight, Tree, Tunnel, UnderBridge,
         // Signs
-        Alert, Roundabout, Stop,
+        Alert, DoNotEnter, Roundabout, Stop,
         // Speed
         SpeedLimit10, SpeedLimit20, SpeedLimit30, SpeedLimit40, SpeedLimit50,
         SpeedLimit60, SpeedLimit70, SpeedLimit80, SpeedLimit90, SpeedLimit100,

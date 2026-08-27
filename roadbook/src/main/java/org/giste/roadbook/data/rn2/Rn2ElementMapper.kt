@@ -188,6 +188,7 @@ internal class Rn2ElementMapper @Inject constructor(
             is Rn2Icon.UnderBridge -> Icon.IconType.UnderBridge
             // Signs
             is Rn2Icon.Alert -> Icon.IconType.Alert
+            is Rn2Icon.DoNotEnter -> Icon.IconType.DoNotEnter
             is Rn2Icon.Roundabout -> Icon.IconType.Roundabout
             is Rn2Icon.Stop -> Icon.IconType.Stop
             // Terrain

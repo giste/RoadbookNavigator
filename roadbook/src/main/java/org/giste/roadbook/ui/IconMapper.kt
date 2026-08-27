@@ -35,6 +35,7 @@ import org.giste.roadbook.ui.icons.landmark.tree
 import org.giste.roadbook.ui.icons.landmark.tunnel
 import org.giste.roadbook.ui.icons.landmark.underBridge
 import org.giste.roadbook.ui.icons.signs.alert
+import org.giste.roadbook.ui.icons.signs.doNotEnter
 import org.giste.roadbook.ui.icons.signs.roundabout
 import org.giste.roadbook.ui.icons.signs.stop
 import org.giste.roadbook.ui.icons.speed.limit20
@@ -74,6 +75,7 @@ internal object IconMapper {
             Icon.IconType.UnderBridge -> RoadbookIcons.Landmark.underBridge(onBackground, background)
             // Signs
             Icon.IconType.Alert -> RoadbookIcons.Signs.alert(onBackground)
+            Icon.IconType.DoNotEnter -> RoadbookIcons.Signs.doNotEnter(onBackground)
             Icon.IconType.Roundabout -> RoadbookIcons.Signs.roundabout(onBackground)
             Icon.IconType.Stop -> RoadbookIcons.Signs.stop(onBackground)
             // Terrain

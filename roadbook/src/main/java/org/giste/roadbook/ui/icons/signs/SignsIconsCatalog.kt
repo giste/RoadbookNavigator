@@ -79,9 +79,10 @@ private fun SignsIconsGallery() {
                 )
                 
                 val icons = listOf(
-                    "Stop" to RoadbookIcons.Signs.stop(onBackground),
                     "Alert" to RoadbookIcons.Signs.alert(onBackground),
-                    "Roundabout" to RoadbookIcons.Signs.roundabout(onBackground)
+                    "Do not enter" to RoadbookIcons.Signs.doNotEnter(onBackground),
+                    "Roundabout" to RoadbookIcons.Signs.roundabout(onBackground),
+                    "Stop" to RoadbookIcons.Signs.stop(onBackground),
                 )
 
                 icons.chunked(3).forEach { rowIcons ->

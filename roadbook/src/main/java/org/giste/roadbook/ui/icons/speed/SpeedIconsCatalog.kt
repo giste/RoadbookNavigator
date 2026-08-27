@@ -66,6 +66,8 @@ private fun IconItem(name: String, icon: ImageVector) {
 @Composable
 private fun SpeedIconsGallery() {
     RoadbookTheme(useDarkTheme = isSystemInDarkTheme()) {
+        val onBackground = RoadbookTheme.colors.onBackground
+
         Surface(
             color = RoadbookTheme.colors.shortDistanceBackground,
         ) {
@@ -77,21 +79,21 @@ private fun SpeedIconsGallery() {
                 )
                 
                 val icons = listOf(
-                    "10" to RoadbookIcons.Speed.Limit10,
-                    "20" to RoadbookIcons.Speed.Limit20,
-                    "30" to RoadbookIcons.Speed.Limit30,
-                    "40" to RoadbookIcons.Speed.Limit40,
-                    "50" to RoadbookIcons.Speed.Limit50,
-                    "60" to RoadbookIcons.Speed.Limit60,
-                    "70" to RoadbookIcons.Speed.Limit70,
-                    "80" to RoadbookIcons.Speed.Limit80,
-                    "90" to RoadbookIcons.Speed.Limit90,
-                    "100" to RoadbookIcons.Speed.Limit100,
-                    "110" to RoadbookIcons.Speed.Limit110,
-                    "120" to RoadbookIcons.Speed.Limit120,
-                    "130" to RoadbookIcons.Speed.Limit130,
-                    "140" to RoadbookIcons.Speed.Limit140,
-                    "150" to RoadbookIcons.Speed.Limit150
+                    "10" to RoadbookIcons.Speed.limit10(onBackground),
+                    "20" to RoadbookIcons.Speed.limit20(onBackground),
+                    "30" to RoadbookIcons.Speed.limit30(onBackground),
+                    "40" to RoadbookIcons.Speed.limit40(onBackground),
+                    "50" to RoadbookIcons.Speed.limit50(onBackground),
+                    "60" to RoadbookIcons.Speed.limit60(onBackground),
+                    "70" to RoadbookIcons.Speed.limit70(onBackground),
+                    "80" to RoadbookIcons.Speed.limit80(onBackground),
+                    "90" to RoadbookIcons.Speed.limit90(onBackground),
+                    "100" to RoadbookIcons.Speed.limit100(onBackground),
+                    "110" to RoadbookIcons.Speed.limit110(onBackground),
+                    "120" to RoadbookIcons.Speed.limit120(onBackground),
+                    "130" to RoadbookIcons.Speed.limit130(onBackground),
+                    "140" to RoadbookIcons.Speed.limit140(onBackground),
+                    "150" to RoadbookIcons.Speed.limit150(onBackground),
                 )
 
                 icons.chunked(3).forEach { rowIcons ->

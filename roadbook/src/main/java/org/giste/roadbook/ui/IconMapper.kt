@@ -33,24 +33,24 @@ import org.giste.roadbook.ui.icons.landmark.trafficLight
 import org.giste.roadbook.ui.icons.landmark.tree
 import org.giste.roadbook.ui.icons.landmark.tunnel
 import org.giste.roadbook.ui.icons.landmark.underBridge
-import org.giste.roadbook.ui.icons.signs.Alert
-import org.giste.roadbook.ui.icons.signs.Stop
+import org.giste.roadbook.ui.icons.signs.alert
 import org.giste.roadbook.ui.icons.signs.roundabout
-import org.giste.roadbook.ui.icons.speed.Limit10
-import org.giste.roadbook.ui.icons.speed.Limit20
-import org.giste.roadbook.ui.icons.speed.Limit30
-import org.giste.roadbook.ui.icons.speed.Limit40
-import org.giste.roadbook.ui.icons.speed.Limit50
-import org.giste.roadbook.ui.icons.speed.Limit60
-import org.giste.roadbook.ui.icons.speed.Limit70
-import org.giste.roadbook.ui.icons.speed.Limit80
-import org.giste.roadbook.ui.icons.speed.Limit90
-import org.giste.roadbook.ui.icons.speed.Limit100
-import org.giste.roadbook.ui.icons.speed.Limit110
-import org.giste.roadbook.ui.icons.speed.Limit120
-import org.giste.roadbook.ui.icons.speed.Limit130
-import org.giste.roadbook.ui.icons.speed.Limit140
-import org.giste.roadbook.ui.icons.speed.Limit150
+import org.giste.roadbook.ui.icons.signs.stop
+import org.giste.roadbook.ui.icons.speed.limit20
+import org.giste.roadbook.ui.icons.speed.limit30
+import org.giste.roadbook.ui.icons.speed.limit40
+import org.giste.roadbook.ui.icons.speed.limit50
+import org.giste.roadbook.ui.icons.speed.limit60
+import org.giste.roadbook.ui.icons.speed.limit70
+import org.giste.roadbook.ui.icons.speed.limit80
+import org.giste.roadbook.ui.icons.speed.limit90
+import org.giste.roadbook.ui.icons.speed.limit100
+import org.giste.roadbook.ui.icons.speed.limit110
+import org.giste.roadbook.ui.icons.speed.limit120
+import org.giste.roadbook.ui.icons.speed.limit130
+import org.giste.roadbook.ui.icons.speed.limit140
+import org.giste.roadbook.ui.icons.speed.limit150
+import org.giste.roadbook.ui.icons.speed.limit10
 import org.giste.roadbook.ui.icons.terrain.river
 
 internal object IconMapper {
@@ -71,27 +71,27 @@ internal object IconMapper {
             Icon.IconType.Tunnel -> RoadbookIcons.Landmark.tunnel(onBackground)
             Icon.IconType.UnderBridge -> RoadbookIcons.Landmark.underBridge(onBackground, background)
             // Signs
-            Icon.IconType.Alert -> RoadbookIcons.Signs.Alert
+            Icon.IconType.Alert -> RoadbookIcons.Signs.alert(onBackground)
             Icon.IconType.Roundabout -> RoadbookIcons.Signs.roundabout(onBackground)
-            Icon.IconType.Stop -> RoadbookIcons.Signs.Stop
+            Icon.IconType.Stop -> RoadbookIcons.Signs.stop(onBackground)
             // Terrain
             Icon.IconType.RiverWater -> RoadbookIcons.Terrain.river(onBackground)
             // Speed
-            Icon.IconType.SpeedLimit10 -> RoadbookIcons.Speed.Limit10
-            Icon.IconType.SpeedLimit20 -> RoadbookIcons.Speed.Limit20
-            Icon.IconType.SpeedLimit30 -> RoadbookIcons.Speed.Limit30
-            Icon.IconType.SpeedLimit40 -> RoadbookIcons.Speed.Limit40
-            Icon.IconType.SpeedLimit50 -> RoadbookIcons.Speed.Limit50
-            Icon.IconType.SpeedLimit60 -> RoadbookIcons.Speed.Limit60
-            Icon.IconType.SpeedLimit70 -> RoadbookIcons.Speed.Limit70
-            Icon.IconType.SpeedLimit80 -> RoadbookIcons.Speed.Limit80
-            Icon.IconType.SpeedLimit90 -> RoadbookIcons.Speed.Limit90
-            Icon.IconType.SpeedLimit100 -> RoadbookIcons.Speed.Limit100
-            Icon.IconType.SpeedLimit110 -> RoadbookIcons.Speed.Limit110
-            Icon.IconType.SpeedLimit120 -> RoadbookIcons.Speed.Limit120
-            Icon.IconType.SpeedLimit130 -> RoadbookIcons.Speed.Limit130
-            Icon.IconType.SpeedLimit140 -> RoadbookIcons.Speed.Limit140
-            Icon.IconType.SpeedLimit150 -> RoadbookIcons.Speed.Limit150
+            Icon.IconType.SpeedLimit10 -> RoadbookIcons.Speed.limit10(onBackground)
+            Icon.IconType.SpeedLimit20 -> RoadbookIcons.Speed.limit20(onBackground)
+            Icon.IconType.SpeedLimit30 -> RoadbookIcons.Speed.limit30(onBackground)
+            Icon.IconType.SpeedLimit40 -> RoadbookIcons.Speed.limit40(onBackground)
+            Icon.IconType.SpeedLimit50 -> RoadbookIcons.Speed.limit50(onBackground)
+            Icon.IconType.SpeedLimit60 -> RoadbookIcons.Speed.limit60(onBackground)
+            Icon.IconType.SpeedLimit70 -> RoadbookIcons.Speed.limit70(onBackground)
+            Icon.IconType.SpeedLimit80 -> RoadbookIcons.Speed.limit80(onBackground)
+            Icon.IconType.SpeedLimit90 -> RoadbookIcons.Speed.limit90(onBackground)
+            Icon.IconType.SpeedLimit100 -> RoadbookIcons.Speed.limit100(onBackground)
+            Icon.IconType.SpeedLimit110 -> RoadbookIcons.Speed.limit110(onBackground)
+            Icon.IconType.SpeedLimit120 -> RoadbookIcons.Speed.limit120(onBackground)
+            Icon.IconType.SpeedLimit130 -> RoadbookIcons.Speed.limit130(onBackground)
+            Icon.IconType.SpeedLimit140 -> RoadbookIcons.Speed.limit140(onBackground)
+            Icon.IconType.SpeedLimit150 -> RoadbookIcons.Speed.limit150(onBackground)
             // Unknown
             Icon.IconType.Unknown -> null
         }

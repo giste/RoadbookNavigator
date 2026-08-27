@@ -26,125 +26,106 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 import org.giste.roadbook.ui.icons.RoadbookIcons
 
-@get:Suppress("UnusedReceiverParameter")
-internal val RoadbookIcons.Speed.Limit120: ImageVector
-    get() {
-        if (_Limit120 != null) {
-            return _Limit120!!
-        }
-        _Limit120 = ImageVector.Builder(
-            name = "Speed.Limit120",
-            defaultWidth = 48.dp,
-            defaultHeight = 48.dp,
-            viewportWidth = 48f,
-            viewportHeight = 48f
-        ).apply {
-            group(
-                clipPathData = PathData {
-                    moveTo(0f, 0f)
-                    horizontalLineToRelative(48f)
-                    verticalLineToRelative(48f)
-                    horizontalLineToRelative(-48f)
-                    close()
-                }
-            ) {
-                path(
-                    fill = SolidColor(Color.White),
-                    stroke = SolidColor(Color.Red),
-                    strokeLineWidth = 4f
-                ) {
-                    moveTo(24f, 24f)
-                    moveToRelative(-22f, 0f)
-                    arcToRelative(
-                        22f,
-                        22f,
-                        0f,
-                        isMoreThanHalf = true,
-                        isPositiveArc = true,
-                        44f,
-                        0f
-                    )
-                    arcToRelative(
-                        22f,
-                        22f,
-                        0f,
-                        isMoreThanHalf = true,
-                        isPositiveArc = true,
-                        -44f,
-                        0f
-                    )
-                }
-                path(fill = SolidColor(Color.Black)) {
-                    moveTo(12.724f, 15.545f)
-                    verticalLineTo(33f)
-                    horizontalLineTo(10.082f)
-                    verticalLineTo(18.188f)
-                    horizontalLineTo(9.979f)
-                    lineTo(5.803f, 20.915f)
-                    verticalLineTo(18.392f)
-                    lineTo(10.158f, 15.545f)
-                    horizontalLineTo(12.724f)
-                    close()
-                    moveTo(16.245f, 33f)
-                    verticalLineTo(31.091f)
-                    lineTo(22.152f, 24.972f)
-                    curveTo(22.782f, 24.307f, 23.302f, 23.724f, 23.711f, 23.224f)
-                    curveTo(24.126f, 22.719f, 24.436f, 22.239f, 24.64f, 21.784f)
-                    curveTo(24.845f, 21.33f, 24.947f, 20.847f, 24.947f, 20.335f)
-                    curveTo(24.947f, 19.756f, 24.811f, 19.256f, 24.538f, 18.835f)
-                    curveTo(24.265f, 18.409f, 23.893f, 18.082f, 23.421f, 17.855f)
-                    curveTo(22.95f, 17.622f, 22.419f, 17.506f, 21.828f, 17.506f)
-                    curveTo(21.203f, 17.506f, 20.657f, 17.633f, 20.191f, 17.889f)
-                    curveTo(19.726f, 18.145f, 19.368f, 18.506f, 19.118f, 18.972f)
-                    curveTo(18.868f, 19.438f, 18.743f, 19.983f, 18.743f, 20.608f)
-                    horizontalLineTo(16.228f)
-                    curveTo(16.228f, 19.545f, 16.473f, 18.617f, 16.961f, 17.821f)
-                    curveTo(17.45f, 17.026f, 18.12f, 16.409f, 18.973f, 15.972f)
-                    curveTo(19.825f, 15.528f, 20.794f, 15.307f, 21.879f, 15.307f)
-                    curveTo(22.976f, 15.307f, 23.941f, 15.526f, 24.777f, 15.963f)
-                    curveTo(25.618f, 16.395f, 26.274f, 16.986f, 26.745f, 17.736f)
-                    curveTo(27.217f, 18.48f, 27.453f, 19.321f, 27.453f, 20.258f)
-                    curveTo(27.453f, 20.906f, 27.331f, 21.54f, 27.086f, 22.159f)
-                    curveTo(26.848f, 22.778f, 26.43f, 23.469f, 25.833f, 24.23f)
-                    curveTo(25.237f, 24.986f, 24.407f, 25.903f, 23.345f, 26.983f)
-                    lineTo(19.876f, 30.614f)
-                    verticalLineTo(30.742f)
-                    horizontalLineTo(27.734f)
-                    verticalLineTo(33f)
-                    horizontalLineTo(16.245f)
-                    close()
-                    moveTo(35.841f, 33.29f)
-                    curveTo(34.494f, 33.284f, 33.344f, 32.929f, 32.389f, 32.224f)
-                    curveTo(31.435f, 31.52f, 30.705f, 30.494f, 30.199f, 29.148f)
-                    curveTo(29.693f, 27.801f, 29.44f, 26.179f, 29.44f, 24.281f)
-                    curveTo(29.44f, 22.389f, 29.693f, 20.773f, 30.199f, 19.432f)
-                    curveTo(30.71f, 18.091f, 31.443f, 17.068f, 32.398f, 16.364f)
-                    curveTo(33.358f, 15.659f, 34.506f, 15.307f, 35.841f, 15.307f)
-                    curveTo(37.176f, 15.307f, 38.321f, 15.662f, 39.276f, 16.372f)
-                    curveTo(40.23f, 17.077f, 40.96f, 18.099f, 41.466f, 19.44f)
-                    curveTo(41.977f, 20.776f, 42.233f, 22.389f, 42.233f, 24.281f)
-                    curveTo(42.233f, 26.185f, 41.98f, 27.81f, 41.474f, 29.156f)
-                    curveTo(40.969f, 30.497f, 40.239f, 31.523f, 39.284f, 32.233f)
-                    curveTo(38.329f, 32.938f, 37.182f, 33.29f, 35.841f, 33.29f)
-                    close()
-                    moveTo(35.841f, 31.014f)
-                    curveTo(37.023f, 31.014f, 37.946f, 30.438f, 38.611f, 29.284f)
-                    curveTo(39.281f, 28.131f, 39.616f, 26.463f, 39.616f, 24.281f)
-                    curveTo(39.616f, 22.832f, 39.463f, 21.608f, 39.156f, 20.608f)
-                    curveTo(38.855f, 19.602f, 38.42f, 18.841f, 37.852f, 18.324f)
-                    curveTo(37.29f, 17.801f, 36.619f, 17.54f, 35.841f, 17.54f)
-                    curveTo(34.665f, 17.54f, 33.741f, 18.119f, 33.071f, 19.278f)
-                    curveTo(32.401f, 20.438f, 32.062f, 22.105f, 32.057f, 24.281f)
-                    curveTo(32.057f, 25.736f, 32.207f, 26.966f, 32.508f, 27.972f)
-                    curveTo(32.815f, 28.972f, 33.25f, 29.73f, 33.812f, 30.247f)
-                    curveTo(34.375f, 30.758f, 35.051f, 31.014f, 35.841f, 31.014f)
-                    close()
-                }
+@Suppress("UnusedReceiverParameter")
+internal fun RoadbookIcons.Speed.limit120(onBackground: Color): ImageVector {
+    return ImageVector.Builder(
+        name = "Limit120",
+        defaultWidth = 48.dp,
+        defaultHeight = 48.dp,
+        viewportWidth = 48f,
+        viewportHeight = 48f
+    ).apply {
+        group(
+            clipPathData = PathData {
+                moveTo(0f, 0f)
+                horizontalLineToRelative(48f)
+                verticalLineToRelative(48f)
+                horizontalLineToRelative(-48f)
+                close()
             }
-        }.build()
-
-        return _Limit120!!
-    }
-
-@Suppress("ObjectPropertyName")
-private var _Limit120: ImageVector? = null
+        ) {
+            path(
+                fill = SolidColor(Color.Red),
+                stroke = SolidColor(onBackground),
+                strokeLineWidth = 1f
+            ) {
+                moveTo(24f, 24f)
+                moveToRelative(-23.5f, 0f)
+                arcToRelative(23.5f, 23.5f, 0f, isMoreThanHalf = true, isPositiveArc = true, 47f, 0f)
+                arcToRelative(23.5f, 23.5f, 0f, isMoreThanHalf = true, isPositiveArc = true, -47f, 0f)
+            }
+            path(fill = SolidColor(Color(0xFFD9D9D9))) {
+                moveTo(24f, 24f)
+                moveToRelative(-19f, 0f)
+                arcToRelative(19f, 19f, 0f, isMoreThanHalf = true, isPositiveArc = true, 38f, 0f)
+                arcToRelative(19f, 19f, 0f, isMoreThanHalf = true, isPositiveArc = true, -38f, 0f)
+            }
+            path(fill = SolidColor(Color.Black)) {
+                moveTo(13.663f, 16f)
+                verticalLineTo(32f)
+                horizontalLineTo(11.242f)
+                verticalLineTo(18.422f)
+                horizontalLineTo(11.148f)
+                lineTo(7.32f, 20.922f)
+                verticalLineTo(18.609f)
+                lineTo(11.312f, 16f)
+                horizontalLineTo(13.663f)
+                close()
+                moveTo(16.892f, 32f)
+                verticalLineTo(30.25f)
+                lineTo(22.306f, 24.641f)
+                curveTo(22.884f, 24.031f, 23.36f, 23.497f, 23.735f, 23.039f)
+                curveTo(24.116f, 22.576f, 24.399f, 22.135f, 24.587f, 21.719f)
+                curveTo(24.774f, 21.302f, 24.868f, 20.859f, 24.868f, 20.391f)
+                curveTo(24.868f, 19.859f, 24.743f, 19.401f, 24.493f, 19.016f)
+                curveTo(24.243f, 18.625f, 23.902f, 18.326f, 23.47f, 18.117f)
+                curveTo(23.037f, 17.904f, 22.551f, 17.797f, 22.009f, 17.797f)
+                curveTo(21.436f, 17.797f, 20.936f, 17.914f, 20.509f, 18.148f)
+                curveTo(20.082f, 18.383f, 19.754f, 18.713f, 19.524f, 19.141f)
+                curveTo(19.295f, 19.568f, 19.181f, 20.068f, 19.181f, 20.641f)
+                horizontalLineTo(16.876f)
+                curveTo(16.876f, 19.667f, 17.1f, 18.815f, 17.548f, 18.086f)
+                curveTo(17.996f, 17.357f, 18.61f, 16.792f, 19.392f, 16.391f)
+                curveTo(20.173f, 15.984f, 21.061f, 15.781f, 22.056f, 15.781f)
+                curveTo(23.061f, 15.781f, 23.946f, 15.982f, 24.712f, 16.383f)
+                curveTo(25.483f, 16.779f, 26.084f, 17.32f, 26.517f, 18.008f)
+                curveTo(26.949f, 18.69f, 27.165f, 19.461f, 27.165f, 20.32f)
+                curveTo(27.165f, 20.914f, 27.053f, 21.495f, 26.829f, 22.063f)
+                curveTo(26.61f, 22.63f, 26.228f, 23.263f, 25.681f, 23.961f)
+                curveTo(25.134f, 24.654f, 24.373f, 25.495f, 23.399f, 26.484f)
+                lineTo(20.22f, 29.813f)
+                verticalLineTo(29.93f)
+                horizontalLineTo(27.423f)
+                verticalLineTo(32f)
+                horizontalLineTo(16.892f)
+                close()
+                moveTo(34.854f, 32.266f)
+                curveTo(33.62f, 32.26f, 32.565f, 31.935f, 31.69f, 31.289f)
+                curveTo(30.815f, 30.643f, 30.146f, 29.703f, 29.682f, 28.469f)
+                curveTo(29.219f, 27.234f, 28.987f, 25.747f, 28.987f, 24.008f)
+                curveTo(28.987f, 22.273f, 29.219f, 20.792f, 29.682f, 19.563f)
+                curveTo(30.151f, 18.333f, 30.823f, 17.396f, 31.698f, 16.75f)
+                curveTo(32.578f, 16.104f, 33.63f, 15.781f, 34.854f, 15.781f)
+                curveTo(36.078f, 15.781f, 37.127f, 16.107f, 38.002f, 16.758f)
+                curveTo(38.877f, 17.404f, 39.547f, 18.341f, 40.01f, 19.57f)
+                curveTo(40.479f, 20.794f, 40.714f, 22.273f, 40.714f, 24.008f)
+                curveTo(40.714f, 25.753f, 40.482f, 27.242f, 40.018f, 28.477f)
+                curveTo(39.555f, 29.706f, 38.885f, 30.646f, 38.01f, 31.297f)
+                curveTo(37.135f, 31.943f, 36.083f, 32.266f, 34.854f, 32.266f)
+                close()
+                moveTo(34.854f, 30.18f)
+                curveTo(35.937f, 30.18f, 36.784f, 29.651f, 37.393f, 28.594f)
+                curveTo(38.008f, 27.537f, 38.315f, 26.008f, 38.315f, 24.008f)
+                curveTo(38.315f, 22.68f, 38.174f, 21.557f, 37.893f, 20.641f)
+                curveTo(37.617f, 19.719f, 37.219f, 19.021f, 36.698f, 18.547f)
+                curveTo(36.182f, 18.068f, 35.568f, 17.828f, 34.854f, 17.828f)
+                curveTo(33.776f, 17.828f, 32.93f, 18.359f, 32.315f, 19.422f)
+                curveTo(31.701f, 20.484f, 31.391f, 22.013f, 31.385f, 24.008f)
+                curveTo(31.385f, 25.341f, 31.523f, 26.469f, 31.799f, 27.391f)
+                curveTo(32.081f, 28.307f, 32.479f, 29.003f, 32.995f, 29.477f)
+                curveTo(33.51f, 29.945f, 34.13f, 30.18f, 34.854f, 30.18f)
+                close()
+            }
+        }
+    }.build()
+}

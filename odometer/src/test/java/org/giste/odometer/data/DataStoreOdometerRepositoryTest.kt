@@ -21,12 +21,16 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import io.mockk.mockk
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
 import org.giste.odometer.domain.OdometerLogger
+import org.junit.After
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -48,12 +52,23 @@ class DataStoreOdometerRepositoryTest {
 
     @Before
     fun setup() {
+        Dispatchers.setMain(testDispatcher)
         dataStore = PreferenceDataStoreFactory.create(
             scope = testScope,
             produceFile = { File(temporaryFolder.newFolder(), "test.preferences_pb") }
         )
         logger = mockk(relaxed = true)
-        odometerRepository = DataStoreOdometerRepository(dataStore, logger)
+        odometerRepository = DataStoreOdometerRepository(
+            dataStore = dataStore,
+            logger = logger,
+            ioDispatcher = testDispatcher,
+            scope = testScope
+        )
+    }
+
+    @After
+    fun tearDown() {
+        Dispatchers.resetMain()
     }
 
     @Test
@@ -64,7 +79,8 @@ class DataStoreOdometerRepositoryTest {
     }
 
     @Test
-    fun `updateDistance should persist new values`() = runTest {
+    fun `updateDistance should persist new values if threshold reached`() = runTest {
+        // Default threshold is 50m (0.05km). 10.5km is well above it.
         odometerRepository.updateDistance(10.5)
 
         val updated = odometerRepository.odometer.first()
@@ -72,7 +88,7 @@ class DataStoreOdometerRepositoryTest {
         Assert.assertEquals(10.5, updated.partial, 0.0)
 
         // Persistence check with new instance
-        val newRepo = DataStoreOdometerRepository(dataStore, logger)
+        val newRepo = DataStoreOdometerRepository(dataStore, logger, testDispatcher, testScope)
         val persisted = newRepo.odometer.first()
         Assert.assertEquals(10.5, persisted.total, 0.0)
     }
@@ -95,5 +111,28 @@ class DataStoreOdometerRepositoryTest {
         val state = odometerRepository.odometer.first()
         Assert.assertEquals(0.0, state.total, 0.0)
         Assert.assertEquals(0.0, state.partial, 0.0)
+    }
+
+    @Test
+    fun `updateDistance should buffer updates until default distance threshold is reached`() = runTest {
+        // Default threshold is 50m (0.05km). Add 10m (0.01km).
+        odometerRepository.updateDistance(0.01)
+
+        // Live state should be updated
+        val live = odometerRepository.odometer.first()
+        Assert.assertEquals(0.01, live.total, 0.0)
+
+        // DataStore should NOT be updated yet (still 0)
+        val newRepo = DataStoreOdometerRepository(dataStore, logger, testDispatcher, testScope)
+        val persisted = newRepo.odometer.first()
+        Assert.assertEquals(0.0, persisted.total, 0.0)
+
+        // Add another 50m (total 60m > 50m threshold)
+        odometerRepository.updateDistance(0.05)
+
+        // Now persistence should have the value
+        val newRepo2 = DataStoreOdometerRepository(dataStore, logger, testDispatcher, testScope)
+        val persisted2 = newRepo2.odometer.first()
+        Assert.assertEquals(0.06, persisted2.total, 0.0001)
     }
 }

@@ -21,13 +21,16 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import io.mockk.mockk
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
 import org.giste.odometer.data.DataStoreOdometerRepository
 import org.giste.odometer.domain.DistanceUtils
 import org.giste.odometer.domain.Odometer
@@ -35,6 +38,7 @@ import org.giste.odometer.domain.OdometerLocation
 import org.giste.odometer.domain.OdometerLogger
 import org.giste.odometer.domain.OdometerSettings
 import org.giste.odometer.domain.usecase.GetOdometerUseCase
+import org.junit.After
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -63,13 +67,24 @@ class OdometerIntegrationTest {
 
     @Before
     fun setup() {
+        Dispatchers.setMain(testDispatcher)
         dataStore = PreferenceDataStoreFactory.create(
             scope = testScope,
             produceFile = { File(temporaryFolder.newFolder(), "test_odometer.preferences_pb") }
         )
-        odometerRepository = DataStoreOdometerRepository(dataStore, logger)
+        odometerRepository = DataStoreOdometerRepository(
+            dataStore = dataStore,
+            logger = logger,
+            ioDispatcher = testDispatcher,
+            scope = testScope
+        )
 
         getOdometerUseCase = GetOdometerUseCase(odometerRepository, distanceUtils, logger)
+    }
+
+    @After
+    fun tearDown() {
+        Dispatchers.resetMain()
     }
 
     @Test
@@ -100,7 +115,12 @@ class OdometerIntegrationTest {
             Assert.assertEquals(lastOdometer.total, lastOdometer.partial, 0.001)
 
             // 6. Verify persistence with a fresh repository instance
-            val freshRepo = DataStoreOdometerRepository(dataStore, logger)
+            val freshRepo = DataStoreOdometerRepository(
+                dataStore = dataStore,
+                logger = logger,
+                ioDispatcher = testDispatcher,
+                scope = testScope
+            )
             val persistedState = freshRepo.odometer.first()
             Assert.assertEquals(lastOdometer.total, persistedState.total, 0.001)
 

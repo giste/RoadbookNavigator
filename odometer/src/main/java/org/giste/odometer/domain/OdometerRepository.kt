@@ -30,6 +30,9 @@ public interface OdometerRepository {
 
     /**
      * Updates the persistent odometer by adding a delta distance to both total and partial.
+     * The implementation may buffer these updates to reduce disk I/O.
+     *
+     * @param delta The distance to add in km.
      */
     public suspend fun updateDistance(delta: Double)
 

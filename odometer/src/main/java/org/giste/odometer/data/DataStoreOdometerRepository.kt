@@ -61,8 +61,8 @@ internal class DataStoreOdometerRepository @Inject constructor(
         private val TOTAL_DISTANCE_KEY = doublePreferencesKey("total_distance")
         private val PARTIAL_DISTANCE_KEY = doublePreferencesKey("partial_distance")
 
-        private const val PERSISTENCE_DISTANCE_THRESHOLD = 0.05 // km (50m)
-        private const val PERSISTENCE_TIME_THRESHOLD = 30000L // ms (30s)
+        private const val PERSISTENCE_DISTANCE_THRESHOLD = 0.5 // km (500m)
+        private const val PERSISTENCE_TIME_THRESHOLD = 60000L // ms (1 min)
     }
 
     private val _pendingDeltas = MutableStateFlow(Odometer(0.0, 0.0))

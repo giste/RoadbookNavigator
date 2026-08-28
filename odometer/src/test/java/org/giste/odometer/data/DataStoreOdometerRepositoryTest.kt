@@ -96,7 +96,7 @@ class DataStoreOdometerRepositoryTest {
 
     @Test
     fun `updateDistance should persist new values if threshold reached`() = runTest {
-        // Default threshold is 50m (0.05km). 10.5km is well above it.
+        // Default threshold is 500m (0.5km). 10.5km is well above it.
         odometerRepository.updateDistance(10.5)
 
         val updated = odometerRepository.odometer.first()
@@ -131,25 +131,25 @@ class DataStoreOdometerRepositoryTest {
 
     @Test
     fun `updateDistance should buffer updates until default distance threshold is reached`() = runTest {
-        // Default threshold is 50m (0.05km). Add 10m (0.01km).
-        odometerRepository.updateDistance(0.01)
+        // Default threshold is 500m (0.5km). Add 100m (0.1km).
+        odometerRepository.updateDistance(0.1)
 
         // Live state should be updated
         val live = odometerRepository.odometer.first()
-        Assert.assertEquals(0.01, live.total, 0.0)
+        Assert.assertEquals(0.1, live.total, 0.0)
 
         // DataStore should NOT be updated yet (still 0)
         val newRepo = DataStoreOdometerRepository(dataStore, logger, testDispatcher, testScope, timeProvider)
         val persisted = newRepo.odometer.first()
         Assert.assertEquals(0.0, persisted.total, 0.0)
 
-        // Add another 50m (total 60m > 50m threshold)
-        odometerRepository.updateDistance(0.05)
+        // Add another 450m (total 550m > 500m threshold)
+        odometerRepository.updateDistance(0.45)
 
         // Now persistence should have the value
         val newRepo2 = DataStoreOdometerRepository(dataStore, logger, testDispatcher, testScope, timeProvider)
         val persisted2 = newRepo2.odometer.first()
-        Assert.assertEquals(0.06, persisted2.total, 0.0001)
+        Assert.assertEquals(0.55, persisted2.total, 0.0001)
     }
 
     @Test
@@ -165,8 +165,8 @@ class DataStoreOdometerRepositoryTest {
 
         val safeRepo = DataStoreOdometerRepository(slowDataStore, logger, testDispatcher, testScope, timeProvider)
 
-        // Start the first update (triggers persistence because > 50m)
-        val firstUpdate = async { safeRepo.updateDistance(0.100) } // 100m
+        // Start the first update (triggers persistence because > 500m)
+        val firstUpdate = async { safeRepo.updateDistance(0.600) } // 600m
         
         // Wait a bit to ensure it's "writing" but not finished
         advanceTimeBy(500.milliseconds)
@@ -177,29 +177,29 @@ class DataStoreOdometerRepositoryTest {
         // Complete the first update
         firstUpdate.await()
 
-        // 3. Verify total distance in memory is correct (150m)
+        // 3. Verify total distance in memory is correct (650m)
         val finalState = safeRepo.odometer.first()
-        Assert.assertEquals(0.150, finalState.total, 0.0001)
+        Assert.assertEquals(0.650, finalState.total, 0.0001)
 
         // 4. Verify that persistence eventually has the correct final values
         // Trigger another save to flush the buffer (now it will be fast)
-        safeRepo.updateDistance(0.100) 
+        safeRepo.updateDistance(0.500) 
         
         val persisted = DataStoreOdometerRepository(dataStore, logger, testDispatcher, testScope, timeProvider).odometer.first()
-        Assert.assertEquals(0.250, persisted.total, 0.0001)
+        Assert.assertEquals(1.150, persisted.total, 0.0001)
     }
 
     @Test
     fun `should persist small distances after time threshold is reached`() = runTest(testDispatcher) {
-        // 1. User moves only 1 meter (0.001 km). Below 50m threshold.
+        // 1. User moves only 1 meter (0.001 km). Below 500m threshold.
         odometerRepository.updateDistance(0.001)
 
         // Verify it's NOT on disk yet
         val newInstance1 = DataStoreOdometerRepository(dataStore, logger, testDispatcher, testScope, timeProvider)
         Assert.assertEquals(0.0, newInstance1.odometer.first().total, 0.0)
 
-        // 2. Advance time by 31 seconds (threshold is 30s)
-        timeProvider.time += 31000
+        // 2. Advance time by 61 seconds (threshold is 60s)
+        timeProvider.time += 61000
 
         // 3. Another small update arrives
         odometerRepository.updateDistance(0.001)
@@ -217,11 +217,11 @@ class DataStoreOdometerRepositoryTest {
 
         val repository = DataStoreOdometerRepository(failingDataStore, logger, testDispatcher, testScope, timeProvider)
 
-        // 1. User moves 100m. Persistence fails.
-        repository.updateDistance(0.100)
+        // 1. User moves 600m. Persistence fails (above 500m threshold).
+        repository.updateDistance(0.600)
 
-        // 2. Verify UI state is still 100m (Memory SSOT works)
-        Assert.assertEquals(0.100, repository.odometer.value.total, 0.0001)
+        // 2. Verify UI state is still 600m (Memory SSOT works)
+        Assert.assertEquals(0.600, repository.odometer.value.total, 0.0001)
 
         // 3. Fix the DataStore (stop throwing)
         val transformSlot = slot<suspend (Preferences) -> Preferences>()
@@ -230,12 +230,12 @@ class DataStoreOdometerRepositoryTest {
         }
 
         // 4. Next update arrives
-        repository.updateDistance(0.050)
+        repository.updateDistance(0.100)
 
-        // 5. Verify total is correct (150m) and finally persisted
-        Assert.assertEquals(0.150, repository.odometer.value.total, 0.0001)
+        // 5. Verify total is correct (700m) and finally persisted
+        Assert.assertEquals(0.700, repository.odometer.value.total, 0.0001)
         
         val persisted = DataStoreOdometerRepository(dataStore, logger, testDispatcher, testScope, timeProvider).odometer.first()
-        Assert.assertEquals(0.150, persisted.total, 0.0001)
+        Assert.assertEquals(0.700, persisted.total, 0.0001)
     }
 }

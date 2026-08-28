@@ -38,6 +38,7 @@ import org.giste.odometer.domain.OdometerLocation
 import org.giste.odometer.domain.OdometerLogger
 import org.giste.odometer.domain.OdometerSettings
 import org.giste.odometer.domain.usecase.GetOdometerUseCase
+import org.giste.roadbooknavigator.core.util.TimeProvider
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
@@ -59,6 +60,7 @@ class OdometerIntegrationTest {
     private lateinit var odometerRepository: DataStoreOdometerRepository
     private val logger: OdometerLogger = mockk(relaxed = true)
     private val distanceUtils = DistanceUtils(logger)
+    private val timeProvider = FakeTimeProvider()
 
     private val gpsFlow = MutableSharedFlow<OdometerLocation>()
     private val settingsFlow = MutableSharedFlow<OdometerSettings>()
@@ -76,7 +78,8 @@ class OdometerIntegrationTest {
             dataStore = dataStore,
             logger = logger,
             ioDispatcher = testDispatcher,
-            scope = testScope
+            scope = testScope,
+            timeProvider = timeProvider
         )
 
         getOdometerUseCase = GetOdometerUseCase(odometerRepository, distanceUtils, logger)
@@ -85,6 +88,10 @@ class OdometerIntegrationTest {
     @After
     fun tearDown() {
         Dispatchers.resetMain()
+    }
+
+    private class FakeTimeProvider(var time: Long = 0L) : TimeProvider {
+        override fun currentTimeMillis(): Long = time
     }
 
     @Test
@@ -119,7 +126,8 @@ class OdometerIntegrationTest {
                 dataStore = dataStore,
                 logger = logger,
                 ioDispatcher = testDispatcher,
-                scope = testScope
+                scope = testScope,
+                timeProvider = timeProvider
             )
             val persistedState = freshRepo.odometer.first()
             Assert.assertEquals(lastOdometer.total, persistedState.total, 0.001)

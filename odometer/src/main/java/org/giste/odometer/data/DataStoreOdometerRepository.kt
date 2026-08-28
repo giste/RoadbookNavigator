@@ -38,6 +38,7 @@ import org.giste.odometer.domain.OdometerLogger
 import org.giste.odometer.domain.OdometerRepository
 import org.giste.roadbooknavigator.core.di.ApplicationScope
 import org.giste.roadbooknavigator.core.di.IoDispatcher
+import org.giste.roadbooknavigator.core.util.TimeProvider
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -52,7 +53,8 @@ internal class DataStoreOdometerRepository @Inject constructor(
     @param:OdometerDataStoreQualifier private val dataStore: DataStore<Preferences>,
     private val logger: OdometerLogger,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
-    @ApplicationScope private val scope: CoroutineScope
+    @ApplicationScope private val scope: CoroutineScope,
+    private val timeProvider: TimeProvider
 ) : OdometerRepository {
 
     private companion object {
@@ -64,7 +66,7 @@ internal class DataStoreOdometerRepository @Inject constructor(
     }
 
     private val _pendingDeltas = MutableStateFlow(Odometer(0.0, 0.0))
-    private var lastSaveTime = System.currentTimeMillis()
+    private var lastSaveTime = timeProvider.currentTimeMillis()
 
     private val persistedOdometer: Flow<Odometer> = dataStore.data
         .map { prefs ->
@@ -95,7 +97,7 @@ internal class DataStoreOdometerRepository @Inject constructor(
             }
 
             val pending = _pendingDeltas.value
-            val timeSinceSave = System.currentTimeMillis() - lastSaveTime
+            val timeSinceSave = timeProvider.currentTimeMillis() - lastSaveTime
 
             if (pending.total >= PERSISTENCE_DISTANCE_THRESHOLD || timeSinceSave >= PERSISTENCE_TIME_THRESHOLD) {
                 persist()
@@ -164,7 +166,7 @@ internal class DataStoreOdometerRepository @Inject constructor(
                     partial = if (targetPartial != null) 0.0 else (latestPending.partial - currentPending.partial)
                 )
             }
-            lastSaveTime = System.currentTimeMillis()
+            lastSaveTime = timeProvider.currentTimeMillis()
         } catch (e: Exception) {
             logger.e("DataStoreOdometerRepository: Error persisting state", throwable = e)
         }

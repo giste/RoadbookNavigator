@@ -20,16 +20,23 @@ package org.giste.odometer.data
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
+import io.mockk.coEvery
 import io.mockk.mockk
+import io.mockk.slot
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.giste.odometer.domain.OdometerLogger
+import org.giste.roadbooknavigator.core.util.TimeProvider
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
@@ -37,6 +44,8 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import java.io.File
+import java.io.IOException
+import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DataStoreOdometerRepositoryTest {
@@ -46,6 +55,7 @@ class DataStoreOdometerRepositoryTest {
 
     private lateinit var dataStore: DataStore<Preferences>
     private lateinit var logger: OdometerLogger
+    private lateinit var timeProvider: FakeTimeProvider
     private lateinit var odometerRepository: DataStoreOdometerRepository
     private val testDispatcher = UnconfinedTestDispatcher()
     private val testScope = TestScope(testDispatcher)
@@ -58,17 +68,23 @@ class DataStoreOdometerRepositoryTest {
             produceFile = { File(temporaryFolder.newFolder(), "test.preferences_pb") }
         )
         logger = mockk(relaxed = true)
+        timeProvider = FakeTimeProvider()
         odometerRepository = DataStoreOdometerRepository(
             dataStore = dataStore,
             logger = logger,
             ioDispatcher = testDispatcher,
-            scope = testScope
+            scope = testScope,
+            timeProvider = timeProvider
         )
     }
 
     @After
     fun tearDown() {
         Dispatchers.resetMain()
+    }
+
+    private class FakeTimeProvider(var time: Long = 0L) : TimeProvider {
+        override fun currentTimeMillis(): Long = time
     }
 
     @Test
@@ -88,7 +104,7 @@ class DataStoreOdometerRepositoryTest {
         Assert.assertEquals(10.5, updated.partial, 0.0)
 
         // Persistence check with new instance
-        val newRepo = DataStoreOdometerRepository(dataStore, logger, testDispatcher, testScope)
+        val newRepo = DataStoreOdometerRepository(dataStore, logger, testDispatcher, testScope, timeProvider)
         val persisted = newRepo.odometer.first()
         Assert.assertEquals(10.5, persisted.total, 0.0)
     }
@@ -123,7 +139,7 @@ class DataStoreOdometerRepositoryTest {
         Assert.assertEquals(0.01, live.total, 0.0)
 
         // DataStore should NOT be updated yet (still 0)
-        val newRepo = DataStoreOdometerRepository(dataStore, logger, testDispatcher, testScope)
+        val newRepo = DataStoreOdometerRepository(dataStore, logger, testDispatcher, testScope, timeProvider)
         val persisted = newRepo.odometer.first()
         Assert.assertEquals(0.0, persisted.total, 0.0)
 
@@ -131,8 +147,95 @@ class DataStoreOdometerRepositoryTest {
         odometerRepository.updateDistance(0.05)
 
         // Now persistence should have the value
-        val newRepo2 = DataStoreOdometerRepository(dataStore, logger, testDispatcher, testScope)
+        val newRepo2 = DataStoreOdometerRepository(dataStore, logger, testDispatcher, testScope, timeProvider)
         val persisted2 = newRepo2.odometer.first()
         Assert.assertEquals(0.06, persisted2.total, 0.0001)
+    }
+
+    @Test
+    fun `should NOT lose meters if a GPS update arrives during disk persistence`() = runTest(testDispatcher) {
+        // 1. We use a custom DataStore wrapper to simulate a slow write
+        val slowDataStore = object : DataStore<Preferences> {
+            override val data: Flow<Preferences> = dataStore.data
+            override suspend fun updateData(transform: suspend (t: Preferences) -> Preferences): Preferences {
+                delay(1000.milliseconds) // Simulate slow disk I/O
+                return dataStore.updateData(transform)
+            }
+        }
+
+        val safeRepo = DataStoreOdometerRepository(slowDataStore, logger, testDispatcher, testScope, timeProvider)
+
+        // Start the first update (triggers persistence because > 50m)
+        val firstUpdate = async { safeRepo.updateDistance(0.100) } // 100m
+        
+        // Wait a bit to ensure it's "writing" but not finished
+        advanceTimeBy(500.milliseconds)
+
+        // 2. WHILE writing, a second GPS update arrives for another 50m
+        safeRepo.updateDistance(0.050) // 50m
+
+        // Complete the first update
+        firstUpdate.await()
+
+        // 3. Verify total distance in memory is correct (150m)
+        val finalState = safeRepo.odometer.first()
+        Assert.assertEquals(0.150, finalState.total, 0.0001)
+
+        // 4. Verify that persistence eventually has the correct final values
+        // Trigger another save to flush the buffer (now it will be fast)
+        safeRepo.updateDistance(0.100) 
+        
+        val persisted = DataStoreOdometerRepository(dataStore, logger, testDispatcher, testScope, timeProvider).odometer.first()
+        Assert.assertEquals(0.250, persisted.total, 0.0001)
+    }
+
+    @Test
+    fun `should persist small distances after time threshold is reached`() = runTest(testDispatcher) {
+        // 1. User moves only 1 meter (0.001 km). Below 50m threshold.
+        odometerRepository.updateDistance(0.001)
+
+        // Verify it's NOT on disk yet
+        val newInstance1 = DataStoreOdometerRepository(dataStore, logger, testDispatcher, testScope, timeProvider)
+        Assert.assertEquals(0.0, newInstance1.odometer.first().total, 0.0)
+
+        // 2. Advance time by 31 seconds (threshold is 30s)
+        timeProvider.time += 31000
+
+        // 3. Another small update arrives
+        odometerRepository.updateDistance(0.001)
+
+        // 4. Verify it's now on disk (Total 2m)
+        val newInstance2 = DataStoreOdometerRepository(dataStore, logger, testDispatcher, testScope, timeProvider)
+        Assert.assertEquals(0.002, newInstance2.odometer.first().total, 0.0001)
+    }
+
+    @Test
+    fun `should recover from DataStore failures without losing in-memory distance`() = runTest(testDispatcher) {
+        val failingDataStore = mockk<DataStore<Preferences>>()
+        coEvery { failingDataStore.data } returns dataStore.data
+        coEvery { failingDataStore.updateData(any()) } throws IOException("Disk full")
+
+        val repository = DataStoreOdometerRepository(failingDataStore, logger, testDispatcher, testScope, timeProvider)
+
+        // 1. User moves 100m. Persistence fails.
+        repository.updateDistance(0.100)
+
+        // 2. Verify UI state is still 100m (Memory SSOT works)
+        Assert.assertEquals(0.100, repository.odometer.value.total, 0.0001)
+
+        // 3. Fix the DataStore (stop throwing)
+        val transformSlot = slot<suspend (Preferences) -> Preferences>()
+        coEvery { failingDataStore.updateData(capture(transformSlot)) } coAnswers {
+            dataStore.updateData(transformSlot.captured)
+        }
+
+        // 4. Next update arrives
+        repository.updateDistance(0.050)
+
+        // 5. Verify total is correct (150m) and finally persisted
+        Assert.assertEquals(0.150, repository.odometer.value.total, 0.0001)
+        
+        val persisted = DataStoreOdometerRepository(dataStore, logger, testDispatcher, testScope, timeProvider).odometer.first()
+        Assert.assertEquals(0.150, persisted.total, 0.0001)
     }
 }

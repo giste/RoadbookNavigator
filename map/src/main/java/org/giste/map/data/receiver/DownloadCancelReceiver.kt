@@ -22,7 +22,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.work.WorkManager
 
-class DownloadCancelReceiver : BroadcastReceiver() {
+internal class DownloadCancelReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val url = intent.getStringExtra(KEY_URL)
         if (url != null) {

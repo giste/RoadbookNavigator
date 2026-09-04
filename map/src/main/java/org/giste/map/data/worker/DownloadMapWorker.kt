@@ -1,0 +1,176 @@
+/*
+ * Copyright (C) 2026  Giste
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package org.giste.map.data.worker
+
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import android.content.pm.ServiceInfo
+import androidx.core.app.NotificationCompat
+import androidx.hilt.work.HiltWorker
+import androidx.work.CoroutineWorker
+import androidx.work.ForegroundInfo
+import androidx.work.WorkerParameters
+import androidx.work.workDataOf
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
+import okio.buffer
+import okio.sink
+import org.giste.map.R
+import org.giste.map.data.datasource.RemoteMapDataSource
+import org.giste.map.data.receiver.DownloadCancelReceiver
+import org.giste.roadbooknavigator.core.util.Logger
+import java.io.File
+
+@HiltWorker
+internal class DownloadMapWorker @AssistedInject constructor(
+    @Assisted appContext: Context,
+    @Assisted workerParams: WorkerParameters,
+    private val remoteDataSource: RemoteMapDataSource,
+    private val logger: Logger
+) : CoroutineWorker(appContext, workerParams) {
+
+    private val notificationManager =
+        applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+    override suspend fun doWork(): Result {
+        val url = inputData.getString(KEY_URL) ?: return Result.failure()
+        val name = inputData.getString(KEY_NAME) ?: return Result.failure()
+        val parentPath = inputData.getString(KEY_PARENT_PATH) ?: ""
+        val lastModified = inputData.getLong(KEY_LAST_MODIFIED, 0L)
+
+        createNotificationChannel()
+
+        setProgress(workDataOf(KEY_URL to url, PROGRESS_KEY to 0f))
+        setForeground(createForegroundInfo(name, url))
+
+        val mapsDir = File(applicationContext.filesDir, "maps")
+        val destinationPath = "${mapsDir.absolutePath}/$parentPath/$name"
+        val destinationFile = File(destinationPath)
+        val tempFile = File("$destinationPath.tmp")
+
+        return try {
+            destinationFile.parentFile?.mkdirs()
+            val responseBody = remoteDataSource.downloadFile(url)
+            val totalSize = responseBody.contentLength()
+            var bytesRead = 0L
+
+            responseBody.source().use { source ->
+                tempFile.sink().buffer().use { sink ->
+                    val buffer = ByteArray(8192)
+                    var read: Int
+                    var lastUpdatePercent = -1
+
+                    while (source.read(buffer).also { read = it } != -1) {
+                        sink.write(buffer, 0, read)
+                        bytesRead += read
+                        if (totalSize > 0) {
+                            val progress = bytesRead.toFloat() / totalSize
+                            val currentPercent = (progress * 100).toInt()
+
+                            // Update progress only when percent changes
+                            if (currentPercent > lastUpdatePercent) {
+                                lastUpdatePercent = currentPercent
+                                setProgress(workDataOf(KEY_URL to url, PROGRESS_KEY to progress))
+                                updateNotification(name, url, progress)
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (tempFile.renameTo(destinationFile)) {
+                if (lastModified > 0) {
+                    destinationFile.setLastModified(lastModified)
+                }
+                Result.success()
+            } else {
+                logger.e("Failed to rename temp file to %s", name)
+                tempFile.delete()
+                Result.failure()
+            }
+        } catch (e: Exception) {
+            logger.e(e, "Error downloading map %s", name)
+            tempFile.delete()
+            Result.failure()
+        }
+    }
+
+    private fun updateNotification(name: String, url: String, progress: Float) {
+        val notificationId = url.hashCode()
+        val notification = createNotification(name, url, progress)
+        notificationManager.notify(notificationId, notification)
+    }
+
+    private fun createNotificationChannel() {
+        val id = applicationContext.getString(R.string.map_download_notification_channel_id)
+        val channelName = applicationContext.getString(R.string.map_download_notification_channel_name)
+        val channel = NotificationChannel(id, channelName, NotificationManager.IMPORTANCE_LOW).apply {
+            description = applicationContext.getString(R.string.map_download_notification_channel_description)
+        }
+        notificationManager.createNotificationChannel(channel)
+    }
+
+    private fun createForegroundInfo(name: String, url: String, progress: Float = 0f): ForegroundInfo {
+        val notificationId = url.hashCode()
+        val notification = createNotification(name, url, progress)
+        return ForegroundInfo(
+            notificationId,
+            notification,
+            ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
+        )
+    }
+
+    private fun createNotification(name: String, url: String, progress: Float): Notification {
+        val id = applicationContext.getString(R.string.map_download_notification_channel_id)
+        val title = applicationContext.getString(R.string.map_download_notification_title)
+        val cancel = applicationContext.getString(R.string.map_download_notification_cancel)
+
+        val intent = Intent(applicationContext, DownloadCancelReceiver::class.java).apply {
+            putExtra(DownloadCancelReceiver.KEY_URL, url)
+        }
+        val pendingIntent = PendingIntent.getBroadcast(
+            applicationContext,
+            url.hashCode(),
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        return NotificationCompat.Builder(applicationContext, id)
+            .setContentTitle(title)
+            .setTicker(title)
+            .setContentText(applicationContext.getString(R.string.map_download_notification_content, name))
+            .setSmallIcon(android.R.drawable.stat_sys_download)
+            .setOngoing(true)
+            .setOnlyAlertOnce(true)
+            .setProgress(100, (progress * 100).toInt(), false)
+            .addAction(android.R.drawable.ic_menu_close_clear_cancel, cancel, pendingIntent)
+            .build()
+    }
+
+    companion object {
+        const val KEY_URL = "url"
+        const val KEY_NAME = "name"
+        const val KEY_PARENT_PATH = "parent_path"
+        const val KEY_LAST_MODIFIED = "last_modified"
+        const val PROGRESS_KEY = "progress"
+    }
+}

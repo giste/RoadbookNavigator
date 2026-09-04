@@ -26,7 +26,7 @@ plugins {
 }
 
 configure<LibraryExtension> {
-    namespace = "org.giste.roadbooknavigator.features.map"
+    namespace = "org.giste.map"
     compileSdk = 37
 
     defaultConfig {

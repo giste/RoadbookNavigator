@@ -49,7 +49,7 @@
         </activity>
 
         <receiver
-            android:name="org.giste.roadbooknavigator.features.map.data.receiver.DownloadCancelReceiver"
+            android:name="org.giste.roadbooknavigator.org.giste.map.data.receiver.DownloadCancelReceiver"
             android:exported="false" />
 
         <service

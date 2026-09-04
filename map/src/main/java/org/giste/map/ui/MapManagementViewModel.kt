@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import org.giste.map.domain.MapLogger
+import org.giste.map.MapLogger
 import org.giste.map.domain.model.DownloadStatus
 import org.giste.map.domain.model.DownloadedMapInfo
 import org.giste.map.domain.model.DownloadedMapStatus

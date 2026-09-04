@@ -17,7 +17,7 @@
 
 package org.giste.roadbooknavigator.features.map
 
-import org.giste.map.domain.MapLogger
+import org.giste.map.MapLogger
 import org.giste.roadbooknavigator.core.util.Logger
 import javax.inject.Inject
 

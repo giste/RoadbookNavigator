@@ -15,18 +15,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.map.ui.theme
+package org.giste.map
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-
-@Composable
-internal fun MapTheme(
-    dimensions: MapDimensions = compactMapDimensions,
-    content: @Composable () -> Unit
-) {
-    CompositionLocalProvider(
-        LocalMapDimensions provides dimensions,
-        content = content
-    )
+/**
+ * Logger interface for the map module to decouple it from specific logging implementations.
+ */
+interface MapLogger {
+    fun v(message: String, vararg args: Any?)
+    fun d(message: String, vararg args: Any?)
+    fun i(message: String, vararg args: Any?)
+    fun w(message: String, vararg args: Any?)
+    fun e(message: String, vararg args: Any?)
+    fun e(t: Throwable, message: String, vararg args: Any?)
 }

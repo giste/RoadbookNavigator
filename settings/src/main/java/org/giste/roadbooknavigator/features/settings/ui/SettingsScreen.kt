@@ -102,10 +102,10 @@ import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 import org.giste.roadbooknavigator.features.settings.domain.location.LocationSettings
 import org.giste.roadbooknavigator.features.settings.domain.location.MinDistanceThreshold
 import org.giste.roadbooknavigator.features.settings.domain.location.PollingIntervalThreshold
-import org.giste.map.domain.model.MapSettings
-import org.giste.map.ui.MapManagementScreen
-import org.giste.map.ui.theme.compactMapDimensions
-import org.giste.map.ui.theme.expandedMapDimensions
+import org.giste.map.MapSettings
+import org.giste.map.MapManagementScreen
+import org.giste.map.compactMapDimensions
+import org.giste.map.expandedMapDimensions
 import org.giste.odometer.domain.AccuracyThreshold
 import org.giste.odometer.domain.OdometerSettings
 import org.giste.odometer.domain.SpeedThreshold

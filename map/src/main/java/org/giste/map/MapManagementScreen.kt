@@ -15,22 +15,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.map
+package org.giste.map
 
-import dagger.Binds
-import dagger.Module
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
-import org.giste.map.MapLogger
-import javax.inject.Singleton
+import androidx.compose.runtime.Composable
+import org.giste.map.ui.MapManagementContentWrapper
 
-@Module
-@InstallIn(SingletonComponent::class)
-abstract class MapBridgeModule {
-
-    @Binds
-    @Singleton
-    abstract fun bindMapLogger(
-        impl: MapLoggerBridge
-    ): MapLogger
+/**
+ * Public entry point for the Map Management screen.
+ *
+ * @param dimensions Custom dimensions for the screen. Defaults to compact.
+ */
+@Composable
+fun MapManagementScreen(
+    dimensions: MapDimensions = compactMapDimensions,
+) {
+    MapManagementContentWrapper(
+        dimensions = dimensions
+    )
 }

@@ -21,7 +21,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.giste.map.domain.model.MapSettings
+import org.giste.map.MapSettings
 import org.giste.map.domain.repository.MapSettingsRepository
 import org.junit.Test
 

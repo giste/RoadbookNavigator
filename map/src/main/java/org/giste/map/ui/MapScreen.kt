@@ -42,10 +42,10 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import org.giste.map.ui.theme.LocalMapDimensions
-import org.giste.map.ui.theme.MapDimensions
-import org.giste.map.ui.theme.MapTheme
-import org.giste.map.ui.theme.compactMapDimensions
+import org.giste.map.LocalMapDimensions
+import org.giste.map.MapDimensions
+import org.giste.map.MapTheme
+import org.giste.map.compactMapDimensions
 import org.giste.android.location.domain.UserLocation
 import org.giste.map.domain.model.MapFile
 import org.giste.map.R
@@ -63,7 +63,7 @@ import org.oscim.tiling.source.mapfile.MapFileTileSource
 import org.oscim.tiling.source.mapfile.MultiMapFileTileSource
 
 @Composable
-fun MapScreen(
+fun MapContent(
     modifier: Modifier = Modifier,
     viewModel: MapViewModel = hiltViewModel(),
     dimensions: MapDimensions = compactMapDimensions,

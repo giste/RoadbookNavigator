@@ -62,10 +62,10 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import org.giste.map.ui.theme.LocalMapDimensions
-import org.giste.map.ui.theme.MapDimensions
-import org.giste.map.ui.theme.MapTheme
-import org.giste.map.ui.theme.compactMapDimensions
+import org.giste.map.LocalMapDimensions
+import org.giste.map.MapDimensions
+import org.giste.map.MapTheme
+import org.giste.map.compactMapDimensions
 import org.giste.map.R
 import org.giste.map.domain.model.DownloadStatus
 import org.giste.map.domain.model.DownloadedMapInfo
@@ -76,7 +76,7 @@ import org.giste.map.domain.model.RemoteMapFolder
 import org.giste.roadbooknavigator.core.R as CoreR
 
 @Composable
-fun MapManagementScreen(
+fun MapManagementContentWrapper(
     viewModel: MapManagementViewModel = hiltViewModel(),
     dimensions: MapDimensions = compactMapDimensions,
 ) {

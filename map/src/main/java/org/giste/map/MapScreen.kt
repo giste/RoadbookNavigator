@@ -15,16 +15,25 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.map.domain
+package org.giste.map
+
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import org.giste.map.ui.MapContent
 
 /**
- * Logger interface for the map module to decouple it from specific logging implementations.
+ * Public entry point for the Map module.
+ *
+ * @param modifier Modifier for the map container.
+ * @param dimensions Custom dimensions for the map. Defaults to compact.
  */
-interface MapLogger {
-    fun v(message: String, vararg args: Any?)
-    fun d(message: String, vararg args: Any?)
-    fun i(message: String, vararg args: Any?)
-    fun w(message: String, vararg args: Any?)
-    fun e(message: String, vararg args: Any?)
-    fun e(t: Throwable, message: String, vararg args: Any?)
+@Composable
+fun MapScreen(
+    modifier: Modifier = Modifier,
+    dimensions: MapDimensions = compactMapDimensions,
+) {
+    MapContent(
+        modifier = modifier,
+        dimensions = dimensions
+    )
 }

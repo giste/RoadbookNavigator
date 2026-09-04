@@ -15,22 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.map
+package org.giste.map
 
-import dagger.Binds
-import dagger.Module
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
-import org.giste.map.MapLogger
-import javax.inject.Singleton
-
-@Module
-@InstallIn(SingletonComponent::class)
-abstract class MapBridgeModule {
-
-    @Binds
-    @Singleton
-    abstract fun bindMapLogger(
-        impl: MapLoggerBridge
-    ): MapLogger
+data class MapSettings(
+    val initialZoom: Int = DEFAULT_ZOOM,
+    val initialTilt: Float = DEFAULT_TILT
+) {
+    companion object {
+        const val DEFAULT_ZOOM = 18
+        const val DEFAULT_TILT = 60.0f
+    }
 }

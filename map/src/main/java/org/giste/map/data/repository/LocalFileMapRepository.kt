@@ -40,7 +40,7 @@ import androidx.work.workDataOf
 import org.giste.roadbooknavigator.core.di.IoDispatcher
 import org.giste.map.data.datasource.RemoteMapDataSource
 import org.giste.map.data.worker.DownloadMapWorker
-import org.giste.map.domain.MapLogger
+import org.giste.map.MapLogger
 import org.giste.map.domain.model.DownloadStatus
 import org.giste.map.domain.model.MapFile
 import org.giste.map.domain.model.RemoteMapFile

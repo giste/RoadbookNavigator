@@ -22,7 +22,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
-import org.giste.map.domain.model.MapSettings
+import org.giste.map.MapSettings
 import org.giste.map.domain.repository.MapSettingsRepository
 import org.junit.Assert.assertEquals
 import org.junit.Test

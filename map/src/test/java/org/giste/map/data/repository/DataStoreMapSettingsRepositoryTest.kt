@@ -26,8 +26,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import org.giste.map.domain.MapLogger
-import org.giste.map.domain.model.MapSettings
+import org.giste.map.MapLogger
+import org.giste.map.MapSettings
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule

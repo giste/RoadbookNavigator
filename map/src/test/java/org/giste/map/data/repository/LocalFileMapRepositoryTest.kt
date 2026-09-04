@@ -32,7 +32,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.giste.map.data.datasource.RemoteMapDataSource
-import org.giste.map.domain.MapLogger
+import org.giste.map.MapLogger
 import org.giste.map.domain.model.MapFile
 import org.giste.map.domain.model.RemoteMapFile
 import org.giste.map.domain.model.RemoteMapFolder

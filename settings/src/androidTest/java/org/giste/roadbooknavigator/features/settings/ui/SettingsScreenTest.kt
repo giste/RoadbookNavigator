@@ -35,7 +35,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import org.giste.roadbooknavigator.features.settings.R
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 import org.giste.roadbooknavigator.features.settings.domain.location.LocationSettings
-import org.giste.map.domain.model.MapSettings
+import org.giste.map.MapSettings
 import org.giste.odometer.domain.OdometerSettings
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings

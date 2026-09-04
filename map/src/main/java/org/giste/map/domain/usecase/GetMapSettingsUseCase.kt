@@ -18,7 +18,7 @@
 package org.giste.map.domain.usecase
 
 import kotlinx.coroutines.flow.Flow
-import org.giste.map.domain.model.MapSettings
+import org.giste.map.MapSettings
 import org.giste.map.domain.repository.MapSettingsRepository
 import javax.inject.Inject
 

@@ -33,7 +33,7 @@ import org.giste.roadbooknavigator.features.settings.domain.location.usecase.Obs
 import org.giste.roadbooknavigator.features.settings.domain.location.usecase.RestoreLocationDefaultsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.location.usecase.UpdateLocationMinDistanceUseCase
 import org.giste.roadbooknavigator.features.settings.domain.location.usecase.UpdateLocationPollingIntervalUseCase
-import org.giste.map.domain.model.MapSettings
+import org.giste.map.MapSettings
 import org.giste.map.domain.usecase.GetMapSettingsUseCase
 import org.giste.map.domain.usecase.SaveMapSettingsUseCase
 import org.giste.odometer.domain.OdometerSettings

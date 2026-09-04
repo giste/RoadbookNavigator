@@ -18,7 +18,7 @@
 package org.giste.map.domain.repository
 
 import kotlinx.coroutines.flow.Flow
-import org.giste.map.domain.model.MapSettings
+import org.giste.map.MapSettings
 
 interface MapSettingsRepository {
     fun getMapSettings(): Flow<MapSettings>

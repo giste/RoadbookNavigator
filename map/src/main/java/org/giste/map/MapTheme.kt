@@ -15,14 +15,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.map.domain.model
+package org.giste.map
 
-data class MapSettings(
-    val initialZoom: Int = DEFAULT_ZOOM,
-    val initialTilt: Float = DEFAULT_TILT
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+
+@Composable
+internal fun MapTheme(
+    dimensions: MapDimensions = compactMapDimensions,
+    content: @Composable () -> Unit
 ) {
-    companion object {
-        const val DEFAULT_ZOOM = 18
-        const val DEFAULT_TILT = 60.0f
-    }
+    CompositionLocalProvider(
+        LocalMapDimensions provides dimensions,
+        content = content
+    )
 }

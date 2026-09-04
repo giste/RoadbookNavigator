@@ -25,8 +25,8 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.giste.map.data.di.MapSettingsDataStore
-import org.giste.map.domain.MapLogger
-import org.giste.map.domain.model.MapSettings
+import org.giste.map.MapLogger
+import org.giste.map.MapSettings
 import org.giste.map.domain.repository.MapSettingsRepository
 import javax.inject.Inject
 import javax.inject.Singleton

@@ -27,12 +27,12 @@ import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
-import org.giste.map.domain.MapLogger
+import org.giste.map.MapLogger
 import org.giste.android.location.domain.LocationEvent
 import org.giste.android.location.domain.LocationProvider
 import org.giste.android.location.domain.UserLocation
 import org.giste.map.domain.model.MapFile
-import org.giste.map.domain.model.MapSettings
+import org.giste.map.MapSettings
 import org.giste.map.domain.usecase.GetLocalMapsUseCase
 import org.giste.map.domain.usecase.GetMapSettingsUseCase
 import javax.inject.Inject

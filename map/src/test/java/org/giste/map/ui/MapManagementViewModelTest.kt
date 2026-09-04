@@ -33,7 +33,7 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import org.giste.map.domain.MapLogger
+import org.giste.map.MapLogger
 import org.giste.map.domain.model.DownloadStatus
 import org.giste.map.domain.model.DownloadedMapInfo
 import org.giste.map.domain.model.DownloadedMapStatus

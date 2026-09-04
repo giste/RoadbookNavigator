@@ -34,7 +34,7 @@ import kotlinx.coroutines.test.runTest
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.giste.map.R
 import org.giste.map.data.datasource.RemoteMapDataSource
-import org.giste.map.domain.MapLogger
+import org.giste.map.MapLogger
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test

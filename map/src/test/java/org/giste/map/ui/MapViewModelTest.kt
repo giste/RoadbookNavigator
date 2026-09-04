@@ -30,10 +30,9 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import org.giste.map.MapLocation
+import org.giste.map.MapLocationProvider
 import org.giste.map.MapLogger
-import org.giste.android.location.domain.LocationEvent
-import org.giste.android.location.domain.LocationProvider
-import org.giste.android.location.domain.UserLocation
 import org.giste.map.domain.model.MapFile
 import org.giste.map.MapSettings
 import org.giste.map.domain.usecase.GetLocalMapsUseCase
@@ -48,7 +47,7 @@ class MapViewModelTest {
 
     private val getLocalMapsUseCase: GetLocalMapsUseCase = mockk()
     private val getMapSettingsUseCase: GetMapSettingsUseCase = mockk()
-    private val locationProvider: LocationProvider = mockk()
+    private val locationProvider: MapLocationProvider = mockk()
     private val logger: MapLogger = mockk(relaxed = true)
 
     private val testDispatcher = UnconfinedTestDispatcher()
@@ -67,15 +66,11 @@ class MapViewModelTest {
     fun `uiState should combine data from use cases`() = runTest {
         val expectedMaps = listOf(MapFile("spain.map", "/path", 100L, 1000L, "europe"))
         val expectedSettings = MapSettings(initialZoom = 12, initialTilt = 30f)
-        val expectedLocation = UserLocation(40.0, -3.0, 0.0, 1f, null, 0f, 0f, 0L)
+        val expectedLocation = MapLocation(40.0, -3.0, 0f)
 
         every { getLocalMapsUseCase() } returns flowOf(expectedMaps)
         every { getMapSettingsUseCase() } returns flowOf(expectedSettings)
-        every { locationProvider.observeLocation() } returns flowOf(
-            LocationEvent.LocationUpdated(
-                expectedLocation
-            )
-        )
+        every { locationProvider.observeLocation() } returns flowOf(expectedLocation)
 
         val viewModel = MapViewModel(
             getLocalMapsUseCase,
@@ -95,10 +90,10 @@ class MapViewModelTest {
     fun `uiState should update when location updates`() = runTest {
         val maps = emptyList<MapFile>()
         val settings = MapSettings()
-        val location1 = UserLocation(40.0, -3.0, 0.0, 1f, null, 0f, 0f, 0L)
-        val location2 = UserLocation(41.0, -2.0, 0.0, 1f, null, 0f, 0f, 100L)
+        val location1 = MapLocation(40.0, -3.0, 0f)
+        val location2 = MapLocation(41.0, -2.0, 0f)
 
-        val locationFlow = MutableStateFlow<LocationEvent>(LocationEvent.LocationUpdated(location1))
+        val locationFlow = MutableStateFlow(location1)
 
         every { getLocalMapsUseCase() } returns flowOf(maps)
         every { getMapSettingsUseCase() } returns flowOf(settings)
@@ -118,7 +113,7 @@ class MapViewModelTest {
 
         Assert.assertEquals(location1, viewModel.uiState.value.currentLocation)
 
-        locationFlow.value = LocationEvent.LocationUpdated(location2)
+        locationFlow.value = location2
         runCurrent()
         Assert.assertEquals(location2, viewModel.uiState.value.currentLocation)
 
@@ -130,9 +125,7 @@ class MapViewModelTest {
         every { getLocalMapsUseCase() } returns flowOf(emptyList())
         every { getMapSettingsUseCase() } returns flowOf(MapSettings())
         every { locationProvider.observeLocation() } returns flowOf(
-            LocationEvent.LocationUpdated(
-                UserLocation(0.0, 0.0, 0.0, 0f, null, 0f, 0f, 0L)
-            )
+            MapLocation(0.0, 0.0, 0f)
         )
 
         val viewModel = MapViewModel(

@@ -58,7 +58,6 @@ kotlin {
 
 dependencies {
     implementation(project(":core"))
-    implementation(project(":location"))
     
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)

@@ -44,9 +44,9 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import org.giste.map.LocalMapDimensions
 import org.giste.map.MapDimensions
+import org.giste.map.MapLocation
 import org.giste.map.MapTheme
 import org.giste.map.compactMapDimensions
-import org.giste.android.location.domain.UserLocation
 import org.giste.map.domain.model.MapFile
 import org.giste.map.R
 import org.oscim.android.MapView
@@ -91,7 +91,7 @@ fun MapContent(
 
 @Composable
 private fun LocationView(
-    location: UserLocation?,
+    location: MapLocation?,
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -126,32 +126,8 @@ private fun LocationView(
             )
             LocationDetail(
                 text = stringResource(
-                    R.string.map_location_accuracy,
-                    location?.accuracy?.toString() ?: unknown
-                )
-            )
-            LocationDetail(
-                text = stringResource(
-                    R.string.map_location_altitude,
-                    location?.altitude?.toString() ?: unknown
-                )
-            )
-            LocationDetail(
-                text = stringResource(
-                    R.string.map_location_vertical_accuracy,
-                    location?.verticalAccuracy?.toString() ?: unknown
-                )
-            )
-            LocationDetail(
-                text = stringResource(
                     R.string.map_location_bearing,
                     location?.bearing?.toString() ?: unknown
-                )
-            )
-            LocationDetail(
-                text = stringResource(
-                    R.string.map_location_speed,
-                    location?.speed?.toString() ?: unknown
                 )
             )
         }
@@ -166,7 +142,7 @@ private fun LocationDetail(text: String, modifier: Modifier = Modifier) {
 @Composable
 private fun VtmMapView(
     mapSources: List<MapFile>,
-    location: UserLocation?,
+    location: MapLocation?,
     zoom: Int,
     tilt: Float,
     modifier: Modifier = Modifier,

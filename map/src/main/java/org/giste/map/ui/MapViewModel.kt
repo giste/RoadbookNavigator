@@ -27,10 +27,9 @@ import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
+import org.giste.map.MapLocation
+import org.giste.map.MapLocationProvider
 import org.giste.map.MapLogger
-import org.giste.android.location.domain.LocationEvent
-import org.giste.android.location.domain.LocationProvider
-import org.giste.android.location.domain.UserLocation
 import org.giste.map.domain.model.MapFile
 import org.giste.map.MapSettings
 import org.giste.map.domain.usecase.GetLocalMapsUseCase
@@ -41,7 +40,7 @@ import javax.inject.Inject
 class MapViewModel @Inject constructor(
     getLocalMapsUseCase: GetLocalMapsUseCase,
     getMapSettingsUseCase: GetMapSettingsUseCase,
-    locationProvider: LocationProvider,
+    locationProvider: MapLocationProvider,
     private val logger: MapLogger,
 ) : ViewModel() {
 
@@ -49,8 +48,7 @@ class MapViewModel @Inject constructor(
         getLocalMapsUseCase(),
         getMapSettingsUseCase(),
         locationProvider.observeLocation()
-            .filterIsInstance<LocationEvent.LocationUpdated>()
-            .map { it.location as UserLocation? }
+            .map { it as MapLocation? }
             .onStart { emit(null) }
     ) { localMaps, settings, location ->
         val mapUiState = MapUiState(
@@ -70,5 +68,5 @@ class MapViewModel @Inject constructor(
 data class MapUiState(
     val localMaps: List<MapFile> = emptyList(),
     val settings: MapSettings = MapSettings(),
-    val currentLocation: UserLocation? = null
+    val currentLocation: MapLocation? = null
 )

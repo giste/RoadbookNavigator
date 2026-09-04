@@ -15,29 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.map
+package org.giste.map
 
-import dagger.Binds
-import dagger.Module
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
-import org.giste.map.MapLocationProvider
-import org.giste.map.MapLogger
-import javax.inject.Singleton
+import kotlinx.coroutines.flow.Flow
 
-@Module
-@InstallIn(SingletonComponent::class)
-abstract class MapBridgeModule {
-
-    @Binds
-    @Singleton
-    abstract fun bindMapLogger(
-        impl: MapLoggerBridge
-    ): MapLogger
-
-    @Binds
-    @Singleton
-    abstract fun bindMapLocationProvider(
-        impl: MapLocationProviderBridge
-    ): MapLocationProvider
+/**
+ * Interface to provide location updates to the map module.
+ */
+interface MapLocationProvider {
+    fun observeLocation(): Flow<MapLocation>
 }

@@ -62,7 +62,7 @@ internal class DownloadMapWorker @AssistedInject constructor(
         setProgress(workDataOf(KEY_URL to url, PROGRESS_KEY to 0f))
         setForeground(createForegroundInfo(name, url))
 
-        val mapsDir = File(applicationContext.filesDir, "maps")
+        val mapsDir = File(applicationContext.filesDir, "org.giste.map.offline_maps")
         val destinationPath = "${mapsDir.absolutePath}/$parentPath/$name"
         val destinationFile = File(destinationPath)
         val tempFile = File("$destinationPath.tmp")

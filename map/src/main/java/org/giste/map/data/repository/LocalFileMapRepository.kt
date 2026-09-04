@@ -65,7 +65,7 @@ internal class LocalFileMapRepository @Inject constructor(
         "https://ftp-stud.hs-esslingen.de/pub/Mirrors/download.mapsforge.org/maps/v5/"
 
     init {
-        workManager.getWorkInfosByTagFlow("map_download")
+        workManager.getWorkInfosByTagFlow("org.giste.map.download")
             .onEach { workInfos ->
                 if (workInfos.any { it.state == WorkInfo.State.SUCCEEDED }) {
                     refresh()
@@ -75,7 +75,7 @@ internal class LocalFileMapRepository @Inject constructor(
     }
 
     private val mapsDir: File
-        get() = File(context.filesDir, "maps").apply {
+        get() = File(context.filesDir, "org.giste.map.offline_maps").apply {
             if (!exists()) mkdirs()
         }
 
@@ -161,7 +161,7 @@ internal class LocalFileMapRepository @Inject constructor(
                     DownloadMapWorker.KEY_LAST_MODIFIED to remoteMapFile.lastModified
                 )
             )
-            .addTag("map_download")
+            .addTag("org.giste.map.download")
             .addTag("url:${remoteMapFile.url}")
             .build()
 
@@ -183,7 +183,7 @@ internal class LocalFileMapRepository @Inject constructor(
     }
 
     override fun getDownloadingMaps(): Flow<Map<String, DownloadStatus>> {
-        return workManager.getWorkInfosByTagFlow("map_download")
+        return workManager.getWorkInfosByTagFlow("org.giste.map.download")
             .map { workInfos ->
                 workInfos
                     .filter { !it.state.isFinished }

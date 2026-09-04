@@ -57,7 +57,7 @@ class DownloadMapWorkerTest {
         val realContext = ApplicationProvider.getApplicationContext<Context>()
         context = spyk(realContext)
         // Mock strings to avoid Resources$NotFoundException in some environments
-        every { context.getString(R.string.map_download_notification_channel_id) } returns "map_downloads_channel"
+        every { context.getString(R.string.map_download_notification_channel_id) } returns "org.giste.map.downloads_channel"
         every { context.getString(R.string.map_download_notification_channel_name) } returns "Map Downloads"
         every { context.getString(R.string.map_download_notification_title) } returns "Downloading map"
         every { context.getString(R.string.map_download_notification_cancel) } returns "Cancel"
@@ -100,7 +100,7 @@ class DownloadMapWorkerTest {
         val result = worker.doWork()
 
         Assert.assertEquals(ListenableWorker.Result.success(), result)
-        val file = File(context.filesDir, "maps/$name")
+        val file = File(context.filesDir, "org.giste.map.offline_maps/$name")
         Assert.assertEquals(true, file.exists())
         Assert.assertEquals(content, file.readText())
     }

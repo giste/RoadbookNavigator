@@ -41,7 +41,7 @@ import javax.inject.Singleton
 @Retention(AnnotationRetention.BINARY)
 internal annotation class MapSettingsDataStore
 
-private val Context.mapSettingsDataStore: DataStore<Preferences> by preferencesDataStore(name = "map_settings")
+private val Context.mapSettingsDataStore: DataStore<Preferences> by preferencesDataStore(name = "org.giste.map.settings")
 
 @Module
 @InstallIn(SingletonComponent::class)

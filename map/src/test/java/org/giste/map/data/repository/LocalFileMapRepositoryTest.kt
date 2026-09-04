@@ -67,7 +67,7 @@ class LocalFileMapRepositoryTest {
 
         repository =
             LocalFileMapRepository(context, remoteDataSource, Dispatchers.Unconfined, logger)
-        mapsDir = File(context.filesDir, "maps")
+        mapsDir = File(context.filesDir, "org.giste.map.offline_maps")
         mapsDir.deleteRecursively()
         mapsDir.mkdirs()
     }

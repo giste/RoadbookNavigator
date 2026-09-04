@@ -34,7 +34,7 @@ import kotlinx.coroutines.test.runTest
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.giste.map.R
 import org.giste.map.data.datasource.RemoteMapDataSource
-import org.giste.roadbooknavigator.core.util.Logger
+import org.giste.map.domain.MapLogger
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -50,7 +50,7 @@ class DownloadMapWorkerTest {
 
     private lateinit var context: Context
     private val remoteDataSource = mockk<RemoteMapDataSource>()
-    private val logger = mockk<Logger>(relaxed = true)
+    private val logger = mockk<MapLogger>(relaxed = true)
 
     @Before
     fun setup() {

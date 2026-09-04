@@ -27,7 +27,7 @@ import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
-import org.giste.roadbooknavigator.core.util.Logger
+import org.giste.map.domain.MapLogger
 import org.giste.android.location.domain.LocationEvent
 import org.giste.android.location.domain.LocationProvider
 import org.giste.android.location.domain.UserLocation
@@ -42,7 +42,7 @@ class MapViewModel @Inject constructor(
     getLocalMapsUseCase: GetLocalMapsUseCase,
     getMapSettingsUseCase: GetMapSettingsUseCase,
     locationProvider: LocationProvider,
-    private val logger: Logger,
+    private val logger: MapLogger,
 ) : ViewModel() {
 
     val uiState: StateFlow<MapUiState> = combine(

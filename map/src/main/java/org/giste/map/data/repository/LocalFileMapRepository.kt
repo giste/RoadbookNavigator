@@ -38,9 +38,9 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.workDataOf
 import org.giste.roadbooknavigator.core.di.IoDispatcher
-import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.map.data.datasource.RemoteMapDataSource
 import org.giste.map.data.worker.DownloadMapWorker
+import org.giste.map.domain.MapLogger
 import org.giste.map.domain.model.DownloadStatus
 import org.giste.map.domain.model.MapFile
 import org.giste.map.domain.model.RemoteMapFile
@@ -55,7 +55,7 @@ internal class LocalFileMapRepository @Inject constructor(
     @param:ApplicationContext private val context: Context,
     private val remoteDataSource: RemoteMapDataSource,
     @param:IoDispatcher private val ioDispatcher: CoroutineDispatcher,
-    private val logger: Logger
+    private val logger: MapLogger
 ) : MapRepository {
 
     private val workManager = WorkManager.getInstance(context)

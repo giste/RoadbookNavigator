@@ -31,8 +31,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
-import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.map.data.datasource.RemoteMapDataSource
+import org.giste.map.domain.MapLogger
 import org.giste.map.domain.model.MapFile
 import org.giste.map.domain.model.RemoteMapFile
 import org.giste.map.domain.model.RemoteMapFolder
@@ -53,7 +53,7 @@ class LocalFileMapRepositoryTest {
 
     private lateinit var context: Context
     private val remoteDataSource: RemoteMapDataSource = mockk()
-    private val logger: Logger = mockk(relaxed = true)
+    private val logger: MapLogger = mockk(relaxed = true)
     private lateinit var repository: LocalFileMapRepository
     private lateinit var mapsDir: File
 

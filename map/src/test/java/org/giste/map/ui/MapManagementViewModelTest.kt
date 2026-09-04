@@ -33,6 +33,7 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import org.giste.map.domain.MapLogger
 import org.giste.map.domain.model.DownloadStatus
 import org.giste.map.domain.model.DownloadedMapInfo
 import org.giste.map.domain.model.DownloadedMapStatus
@@ -44,7 +45,6 @@ import org.giste.map.domain.usecase.DeleteMapUseCase
 import org.giste.map.domain.usecase.DownloadMapUseCase
 import org.giste.map.domain.usecase.GetDownloadingMapsUseCase
 import org.giste.map.domain.usecase.GetMapOverviewUseCase
-import org.giste.roadbooknavigator.core.util.Logger
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
@@ -57,7 +57,7 @@ class MapManagementViewModelTest {
     private val downloadMapUseCase: DownloadMapUseCase = mockk()
     private val getDownloadingMapsUseCase: GetDownloadingMapsUseCase = mockk()
     private val deleteMapUseCase: DeleteMapUseCase = mockk()
-    private val logger: Logger = mockk(relaxed = true)
+    private val logger: MapLogger = mockk(relaxed = true)
 
     private val testDispatcher = UnconfinedTestDispatcher()
 

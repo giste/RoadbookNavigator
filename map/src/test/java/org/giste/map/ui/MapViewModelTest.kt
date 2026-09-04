@@ -30,6 +30,7 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import org.giste.map.domain.MapLogger
 import org.giste.android.location.domain.LocationEvent
 import org.giste.android.location.domain.LocationProvider
 import org.giste.android.location.domain.UserLocation
@@ -37,7 +38,6 @@ import org.giste.map.domain.model.MapFile
 import org.giste.map.domain.model.MapSettings
 import org.giste.map.domain.usecase.GetLocalMapsUseCase
 import org.giste.map.domain.usecase.GetMapSettingsUseCase
-import org.giste.roadbooknavigator.core.util.Logger
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
@@ -49,7 +49,7 @@ class MapViewModelTest {
     private val getLocalMapsUseCase: GetLocalMapsUseCase = mockk()
     private val getMapSettingsUseCase: GetMapSettingsUseCase = mockk()
     private val locationProvider: LocationProvider = mockk()
-    private val logger: Logger = mockk(relaxed = true)
+    private val logger: MapLogger = mockk(relaxed = true)
 
     private val testDispatcher = UnconfinedTestDispatcher()
 

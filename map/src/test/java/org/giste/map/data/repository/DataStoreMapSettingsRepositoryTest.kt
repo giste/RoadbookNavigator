@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import org.giste.roadbooknavigator.core.util.Logger
+import org.giste.map.domain.MapLogger
 import org.giste.map.domain.model.MapSettings
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -45,7 +45,7 @@ class DataStoreMapSettingsRepositoryTest {
     private lateinit var repository: DataStoreMapSettingsRepository
     private val testDispatcher = UnconfinedTestDispatcher()
     private val testScope = TestScope(testDispatcher)
-    private val logger: Logger = mockk(relaxed = true)
+    private val logger: MapLogger = mockk(relaxed = true)
 
     @Before
     fun setup() {

@@ -37,7 +37,7 @@ import okio.sink
 import org.giste.map.R
 import org.giste.map.data.datasource.RemoteMapDataSource
 import org.giste.map.data.receiver.DownloadCancelReceiver
-import org.giste.roadbooknavigator.core.util.Logger
+import org.giste.map.domain.MapLogger
 import java.io.File
 
 @HiltWorker
@@ -45,7 +45,7 @@ internal class DownloadMapWorker @AssistedInject constructor(
     @Assisted appContext: Context,
     @Assisted workerParams: WorkerParameters,
     private val remoteDataSource: RemoteMapDataSource,
-    private val logger: Logger
+    private val logger: MapLogger
 ) : CoroutineWorker(appContext, workerParams) {
 
     private val notificationManager =

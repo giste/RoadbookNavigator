@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import org.giste.roadbooknavigator.core.util.Logger
+import org.giste.map.domain.MapLogger
 import org.giste.map.domain.model.DownloadStatus
 import org.giste.map.domain.model.DownloadedMapInfo
 import org.giste.map.domain.model.DownloadedMapStatus
@@ -45,7 +45,7 @@ class MapManagementViewModel @Inject constructor(
     private val downloadMapUseCase: DownloadMapUseCase,
     getDownloadingMapsUseCase: GetDownloadingMapsUseCase,
     private val deleteMapUseCase: DeleteMapUseCase,
-    private val logger: Logger
+    private val logger: MapLogger
 ) : ViewModel() {
 
     val uiState: StateFlow<MapManagementUiState> = combine(

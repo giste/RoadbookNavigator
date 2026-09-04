@@ -66,6 +66,8 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
@@ -102,6 +104,8 @@ import org.giste.roadbooknavigator.features.settings.domain.location.MinDistance
 import org.giste.roadbooknavigator.features.settings.domain.location.PollingIntervalThreshold
 import org.giste.map.domain.model.MapSettings
 import org.giste.map.ui.MapManagementScreen
+import org.giste.map.ui.theme.compactMapDimensions
+import org.giste.map.ui.theme.expandedMapDimensions
 import org.giste.odometer.domain.AccuracyThreshold
 import org.giste.odometer.domain.OdometerSettings
 import org.giste.odometer.domain.SpeedThreshold
@@ -118,10 +122,15 @@ import org.giste.roadbooknavigator.core.R as CoreR
 
 @Composable
 fun SettingsScreen(
+    windowSizeClass: WindowSizeClass,
     onBackClick: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val useExpanded = windowSizeClass.widthSizeClass == WindowWidthSizeClass.Expanded &&
+            windowSizeClass.heightSizeClass != WindowHeightSizeClass.Compact
+    val mapDimensions = if (useExpanded) expandedMapDimensions else compactMapDimensions
+
     SettingsContent(
         uiState = uiState,
         onBackClick = onBackClick,
@@ -141,7 +150,7 @@ fun SettingsScreen(
         onMapInitialZoomChange = viewModel::setMapInitialZoom,
         onMapInitialTiltChange = viewModel::setMapInitialTilt,
         onLandscapeWeightChange = viewModel::setLandscapeDistanceSectionWeight,
-        mapManagementContent = { MapManagementScreen() }
+        mapManagementContent = { MapManagementScreen(dimensions = mapDimensions) }
     )
 }
 
@@ -1102,6 +1111,10 @@ fun SettingsPreviewLight() {
     val size = androidx.compose.ui.unit.DpSize(411.dp, 891.dp)
     val windowSizeClass = WindowSizeClass.calculateFromSize(size)
     RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+        val useExpanded = windowSizeClass.widthSizeClass == WindowWidthSizeClass.Expanded &&
+                windowSizeClass.heightSizeClass != WindowHeightSizeClass.Compact
+        val mapDimensions = if (useExpanded) expandedMapDimensions else compactMapDimensions
+
         SettingsContent(
             uiState = SettingsUiState.Success(
                 appSettings = AppSettings(),
@@ -1128,7 +1141,12 @@ fun SettingsPreviewLight() {
             onMapInitialZoomChange = {},
             onMapInitialTiltChange = {},
             onLandscapeWeightChange = {},
-            mapManagementContent = {}
+            mapManagementContent = {
+                // Placeholder to avoid Hilt issues in preview
+                Box(modifier = Modifier.fillMaxSize().background(Color.Gray)) {
+                    Text("Map Management (Dimensions: $mapDimensions)", modifier = Modifier.align(Alignment.Center))
+                }
+            }
         )
     }
 }
@@ -1145,6 +1163,10 @@ fun SettingsPreviewDark() {
     val size = androidx.compose.ui.unit.DpSize(411.dp, 891.dp)
     val windowSizeClass = WindowSizeClass.calculateFromSize(size)
     RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+        val useExpanded = windowSizeClass.widthSizeClass == WindowWidthSizeClass.Expanded &&
+                windowSizeClass.heightSizeClass != WindowHeightSizeClass.Compact
+        val mapDimensions = if (useExpanded) expandedMapDimensions else compactMapDimensions
+
         SettingsContent(
             uiState = SettingsUiState.Success(
                 appSettings = AppSettings(),
@@ -1171,7 +1193,11 @@ fun SettingsPreviewDark() {
             onMapInitialZoomChange = {},
             onMapInitialTiltChange = {},
             onLandscapeWeightChange = {},
-            mapManagementContent = {}
+            mapManagementContent = {
+                Box(modifier = Modifier.fillMaxSize().background(Color.Gray)) {
+                    Text("Map Management (Dimensions: $mapDimensions)", modifier = Modifier.align(Alignment.Center))
+                }
+            }
         )
     }
 }
@@ -1187,6 +1213,10 @@ fun SettingsPreviewTablet() {
     val size = androidx.compose.ui.unit.DpSize(1280.dp, 800.dp)
     val windowSizeClass = WindowSizeClass.calculateFromSize(size)
     RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+        val useExpanded = windowSizeClass.widthSizeClass == WindowWidthSizeClass.Expanded &&
+                windowSizeClass.heightSizeClass != WindowHeightSizeClass.Compact
+        val mapDimensions = if (useExpanded) expandedMapDimensions else compactMapDimensions
+
         SettingsContent(
             uiState = SettingsUiState.Success(
                 appSettings = AppSettings(),
@@ -1213,7 +1243,11 @@ fun SettingsPreviewTablet() {
             onMapInitialZoomChange = {},
             onMapInitialTiltChange = {},
             onLandscapeWeightChange = {},
-            mapManagementContent = {}
+            mapManagementContent = {
+                Box(modifier = Modifier.fillMaxSize().background(Color.Gray)) {
+                    Text("Map Management (Dimensions: $mapDimensions)", modifier = Modifier.align(Alignment.Center))
+                }
+            }
         )
     }
 }

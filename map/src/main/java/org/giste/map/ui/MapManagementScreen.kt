@@ -62,7 +62,10 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
+import org.giste.map.ui.theme.LocalMapDimensions
+import org.giste.map.ui.theme.MapDimensions
+import org.giste.map.ui.theme.MapTheme
+import org.giste.map.ui.theme.compactMapDimensions
 import org.giste.map.R
 import org.giste.map.domain.model.DownloadStatus
 import org.giste.map.domain.model.DownloadedMapInfo
@@ -74,16 +77,19 @@ import org.giste.roadbooknavigator.core.R as CoreR
 
 @Composable
 fun MapManagementScreen(
-    viewModel: MapManagementViewModel = hiltViewModel()
+    viewModel: MapManagementViewModel = hiltViewModel(),
+    dimensions: MapDimensions = compactMapDimensions,
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    MapManagementContent(
-        uiState = uiState,
-        onDownloadClick = viewModel::downloadMap,
-        onDeleteClick = viewModel::deleteMap,
-        onCancelDownloadClick = viewModel::cancelDownload
-    )
+    MapTheme(dimensions = dimensions) {
+        MapManagementContent(
+            uiState = uiState,
+            onDownloadClick = viewModel::downloadMap,
+            onDeleteClick = viewModel::deleteMap,
+            onCancelDownloadClick = viewModel::cancelDownload
+        )
+    }
 }
 
 @Composable
@@ -112,7 +118,7 @@ fun MapManagementContent(
                         imageVector = Icons.Default.Error,
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.actionIconSize)
+                        modifier = Modifier.size(LocalMapDimensions.current.actionIconSize)
                     )
                     Text(text = uiState.message, color = MaterialTheme.colorScheme.error)
                 }
@@ -184,7 +190,7 @@ fun MapList(
                     )
                     HorizontalDivider(
                         modifier = Modifier
-                            .padding(horizontal = RoadbookNavigatorTheme.dimensions.paddingLarge)
+                            .padding(horizontal = LocalMapDimensions.current.paddingLarge)
                     )
                 }
             }
@@ -239,7 +245,7 @@ private fun LazyListScope.renderFolder(
             items(folder.maps) { remoteMap ->
                 Box(
                     modifier = Modifier.padding(
-                        start = RoadbookNavigatorTheme.dimensions.paddingLarge.times(
+                        start = LocalMapDimensions.current.paddingLarge.times(
                             level
                         )
                     )
@@ -253,7 +259,7 @@ private fun LazyListScope.renderFolder(
                     HorizontalDivider(
                         modifier = Modifier
                             .align(Alignment.BottomCenter)
-                            .padding(horizontal = RoadbookNavigatorTheme.dimensions.paddingLarge)
+                            .padding(horizontal = LocalMapDimensions.current.paddingLarge)
                     )
                 }
             }
@@ -287,10 +293,10 @@ fun SectionHeader(
             .fillMaxWidth()
             .clickable { onToggleExpand() }
             .padding(
-                start = RoadbookNavigatorTheme.dimensions.paddingLarge.times(level + 1),
-                end = RoadbookNavigatorTheme.dimensions.paddingLarge,
-                top = RoadbookNavigatorTheme.dimensions.paddingMedium,
-                //bottom = RoadbookNavigatorTheme.dimensions.paddingMedium
+                start = LocalMapDimensions.current.paddingLarge.times(level + 1),
+                end = LocalMapDimensions.current.paddingLarge,
+                top = LocalMapDimensions.current.paddingMedium,
+                //bottom = LocalMapDimensions.current.paddingMedium
             )
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -309,10 +315,10 @@ fun SectionHeader(
                     stringResource(CoreR.string.action_expand)
                 },
                 tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.actionIconSize),
+                modifier = Modifier.size(LocalMapDimensions.current.actionIconSize),
             )
         }
-        HorizontalDivider(modifier = Modifier.padding(top = RoadbookNavigatorTheme.dimensions.paddingSmall))
+        HorizontalDivider(modifier = Modifier.padding(top = LocalMapDimensions.current.paddingSmall))
     }
 }
 
@@ -334,9 +340,9 @@ fun DownloadedMapItem(
         Icon(
             imageVector = Icons.Default.Map,
             contentDescription = null,
-            modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.iconSize)
+            modifier = Modifier.size(LocalMapDimensions.current.iconSize)
         )
-        Spacer(modifier = Modifier.width(RoadbookNavigatorTheme.dimensions.paddingLarge))
+        Spacer(modifier = Modifier.width(LocalMapDimensions.current.paddingLarge))
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = info.mapFile.name.removeSuffix(".map").replaceFirstChar { it.uppercase() },
@@ -395,7 +401,7 @@ fun DownloadedMapItem(
                 Icon(
                     imageVector = Icons.Default.Close,
                     contentDescription = "Cancel",
-                    modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.actionIconSize),
+                    modifier = Modifier.size(LocalMapDimensions.current.actionIconSize),
                 )
             }
         } else if (info.status is DownloadedMapStatus.UpdateAvailable) {
@@ -405,7 +411,7 @@ fun DownloadedMapItem(
                     contentDescription = stringResource(R.string.map_management_action_update),
                     //tint = Color(0xFFF28E1C),
                     tint = MaterialTheme.colorScheme.onErrorContainer,
-                    modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.actionIconSize),
+                    modifier = Modifier.size(LocalMapDimensions.current.actionIconSize),
                 )
             }
         }
@@ -420,7 +426,7 @@ fun DownloadedMapItem(
                 imageVector = Icons.Default.Delete,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.error,
-                modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.actionIconSize),
+                modifier = Modifier.size(LocalMapDimensions.current.actionIconSize),
             )
         }
     }
@@ -437,17 +443,17 @@ fun RemoteMapItem(
         modifier = Modifier
             .fillMaxWidth()
             .padding(
-                horizontal = RoadbookNavigatorTheme.dimensions.paddingLarge,
-                vertical = RoadbookNavigatorTheme.dimensions.paddingMedium,
+                horizontal = LocalMapDimensions.current.paddingLarge,
+                vertical = LocalMapDimensions.current.paddingMedium,
             ),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
             imageVector = Icons.Default.Map,
             contentDescription = null,
-            modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.iconSize),
+            modifier = Modifier.size(LocalMapDimensions.current.iconSize),
         )
-        Spacer(modifier = Modifier.width(RoadbookNavigatorTheme.dimensions.paddingLarge))
+        Spacer(modifier = Modifier.width(LocalMapDimensions.current.paddingLarge))
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = remoteMap.name.removeSuffix(".map").replaceFirstChar { it.uppercase() },
@@ -484,7 +490,7 @@ fun RemoteMapItem(
                 Icon(
                     imageVector = Icons.Default.Close,
                     contentDescription = "Cancel",
-                    modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.actionIconSize),
+                    modifier = Modifier.size(LocalMapDimensions.current.actionIconSize),
                 )
             }
         } else {
@@ -498,7 +504,7 @@ fun RemoteMapItem(
                 Icon(
                     imageVector = Icons.Default.Download,
                     contentDescription = null,
-                    modifier = Modifier.size(RoadbookNavigatorTheme.dimensions.actionIconSize),
+                    modifier = Modifier.size(LocalMapDimensions.current.actionIconSize),
                 )
             }
         }

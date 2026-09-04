@@ -68,6 +68,8 @@ import org.giste.odometer.domain.Odometer
 import org.giste.roadbooknavigator.R
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 import org.giste.map.ui.MapScreen
+import org.giste.map.ui.theme.compactMapDimensions
+import org.giste.map.ui.theme.expandedMapDimensions
 import org.giste.roadbook.Roadbook
 import org.giste.roadbooknavigator.ui.odometer.PartialDistance
 import org.giste.roadbooknavigator.ui.odometer.ResetAllConfirmationDialog
@@ -113,7 +115,14 @@ fun DashboardScreen(
             onControllerReady = { viewModel.onRoadbookControllerReady(it) }
         )
     },
-    mapSlot: @Composable (Modifier) -> Unit = { modifier -> MapScreen(modifier = modifier) }
+    mapSlot: @Composable (Modifier) -> Unit = { modifier ->
+        val useExpanded = windowSizeClass.widthSizeClass == WindowWidthSizeClass.Expanded &&
+                windowSizeClass.heightSizeClass != WindowHeightSizeClass.Compact
+        MapScreen(
+            modifier = modifier,
+            dimensions = if (useExpanded) expandedMapDimensions else compactMapDimensions
+        )
+    }
 ) {
     val uiState by viewModel.uiState.collectAsState()
 

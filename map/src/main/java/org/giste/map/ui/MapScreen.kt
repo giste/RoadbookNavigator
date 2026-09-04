@@ -42,7 +42,10 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
+import org.giste.map.ui.theme.LocalMapDimensions
+import org.giste.map.ui.theme.MapDimensions
+import org.giste.map.ui.theme.MapTheme
+import org.giste.map.ui.theme.compactMapDimensions
 import org.giste.android.location.domain.UserLocation
 import org.giste.map.domain.model.MapFile
 import org.giste.map.R
@@ -62,24 +65,27 @@ import org.oscim.tiling.source.mapfile.MultiMapFileTileSource
 @Composable
 fun MapScreen(
     modifier: Modifier = Modifier,
-    viewModel: MapViewModel = hiltViewModel()
+    viewModel: MapViewModel = hiltViewModel(),
+    dimensions: MapDimensions = compactMapDimensions,
 ) {
     val uiState = viewModel.uiState.collectAsState().value
     val location = uiState.currentLocation
 
-    if (uiState.localMaps.isEmpty()) {
-        LocationView(
-            location = location,
-            modifier = modifier
-        )
-    } else {
-        VtmMapView(
-            mapSources = uiState.localMaps,
-            location = location,
-            zoom = uiState.settings.initialZoom,
-            tilt = uiState.settings.initialTilt,
-            modifier = modifier,
-        )
+    MapTheme(dimensions = dimensions) {
+        if (uiState.localMaps.isEmpty()) {
+            LocationView(
+                location = location,
+                modifier = modifier
+            )
+        } else {
+            VtmMapView(
+                mapSources = uiState.localMaps,
+                location = location,
+                zoom = uiState.settings.initialZoom,
+                tilt = uiState.settings.initialTilt,
+                modifier = modifier,
+            )
+        }
     }
 }
 
@@ -91,7 +97,7 @@ private fun LocationView(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .padding(RoadbookNavigatorTheme.dimensions.paddingMedium)
+            .padding(LocalMapDimensions.current.paddingMedium)
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
             Text(
@@ -232,7 +238,7 @@ private fun VtmMapView(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .background(MaterialTheme.colorScheme.secondary.copy(alpha = 0.6f))
-                .padding(RoadbookNavigatorTheme.dimensions.paddingSmall),
+                .padding(LocalMapDimensions.current.paddingSmall),
             color = MaterialTheme.colorScheme.onSecondary,
             style = MaterialTheme.typography.labelSmall,
         )

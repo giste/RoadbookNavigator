@@ -114,6 +114,7 @@ class MainActivity : ComponentActivity() {
                         }
                         composable<Screen.Settings> {
                             SettingsScreen(
+                                windowSizeClass = windowSizeClass,
                                 onBackClick = { navController.popBackStack() }
                             )
                         }

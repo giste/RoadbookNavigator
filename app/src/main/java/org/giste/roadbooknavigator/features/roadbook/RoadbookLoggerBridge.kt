@@ -15,47 +15,45 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbook.data.util
+package org.giste.roadbooknavigator.features.roadbook
 
-import android.util.Log
 import org.giste.roadbook.RoadbookLogger
+import org.giste.roadbooknavigator.core.util.Logger
 import javax.inject.Inject
 
 /**
- * Default implementation of [RoadbookLogger] using [android.util.Log].
+ * Bridge implementation of [RoadbookLogger] that redirects to the app's [Logger].
  */
-internal class AndroidRoadbookLogger private constructor(
-    private val tag: String
+class RoadbookLoggerBridge @Inject constructor(
+    private val logger: Logger
 ) : RoadbookLogger {
 
-    @Inject
-    constructor() : this("Roadbook")
-
     override fun v(message: String, vararg args: Any?) {
-        Log.v(tag, message.format(*args))
+        logger.v(message, *args)
     }
 
     override fun d(message: String, vararg args: Any?) {
-        Log.d(tag, message.format(*args))
+        logger.d(message, *args)
     }
 
     override fun i(message: String, vararg args: Any?) {
-        Log.i(tag, message.format(*args))
+        logger.i(message, *args)
     }
 
     override fun w(message: String, vararg args: Any?) {
-        Log.w(tag, message.format(*args))
+        logger.w(message, *args)
     }
 
     override fun e(message: String, vararg args: Any?) {
-        Log.e(tag, message.format(*args))
+        logger.e(message, *args)
     }
 
     override fun e(t: Throwable, message: String, vararg args: Any?) {
-        Log.e(tag, message.format(*args), t)
+        logger.e(t, message, *args)
     }
 
     override fun withTag(tag: String): RoadbookLogger {
-        return AndroidRoadbookLogger("${this.tag}:$tag")
+        // The app's Logger handles tagging internally or we could wrap it
+        return this
     }
 }

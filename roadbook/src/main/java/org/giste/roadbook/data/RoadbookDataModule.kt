@@ -24,7 +24,6 @@ import androidx.datastore.dataStoreFile
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.Binds
-import dagger.BindsOptionalOf
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -36,13 +35,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import org.giste.roadbook.data.persistence.PersistenceRoadbookSerializer
 import org.giste.roadbook.data.persistence.dto.PersistentRoute
-import org.giste.roadbook.data.util.AndroidRoadbookLogger
-import org.giste.roadbook.AppRoadbookIoDispatcher
-import org.giste.roadbook.AppRoadbookLogger
 import org.giste.roadbook.domain.repository.RoadbookRepository
 import org.giste.roadbook.domain.repository.RoadbookSessionRepository
-import org.giste.roadbook.RoadbookLogger
-import java.util.Optional
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
@@ -76,28 +70,11 @@ internal abstract class RoadbookDataModule {
         dataStoreRoadbookSessionRepository: DataStoreRoadbookSessionRepository
     ): RoadbookSessionRepository
 
-    @BindsOptionalOf
-    @AppRoadbookIoDispatcher
-    internal abstract fun optionalIoDispatcher(): CoroutineDispatcher
-
-    @BindsOptionalOf
-    @AppRoadbookLogger
-    internal abstract fun optionalRoadbookLogger(): RoadbookLogger
-
     companion object {
         @Provides
         @Singleton
         @RoadbookIoDispatcher
-        internal fun provideIoDispatcher(
-            @AppRoadbookIoDispatcher optionalDispatcher: Optional<CoroutineDispatcher>
-        ): CoroutineDispatcher = if (optionalDispatcher.isPresent) optionalDispatcher.get() else Dispatchers.IO
-
-        @Provides
-        @Singleton
-        internal fun provideRoadbookLogger(
-            @AppRoadbookLogger optionalLogger: Optional<RoadbookLogger>,
-            androidRoadbookLogger: AndroidRoadbookLogger
-        ): RoadbookLogger = if (optionalLogger.isPresent) optionalLogger.get() else androidRoadbookLogger
+        internal fun provideIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
 
         @Volatile
         private var roadbookDataStore: DataStore<PersistentRoute>? = null

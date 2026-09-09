@@ -15,22 +15,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbook
+package org.giste.roadbooknavigator.features.roadbook
 
-import javax.inject.Qualifier
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import org.giste.roadbook.RoadbookLogger
+import javax.inject.Singleton
 
-/**
- * Qualifier for providing a custom CoroutineDispatcher for the roadbook module.
- * If provided by the app, it will override the default Dispatchers.IO.
- */
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-public annotation class AppRoadbookIoDispatcher
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class RoadbookBridgeModule {
 
-/**
- * Qualifier for providing a custom Logger for the roadbook module.
- * If provided by the app, it will override the default AndroidRoadbookLogger.
- */
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-public annotation class AppRoadbookLogger
+    @Binds
+    @Singleton
+    abstract fun bindRoadbookLogger(
+        impl: RoadbookLoggerBridge
+    ): RoadbookLogger
+}

@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
  * Dimensions specific to the Map module.
  */
 @Immutable
-data class MapDimensions(
+public data class MapDimensions(
     val paddingSmall: Dp,
     val paddingMedium: Dp,
     val paddingLarge: Dp,
@@ -35,7 +35,7 @@ data class MapDimensions(
     val sectionBorder: Dp,
 )
 
-val compactMapDimensions: MapDimensions = MapDimensions(
+public val compactMapDimensions: MapDimensions = MapDimensions(
     paddingSmall = 4.dp,
     paddingMedium = 8.dp,
     paddingLarge = 16.dp,
@@ -44,7 +44,7 @@ val compactMapDimensions: MapDimensions = MapDimensions(
     sectionBorder = 1.dp,
 )
 
-val expandedMapDimensions: MapDimensions = MapDimensions(
+public val expandedMapDimensions: MapDimensions = MapDimensions(
     paddingSmall = 4.dp,
     paddingMedium = 12.dp,
     paddingLarge = 24.dp,

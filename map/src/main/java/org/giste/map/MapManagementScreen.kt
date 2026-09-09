@@ -26,7 +26,7 @@ import org.giste.map.ui.MapManagementContentWrapper
  * @param dimensions Custom dimensions for the screen. Defaults to compact.
  */
 @Composable
-fun MapManagementScreen(
+public fun MapManagementScreen(
     dimensions: MapDimensions = compactMapDimensions,
 ) {
     MapManagementContentWrapper(

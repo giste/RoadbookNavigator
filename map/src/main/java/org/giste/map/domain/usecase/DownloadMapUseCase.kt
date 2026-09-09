@@ -23,7 +23,7 @@ import org.giste.map.domain.model.RemoteMapFile
 import org.giste.map.domain.repository.MapRepository
 import javax.inject.Inject
 
-class DownloadMapUseCase @Inject constructor(
+internal class DownloadMapUseCase @Inject constructor(
     private val repository: MapRepository
 ) {
     operator fun invoke(remoteMapFile: RemoteMapFile): Flow<DownloadStatus> {

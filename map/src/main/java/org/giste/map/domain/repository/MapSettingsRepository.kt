@@ -20,7 +20,7 @@ package org.giste.map.domain.repository
 import kotlinx.coroutines.flow.Flow
 import org.giste.map.MapSettings
 
-interface MapSettingsRepository {
+internal interface MapSettingsRepository {
     fun getMapSettings(): Flow<MapSettings>
     suspend fun saveMapSettings(settings: MapSettings)
 }

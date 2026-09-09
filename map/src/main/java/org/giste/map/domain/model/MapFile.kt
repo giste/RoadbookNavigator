@@ -17,7 +17,7 @@
 
 package org.giste.map.domain.model
 
-data class MapFile(
+internal data class MapFile(
     val name: String,
     val path: String,
     val size: Long,

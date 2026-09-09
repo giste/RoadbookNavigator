@@ -22,7 +22,7 @@ import org.giste.map.domain.model.RemoteMapFolder
 import org.giste.map.domain.repository.MapRepository
 import javax.inject.Inject
 
-class GetRemoteMapsUseCase @Inject constructor(
+internal class GetRemoteMapsUseCase @Inject constructor(
     private val repository: MapRepository
 ) {
     operator fun invoke(): Flow<List<RemoteMapFolder>> = repository.getRemoteMaps()

@@ -17,7 +17,7 @@
 
 package org.giste.map.domain.model
 
-data class RemoteMapFile(
+internal data class RemoteMapFile(
     val name: String,
     val parentPath: String,
     val url: String,

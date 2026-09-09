@@ -22,14 +22,14 @@ import kotlinx.coroutines.flow.Flow
 /**
  * Public interface for managing map configuration from outside the module.
  */
-interface MapSettingsProvider {
+public interface MapSettingsProvider {
     /**
      * Observes the current map settings.
      */
-    fun observeSettings(): Flow<MapSettings>
+    public fun observeSettings(): Flow<MapSettings>
 
     /**
      * Persists the given map settings.
      */
-    suspend fun saveSettings(settings: MapSettings)
+    public suspend fun saveSettings(settings: MapSettings)
 }

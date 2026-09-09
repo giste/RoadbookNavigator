@@ -15,10 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.map
+package org.giste.map.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import org.giste.map.LocalMapDimensions
+import org.giste.map.MapDimensions
+import org.giste.map.compactMapDimensions
 
 @Composable
 internal fun MapTheme(

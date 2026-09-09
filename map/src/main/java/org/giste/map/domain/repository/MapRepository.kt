@@ -23,7 +23,7 @@ import org.giste.map.domain.model.MapFile
 import org.giste.map.domain.model.RemoteMapFile
 import org.giste.map.domain.model.RemoteMapFolder
 
-interface MapRepository {
+internal interface MapRepository {
     fun getLocalMaps(): Flow<List<MapFile>>
     suspend fun deleteMap(mapFile: MapFile)
 

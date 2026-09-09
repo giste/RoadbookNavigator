@@ -20,7 +20,7 @@ package org.giste.map
 /**
  * Domain representation of a GPS location for the map module.
  */
-data class MapLocation(
+public data class MapLocation(
     val latitude: Double,
     val longitude: Double,
     val bearing: Float // in degrees

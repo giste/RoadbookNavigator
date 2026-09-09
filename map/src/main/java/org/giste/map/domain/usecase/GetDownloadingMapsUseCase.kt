@@ -22,7 +22,7 @@ import org.giste.map.domain.model.DownloadStatus
 import org.giste.map.domain.repository.MapRepository
 import javax.inject.Inject
 
-class GetDownloadingMapsUseCase @Inject constructor(
+internal class GetDownloadingMapsUseCase @Inject constructor(
     private val repository: MapRepository
 ) {
     operator fun invoke(): Flow<Map<String, DownloadStatus>> = repository.getDownloadingMaps()

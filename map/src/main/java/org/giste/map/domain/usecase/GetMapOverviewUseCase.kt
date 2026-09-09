@@ -25,7 +25,7 @@ import org.giste.map.domain.model.MapOverview
 import org.giste.map.domain.repository.MapRepository
 import javax.inject.Inject
 
-class GetMapOverviewUseCase @Inject constructor(
+internal class GetMapOverviewUseCase @Inject constructor(
     private val repository: MapRepository
 ) {
     operator fun invoke(): Flow<MapOverview> {

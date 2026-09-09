@@ -23,21 +23,20 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import org.giste.map.MapLocation
 import org.giste.map.MapLocationProvider
 import org.giste.map.MapLogger
-import org.giste.map.domain.model.MapFile
 import org.giste.map.MapSettings
+import org.giste.map.domain.model.MapFile
 import org.giste.map.domain.usecase.GetLocalMapsUseCase
 import org.giste.map.domain.usecase.GetMapSettingsUseCase
 import javax.inject.Inject
 
 @HiltViewModel
-class MapViewModel @Inject constructor(
+internal class MapViewModel @Inject constructor(
     getLocalMapsUseCase: GetLocalMapsUseCase,
     getMapSettingsUseCase: GetMapSettingsUseCase,
     locationProvider: MapLocationProvider,
@@ -65,7 +64,7 @@ class MapViewModel @Inject constructor(
     )
 }
 
-data class MapUiState(
+internal data class MapUiState(
     val localMaps: List<MapFile> = emptyList(),
     val settings: MapSettings = MapSettings(),
     val currentLocation: MapLocation? = null

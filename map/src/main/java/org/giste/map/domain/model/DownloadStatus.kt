@@ -17,7 +17,7 @@
 
 package org.giste.map.domain.model
 
-sealed class DownloadStatus {
+internal sealed class DownloadStatus {
     data object Idle : DownloadStatus()
     data class Progress(val progress: Float) : DownloadStatus()
     data object Success : DownloadStatus()

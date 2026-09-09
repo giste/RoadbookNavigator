@@ -22,7 +22,7 @@ import org.giste.map.MapSettings
 import org.giste.map.domain.repository.MapSettingsRepository
 import javax.inject.Inject
 
-class GetMapSettingsUseCase @Inject constructor(
+internal class GetMapSettingsUseCase @Inject constructor(
     private val repository: MapSettingsRepository
 ) {
     operator fun invoke(): Flow<MapSettings> = repository.getMapSettings()

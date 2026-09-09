@@ -28,7 +28,7 @@ import org.giste.map.ui.MapContent
  * @param dimensions Custom dimensions for the map. Defaults to compact.
  */
 @Composable
-fun MapScreen(
+public fun MapScreen(
     modifier: Modifier = Modifier,
     dimensions: MapDimensions = compactMapDimensions,
 ) {

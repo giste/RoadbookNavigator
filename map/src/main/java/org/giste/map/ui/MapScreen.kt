@@ -45,7 +45,6 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import org.giste.map.LocalMapDimensions
 import org.giste.map.MapDimensions
 import org.giste.map.MapLocation
-import org.giste.map.MapTheme
 import org.giste.map.compactMapDimensions
 import org.giste.map.domain.model.MapFile
 import org.giste.map.R
@@ -63,7 +62,7 @@ import org.oscim.tiling.source.mapfile.MapFileTileSource
 import org.oscim.tiling.source.mapfile.MultiMapFileTileSource
 
 @Composable
-fun MapContent(
+internal fun MapContent(
     modifier: Modifier = Modifier,
     viewModel: MapViewModel = hiltViewModel(),
     dimensions: MapDimensions = compactMapDimensions,

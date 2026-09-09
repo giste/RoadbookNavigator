@@ -17,7 +17,7 @@
 
 package org.giste.map.domain.model
 
-data class RemoteMapFolder(
+internal data class RemoteMapFolder(
     val name: String,
     val path: String,
     val subFolders: List<RemoteMapFolder> = emptyList(),

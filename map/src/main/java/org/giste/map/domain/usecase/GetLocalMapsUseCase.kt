@@ -22,7 +22,7 @@ import org.giste.map.domain.model.MapFile
 import org.giste.map.domain.repository.MapRepository
 import javax.inject.Inject
 
-class GetLocalMapsUseCase @Inject constructor(
+internal class GetLocalMapsUseCase @Inject constructor(
     private val repository: MapRepository
 ) {
     operator fun invoke(): Flow<List<MapFile>> = repository.getLocalMaps()

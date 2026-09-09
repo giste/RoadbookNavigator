@@ -20,11 +20,11 @@ package org.giste.map
 /**
  * Logger interface for the map module to decouple it from specific logging implementations.
  */
-interface MapLogger {
-    fun v(message: String, vararg args: Any?)
-    fun d(message: String, vararg args: Any?)
-    fun i(message: String, vararg args: Any?)
-    fun w(message: String, vararg args: Any?)
-    fun e(message: String, vararg args: Any?)
-    fun e(t: Throwable, message: String, vararg args: Any?)
+public interface MapLogger {
+    public fun v(message: String, vararg args: Any?)
+    public fun d(message: String, vararg args: Any?)
+    public fun i(message: String, vararg args: Any?)
+    public fun w(message: String, vararg args: Any?)
+    public fun e(message: String, vararg args: Any?)
+    public fun e(t: Throwable, message: String, vararg args: Any?)
 }

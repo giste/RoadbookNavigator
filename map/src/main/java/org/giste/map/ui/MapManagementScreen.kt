@@ -64,7 +64,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import org.giste.map.LocalMapDimensions
 import org.giste.map.MapDimensions
-import org.giste.map.MapTheme
 import org.giste.map.compactMapDimensions
 import org.giste.map.R
 import org.giste.map.domain.model.DownloadStatus
@@ -76,7 +75,7 @@ import org.giste.map.domain.model.RemoteMapFolder
 import org.giste.roadbooknavigator.core.R as CoreR
 
 @Composable
-fun MapManagementContentWrapper(
+internal fun MapManagementContentWrapper(
     viewModel: MapManagementViewModel = hiltViewModel(),
     dimensions: MapDimensions = compactMapDimensions,
 ) {
@@ -93,7 +92,7 @@ fun MapManagementContentWrapper(
 }
 
 @Composable
-fun MapManagementContent(
+internal fun MapManagementContent(
     uiState: MapManagementUiState,
     onDownloadClick: (RemoteMapFile) -> Unit,
     onDeleteClick: (MapFile) -> Unit,
@@ -139,7 +138,7 @@ fun MapManagementContent(
 }
 
 @Composable
-fun MapList(
+internal fun MapList(
     downloadedMaps: List<DownloadedMapInfo>,
     remoteFolders: List<RemoteMapFolder>,
     downloadingStatus: Map<String, DownloadStatus>,
@@ -281,7 +280,7 @@ private fun LazyListScope.renderFolder(
 }
 
 @Composable
-fun SectionHeader(
+internal fun SectionHeader(
     title: String,
     isExpanded: Boolean,
     onToggleExpand: () -> Unit,
@@ -323,7 +322,7 @@ fun SectionHeader(
 }
 
 @Composable
-fun DownloadedMapItem(
+internal fun DownloadedMapItem(
     info: DownloadedMapInfo,
     downloadStatus: DownloadStatus?,
     onDeleteClick: () -> Unit,
@@ -433,7 +432,7 @@ fun DownloadedMapItem(
 }
 
 @Composable
-fun RemoteMapItem(
+internal fun RemoteMapItem(
     remoteMap: RemoteMapFile,
     downloadStatus: DownloadStatus?,
     onDownloadClick: () -> Unit,

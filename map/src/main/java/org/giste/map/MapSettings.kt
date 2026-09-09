@@ -17,12 +17,12 @@
 
 package org.giste.map
 
-data class MapSettings(
+public data class MapSettings(
     val initialZoom: Int = DEFAULT_ZOOM,
     val initialTilt: Float = DEFAULT_TILT
 ) {
-    companion object {
-        const val DEFAULT_ZOOM = 18
-        const val DEFAULT_TILT = 60.0f
+    public companion object {
+        public const val DEFAULT_ZOOM: Int = 18
+        public const val DEFAULT_TILT: Float = 60.0f
     }
 }

@@ -21,7 +21,7 @@ import org.giste.map.domain.model.MapFile
 import org.giste.map.domain.repository.MapRepository
 import javax.inject.Inject
 
-class DeleteMapUseCase @Inject constructor(
+internal class DeleteMapUseCase @Inject constructor(
     private val repository: MapRepository
 ) {
     suspend operator fun invoke(mapFile: MapFile) = repository.deleteMap(mapFile)

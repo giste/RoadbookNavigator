@@ -40,7 +40,7 @@ import org.giste.map.domain.usecase.GetMapOverviewUseCase
 import javax.inject.Inject
 
 @HiltViewModel
-class MapManagementViewModel @Inject constructor(
+internal class MapManagementViewModel @Inject constructor(
     getMapOverviewUseCase: GetMapOverviewUseCase,
     private val downloadMapUseCase: DownloadMapUseCase,
     getDownloadingMapsUseCase: GetDownloadingMapsUseCase,
@@ -103,7 +103,7 @@ class MapManagementViewModel @Inject constructor(
     }
 }
 
-sealed interface MapManagementUiState {
+internal sealed interface MapManagementUiState {
     data object Loading : MapManagementUiState
     data class Success(
         val downloadedMaps: List<DownloadedMapInfo>,

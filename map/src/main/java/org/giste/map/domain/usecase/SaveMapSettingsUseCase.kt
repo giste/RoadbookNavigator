@@ -21,7 +21,7 @@ import org.giste.map.MapSettings
 import org.giste.map.domain.repository.MapSettingsRepository
 import javax.inject.Inject
 
-class SaveMapSettingsUseCase @Inject constructor(
+internal class SaveMapSettingsUseCase @Inject constructor(
     private val repository: MapSettingsRepository
 ) {
     suspend operator fun invoke(settings: MapSettings) = repository.saveMapSettings(settings)

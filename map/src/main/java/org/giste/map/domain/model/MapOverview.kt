@@ -17,17 +17,17 @@
 
 package org.giste.map.domain.model
 
-data class MapOverview(
+internal data class MapOverview(
     val downloadedMaps: List<DownloadedMapInfo>,
     val remoteFolders: List<RemoteMapFolder>
 )
 
-data class DownloadedMapInfo(
+internal data class DownloadedMapInfo(
     val mapFile: MapFile,
     val status: DownloadedMapStatus
 )
 
-sealed class DownloadedMapStatus {
+internal sealed class DownloadedMapStatus {
     data class UpToDate(val remoteMapFile: RemoteMapFile) : DownloadedMapStatus()
     data class UpdateAvailable(val remoteMapFile: RemoteMapFile) : DownloadedMapStatus()
     data object Obsolete : DownloadedMapStatus()

@@ -22,6 +22,6 @@ import kotlinx.coroutines.flow.Flow
 /**
  * Interface to provide location updates to the map module.
  */
-interface MapLocationProvider {
-    fun observeLocation(): Flow<MapLocation>
+public interface MapLocationProvider {
+    public fun observeLocation(): Flow<MapLocation>
 }

@@ -16,8 +16,8 @@
   -->
 
 <resources>
-    <string name="main_no_route">Sin ruta cargada</string>
-    <string name="main_error_prefix">Error: %1$s</string>
-    <string name="action_import">Importar</string>
-    <string name="content_description_map">Marcador de posición del mapa</string>
+    <string name="roadbook_no_route">Sin ruta cargada</string>
+    <string name="roadbook_error_prefix">Error: %1$s</string>
+    <string name="roadbook_action_import">Importar</string>
+    <string name="roadbook_content_description_map">Marcador de posición del mapa</string>
 </resources>

@@ -16,8 +16,8 @@
   -->
 
 <resources>
-    <string name="main_no_route">No route loaded</string>
-    <string name="main_error_prefix">Error: %1$s</string>
-    <string name="action_import">Import</string>
-    <string name="content_description_map">Map placeholder</string>
+    <string name="roadbook_no_route">No route loaded</string>
+    <string name="roadbook_error_prefix">Error: %1$s</string>
+    <string name="roadbook_action_import">Import</string>
+    <string name="roadbook_content_description_map">Map placeholder</string>
 </resources>

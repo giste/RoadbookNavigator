@@ -105,7 +105,7 @@ internal fun RoadbookContent(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = stringResource(R.string.main_no_route),
+                        text = stringResource(R.string.roadbook_no_route),
                         style = MaterialTheme.typography.titleLarge,
                         color = RoadbookTheme.colors.onBackground
                     )
@@ -117,7 +117,7 @@ internal fun RoadbookContent(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Add,
-                            contentDescription = stringResource(R.string.action_import)
+                            contentDescription = stringResource(R.string.roadbook_action_import)
                         )
                     }
                 }
@@ -129,7 +129,7 @@ internal fun RoadbookContent(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = stringResource(R.string.main_error_prefix, state.message),
+                        text = stringResource(R.string.roadbook_error_prefix, state.message),
                         color = RoadbookTheme.colors.danger,
                         style = MaterialTheme.typography.titleMedium
                     )
@@ -141,7 +141,7 @@ internal fun RoadbookContent(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Add,
-                            contentDescription = stringResource(R.string.action_import)
+                            contentDescription = stringResource(R.string.roadbook_action_import)
                         )
                     }
                 }
@@ -166,7 +166,7 @@ internal fun RoadbookContent(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Add,
-                            contentDescription = stringResource(R.string.action_import)
+                            contentDescription = stringResource(R.string.roadbook_action_import)
                         )
                     }
                 }

@@ -388,14 +388,14 @@ class DashboardScreenTest {
                     onSettingsClick = {},
                     viewModel = viewModel,
                     roadbookSlot = { modifier ->
-                        Text(text = context.getString(RoadbookR.string.main_no_route), modifier = modifier)
+                        Text(text = context.getString(RoadbookR.string.roadbook_no_route), modifier = modifier)
                     },
                     mapSlot = { Box(it) }
                 )
             }
         }
 
-        val expectedMessage = context.getString(RoadbookR.string.main_no_route)
+        val expectedMessage = context.getString(RoadbookR.string.roadbook_no_route)
         composeTestRule.onNodeWithText(expectedMessage).assertIsDisplayed()
     }
 

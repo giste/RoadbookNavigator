@@ -58,7 +58,7 @@ internal annotation class RoadbookDataStoreQualifier
 @Retention(AnnotationRetention.BINARY)
 internal annotation class RoadbookSessionDataStoreQualifier
 
-private val Context.roadbookSessionDataStore: DataStore<Preferences> by preferencesDataStore(name = "roadbook_session_state")
+private val Context.roadbookSessionDataStore: DataStore<Preferences> by preferencesDataStore(name = "org.giste.roadbook.session_state")
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -114,7 +114,7 @@ internal abstract class RoadbookDataModule {
                 roadbookDataStore ?: DataStoreFactory.create(
                     serializer = serializer,
                     scope = CoroutineScope(ioDispatcher + SupervisorJob()),
-                    produceFile = { context.dataStoreFile("active_roadbook.json") }
+                    produceFile = { context.dataStoreFile("org.giste.roadbook.active_roadbook.json") }
                 ).also { roadbookDataStore = it }
             }
         }

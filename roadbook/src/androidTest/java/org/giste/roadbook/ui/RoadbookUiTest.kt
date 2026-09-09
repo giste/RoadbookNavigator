@@ -97,8 +97,8 @@ class RoadbookUiTest {
             }
         }
 
-        composeTestRule.onNodeWithText(context.getString(R.string.main_no_route)).assertIsDisplayed()
-        composeTestRule.onNodeWithContentDescription(context.getString(R.string.action_import)).assertIsDisplayed()
+        composeTestRule.onNodeWithText(context.getString(R.string.roadbook_no_route)).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescription(context.getString(R.string.roadbook_action_import)).assertIsDisplayed()
     }
 
     @Test
@@ -116,9 +116,9 @@ class RoadbookUiTest {
             }
         }
 
-        val expectedMessage = context.getString(R.string.main_error_prefix, errorMessage)
+        val expectedMessage = context.getString(R.string.roadbook_error_prefix, errorMessage)
         composeTestRule.onNodeWithText(expectedMessage).assertIsDisplayed()
-        composeTestRule.onNodeWithContentDescription(context.getString(R.string.action_import)).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescription(context.getString(R.string.roadbook_action_import)).assertIsDisplayed()
     }
 
     @Test
@@ -136,7 +136,7 @@ class RoadbookUiTest {
             }
         }
 
-        composeTestRule.onNodeWithContentDescription(context.getString(R.string.action_import)).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescription(context.getString(R.string.roadbook_action_import)).assertIsDisplayed()
     }
 
     @Test
@@ -158,7 +158,7 @@ class RoadbookUiTest {
             }
         }
 
-        composeTestRule.onNodeWithContentDescription(context.getString(R.string.action_import)).performClick()
+        composeTestRule.onNodeWithContentDescription(context.getString(R.string.roadbook_action_import)).performClick()
 
         // Verify that the intent with ACTION_GET_CONTENT was indeed launched
         Intents.intended(IntentMatchers.hasAction(Intent.ACTION_GET_CONTENT))

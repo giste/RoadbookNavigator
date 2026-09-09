@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.map.data.di
+package org.giste.map.di
 
 import android.content.Context
 import androidx.datastore.core.DataStore
@@ -28,10 +28,12 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
+import org.giste.map.MapSettingsProvider
 import org.giste.map.data.datasource.JsoupRemoteMapDataSource
 import org.giste.map.data.datasource.RemoteMapDataSource
 import org.giste.map.data.repository.DataStoreMapSettingsRepository
 import org.giste.map.data.repository.LocalFileMapRepository
+import org.giste.map.domain.RealMapSettingsProvider
 import org.giste.map.domain.repository.MapRepository
 import org.giste.map.domain.repository.MapSettingsRepository
 import javax.inject.Qualifier
@@ -45,7 +47,7 @@ private val Context.mapSettingsDataStore: DataStore<Preferences> by preferencesD
 
 @Module
 @InstallIn(SingletonComponent::class)
-internal abstract class MapDataModule {
+internal abstract class MapModule {
 
     @Binds
     @Singleton
@@ -64,6 +66,12 @@ internal abstract class MapDataModule {
     abstract fun bindRemoteMapDataSource(
         jsoupRemoteMapDataSource: JsoupRemoteMapDataSource
     ): RemoteMapDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindMapSettingsProvider(
+        realMapSettingsProvider: RealMapSettingsProvider
+    ): MapSettingsProvider
 
     companion object {
         @Provides

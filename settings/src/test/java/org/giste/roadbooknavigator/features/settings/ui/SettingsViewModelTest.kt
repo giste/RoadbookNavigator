@@ -38,8 +38,7 @@ import org.giste.roadbooknavigator.features.settings.domain.location.usecase.Res
 import org.giste.roadbooknavigator.features.settings.domain.location.usecase.UpdateLocationMinDistanceUseCase
 import org.giste.roadbooknavigator.features.settings.domain.location.usecase.UpdateLocationPollingIntervalUseCase
 import org.giste.map.MapSettings
-import org.giste.map.domain.usecase.GetMapSettingsUseCase
-import org.giste.map.domain.usecase.SaveMapSettingsUseCase
+import org.giste.map.MapSettingsProvider
 import org.giste.odometer.domain.OdometerSettings
 import org.giste.roadbooknavigator.features.settings.domain.odometer.usecase.ObserveOdometerSettingsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.odometer.usecase.RestoreOdometerSettingsDefaultsUseCase
@@ -76,7 +75,7 @@ class SettingsViewModelTest {
     private val observeInputSettingsUseCase: ObserveInputSettingsUseCase = mockk()
     private val observeLocationSettingsUseCase: ObserveLocationSettingsUseCase = mockk()
     private val observeOdometerSettingsUseCase: ObserveOdometerSettingsUseCase = mockk()
-    private val getMapSettingsUseCase: GetMapSettingsUseCase = mockk()
+    private val mapSettingsProvider: MapSettingsProvider = mockk()
     private val roadbookSettingsProvider: RoadbookSettingsProvider = mockk()
     private val updateThemeUseCase: UpdateThemeUseCase = mockk()
     private val updateOrientationUseCase: UpdateOrientationUseCase = mockk()
@@ -92,7 +91,6 @@ class SettingsViewModelTest {
     private val selectRemoteModelUseCase: SelectRemoteModelUseCase = mockk()
     private val updateRoadbookKeysUseCase: UpdateRoadbookKeysUseCase = mockk()
     private val updateOdometerKeysUseCase: UpdateOdometerKeysUseCase = mockk()
-    private val saveMapSettingsUseCase: SaveMapSettingsUseCase = mockk()
     private val updateLandscapeDistanceSectionWeightUseCase: UpdateLandscapeDistanceSectionWeightUseCase = mockk()
     private val logger: Logger = mockk(relaxed = true)
 
@@ -106,7 +104,7 @@ class SettingsViewModelTest {
         every { observeInputSettingsUseCase() } returns flowOf(InputSettings())
         every { observeLocationSettingsUseCase() } returns flowOf(LocationSettings())
         every { observeOdometerSettingsUseCase() } returns flowOf(OdometerSettings())
-        every { getMapSettingsUseCase() } returns flowOf(MapSettings())
+        every { mapSettingsProvider.observeSettings() } returns flowOf(MapSettings())
         every { roadbookSettingsProvider.getSettings() } returns flowOf(RoadbookSettings())
 
         viewModel = SettingsViewModel(
@@ -114,7 +112,7 @@ class SettingsViewModelTest {
             observeInputSettingsUseCase = observeInputSettingsUseCase,
             observeLocationSettingsUseCase = observeLocationSettingsUseCase,
             observeOdometerSettingsUseCase = observeOdometerSettingsUseCase,
-            getMapSettingsUseCase = getMapSettingsUseCase,
+            mapSettingsProvider = mapSettingsProvider,
             roadbookSettingsProvider = roadbookSettingsProvider,
             updateThemeUseCase = updateThemeUseCase,
             updateOrientationUseCase = updateOrientationUseCase,
@@ -130,7 +128,6 @@ class SettingsViewModelTest {
             selectRemoteModelUseCase = selectRemoteModelUseCase,
             updateRoadbookKeysUseCase = updateRoadbookKeysUseCase,
             updateOdometerKeysUseCase = updateOdometerKeysUseCase,
-            saveMapSettingsUseCase = saveMapSettingsUseCase,
             updateLandscapeDistanceSectionWeightUseCase = updateLandscapeDistanceSectionWeightUseCase,
             logger = logger
         )
@@ -300,14 +297,25 @@ class SettingsViewModelTest {
     }
 
     @Test
-    fun `setMapInitialZoom calls use case`() = runTest {
+    fun `setMapInitialZoom calls provider`() = runTest {
         val zoom = 15
-        coEvery { saveMapSettingsUseCase(any()) } returns Unit
+        coEvery { mapSettingsProvider.saveSettings(any()) } returns Unit
 
         viewModel.setMapInitialZoom(zoom)
         advanceUntilIdle()
 
-        coVerify { saveMapSettingsUseCase(match { it.initialZoom == zoom }) }
+        coVerify { mapSettingsProvider.saveSettings(match { it.initialZoom == zoom }) }
+    }
+
+    @Test
+    fun `setMapInitialTilt calls provider`() = runTest {
+        val tilt = 45f
+        coEvery { mapSettingsProvider.saveSettings(any()) } returns Unit
+
+        viewModel.setMapInitialTilt(tilt)
+        advanceUntilIdle()
+
+        coVerify { mapSettingsProvider.saveSettings(match { it.initialTilt == tilt }) }
     }
 
     @Test

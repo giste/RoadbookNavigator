@@ -34,8 +34,7 @@ import org.giste.roadbooknavigator.features.settings.domain.location.usecase.Res
 import org.giste.roadbooknavigator.features.settings.domain.location.usecase.UpdateLocationMinDistanceUseCase
 import org.giste.roadbooknavigator.features.settings.domain.location.usecase.UpdateLocationPollingIntervalUseCase
 import org.giste.map.MapSettings
-import org.giste.map.domain.usecase.GetMapSettingsUseCase
-import org.giste.map.domain.usecase.SaveMapSettingsUseCase
+import org.giste.map.MapSettingsProvider
 import org.giste.odometer.domain.OdometerSettings
 import org.giste.roadbooknavigator.features.settings.domain.odometer.usecase.ObserveOdometerSettingsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.odometer.usecase.RestoreOdometerSettingsDefaultsUseCase
@@ -66,7 +65,7 @@ class SettingsViewModel @Inject constructor(
     observeInputSettingsUseCase: ObserveInputSettingsUseCase,
     observeLocationSettingsUseCase: ObserveLocationSettingsUseCase,
     observeOdometerSettingsUseCase: ObserveOdometerSettingsUseCase,
-    getMapSettingsUseCase: GetMapSettingsUseCase,
+    private val mapSettingsProvider: MapSettingsProvider,
     roadbookSettingsProvider: RoadbookSettingsProvider,
     private val updateThemeUseCase: UpdateThemeUseCase,
     private val updateOrientationUseCase: UpdateOrientationUseCase,
@@ -82,7 +81,6 @@ class SettingsViewModel @Inject constructor(
     private val selectRemoteModelUseCase: SelectRemoteModelUseCase,
     private val updateRoadbookKeysUseCase: UpdateRoadbookKeysUseCase,
     private val updateOdometerKeysUseCase: UpdateOdometerKeysUseCase,
-    private val saveMapSettingsUseCase: SaveMapSettingsUseCase,
     private val updateLandscapeDistanceSectionWeightUseCase: UpdateLandscapeDistanceSectionWeightUseCase,
     private val logger: Logger
 ) : ViewModel() {
@@ -92,7 +90,7 @@ class SettingsViewModel @Inject constructor(
         observeInputSettingsUseCase(),
         observeLocationSettingsUseCase(),
         observeOdometerSettingsUseCase(),
-        getMapSettingsUseCase(),
+        mapSettingsProvider.observeSettings(),
         roadbookSettingsProvider.getSettings()
     ) { flows ->
         SettingsUiState.Success(
@@ -208,7 +206,7 @@ class SettingsViewModel @Inject constructor(
         val currentSettings =
             (uiState.value as? SettingsUiState.Success)?.mapSettings ?: MapSettings()
         viewModelScope.launch {
-            saveMapSettingsUseCase(currentSettings.copy(initialZoom = zoom))
+            mapSettingsProvider.saveSettings(currentSettings.copy(initialZoom = zoom))
         }
     }
 
@@ -217,7 +215,7 @@ class SettingsViewModel @Inject constructor(
         val currentSettings =
             (uiState.value as? SettingsUiState.Success)?.mapSettings ?: MapSettings()
         viewModelScope.launch {
-            saveMapSettingsUseCase(currentSettings.copy(initialTilt = tilt))
+            mapSettingsProvider.saveSettings(currentSettings.copy(initialTilt = tilt))
         }
     }
 

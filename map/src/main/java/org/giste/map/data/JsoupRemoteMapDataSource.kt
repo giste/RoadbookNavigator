@@ -22,7 +22,7 @@ import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.ResponseBody
-import org.giste.roadbooknavigator.core.di.IoDispatcher
+import org.giste.map.di.MapIoDispatcher
 import org.giste.map.domain.model.RemoteMapFile
 import org.giste.map.domain.model.RemoteMapFolder
 import org.jsoup.Jsoup
@@ -35,7 +35,7 @@ import javax.inject.Singleton
 @Singleton
 internal class JsoupRemoteMapDataSource @Inject constructor(
     private val okHttpClient: OkHttpClient,
-    @param:IoDispatcher private val ioDispatcher: CoroutineDispatcher
+    @param:MapIoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : RemoteMapDataSource {
 
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US)

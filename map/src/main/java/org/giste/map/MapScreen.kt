@@ -18,8 +18,12 @@
 package org.giste.map
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.giste.map.ui.MapContent
+import org.giste.map.ui.MapViewModel
 
 /**
  * Public entry point for the Map module.
@@ -32,7 +36,11 @@ public fun MapScreen(
     modifier: Modifier = Modifier,
     dimensions: MapDimensions = compactMapDimensions,
 ) {
+    val viewModel: MapViewModel = hiltViewModel()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     MapContent(
+        uiState = uiState,
         modifier = modifier,
         dimensions = dimensions
     )

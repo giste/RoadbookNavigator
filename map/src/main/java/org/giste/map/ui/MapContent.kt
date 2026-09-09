@@ -28,7 +28,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,7 +37,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -63,11 +61,10 @@ import org.oscim.tiling.source.mapfile.MultiMapFileTileSource
 
 @Composable
 internal fun MapContent(
+    uiState: MapUiState,
     modifier: Modifier = Modifier,
-    viewModel: MapViewModel = hiltViewModel(),
     dimensions: MapDimensions = compactMapDimensions,
 ) {
-    val uiState = viewModel.uiState.collectAsState().value
     val location = uiState.currentLocation
 
     MapTheme(dimensions = dimensions) {

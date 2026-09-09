@@ -25,6 +25,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import org.giste.map.compactMapDimensions
 import org.giste.map.domain.model.DownloadedMapInfo
 import org.giste.map.domain.model.DownloadedMapStatus
 import org.giste.map.domain.model.MapFile
@@ -47,6 +48,7 @@ class MapManagementScreenTest {
                 Surface {
                     MapManagementContent(
                         uiState = MapManagementUiState.Loading,
+                        dimensions = compactMapDimensions,
                         onDownloadClick = {},
                         onDeleteClick = {},
                         onCancelDownloadClick = {}
@@ -66,6 +68,7 @@ class MapManagementScreenTest {
                 Surface {
                     MapManagementContent(
                         uiState = MapManagementUiState.Error(errorMessage),
+                        dimensions = compactMapDimensions,
                         onDownloadClick = {},
                         onDeleteClick = {},
                         onCancelDownloadClick = {}
@@ -98,6 +101,7 @@ class MapManagementScreenTest {
                 Surface {
                     MapManagementContent(
                         uiState = state,
+                        dimensions = compactMapDimensions,
                         onDownloadClick = {},
                         onDeleteClick = {},
                         onCancelDownloadClick = {}
@@ -130,6 +134,7 @@ class MapManagementScreenTest {
                 Surface {
                     MapManagementContent(
                         uiState = state,
+                        dimensions = compactMapDimensions,
                         onDownloadClick = { clickedMap = it },
                         onDeleteClick = {},
                         onCancelDownloadClick = {}
@@ -166,6 +171,7 @@ class MapManagementScreenTest {
                 Surface {
                     MapManagementContent(
                         uiState = state,
+                        dimensions = compactMapDimensions,
                         onDownloadClick = {},
                         onDeleteClick = { clickedMap = it },
                         onCancelDownloadClick = {}
@@ -201,6 +207,7 @@ class MapManagementScreenTest {
                 Surface {
                     MapManagementContent(
                         uiState = state,
+                        dimensions = compactMapDimensions,
                         onDownloadClick = {},
                         onDeleteClick = {},
                         onCancelDownloadClick = {}

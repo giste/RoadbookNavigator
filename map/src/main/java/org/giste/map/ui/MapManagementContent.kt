@@ -48,7 +48,6 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -61,10 +60,8 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import org.giste.map.LocalMapDimensions
 import org.giste.map.MapDimensions
-import org.giste.map.compactMapDimensions
 import org.giste.map.R
 import org.giste.map.domain.model.DownloadStatus
 import org.giste.map.domain.model.DownloadedMapInfo
@@ -75,63 +72,49 @@ import org.giste.map.domain.model.RemoteMapFolder
 import org.giste.roadbooknavigator.core.R as CoreR
 
 @Composable
-internal fun MapManagementContentWrapper(
-    viewModel: MapManagementViewModel = hiltViewModel(),
-    dimensions: MapDimensions = compactMapDimensions,
-) {
-    val uiState by viewModel.uiState.collectAsState()
-
-    MapTheme(dimensions = dimensions) {
-        MapManagementContent(
-            uiState = uiState,
-            onDownloadClick = viewModel::downloadMap,
-            onDeleteClick = viewModel::deleteMap,
-            onCancelDownloadClick = viewModel::cancelDownload
-        )
-    }
-}
-
-@Composable
 internal fun MapManagementContent(
     uiState: MapManagementUiState,
+    dimensions: MapDimensions,
     onDownloadClick: (RemoteMapFile) -> Unit,
     onDeleteClick: (MapFile) -> Unit,
     onCancelDownloadClick: (String) -> Unit
 ) {
-    Box(modifier = Modifier.fillMaxSize()) {
-        when (uiState) {
-            is MapManagementUiState.Loading -> {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .testTag("MapManagementLoading")
-                )
-            }
-
-            is MapManagementUiState.Error -> {
-                Column(
-                    modifier = Modifier.align(Alignment.Center),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Error,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.size(LocalMapDimensions.current.actionIconSize)
+    MapTheme(dimensions = dimensions) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            when (uiState) {
+                is MapManagementUiState.Loading -> {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .testTag("MapManagementLoading")
                     )
-                    Text(text = uiState.message, color = MaterialTheme.colorScheme.error)
                 }
-            }
 
-            is MapManagementUiState.Success -> {
-                MapList(
-                    downloadedMaps = uiState.downloadedMaps,
-                    remoteFolders = uiState.remoteFolders,
-                    downloadingStatus = uiState.downloadingStatus,
-                    onDownloadClick = onDownloadClick,
-                    onDeleteClick = onDeleteClick,
-                    onCancelDownloadClick = onCancelDownloadClick
-                )
+                is MapManagementUiState.Error -> {
+                    Column(
+                        modifier = Modifier.align(Alignment.Center),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Error,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.size(LocalMapDimensions.current.actionIconSize)
+                        )
+                        Text(text = uiState.message, color = MaterialTheme.colorScheme.error)
+                    }
+                }
+
+                is MapManagementUiState.Success -> {
+                    MapList(
+                        downloadedMaps = uiState.downloadedMaps,
+                        remoteFolders = uiState.remoteFolders,
+                        downloadingStatus = uiState.downloadingStatus,
+                        onDownloadClick = onDownloadClick,
+                        onDeleteClick = onDeleteClick,
+                        onCancelDownloadClick = onCancelDownloadClick
+                    )
+                }
             }
         }
     }
@@ -508,15 +491,6 @@ internal fun RemoteMapItem(
             }
         }
     }
-}
-
-private fun flattenFolders(folder: RemoteMapFolder): List<RemoteMapFolder> {
-    val result = mutableListOf<RemoteMapFolder>()
-    result.add(folder)
-    folder.subFolders.forEach {
-        result.addAll(flattenFolders(it))
-    }
-    return result
 }
 
 private fun formatSize(size: Long): String {

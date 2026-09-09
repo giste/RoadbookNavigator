@@ -18,7 +18,11 @@
 package org.giste.map
 
 import androidx.compose.runtime.Composable
-import org.giste.map.ui.MapManagementContentWrapper
+import androidx.compose.runtime.getValue
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import org.giste.map.ui.MapManagementContent
+import org.giste.map.ui.MapManagementViewModel
 
 /**
  * Public entry point for the Map Management screen.
@@ -29,7 +33,14 @@ import org.giste.map.ui.MapManagementContentWrapper
 public fun MapManagementScreen(
     dimensions: MapDimensions = compactMapDimensions,
 ) {
-    MapManagementContentWrapper(
-        dimensions = dimensions
+    val viewModel: MapManagementViewModel = hiltViewModel()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    MapManagementContent(
+        uiState = uiState,
+        dimensions = dimensions,
+        onDownloadClick = viewModel::downloadMap,
+        onDeleteClick = viewModel::deleteMap,
+        onCancelDownloadClick = viewModel::cancelDownload
     )
 }

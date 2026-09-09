@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.map.data.worker
+package org.giste.map.data
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -34,10 +34,8 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import okio.buffer
 import okio.sink
-import org.giste.map.R
-import org.giste.map.data.datasource.RemoteMapDataSource
-import org.giste.map.data.receiver.DownloadCancelReceiver
 import org.giste.map.MapLogger
+import org.giste.map.R
 import java.io.File
 
 @HiltWorker

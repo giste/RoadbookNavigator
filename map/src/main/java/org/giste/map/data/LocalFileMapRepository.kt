@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.map.data.repository
+package org.giste.map.data
 
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -38,8 +38,6 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.workDataOf
 import org.giste.roadbooknavigator.core.di.IoDispatcher
-import org.giste.map.data.datasource.RemoteMapDataSource
-import org.giste.map.data.worker.DownloadMapWorker
 import org.giste.map.MapLogger
 import org.giste.map.domain.model.DownloadStatus
 import org.giste.map.domain.model.MapFile

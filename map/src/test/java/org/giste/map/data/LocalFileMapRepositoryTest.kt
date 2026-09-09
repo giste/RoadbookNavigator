@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.map.data.repository
+package org.giste.map.data
 
 import android.content.Context
 import android.util.Log
@@ -31,7 +31,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
-import org.giste.map.data.datasource.RemoteMapDataSource
 import org.giste.map.MapLogger
 import org.giste.map.domain.model.MapFile
 import org.giste.map.domain.model.RemoteMapFile

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.map.data.receiver
+package org.giste.map.data
 
 import android.content.Context
 import android.content.Intent
@@ -28,7 +28,6 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.testing.SynchronousExecutor
 import androidx.work.testing.WorkManagerTestInitHelper
-import org.giste.map.data.worker.DownloadMapWorker
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test

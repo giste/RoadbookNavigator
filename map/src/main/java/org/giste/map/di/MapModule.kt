@@ -29,10 +29,10 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import org.giste.map.MapSettingsProvider
-import org.giste.map.data.datasource.JsoupRemoteMapDataSource
-import org.giste.map.data.datasource.RemoteMapDataSource
-import org.giste.map.data.repository.DataStoreMapSettingsRepository
-import org.giste.map.data.repository.LocalFileMapRepository
+import org.giste.map.data.JsoupRemoteMapDataSource
+import org.giste.map.data.RemoteMapDataSource
+import org.giste.map.data.DataStoreMapSettingsRepository
+import org.giste.map.data.LocalFileMapRepository
 import org.giste.map.domain.RealMapSettingsProvider
 import org.giste.map.domain.repository.MapRepository
 import org.giste.map.domain.repository.MapSettingsRepository

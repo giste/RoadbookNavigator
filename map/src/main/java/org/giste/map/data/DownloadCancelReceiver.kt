@@ -15,12 +15,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.map.data.datasource
+package org.giste.map.data
 
-import okhttp3.ResponseBody
-import org.giste.map.domain.model.RemoteMapFolder
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import androidx.work.WorkManager
 
-internal interface RemoteMapDataSource {
-    suspend fun getRemoteMaps(url: String): RemoteMapFolder
-    suspend fun downloadFile(url: String): ResponseBody
+internal class DownloadCancelReceiver : BroadcastReceiver() {
+    override fun onReceive(context: Context, intent: Intent) {
+        val url = intent.getStringExtra(KEY_URL)
+        if (url != null) {
+            WorkManager.getInstance(context).cancelUniqueWork(url)
+        }
+    }
+
+    companion object {
+        const val KEY_URL = "url"
+    }
 }

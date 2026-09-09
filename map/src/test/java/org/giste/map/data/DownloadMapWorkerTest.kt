@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.map.data.worker
+package org.giste.map.data
 
 import android.app.Notification
 import android.app.NotificationManager
@@ -32,9 +32,8 @@ import io.mockk.mockk
 import io.mockk.spyk
 import kotlinx.coroutines.test.runTest
 import okhttp3.ResponseBody.Companion.toResponseBody
-import org.giste.map.R
-import org.giste.map.data.datasource.RemoteMapDataSource
 import org.giste.map.MapLogger
+import org.giste.map.R
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test

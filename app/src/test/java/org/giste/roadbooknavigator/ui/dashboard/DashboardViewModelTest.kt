@@ -43,8 +43,6 @@ import org.giste.odometer.domain.usecase.ResetAllDistancesUseCase
 import org.giste.odometer.domain.usecase.ResetPartialDistanceUseCase
 import org.giste.odometer.domain.usecase.SetPartialDistanceUseCase
 import org.giste.roadbooknavigator.features.settings.domain.odometer.usecase.ObserveOdometerSettingsUseCase
-import org.giste.roadbook.RoadbookController
-import org.giste.roadbook.RoadbookEvent
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.input.InputSettings
 import org.giste.roadbooknavigator.features.settings.domain.input.usecase.ObserveInputSettingsUseCase
@@ -152,35 +150,6 @@ class DashboardViewModelTest {
 
         viewModel.setPartialDistance(100.0)
         coVerify { setPartialDistanceUseCase(100.0) }
-    }
-
-    @Test
-    fun `roadbook actions should call respective controller methods`() = runTest {
-        val controller: RoadbookController = mockk(relaxed = true)
-        every { controller.events } returns MutableSharedFlow()
-        
-        viewModel.onRoadbookControllerReady(controller)
-
-        viewModel.moveRoadbookUp()
-        verify { controller.scrollUp() }
-
-        viewModel.moveRoadbookDown()
-        verify { controller.scrollDown() }
-    }
-
-    @Test
-    fun `roadbook DistanceSectionLongPressed event should trigger setPartialDistance`() = runTest {
-        val events = MutableSharedFlow<RoadbookEvent>()
-        val controller: RoadbookController = mockk(relaxed = true)
-        every { controller.events } returns events
-        coEvery { setPartialDistanceUseCase(any()) } returns Unit
-
-        viewModel.onRoadbookControllerReady(controller)
-
-        val distance = 500.0
-        events.emit(RoadbookEvent.DistanceSectionLongPressed(distance))
-
-        coVerify { setPartialDistanceUseCase(distance) }
     }
 
     @Test

@@ -71,6 +71,9 @@ import org.giste.map.MapScreen
 import org.giste.map.compactMapDimensions
 import org.giste.map.expandedMapDimensions
 import org.giste.roadbook.Roadbook
+import org.giste.roadbook.RoadbookEvent
+import org.giste.roadbook.RoadbookState
+import org.giste.roadbook.rememberRoadbookState
 import org.giste.roadbooknavigator.ui.odometer.PartialDistance
 import org.giste.roadbooknavigator.ui.odometer.ResetAllConfirmationDialog
 import org.giste.roadbooknavigator.ui.odometer.SetPartialDialog
@@ -81,6 +84,7 @@ fun DashboardScreen(
     windowSizeClass: WindowSizeClass,
     onSettingsClick: () -> Unit,
     viewModel: DashboardViewModel = hiltViewModel(),
+    roadbookState: RoadbookState = rememberRoadbookState(),
     primaryOdometerSlot: @Composable (DashboardUiState, Modifier) -> Unit = { uiState, modifier ->
         val configuration = LocalConfiguration.current
         val locale = if (configuration.locales.size() > 0) configuration.locales[0] else LocalLocale.current.platformLocale
@@ -109,10 +113,10 @@ fun DashboardScreen(
             modifier = modifier
         )
     },
-    roadbookSlot: @Composable (Modifier) -> Unit = { modifier ->
+    roadbookSlot: @Composable (RoadbookState, Modifier) -> Unit = { capturedState, modifier ->
         Roadbook(
             modifier = modifier,
-            onControllerReady = { viewModel.onRoadbookControllerReady(it) }
+            state = capturedState
         )
     },
     mapSlot: @Composable (Modifier) -> Unit = { modifier ->
@@ -126,10 +130,25 @@ fun DashboardScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
+    LaunchedEffect(roadbookState) {
+        roadbookState.events.collect { event ->
+            when (event) {
+                is RoadbookEvent.DistanceSectionLongPressed -> {
+                    viewModel.setPartialDistance(event.distance)
+                }
+
+                RoadbookEvent.RouteImported -> {
+                    // Handled internally by Roadbook module or can be handled here if needed
+                }
+            }
+        }
+    }
+
     DashboardContent(
         windowSizeClass = windowSizeClass,
         onSettingsClick = onSettingsClick,
         uiState = uiState,
+        roadbookState = roadbookState,
         primaryOdometerSlot = { modifier -> primaryOdometerSlot(uiState, modifier) },
         secondaryOdometerSlot = { modifier -> secondaryOdometerSlot(uiState, modifier) },
         roadbookSlot = roadbookSlot,
@@ -138,8 +157,6 @@ fun DashboardScreen(
         onDecrementPartial = { viewModel.decrementPartialDistance() },
         onResetPartial = { viewModel.resetPartialDistance() },
         onResetAll = { viewModel.resetAllDistances() },
-        onMoveRoadbookUp = { viewModel.moveRoadbookUp() },
-        onMoveRoadbookDown = { viewModel.moveRoadbookDown() },
         onSetPartialDistance = { viewModel.setPartialDistance(it) },
         onHideSetPartialDialog = { viewModel.hideSetPartialDialog() },
         onHideResetAllDialog = { viewModel.hideResetAllDialog() },
@@ -152,16 +169,15 @@ fun DashboardContent(
     windowSizeClass: WindowSizeClass,
     onSettingsClick: () -> Unit,
     uiState: DashboardUiState,
+    roadbookState: RoadbookState,
     primaryOdometerSlot: @Composable (Modifier) -> Unit,
     secondaryOdometerSlot: @Composable (Modifier) -> Unit,
-    roadbookSlot: @Composable (Modifier) -> Unit,
+    roadbookSlot: @Composable (RoadbookState, Modifier) -> Unit,
     mapSlot: @Composable (Modifier) -> Unit,
     onIncrementPartial: () -> Unit,
     onDecrementPartial: () -> Unit,
     onResetPartial: () -> Unit,
     onResetAll: () -> Unit,
-    onMoveRoadbookUp: () -> Unit,
-    onMoveRoadbookDown: () -> Unit,
     onSetPartialDistance: (Double) -> Unit,
     onHideSetPartialDialog: () -> Unit,
     onHideResetAllDialog: () -> Unit,
@@ -195,12 +211,12 @@ fun DashboardContent(
                         }
 
                         uiState.roadbookUpKeys.contains(keyCode) -> {
-                            onMoveRoadbookUp()
+                            roadbookState.scrollUp()
                             true
                         }
 
                         uiState.roadbookDownKeys.contains(keyCode) -> {
-                            onMoveRoadbookDown()
+                            roadbookState.scrollDown()
                             true
                         }
 
@@ -218,6 +234,7 @@ fun DashboardContent(
         MainContent(
             windowSizeClass = windowSizeClass,
             uiState = uiState,
+            roadbookState = roadbookState,
             onSettingsClick = onSettingsClick,
             primaryOdometerSlot = primaryOdometerSlot,
             secondaryOdometerSlot = secondaryOdometerSlot,
@@ -254,10 +271,11 @@ fun DashboardContent(
 fun MainContent(
     windowSizeClass: WindowSizeClass,
     uiState: DashboardUiState,
+    roadbookState: RoadbookState,
     onSettingsClick: () -> Unit,
     primaryOdometerSlot: @Composable (Modifier) -> Unit,
     secondaryOdometerSlot: @Composable (Modifier) -> Unit,
-    roadbookSlot: @Composable (Modifier) -> Unit,
+    roadbookSlot: @Composable (RoadbookState, Modifier) -> Unit,
     mapSlot: @Composable (Modifier) -> Unit,
     landscapeDistanceSectionWeight: Float,
 ) {
@@ -277,6 +295,7 @@ fun MainContent(
             heightSizeClass == WindowHeightSizeClass.Compact -> {
                 LandscapeLayout(
                     onSettingsClick = onSettingsClick,
+                    roadbookState = roadbookState,
                     primaryOdometerSlot = primaryOdometerSlot,
                     secondaryOdometerSlot = secondaryOdometerSlot,
                     roadbookSlot = roadbookSlot,
@@ -288,6 +307,7 @@ fun MainContent(
             widthSizeClass == WindowWidthSizeClass.Expanded -> {
                 LandscapeLayout(
                     onSettingsClick = onSettingsClick,
+                    roadbookState = roadbookState,
                     primaryOdometerSlot = primaryOdometerSlot,
                     secondaryOdometerSlot = secondaryOdometerSlot,
                     roadbookSlot = roadbookSlot,
@@ -299,6 +319,7 @@ fun MainContent(
             else -> {
                 PortraitLayout(
                     onSettingsClick = onSettingsClick,
+                    roadbookState = roadbookState,
                     primaryOdometerSlot = primaryOdometerSlot,
                     secondaryOdometerSlot = secondaryOdometerSlot,
                     roadbookSlot = roadbookSlot,
@@ -318,9 +339,10 @@ fun MainContent(
 @Composable
 fun LandscapeLayout(
     onSettingsClick: () -> Unit,
+    roadbookState: RoadbookState,
     primaryOdometerSlot: @Composable (Modifier) -> Unit,
     secondaryOdometerSlot: @Composable (Modifier) -> Unit,
-    roadbookSlot: @Composable (Modifier) -> Unit,
+    roadbookSlot: @Composable (RoadbookState, Modifier) -> Unit,
     mapSlot: @Composable (Modifier) -> Unit,
     distanceSectionWeight: Float,
     modifier: Modifier = Modifier
@@ -333,7 +355,7 @@ fun LandscapeLayout(
             mapSlot = mapSlot,
             modifier = Modifier.weight(distanceSectionWeight)
         )
-        roadbookSlot(Modifier.weight(1f - distanceSectionWeight))
+        roadbookSlot(roadbookState, Modifier.weight(1f - distanceSectionWeight))
     }
 }
 
@@ -342,9 +364,10 @@ fun LandscapeLayout(
 @Composable
 fun PortraitLayout(
     onSettingsClick: () -> Unit,
+    roadbookState: RoadbookState,
     primaryOdometerSlot: @Composable (Modifier) -> Unit,
     secondaryOdometerSlot: @Composable (Modifier) -> Unit,
-    roadbookSlot: @Composable (Modifier) -> Unit,
+    roadbookSlot: @Composable (RoadbookState, Modifier) -> Unit,
     mapSlot: @Composable (Modifier) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -356,7 +379,7 @@ fun PortraitLayout(
             mapSlot = mapSlot,
             modifier = Modifier.weight(2f)
         )
-        roadbookSlot(Modifier.weight(3f))
+        roadbookSlot(roadbookState, Modifier.weight(3f))
     }
 }
 
@@ -484,13 +507,15 @@ fun TabletLandPreview() {
             DpSize(1097.dp, 686.dp)
         )
     ) {
+        val roadbookState = rememberRoadbookState()
         MainContent(
             windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(1097.dp, 686.dp)),
             uiState = sampleUiState,
+            roadbookState = roadbookState,
             onSettingsClick = {},
             primaryOdometerSlot = { modifier -> PartialDistance(distance = "999.99", modifier = modifier, onLongClick = {}) },
             secondaryOdometerSlot = { modifier -> TotalDistance("9,999.9", modifier) },
-            roadbookSlot = { modifier -> 
+            roadbookSlot = { _, modifier -> 
                 Box(modifier = modifier.background(MaterialTheme.colorScheme.surface)) {
                     Text(text = "Roadbook Placeholder", modifier = Modifier.align(Alignment.Center))
                 }
@@ -520,13 +545,15 @@ fun TabletPortPreview() {
             DpSize(686.dp, 1097.dp)
         )
     ) {
+        val roadbookState = rememberRoadbookState()
         MainContent(
             windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(686.dp, 1097.dp)),
             uiState = sampleUiState,
+            roadbookState = roadbookState,
             onSettingsClick = {},
             primaryOdometerSlot = { modifier -> PartialDistance(distance = "999.99", modifier = modifier, onLongClick = {}) },
             secondaryOdometerSlot = { modifier -> TotalDistance("9,999.9", modifier) },
-            roadbookSlot = { modifier -> 
+            roadbookSlot = { _, modifier -> 
                 Box(modifier = modifier.background(MaterialTheme.colorScheme.surface)) {
                     Text(text = "Roadbook Placeholder", modifier = Modifier.align(Alignment.Center))
                 }
@@ -556,13 +583,15 @@ fun PhonePortPreview() {
             DpSize(411.dp, 891.dp)
         )
     ) {
+        val roadbookState = rememberRoadbookState()
         MainContent(
             windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp)),
             uiState = sampleUiState,
+            roadbookState = roadbookState,
             onSettingsClick = {},
             primaryOdometerSlot = { modifier -> PartialDistance(distance = "999.99", modifier = modifier, onLongClick = {}) },
             secondaryOdometerSlot = { modifier -> TotalDistance("9,999.9", modifier) },
-            roadbookSlot = { modifier -> 
+            roadbookSlot = { _, modifier -> 
                 Box(modifier = modifier.background(MaterialTheme.colorScheme.surface)) {
                     Text(text = "Roadbook Placeholder", modifier = Modifier.align(Alignment.Center))
                 }
@@ -592,13 +621,15 @@ fun PhoneLandPreview() {
             DpSize(891.dp, 411.dp)
         )
     ) {
+        val roadbookState = rememberRoadbookState()
         MainContent(
             windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(891.dp, 411.dp)),
             uiState = sampleUiState,
+            roadbookState = roadbookState,
             onSettingsClick = {},
             primaryOdometerSlot = { modifier -> PartialDistance(distance = "999.99", modifier = modifier, onLongClick = {}) },
             secondaryOdometerSlot = { modifier -> TotalDistance("9,999.9", modifier) },
-            roadbookSlot = { modifier -> 
+            roadbookSlot = { _, modifier -> 
                 Box(modifier = modifier.background(MaterialTheme.colorScheme.surface)) {
                     Text(text = "Roadbook Placeholder", modifier = Modifier.align(Alignment.Center))
                 }

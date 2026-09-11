@@ -19,40 +19,84 @@ package org.giste.roadbook
 
 import androidx.compose.runtime.Stable
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.emptyFlow
+import org.giste.roadbook.domain.model.RoadbookPosition
+import org.giste.roadbook.ui.RoadbookUiState
 import org.giste.roadbook.ui.RoadbookViewModel
+import java.io.InputStream
 
 /**
  * State object for the Roadbook module, following the State Hoisting pattern.
  * This class acts as a public proxy for the internal navigation logic.
- *
- * Use [rememberRoadbookState] to create an instance in Compose.
  */
 @Stable
 public class RoadbookState internal constructor(
-    internal val viewModel: RoadbookViewModel
+    public val routeName: StateFlow<String?>,
+    public val events: Flow<RoadbookEvent>,
+    private val onScrollUp: () -> Unit,
+    private val onScrollDown: () -> Unit,
+    // Grouped internal implementation details to keep the constructor manageable.
+    internal val internals: InternalData
 ) {
-    /**
-     * Reactive stream of [RoadbookEvent]s emitted by the module.
-     */
-    public val events: Flow<RoadbookEvent> get() = viewModel.events
+    internal class InternalData(
+        val roadbookUiState: StateFlow<RoadbookUiState>,
+        val initialScrollPosition: StateFlow<RoadbookPosition>,
+        val onImportRoute: (InputStream) -> Unit,
+        val onDistanceSectionLongPressed: (Double) -> Unit,
+        val onWaypointVisible: (Int, Int) -> Unit,
+        val viewModel: RoadbookViewModel? = null // For backward compatibility
+    )
 
-    /**
-     * The name of the currently active route, or null if no route is loaded.
-     */
-    public val routeName: StateFlow<String?> get() = viewModel.routeName
+    internal constructor(viewModel: RoadbookViewModel) : this(
+        routeName = viewModel.routeName,
+        events = viewModel.events,
+        onScrollUp = viewModel::scrollUp,
+        onScrollDown = viewModel::scrollDown,
+        internals = InternalData(
+            roadbookUiState = viewModel.roadbookState,
+            initialScrollPosition = viewModel.initialScrollPosition,
+            onImportRoute = viewModel::importRoute,
+            onDistanceSectionLongPressed = viewModel::onDistanceSectionLongPressed,
+            onWaypointVisible = viewModel::onWaypointVisible,
+            viewModel = viewModel
+        )
+    )
 
     /**
      * Commands the roadbook to move forward to the next waypoint.
      */
     public fun scrollUp() {
-        viewModel.scrollUp()
+        onScrollUp()
     }
 
     /**
      * Commands the roadbook to move backward to the previous waypoint.
      */
     public fun scrollDown() {
-        viewModel.scrollDown()
+        onScrollDown()
     }
 }
+
+/**
+ * Factory function to create a [RoadbookState] for previews or testing.
+ */
+public fun RoadbookState(
+    routeName: StateFlow<String?> = MutableStateFlow(null),
+    events: Flow<RoadbookEvent> = emptyFlow(),
+    onScrollUp: () -> Unit = {},
+    onScrollDown: () -> Unit = {}
+): RoadbookState = RoadbookState(
+    routeName = routeName,
+    events = events,
+    onScrollUp = onScrollUp,
+    onScrollDown = onScrollDown,
+    internals = RoadbookState.InternalData(
+        roadbookUiState = MutableStateFlow(RoadbookUiState.Empty),
+        initialScrollPosition = MutableStateFlow(RoadbookPosition()),
+        onImportRoute = {},
+        onDistanceSectionLongPressed = {},
+        onWaypointVisible = { _, _ -> }
+    )
+)

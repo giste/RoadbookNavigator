@@ -37,7 +37,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
@@ -64,16 +63,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import org.giste.odometer.domain.Odometer
-import org.giste.roadbooknavigator.R
-import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.giste.map.MapScreen
 import org.giste.map.compactMapDimensions
 import org.giste.map.expandedMapDimensions
+import org.giste.odometer.domain.Odometer
 import org.giste.roadbook.Roadbook
 import org.giste.roadbook.RoadbookEvent
 import org.giste.roadbook.RoadbookState
 import org.giste.roadbook.rememberRoadbookState
+import org.giste.roadbooknavigator.R
+import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 import org.giste.roadbooknavigator.ui.odometer.PartialDistance
 import org.giste.roadbooknavigator.ui.odometer.ResetAllConfirmationDialog
 import org.giste.roadbooknavigator.ui.odometer.SetPartialDialog
@@ -507,7 +507,9 @@ fun TabletLandPreview() {
             DpSize(1097.dp, 686.dp)
         )
     ) {
-        val roadbookState = rememberRoadbookState()
+        val roadbookState = RoadbookState(
+            routeName = MutableStateFlow("Sample Route - Dakar Stage 1")
+        )
         MainContent(
             windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(1097.dp, 686.dp)),
             uiState = sampleUiState,
@@ -515,10 +517,8 @@ fun TabletLandPreview() {
             onSettingsClick = {},
             primaryOdometerSlot = { modifier -> PartialDistance(distance = "999.99", modifier = modifier, onLongClick = {}) },
             secondaryOdometerSlot = { modifier -> TotalDistance("9,999.9", modifier) },
-            roadbookSlot = { _, modifier -> 
-                Box(modifier = modifier.background(MaterialTheme.colorScheme.surface)) {
-                    Text(text = "Roadbook Placeholder", modifier = Modifier.align(Alignment.Center))
-                }
+            roadbookSlot = { state, modifier -> 
+                Roadbook(state = state, modifier = modifier)
             },
             mapSlot = { modifier -> Box(modifier.background(MaterialTheme.colorScheme.tertiary)) },
             landscapeDistanceSectionWeight = 0.3f
@@ -545,7 +545,9 @@ fun TabletPortPreview() {
             DpSize(686.dp, 1097.dp)
         )
     ) {
-        val roadbookState = rememberRoadbookState()
+        val roadbookState = RoadbookState(
+            routeName = MutableStateFlow("Sample Route - Dakar Stage 1")
+        )
         MainContent(
             windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(686.dp, 1097.dp)),
             uiState = sampleUiState,
@@ -553,10 +555,8 @@ fun TabletPortPreview() {
             onSettingsClick = {},
             primaryOdometerSlot = { modifier -> PartialDistance(distance = "999.99", modifier = modifier, onLongClick = {}) },
             secondaryOdometerSlot = { modifier -> TotalDistance("9,999.9", modifier) },
-            roadbookSlot = { _, modifier -> 
-                Box(modifier = modifier.background(MaterialTheme.colorScheme.surface)) {
-                    Text(text = "Roadbook Placeholder", modifier = Modifier.align(Alignment.Center))
-                }
+            roadbookSlot = { state, modifier -> 
+                Roadbook(state = state, modifier = modifier)
             },
             mapSlot = { modifier -> Box(modifier.background(MaterialTheme.colorScheme.tertiary)) },
             landscapeDistanceSectionWeight = 0.3f
@@ -583,7 +583,9 @@ fun PhonePortPreview() {
             DpSize(411.dp, 891.dp)
         )
     ) {
-        val roadbookState = rememberRoadbookState()
+        val roadbookState = RoadbookState(
+            routeName = MutableStateFlow("Sample Route - Dakar Stage 1")
+        )
         MainContent(
             windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp)),
             uiState = sampleUiState,
@@ -591,10 +593,8 @@ fun PhonePortPreview() {
             onSettingsClick = {},
             primaryOdometerSlot = { modifier -> PartialDistance(distance = "999.99", modifier = modifier, onLongClick = {}) },
             secondaryOdometerSlot = { modifier -> TotalDistance("9,999.9", modifier) },
-            roadbookSlot = { _, modifier -> 
-                Box(modifier = modifier.background(MaterialTheme.colorScheme.surface)) {
-                    Text(text = "Roadbook Placeholder", modifier = Modifier.align(Alignment.Center))
-                }
+            roadbookSlot = { state, modifier -> 
+                Roadbook(state = state, modifier = modifier)
             },
             mapSlot = { modifier -> Box(modifier.background(MaterialTheme.colorScheme.tertiary)) },
             landscapeDistanceSectionWeight = 0.3f
@@ -621,7 +621,9 @@ fun PhoneLandPreview() {
             DpSize(891.dp, 411.dp)
         )
     ) {
-        val roadbookState = rememberRoadbookState()
+        val roadbookState = RoadbookState(
+            routeName = MutableStateFlow("Sample Route - Dakar Stage 1")
+        )
         MainContent(
             windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(891.dp, 411.dp)),
             uiState = sampleUiState,
@@ -629,10 +631,8 @@ fun PhoneLandPreview() {
             onSettingsClick = {},
             primaryOdometerSlot = { modifier -> PartialDistance(distance = "999.99", modifier = modifier, onLongClick = {}) },
             secondaryOdometerSlot = { modifier -> TotalDistance("9,999.9", modifier) },
-            roadbookSlot = { _, modifier -> 
-                Box(modifier = modifier.background(MaterialTheme.colorScheme.surface)) {
-                    Text(text = "Roadbook Placeholder", modifier = Modifier.align(Alignment.Center))
-                }
+            roadbookSlot = { state, modifier -> 
+                Roadbook(state = state, modifier = modifier)
             },
             mapSlot = { modifier -> Box(modifier.background(MaterialTheme.colorScheme.tertiary)) },
             landscapeDistanceSectionWeight = 0.3f

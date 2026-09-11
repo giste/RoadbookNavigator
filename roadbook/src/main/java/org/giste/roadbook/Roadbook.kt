@@ -59,13 +59,12 @@ public fun Roadbook(
     dimensions: RoadbookDimensions = compactRoadbookDimensions,
     colors: RoadbookColors? = null,
 ) {
-    val viewModel = state.viewModel
-    val roadbookUiState by viewModel.roadbookState.collectAsStateWithLifecycle()
-    val initialPosition by viewModel.initialScrollPosition.collectAsStateWithLifecycle()
+    val roadbookUiState by state.internals.roadbookUiState.collectAsStateWithLifecycle()
+    val initialPosition by state.internals.initialScrollPosition.collectAsStateWithLifecycle()
 
     // Pass the controller back to the consumer (Deprecated, for backward compatibility)
-    LaunchedEffect(viewModel) {
-        onControllerReady?.invoke(viewModel)
+    LaunchedEffect(state) {
+        state.internals.viewModel?.let { onControllerReady?.invoke(it) }
     }
 
     // LazyListState management
@@ -96,9 +95,9 @@ public fun Roadbook(
             state = roadbookUiState,
             listState = listState,
             modifier = modifier,
-            onFileSelected = viewModel::importRoute,
-            onSetPartialClick = viewModel::onDistanceSectionLongPressed,
-            onWaypointVisible = viewModel::onWaypointVisible
+            onFileSelected = state.internals.onImportRoute,
+            onSetPartialClick = state.internals.onDistanceSectionLongPressed,
+            onWaypointVisible = state.internals.onWaypointVisible
         )
     }
 }

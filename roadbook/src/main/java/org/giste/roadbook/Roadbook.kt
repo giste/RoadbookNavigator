@@ -21,6 +21,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -31,32 +32,44 @@ import org.giste.roadbook.ui.RoadbookViewModel
 import org.giste.roadbook.ui.theme.RoadbookTheme
 
 /**
+ * Creates and remembers a [RoadbookState] instance.
+ */
+@Composable
+public fun rememberRoadbookState(): RoadbookState {
+    val viewModel: RoadbookViewModel = hiltViewModel()
+    return remember(viewModel) {
+        RoadbookState(viewModel)
+    }
+}
+
+/**
  * The main UI entry point for the Roadbook module.
  *
- * @param onControllerReady Callback providing a [RoadbookController] to the consumer for external control.
  * @param modifier Modifier for the root container.
+ * @param state The state object that controls the roadbook. Defaults to a new instance.
+ * @param onControllerReady Deprecated: Use [state] instead.
  * @param dimensions Custom dimensions for the roadbook. Defaults to compact.
  * @param colors Custom semantic colors for the roadbook. If null, they are mapped from MaterialTheme.
  */
 @Composable
 public fun Roadbook(
-    onControllerReady: (RoadbookController) -> Unit,
     modifier: Modifier = Modifier,
+    state: RoadbookState = rememberRoadbookState(),
+    onControllerReady: ((RoadbookController) -> Unit)? = null,
     dimensions: RoadbookDimensions = compactRoadbookDimensions,
     colors: RoadbookColors? = null,
 ) {
-    // Phase 2 will make RoadbookViewModel internal, for now we just use it.
-    val viewModel: RoadbookViewModel = hiltViewModel()
-    val state by viewModel.roadbookState.collectAsStateWithLifecycle()
+    val viewModel = state.viewModel
+    val roadbookUiState by viewModel.roadbookState.collectAsStateWithLifecycle()
     val initialPosition by viewModel.initialScrollPosition.collectAsStateWithLifecycle()
 
-    // Pass the controller back to the consumer
+    // Pass the controller back to the consumer (Deprecated, for backward compatibility)
     LaunchedEffect(viewModel) {
-        onControllerReady(viewModel)
+        onControllerReady?.invoke(viewModel)
     }
 
-    // LazyListState management (moved from RoadbookSection)
-    val routeKey = (state as? RoadbookUiState.Success)?.let {
+    // LazyListState management
+    val routeKey = (roadbookUiState as? RoadbookUiState.Success)?.let {
         "route_${it.route.name}_${it.route.waypoints.size}"
     }
 
@@ -80,7 +93,7 @@ public fun Roadbook(
         colors = colors
     ) {
         RoadbookContent(
-            state = state,
+            state = roadbookUiState,
             listState = listState,
             modifier = modifier,
             onFileSelected = viewModel::importRoute,

@@ -45,8 +45,7 @@ public class RoadbookState internal constructor(
         val initialScrollPosition: StateFlow<RoadbookPosition>,
         val onImportRoute: (InputStream) -> Unit,
         val onDistanceSectionLongPressed: (Double) -> Unit,
-        val onWaypointVisible: (Int, Int) -> Unit,
-        val viewModel: RoadbookViewModel? = null // For backward compatibility
+        val onWaypointVisible: (Int, Int) -> Unit
     )
 
     internal constructor(viewModel: RoadbookViewModel) : this(
@@ -59,8 +58,7 @@ public class RoadbookState internal constructor(
             initialScrollPosition = viewModel.initialScrollPosition,
             onImportRoute = viewModel::importRoute,
             onDistanceSectionLongPressed = viewModel::onDistanceSectionLongPressed,
-            onWaypointVisible = viewModel::onWaypointVisible,
-            viewModel = viewModel
+            onWaypointVisible = viewModel::onWaypointVisible
         )
     )
 

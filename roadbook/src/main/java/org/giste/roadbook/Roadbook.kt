@@ -47,7 +47,6 @@ public fun rememberRoadbookState(): RoadbookState {
  *
  * @param modifier Modifier for the root container.
  * @param state The state object that controls the roadbook. Defaults to a new instance.
- * @param onControllerReady Deprecated: Use [state] instead.
  * @param dimensions Custom dimensions for the roadbook. Defaults to compact.
  * @param colors Custom semantic colors for the roadbook. If null, they are mapped from MaterialTheme.
  */
@@ -55,17 +54,11 @@ public fun rememberRoadbookState(): RoadbookState {
 public fun Roadbook(
     modifier: Modifier = Modifier,
     state: RoadbookState = rememberRoadbookState(),
-    onControllerReady: ((RoadbookController) -> Unit)? = null,
     dimensions: RoadbookDimensions = compactRoadbookDimensions,
     colors: RoadbookColors? = null,
 ) {
     val roadbookUiState by state.internals.roadbookUiState.collectAsStateWithLifecycle()
     val initialPosition by state.internals.initialScrollPosition.collectAsStateWithLifecycle()
-
-    // Pass the controller back to the consumer (Deprecated, for backward compatibility)
-    LaunchedEffect(state) {
-        state.internals.viewModel?.let { onControllerReady?.invoke(it) }
-    }
 
     // LazyListState management
     val routeKey = (roadbookUiState as? RoadbookUiState.Success)?.let {

@@ -28,7 +28,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import org.giste.roadbook.RoadbookController
 import org.giste.roadbook.RoadbookEvent
 import org.giste.roadbook.RoadbookLogger
 import org.giste.roadbook.domain.model.RoadbookPosition
@@ -52,12 +51,12 @@ internal class RoadbookViewModel @Inject constructor(
     private val moveRoadbookDownUseCase: MoveRoadbookDownUseCase,
     getRoadbookSettingsUseCase: GetRoadbookSettingsUseCase,
     private val logger: RoadbookLogger
-) : ViewModel(), RoadbookController {
+) : ViewModel() {
 
     private val _events = MutableSharedFlow<RoadbookEvent>()
-    override val events = _events
+    val events = _events
 
-    override val routeName: StateFlow<String?> = getActiveRoadbookUseCase()
+    val routeName: StateFlow<String?> = getActiveRoadbookUseCase()
         .map { it?.name }
         .stateIn(
             scope = viewModelScope,
@@ -128,14 +127,14 @@ internal class RoadbookViewModel @Inject constructor(
         }
     }
 
-    override fun scrollUp() {
+    fun scrollUp() {
         logger.d("RoadbookViewModel: Scrolling up")
         viewModelScope.launch {
             moveRoadbookUpUseCase()
         }
     }
 
-    override fun scrollDown() {
+    fun scrollDown() {
         logger.d("RoadbookViewModel: Scrolling down")
         viewModelScope.launch {
             moveRoadbookDownUseCase()

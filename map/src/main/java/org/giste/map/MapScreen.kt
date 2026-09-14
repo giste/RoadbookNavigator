@@ -19,6 +19,7 @@ package org.giste.map
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -26,18 +27,28 @@ import org.giste.map.ui.MapContent
 import org.giste.map.ui.MapViewModel
 
 /**
+ * Creates and remembers a [MapState] instance.
+ */
+@Composable
+public fun rememberMapState(): MapState {
+    val viewModel: MapViewModel = hiltViewModel()
+    return remember(viewModel) { MapState(viewModel) }
+}
+
+/**
  * Public entry point for the Map module.
  *
+ * @param state The state object for the map.
  * @param modifier Modifier for the map container.
  * @param dimensions Custom dimensions for the map. Defaults to compact.
  */
 @Composable
 public fun MapScreen(
+    state: MapState,
     modifier: Modifier = Modifier,
     dimensions: MapDimensions = compactMapDimensions,
 ) {
-    val viewModel: MapViewModel = hiltViewModel()
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by state.internals.uiState.collectAsStateWithLifecycle()
 
     MapContent(
         uiState = uiState,

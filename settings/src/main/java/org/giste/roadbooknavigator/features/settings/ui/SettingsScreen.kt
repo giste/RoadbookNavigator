@@ -104,8 +104,10 @@ import org.giste.roadbooknavigator.features.settings.domain.location.MinDistance
 import org.giste.roadbooknavigator.features.settings.domain.location.PollingIntervalThreshold
 import org.giste.map.MapSettings
 import org.giste.map.MapManagementScreen
+import org.giste.map.MapManagementState
 import org.giste.map.compactMapDimensions
 import org.giste.map.expandedMapDimensions
+import org.giste.map.rememberMapManagementState
 import org.giste.odometer.domain.AccuracyThreshold
 import org.giste.odometer.domain.OdometerSettings
 import org.giste.odometer.domain.SpeedThreshold
@@ -130,6 +132,7 @@ fun SettingsScreen(
     val useExpanded = windowSizeClass.widthSizeClass == WindowWidthSizeClass.Expanded &&
             windowSizeClass.heightSizeClass != WindowHeightSizeClass.Compact
     val mapDimensions = if (useExpanded) expandedMapDimensions else compactMapDimensions
+    val mapManagementState: MapManagementState = rememberMapManagementState()
 
     SettingsContent(
         uiState = uiState,
@@ -150,7 +153,7 @@ fun SettingsScreen(
         onMapInitialZoomChange = viewModel::setMapInitialZoom,
         onMapInitialTiltChange = viewModel::setMapInitialTilt,
         onLandscapeWeightChange = viewModel::setLandscapeDistanceSectionWeight,
-        mapManagementContent = { MapManagementScreen(dimensions = mapDimensions) }
+        mapManagementContent = { MapManagementScreen(state = mapManagementState, dimensions = mapDimensions) }
     )
 }
 
@@ -1142,10 +1145,10 @@ fun SettingsPreviewLight() {
             onMapInitialTiltChange = {},
             onLandscapeWeightChange = {},
             mapManagementContent = {
-                // Placeholder to avoid Hilt issues in preview
-                Box(modifier = Modifier.fillMaxSize().background(Color.Gray)) {
-                    Text("Map Management (Dimensions: $mapDimensions)", modifier = Modifier.align(Alignment.Center))
-                }
+                MapManagementScreen(
+                    state = MapManagementState(),
+                    dimensions = mapDimensions
+                )
             }
         )
     }
@@ -1194,9 +1197,10 @@ fun SettingsPreviewDark() {
             onMapInitialTiltChange = {},
             onLandscapeWeightChange = {},
             mapManagementContent = {
-                Box(modifier = Modifier.fillMaxSize().background(Color.Gray)) {
-                    Text("Map Management (Dimensions: $mapDimensions)", modifier = Modifier.align(Alignment.Center))
-                }
+                MapManagementScreen(
+                    state = MapManagementState(),
+                    dimensions = mapDimensions
+                )
             }
         )
     }
@@ -1244,9 +1248,10 @@ fun SettingsPreviewTablet() {
             onMapInitialTiltChange = {},
             onLandscapeWeightChange = {},
             mapManagementContent = {
-                Box(modifier = Modifier.fillMaxSize().background(Color.Gray)) {
-                    Text("Map Management (Dimensions: $mapDimensions)", modifier = Modifier.align(Alignment.Center))
-                }
+                MapManagementScreen(
+                    state = MapManagementState(),
+                    dimensions = mapDimensions
+                )
             }
         )
     }

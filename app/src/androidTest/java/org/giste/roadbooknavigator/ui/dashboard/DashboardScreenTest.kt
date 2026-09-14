@@ -40,7 +40,8 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.flow.MutableStateFlow
-import org.giste.roadbook.RoadbookState
+import org.giste.map.*
+import org.giste.roadbook.*
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 import org.giste.odometer.domain.Odometer
 import org.junit.Rule
@@ -70,7 +71,8 @@ class DashboardScreenTest {
             odometer = Odometer(1200.0, 500.0),
         )
         val viewModel: DashboardViewModel = mockk(relaxed = true)
-        val roadbookState: RoadbookState = mockk(relaxed = true)
+        val roadbookState = RoadbookState()
+        val mapState = MapState()
         every { viewModel.uiState } returns MutableStateFlow(uiState)
         
         val windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp))
@@ -82,8 +84,9 @@ class DashboardScreenTest {
                     onSettingsClick = {},
                     viewModel = viewModel,
                     roadbookState = roadbookState,
+                    mapState = mapState,
                     roadbookSlot = { _, modifier -> RoadbookStub(modifier) },
-                    mapSlot = { Box(it) }
+                    mapSlot = { _, modifier -> Box(modifier) }
                 )
             }
         }
@@ -103,7 +106,8 @@ class DashboardScreenTest {
             odometer = Odometer(0.0, 500.0),
         )
         val viewModel: DashboardViewModel = mockk(relaxed = true)
-        val roadbookState: RoadbookState = mockk(relaxed = true)
+        val roadbookState = RoadbookState()
+        val mapState = MapState()
         every { viewModel.uiState } returns MutableStateFlow(uiState)
         
         val expectedPartial = String.format(Locale.getDefault(), "%.2f", 500.0 / 1000.0)
@@ -116,8 +120,9 @@ class DashboardScreenTest {
                     onSettingsClick = {},
                     viewModel = viewModel,
                     roadbookState = roadbookState,
+                    mapState = mapState,
                     roadbookSlot = { _, modifier -> RoadbookStub(modifier) },
-                    mapSlot = { Box(it) }
+                    mapSlot = { _, modifier -> Box(modifier) }
                 )
             }
         }
@@ -136,7 +141,8 @@ class DashboardScreenTest {
             odometer = Odometer(1000.0, 500.0),
         )
         val viewModel: DashboardViewModel = mockk(relaxed = true)
-        val roadbookState: RoadbookState = mockk(relaxed = true)
+        val roadbookState = RoadbookState()
+        val mapState = MapState()
         every { viewModel.uiState } returns MutableStateFlow(uiState)
 
         val expectedTotal = String.format(Locale.getDefault(), "%.1f", 1000.0 / 1000.0)
@@ -149,8 +155,9 @@ class DashboardScreenTest {
                     onSettingsClick = {},
                     viewModel = viewModel,
                     roadbookState = roadbookState,
+                    mapState = mapState,
                     roadbookSlot = { _, modifier -> RoadbookStub(modifier) },
-                    mapSlot = { Box(it) }
+                    mapSlot = { _, modifier -> Box(modifier) }
                 )
             }
         }
@@ -170,7 +177,8 @@ class DashboardScreenTest {
             showResetAllDialog = true
         )
         val viewModel: DashboardViewModel = mockk(relaxed = true)
-        val roadbookState: RoadbookState = mockk(relaxed = true)
+        val roadbookState = RoadbookState()
+        val mapState = MapState()
         every { viewModel.uiState } returns MutableStateFlow(uiState)
 
         val windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp))
@@ -182,8 +190,9 @@ class DashboardScreenTest {
                     onSettingsClick = {},
                     viewModel = viewModel,
                     roadbookState = roadbookState,
+                    mapState = mapState,
                     roadbookSlot = { _, modifier -> RoadbookStub(modifier) },
-                    mapSlot = { Box(it) }
+                    mapSlot = { _, modifier -> Box(modifier) }
                 )
             }
         }
@@ -203,7 +212,8 @@ class DashboardScreenTest {
     @Test
     fun tabletPortrait_displaysMapSection() {
         val viewModel: DashboardViewModel = mockk(relaxed = true)
-        val roadbookState: RoadbookState = mockk(relaxed = true)
+        val roadbookState = RoadbookState()
+        val mapState = MapState()
         every { viewModel.uiState } returns MutableStateFlow(DashboardUiState())
         
         val mapTag = "MapSectionTag"
@@ -219,8 +229,9 @@ class DashboardScreenTest {
                     onSettingsClick = {},
                     viewModel = viewModel,
                     roadbookState = roadbookState,
+                    mapState = mapState,
                     roadbookSlot = { _, modifier -> RoadbookStub(modifier) },
-                    mapSlot = { modifier ->
+                    mapSlot = { _, modifier ->
                         Text(text = mapDummyText, modifier = modifier.testTag(mapTag))
                     }
                 )
@@ -237,7 +248,8 @@ class DashboardScreenTest {
     @Test
     fun phonePortrait_displaysMapSection() {
         val viewModel: DashboardViewModel = mockk(relaxed = true)
-        val roadbookState: RoadbookState = mockk(relaxed = true)
+        val roadbookState = RoadbookState()
+        val mapState = MapState()
         every { viewModel.uiState } returns MutableStateFlow(DashboardUiState())
         
         val mapTag = "MapSectionTag"
@@ -253,8 +265,9 @@ class DashboardScreenTest {
                     onSettingsClick = {},
                     viewModel = viewModel,
                     roadbookState = roadbookState,
+                    mapState = mapState,
                     roadbookSlot = { _, modifier -> RoadbookStub(modifier) },
-                    mapSlot = { modifier ->
+                    mapSlot = { _, modifier ->
                         Text(text = mapDummyText, modifier = modifier.testTag(mapTag))
                     }
                 )
@@ -271,7 +284,8 @@ class DashboardScreenTest {
     @Test
     fun volumeUpKey_triggersIncrementPartialDistance() {
         val viewModel: DashboardViewModel = mockk(relaxed = true)
-        val roadbookState: RoadbookState = mockk(relaxed = true)
+        val roadbookState = RoadbookState()
+        val mapState = MapState()
         val uiStateFlow = MutableStateFlow(
             DashboardUiState(
                 increasePartialKeys = listOf(android.view.KeyEvent.KEYCODE_VOLUME_UP)
@@ -288,8 +302,9 @@ class DashboardScreenTest {
                     onSettingsClick = {},
                     viewModel = viewModel,
                     roadbookState = roadbookState,
+                    mapState = mapState,
                     roadbookSlot = { _, modifier -> RoadbookStub(modifier) },
-                    mapSlot = { Box(it) }
+                    mapSlot = { _, modifier -> Box(modifier) }
                 )
             }
         }
@@ -313,7 +328,8 @@ class DashboardScreenTest {
     @Test
     fun f6Key_triggersResetPartialDistance() {
         val viewModel: DashboardViewModel = mockk(relaxed = true)
-        val roadbookState: RoadbookState = mockk(relaxed = true)
+        val roadbookState = RoadbookState()
+        val mapState = MapState()
         val uiStateFlow = MutableStateFlow(
             DashboardUiState(
                 resetPartialKeys = listOf(android.view.KeyEvent.KEYCODE_F6)
@@ -330,8 +346,9 @@ class DashboardScreenTest {
                     onSettingsClick = {},
                     viewModel = viewModel,
                     roadbookState = roadbookState,
+                    mapState = mapState,
                     roadbookSlot = { _, modifier -> RoadbookStub(modifier) },
-                    mapSlot = { Box(it) }
+                    mapSlot = { _, modifier -> Box(modifier) }
                 )
             }
         }
@@ -354,7 +371,8 @@ class DashboardScreenTest {
     @Test
     fun volumeDownKey_triggersDecrementPartialDistance() {
         val viewModel: DashboardViewModel = mockk(relaxed = true)
-        val roadbookState: RoadbookState = mockk(relaxed = true)
+        val roadbookState = RoadbookState()
+        val mapState = MapState()
         val uiStateFlow = MutableStateFlow(
             DashboardUiState(
                 decreasePartialKeys = listOf(android.view.KeyEvent.KEYCODE_VOLUME_DOWN)
@@ -371,8 +389,9 @@ class DashboardScreenTest {
                     onSettingsClick = {},
                     viewModel = viewModel,
                     roadbookState = roadbookState,
+                    mapState = mapState,
                     roadbookSlot = { _, modifier -> RoadbookStub(modifier) },
-                    mapSlot = { Box(it) }
+                    mapSlot = { _, modifier -> Box(modifier) }
                 )
             }
         }
@@ -395,7 +414,8 @@ class DashboardScreenTest {
     @Test
     fun dashboardContent_displaysMainContent() {
         val viewModel: DashboardViewModel = mockk(relaxed = true)
-        val roadbookState: RoadbookState = mockk(relaxed = true)
+        val roadbookState = RoadbookState()
+        val mapState = MapState()
         val uiStateFlow = MutableStateFlow(DashboardUiState())
         every { viewModel.uiState } returns uiStateFlow
         
@@ -408,10 +428,11 @@ class DashboardScreenTest {
                     onSettingsClick = {},
                     viewModel = viewModel,
                     roadbookState = roadbookState,
+                    mapState = mapState,
                     roadbookSlot = { _, modifier ->
                         Text(text = context.getString(RoadbookR.string.roadbook_no_route), modifier = modifier)
                     },
-                    mapSlot = { Box(it) }
+                    mapSlot = { _, modifier -> Box(modifier) }
                 )
             }
         }
@@ -424,7 +445,13 @@ class DashboardScreenTest {
     @Test
     fun roadbookKeys_triggerRoadbookActions() {
         val viewModel: DashboardViewModel = mockk(relaxed = true)
-        val roadbookState: RoadbookState = mockk(relaxed = true)
+        val onScrollUp: () -> Unit = mockk(relaxed = true)
+        val onScrollDown: () -> Unit = mockk(relaxed = true)
+        val roadbookState = RoadbookState(
+            onScrollUp = onScrollUp,
+            onScrollDown = onScrollDown
+        )
+        val mapState = MapState()
         val uiStateFlow = MutableStateFlow(
             DashboardUiState(
                 roadbookUpKeys = listOf(android.view.KeyEvent.KEYCODE_DPAD_UP),
@@ -442,8 +469,9 @@ class DashboardScreenTest {
                     onSettingsClick = {},
                     viewModel = viewModel,
                     roadbookState = roadbookState,
+                    mapState = mapState,
                     roadbookSlot = { _, modifier -> RoadbookStub(modifier) },
-                    mapSlot = { Box(it) }
+                    mapSlot = { _, modifier -> Box(modifier) }
                 )
             }
         }
@@ -460,7 +488,7 @@ class DashboardScreenTest {
                 )
             )
         )
-        verify { roadbookState.scrollUp() }
+        verify { onScrollUp() }
 
         // Test Roadbook Down
         composeTestRule.onNodeWithTag("MainScreen").performKeyPress(
@@ -471,6 +499,6 @@ class DashboardScreenTest {
                 )
             )
         )
-        verify { roadbookState.scrollDown() }
+        verify { onScrollDown() }
     }
 }

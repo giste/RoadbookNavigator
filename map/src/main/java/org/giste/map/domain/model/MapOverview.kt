@@ -17,6 +17,8 @@
 
 package org.giste.map.domain.model
 
+
+
 internal data class MapOverview(
     val downloadedMaps: List<DownloadedMapInfo>,
     val remoteFolders: List<RemoteMapFolder>

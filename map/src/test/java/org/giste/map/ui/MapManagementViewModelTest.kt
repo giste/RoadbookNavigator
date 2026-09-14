@@ -35,12 +35,12 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.giste.map.MapLogger
 import org.giste.map.domain.model.DownloadStatus
-import org.giste.map.domain.model.DownloadedMapInfo
-import org.giste.map.domain.model.DownloadedMapStatus
 import org.giste.map.domain.model.MapFile
-import org.giste.map.domain.model.MapOverview
 import org.giste.map.domain.model.RemoteMapFile
 import org.giste.map.domain.model.RemoteMapFolder
+import org.giste.map.domain.model.DownloadedMapInfo
+import org.giste.map.domain.model.DownloadedMapStatus
+import org.giste.map.domain.model.MapOverview
 import org.giste.map.domain.usecase.DeleteMapUseCase
 import org.giste.map.domain.usecase.DownloadMapUseCase
 import org.giste.map.domain.usecase.GetDownloadingMapsUseCase

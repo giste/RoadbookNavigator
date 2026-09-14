@@ -18,7 +18,6 @@
 package org.giste.roadbooknavigator.ui.dashboard
 
 import android.content.res.Configuration
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Box
@@ -65,8 +64,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.giste.map.MapScreen
+import org.giste.map.MapState
 import org.giste.map.compactMapDimensions
 import org.giste.map.expandedMapDimensions
+import org.giste.map.rememberMapState
 import org.giste.odometer.domain.Odometer
 import org.giste.roadbook.Roadbook
 import org.giste.roadbook.RoadbookEvent
@@ -85,6 +86,7 @@ fun DashboardScreen(
     onSettingsClick: () -> Unit,
     viewModel: DashboardViewModel = hiltViewModel(),
     roadbookState: RoadbookState = rememberRoadbookState(),
+    mapState: MapState = rememberMapState(),
     primaryOdometerSlot: @Composable (DashboardUiState, Modifier) -> Unit = { uiState, modifier ->
         val configuration = LocalConfiguration.current
         val locale = if (configuration.locales.size() > 0) configuration.locales[0] else LocalLocale.current.platformLocale
@@ -116,13 +118,14 @@ fun DashboardScreen(
     roadbookSlot: @Composable (RoadbookState, Modifier) -> Unit = { capturedState, modifier ->
         Roadbook(
             modifier = modifier,
-            state = capturedState
+            state = capturedState,
         )
     },
-    mapSlot: @Composable (Modifier) -> Unit = { modifier ->
-        val useExpanded = windowSizeClass.widthSizeClass == WindowWidthSizeClass.Expanded &&
-                windowSizeClass.heightSizeClass != WindowHeightSizeClass.Compact
+    mapSlot: @Composable (MapState, Modifier) -> Unit = { capturedState, modifier ->
+        val useExpanded = (windowSizeClass.widthSizeClass == WindowWidthSizeClass.Expanded) &&
+                (windowSizeClass.heightSizeClass != WindowHeightSizeClass.Compact)
         MapScreen(
+            state = capturedState,
             modifier = modifier,
             dimensions = if (useExpanded) expandedMapDimensions else compactMapDimensions
         )
@@ -149,6 +152,7 @@ fun DashboardScreen(
         onSettingsClick = onSettingsClick,
         uiState = uiState,
         roadbookState = roadbookState,
+        mapState = mapState,
         primaryOdometerSlot = { modifier -> primaryOdometerSlot(uiState, modifier) },
         secondaryOdometerSlot = { modifier -> secondaryOdometerSlot(uiState, modifier) },
         roadbookSlot = roadbookSlot,
@@ -170,10 +174,11 @@ fun DashboardContent(
     onSettingsClick: () -> Unit,
     uiState: DashboardUiState,
     roadbookState: RoadbookState,
+    mapState: MapState,
     primaryOdometerSlot: @Composable (Modifier) -> Unit,
     secondaryOdometerSlot: @Composable (Modifier) -> Unit,
     roadbookSlot: @Composable (RoadbookState, Modifier) -> Unit,
-    mapSlot: @Composable (Modifier) -> Unit,
+    mapSlot: @Composable (MapState, Modifier) -> Unit,
     onIncrementPartial: () -> Unit,
     onDecrementPartial: () -> Unit,
     onResetPartial: () -> Unit,
@@ -235,6 +240,7 @@ fun DashboardContent(
             windowSizeClass = windowSizeClass,
             uiState = uiState,
             roadbookState = roadbookState,
+            mapState = mapState,
             onSettingsClick = onSettingsClick,
             primaryOdometerSlot = primaryOdometerSlot,
             secondaryOdometerSlot = secondaryOdometerSlot,
@@ -272,11 +278,12 @@ fun MainContent(
     windowSizeClass: WindowSizeClass,
     uiState: DashboardUiState,
     roadbookState: RoadbookState,
+    mapState: MapState,
     onSettingsClick: () -> Unit,
     primaryOdometerSlot: @Composable (Modifier) -> Unit,
     secondaryOdometerSlot: @Composable (Modifier) -> Unit,
     roadbookSlot: @Composable (RoadbookState, Modifier) -> Unit,
-    mapSlot: @Composable (Modifier) -> Unit,
+    mapSlot: @Composable (MapState, Modifier) -> Unit,
     landscapeDistanceSectionWeight: Float,
 ) {
     val widthSizeClass = windowSizeClass.widthSizeClass
@@ -296,6 +303,7 @@ fun MainContent(
                 LandscapeLayout(
                     onSettingsClick = onSettingsClick,
                     roadbookState = roadbookState,
+                    mapState = mapState,
                     primaryOdometerSlot = primaryOdometerSlot,
                     secondaryOdometerSlot = secondaryOdometerSlot,
                     roadbookSlot = roadbookSlot,
@@ -308,6 +316,7 @@ fun MainContent(
                 LandscapeLayout(
                     onSettingsClick = onSettingsClick,
                     roadbookState = roadbookState,
+                    mapState = mapState,
                     primaryOdometerSlot = primaryOdometerSlot,
                     secondaryOdometerSlot = secondaryOdometerSlot,
                     roadbookSlot = roadbookSlot,
@@ -320,6 +329,7 @@ fun MainContent(
                 PortraitLayout(
                     onSettingsClick = onSettingsClick,
                     roadbookState = roadbookState,
+                    mapState = mapState,
                     primaryOdometerSlot = primaryOdometerSlot,
                     secondaryOdometerSlot = secondaryOdometerSlot,
                     roadbookSlot = roadbookSlot,
@@ -340,10 +350,11 @@ fun MainContent(
 fun LandscapeLayout(
     onSettingsClick: () -> Unit,
     roadbookState: RoadbookState,
+    mapState: MapState,
     primaryOdometerSlot: @Composable (Modifier) -> Unit,
     secondaryOdometerSlot: @Composable (Modifier) -> Unit,
     roadbookSlot: @Composable (RoadbookState, Modifier) -> Unit,
-    mapSlot: @Composable (Modifier) -> Unit,
+    mapSlot: @Composable (MapState, Modifier) -> Unit,
     distanceSectionWeight: Float,
     modifier: Modifier = Modifier
 ) {
@@ -352,6 +363,7 @@ fun LandscapeLayout(
             primaryOdometerSlot = primaryOdometerSlot,
             secondaryOdometerSlot = secondaryOdometerSlot,
             onSettingsClick = onSettingsClick,
+            mapState = mapState,
             mapSlot = mapSlot,
             modifier = Modifier.weight(distanceSectionWeight)
         )
@@ -365,10 +377,11 @@ fun LandscapeLayout(
 fun PortraitLayout(
     onSettingsClick: () -> Unit,
     roadbookState: RoadbookState,
+    mapState: MapState,
     primaryOdometerSlot: @Composable (Modifier) -> Unit,
     secondaryOdometerSlot: @Composable (Modifier) -> Unit,
     roadbookSlot: @Composable (RoadbookState, Modifier) -> Unit,
-    mapSlot: @Composable (Modifier) -> Unit,
+    mapSlot: @Composable (MapState, Modifier) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.fillMaxSize()) {
@@ -376,6 +389,7 @@ fun PortraitLayout(
             primaryOdometerSlot = primaryOdometerSlot,
             secondaryOdometerSlot = secondaryOdometerSlot,
             onSettingsClick = onSettingsClick,
+            mapState = mapState,
             mapSlot = mapSlot,
             modifier = Modifier.weight(2f)
         )
@@ -390,7 +404,8 @@ fun LandscapeDistanceSection(
     primaryOdometerSlot: @Composable (Modifier) -> Unit,
     secondaryOdometerSlot: @Composable (Modifier) -> Unit,
     onSettingsClick: () -> Unit,
-    mapSlot: @Composable (Modifier) -> Unit,
+    mapState: MapState,
+    mapSlot: @Composable (MapState, Modifier) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -418,7 +433,7 @@ fun LandscapeDistanceSection(
 
         primaryOdometerSlot(Modifier.fillMaxWidth().weight(1.4f))
 
-        mapSlot(Modifier.weight(7.4f))
+        mapSlot(mapState, Modifier.weight(7.4f))
     }
 }
 
@@ -427,7 +442,8 @@ fun PortraitDistanceSection(
     primaryOdometerSlot: @Composable (Modifier) -> Unit,
     secondaryOdometerSlot: @Composable (Modifier) -> Unit,
     onSettingsClick: () -> Unit,
-    mapSlot: @Composable (Modifier) -> Unit,
+    mapState: MapState,
+    mapSlot: @Composable (MapState, Modifier) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -457,7 +473,7 @@ fun PortraitDistanceSection(
                     .fillMaxHeight()
             )
         }
-        mapSlot(Modifier.weight(8.3f))
+        mapSlot(mapState, Modifier.weight(8.3f))
     }
 }
 
@@ -510,17 +526,19 @@ fun TabletLandPreview() {
         val roadbookState = RoadbookState(
             routeName = MutableStateFlow("Sample Route - Dakar Stage 1")
         )
+        val mapState = MapState()
         MainContent(
             windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(1097.dp, 686.dp)),
             uiState = sampleUiState,
             roadbookState = roadbookState,
+            mapState = mapState,
             onSettingsClick = {},
             primaryOdometerSlot = { modifier -> PartialDistance(distance = "999.99", modifier = modifier, onLongClick = {}) },
             secondaryOdometerSlot = { modifier -> TotalDistance("9,999.9", modifier) },
-            roadbookSlot = { state, modifier -> 
-                Roadbook(state = state, modifier = modifier)
+            roadbookSlot = { capturedState, modifier -> 
+                Roadbook(state = capturedState, modifier = modifier)
             },
-            mapSlot = { modifier -> Box(modifier.background(MaterialTheme.colorScheme.tertiary)) },
+            mapSlot = { capturedState, modifier -> MapScreen(state = capturedState, modifier = modifier) },
             landscapeDistanceSectionWeight = 0.3f
         )
     }
@@ -548,17 +566,19 @@ fun TabletPortPreview() {
         val roadbookState = RoadbookState(
             routeName = MutableStateFlow("Sample Route - Dakar Stage 1")
         )
+        val mapState = MapState()
         MainContent(
             windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(686.dp, 1097.dp)),
             uiState = sampleUiState,
             roadbookState = roadbookState,
+            mapState = mapState,
             onSettingsClick = {},
             primaryOdometerSlot = { modifier -> PartialDistance(distance = "999.99", modifier = modifier, onLongClick = {}) },
             secondaryOdometerSlot = { modifier -> TotalDistance("9,999.9", modifier) },
-            roadbookSlot = { state, modifier -> 
-                Roadbook(state = state, modifier = modifier)
+            roadbookSlot = { capturedState, modifier -> 
+                Roadbook(state = capturedState, modifier = modifier)
             },
-            mapSlot = { modifier -> Box(modifier.background(MaterialTheme.colorScheme.tertiary)) },
+            mapSlot = { capturedState, modifier -> MapScreen(state = capturedState, modifier = modifier) },
             landscapeDistanceSectionWeight = 0.3f
         )
     }
@@ -586,17 +606,19 @@ fun PhonePortPreview() {
         val roadbookState = RoadbookState(
             routeName = MutableStateFlow("Sample Route - Dakar Stage 1")
         )
+        val mapState = MapState()
         MainContent(
             windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp)),
             uiState = sampleUiState,
             roadbookState = roadbookState,
+            mapState = mapState,
             onSettingsClick = {},
             primaryOdometerSlot = { modifier -> PartialDistance(distance = "999.99", modifier = modifier, onLongClick = {}) },
             secondaryOdometerSlot = { modifier -> TotalDistance("9,999.9", modifier) },
-            roadbookSlot = { state, modifier -> 
-                Roadbook(state = state, modifier = modifier)
+            roadbookSlot = { capturedState, modifier -> 
+                Roadbook(state = capturedState, modifier = modifier)
             },
-            mapSlot = { modifier -> Box(modifier.background(MaterialTheme.colorScheme.tertiary)) },
+            mapSlot = { capturedState, modifier -> MapScreen(state = capturedState, modifier = modifier) },
             landscapeDistanceSectionWeight = 0.3f
         )
     }
@@ -624,17 +646,19 @@ fun PhoneLandPreview() {
         val roadbookState = RoadbookState(
             routeName = MutableStateFlow("Sample Route - Dakar Stage 1")
         )
+        val mapState = MapState()
         MainContent(
             windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(891.dp, 411.dp)),
             uiState = sampleUiState,
             roadbookState = roadbookState,
+            mapState = mapState,
             onSettingsClick = {},
             primaryOdometerSlot = { modifier -> PartialDistance(distance = "999.99", modifier = modifier, onLongClick = {}) },
             secondaryOdometerSlot = { modifier -> TotalDistance("9,999.9", modifier) },
-            roadbookSlot = { state, modifier -> 
-                Roadbook(state = state, modifier = modifier)
+            roadbookSlot = { capturedState, modifier -> 
+                Roadbook(state = capturedState, modifier = modifier)
             },
-            mapSlot = { modifier -> Box(modifier.background(MaterialTheme.colorScheme.tertiary)) },
+            mapSlot = { capturedState, modifier -> MapScreen(state = capturedState, modifier = modifier) },
             landscapeDistanceSectionWeight = 0.3f
         )
     }

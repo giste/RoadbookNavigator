@@ -19,28 +19,39 @@ package org.giste.map
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.giste.map.ui.MapManagementContent
 import org.giste.map.ui.MapManagementViewModel
 
 /**
+ * Creates and remembers a [MapManagementState] instance.
+ */
+@Composable
+public fun rememberMapManagementState(): MapManagementState {
+    val viewModel: MapManagementViewModel = hiltViewModel()
+    return remember(viewModel) { MapManagementState(viewModel) }
+}
+
+/**
  * Public entry point for the Map Management screen.
  *
+ * @param state The state object for the map management.
  * @param dimensions Custom dimensions for the screen. Defaults to compact.
  */
 @Composable
 public fun MapManagementScreen(
+    state: MapManagementState,
     dimensions: MapDimensions = compactMapDimensions,
 ) {
-    val viewModel: MapManagementViewModel = hiltViewModel()
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by state.internals.uiState.collectAsStateWithLifecycle()
 
     MapManagementContent(
         uiState = uiState,
         dimensions = dimensions,
-        onDownloadClick = viewModel::downloadMap,
-        onDeleteClick = viewModel::deleteMap,
-        onCancelDownloadClick = viewModel::cancelDownload
+        onDownloadClick = state.internals.onDownloadClick,
+        onDeleteClick = state.internals.onDeleteClick,
+        onCancelDownloadClick = state.internals.onCancelDownloadClick
     )
 }

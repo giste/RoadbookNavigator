@@ -25,6 +25,9 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import kotlinx.coroutines.flow.MutableStateFlow
+import org.giste.map.MapManagementScreen
+import org.giste.map.MapManagementState
 import org.giste.map.compactMapDimensions
 import org.giste.map.domain.model.DownloadedMapInfo
 import org.giste.map.domain.model.DownloadedMapStatus
@@ -43,15 +46,20 @@ class MapManagementScreenTest {
 
     @Test
     fun whenStateIsLoading_thenProgressIndicatorIsShown() {
+        val state = MapManagementState(
+            internals = MapManagementState.InternalData(
+                uiState = MutableStateFlow(MapManagementUiState.Loading),
+                onDownloadClick = {},
+                onDeleteClick = {},
+                onCancelDownloadClick = {}
+            )
+        )
         composeTestRule.setContent {
             MaterialTheme {
                 Surface {
-                    MapManagementContent(
-                        uiState = MapManagementUiState.Loading,
-                        dimensions = compactMapDimensions,
-                        onDownloadClick = {},
-                        onDeleteClick = {},
-                        onCancelDownloadClick = {}
+                    MapManagementScreen(
+                        state = state,
+                        dimensions = compactMapDimensions
                     )
                 }
             }
@@ -63,15 +71,20 @@ class MapManagementScreenTest {
     @Test
     fun whenStateIsError_thenErrorMessageIsShown() {
         val errorMessage = "Fatal error"
+        val state = MapManagementState(
+            internals = MapManagementState.InternalData(
+                uiState = MutableStateFlow(MapManagementUiState.Error(errorMessage)),
+                onDownloadClick = {},
+                onDeleteClick = {},
+                onCancelDownloadClick = {}
+            )
+        )
         composeTestRule.setContent {
             MaterialTheme {
                 Surface {
-                    MapManagementContent(
-                        uiState = MapManagementUiState.Error(errorMessage),
-                        dimensions = compactMapDimensions,
-                        onDownloadClick = {},
-                        onDeleteClick = {},
-                        onCancelDownloadClick = {}
+                    MapManagementScreen(
+                        state = state,
+                        dimensions = compactMapDimensions
                     )
                 }
             }
@@ -86,7 +99,7 @@ class MapManagementScreenTest {
         val remoteMapDownloaded = RemoteMapFile("Spain", "Europe", "http://spain.map", 100L, 0L)
         val remoteMap = RemoteMapFile("France", "/", "http://france.map", 200L, 0L)
 
-        val state = MapManagementUiState.Success(
+        val uiState = MapManagementUiState.Success(
             downloadedMaps = listOf(
                 DownloadedMapInfo(
                     downloadedMap,
@@ -96,15 +109,21 @@ class MapManagementScreenTest {
             remoteFolders = listOf(RemoteMapFolder("Europe", "/", maps = listOf(remoteMap)))
         )
 
+        val state = MapManagementState(
+            internals = MapManagementState.InternalData(
+                uiState = MutableStateFlow(uiState),
+                onDownloadClick = {},
+                onDeleteClick = {},
+                onCancelDownloadClick = {}
+            )
+        )
+
         composeTestRule.setContent {
             MaterialTheme {
                 Surface {
-                    MapManagementContent(
-                        uiState = state,
-                        dimensions = compactMapDimensions,
-                        onDownloadClick = {},
-                        onDeleteClick = {},
-                        onCancelDownloadClick = {}
+                    MapManagementScreen(
+                        state = state,
+                        dimensions = compactMapDimensions
                     )
                 }
             }
@@ -124,20 +143,26 @@ class MapManagementScreenTest {
     fun whenDownloadClick_thenCallbackIsInvoked() {
         var clickedMap: RemoteMapFile? = null
         val remoteMap = RemoteMapFile("France", "/", "http://france.map", 200L, 0L)
-        val state = MapManagementUiState.Success(
+        val uiState = MapManagementUiState.Success(
             downloadedMaps = emptyList(),
             remoteFolders = listOf(RemoteMapFolder("Europe", "/", maps = listOf(remoteMap)))
+        )
+
+        val state = MapManagementState(
+            internals = MapManagementState.InternalData(
+                uiState = MutableStateFlow(uiState),
+                onDownloadClick = { clickedMap = it },
+                onDeleteClick = {},
+                onCancelDownloadClick = {}
+            )
         )
 
         composeTestRule.setContent {
             MaterialTheme {
                 Surface {
-                    MapManagementContent(
-                        uiState = state,
-                        dimensions = compactMapDimensions,
-                        onDownloadClick = { clickedMap = it },
-                        onDeleteClick = {},
-                        onCancelDownloadClick = {}
+                    MapManagementScreen(
+                        state = state,
+                        dimensions = compactMapDimensions
                     )
                 }
             }
@@ -156,7 +181,7 @@ class MapManagementScreenTest {
         var clickedMap: MapFile? = null
         val downloadedMap = MapFile("Spain", "/path/spain.map", 100L, 0L, "Europe")
         val remoteMapDownloaded = RemoteMapFile("Spain", "Europe", "http://spain.map", 100L, 0L)
-        val state = MapManagementUiState.Success(
+        val uiState = MapManagementUiState.Success(
             downloadedMaps = listOf(
                 DownloadedMapInfo(
                     downloadedMap,
@@ -166,15 +191,21 @@ class MapManagementScreenTest {
             remoteFolders = emptyList()
         )
 
+        val state = MapManagementState(
+            internals = MapManagementState.InternalData(
+                uiState = MutableStateFlow(uiState),
+                onDownloadClick = {},
+                onDeleteClick = { clickedMap = it },
+                onCancelDownloadClick = {}
+            )
+        )
+
         composeTestRule.setContent {
             MaterialTheme {
                 Surface {
-                    MapManagementContent(
-                        uiState = state,
-                        dimensions = compactMapDimensions,
-                        onDownloadClick = {},
-                        onDeleteClick = { clickedMap = it },
-                        onCancelDownloadClick = {}
+                    MapManagementScreen(
+                        state = state,
+                        dimensions = compactMapDimensions
                     )
                 }
             }
@@ -192,7 +223,7 @@ class MapManagementScreenTest {
     fun whenSectionTapped_thenItCollapsesAndExpands() {
         val downloadedMap = MapFile("Spain", "/path/spain.map", 100L, 0L, "Europe")
         val remoteMapDownloaded = RemoteMapFile("Spain", "Europe", "http://spain.map", 100L, 0L)
-        val state = MapManagementUiState.Success(
+        val uiState = MapManagementUiState.Success(
             downloadedMaps = listOf(
                 DownloadedMapInfo(
                     downloadedMap,
@@ -202,15 +233,21 @@ class MapManagementScreenTest {
             remoteFolders = emptyList()
         )
 
+        val state = MapManagementState(
+            internals = MapManagementState.InternalData(
+                uiState = MutableStateFlow(uiState),
+                onDownloadClick = {},
+                onDeleteClick = {},
+                onCancelDownloadClick = {}
+            )
+        )
+
         composeTestRule.setContent {
             MaterialTheme {
                 Surface {
-                    MapManagementContent(
-                        uiState = state,
-                        dimensions = compactMapDimensions,
-                        onDownloadClick = {},
-                        onDeleteClick = {},
-                        onCancelDownloadClick = {}
+                    MapManagementScreen(
+                        state = state,
+                        dimensions = compactMapDimensions
                     )
                 }
             }

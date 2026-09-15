@@ -36,8 +36,6 @@ import kotlinx.coroutines.withContext
 import org.giste.odometer.OdometerLogger
 import org.giste.odometer.domain.Odometer
 import org.giste.odometer.domain.OdometerRepository
-import org.giste.roadbooknavigator.core.di.ApplicationScope
-import org.giste.roadbooknavigator.core.di.IoDispatcher
 
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -52,8 +50,8 @@ import javax.inject.Singleton
 internal class DataStoreOdometerRepository @Inject constructor(
     @param:OdometerDataStoreQualifier private val dataStore: DataStore<Preferences>,
     private val logger: OdometerLogger,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
-    @ApplicationScope private val scope: CoroutineScope,
+    @OdometerIoDispatcher private val ioDispatcher: CoroutineDispatcher,
+    @OdometerApplicationScope private val scope: CoroutineScope,
     private val timeProvider: OdometerTimeProvider
 ) : OdometerRepository {
 

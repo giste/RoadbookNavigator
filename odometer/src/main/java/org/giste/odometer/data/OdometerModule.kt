@@ -59,6 +59,12 @@ internal abstract class OdometerModule {
         impl: DataStoreOdometerRepository
     ): OdometerRepository
 
+    @Binds
+    @Singleton
+    internal abstract fun bindOdometerTimeProvider(
+        impl: RealOdometerTimeProvider
+    ): OdometerTimeProvider
+
     internal companion object {
         @Provides
         @Singleton

@@ -36,7 +36,6 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.giste.odometer.OdometerLogger
-import org.giste.roadbooknavigator.core.util.TimeProvider
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
@@ -83,7 +82,7 @@ class DataStoreOdometerRepositoryTest {
         Dispatchers.resetMain()
     }
 
-    private class FakeTimeProvider(var time: Long = 0L) : TimeProvider {
+    private class FakeTimeProvider(var time: Long = 0L) : OdometerTimeProvider {
         override fun currentTimeMillis(): Long = time
     }
 

@@ -37,7 +37,7 @@ import org.giste.odometer.domain.Odometer
 import org.giste.odometer.domain.OdometerLocation
 import org.giste.odometer.domain.OdometerSettings
 import org.giste.odometer.domain.usecase.GetOdometerUseCase
-import org.giste.roadbooknavigator.core.util.TimeProvider
+import org.giste.odometer.data.OdometerTimeProvider
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
@@ -89,7 +89,7 @@ class OdometerIntegrationTest {
         Dispatchers.resetMain()
     }
 
-    private class FakeTimeProvider(var time: Long = 0L) : TimeProvider {
+    private class FakeTimeProvider(var time: Long = 0L) : OdometerTimeProvider {
         override fun currentTimeMillis(): Long = time
     }
 

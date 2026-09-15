@@ -38,7 +38,7 @@ import org.giste.odometer.domain.Odometer
 import org.giste.odometer.domain.OdometerRepository
 import org.giste.roadbooknavigator.core.di.ApplicationScope
 import org.giste.roadbooknavigator.core.di.IoDispatcher
-import org.giste.roadbooknavigator.core.util.TimeProvider
+
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -54,7 +54,7 @@ internal class DataStoreOdometerRepository @Inject constructor(
     private val logger: OdometerLogger,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
     @ApplicationScope private val scope: CoroutineScope,
-    private val timeProvider: TimeProvider
+    private val timeProvider: OdometerTimeProvider
 ) : OdometerRepository {
 
     private companion object {

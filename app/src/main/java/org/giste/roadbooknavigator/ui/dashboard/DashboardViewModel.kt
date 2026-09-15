@@ -24,65 +24,41 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.filterIsInstance
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
-import org.giste.android.location.domain.LocationEvent
-import org.giste.android.location.domain.LocationProvider
 import org.giste.roadbooknavigator.core.util.Logger
+import org.giste.odometer.OdometerController
 import org.giste.odometer.domain.Odometer
-import org.giste.odometer.domain.usecase.DecrementPartialDistanceUseCase
+import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.input.InputSettings
 import org.giste.roadbooknavigator.features.settings.domain.input.usecase.ObserveInputSettingsUseCase
-import org.giste.roadbooknavigator.features.settings.domain.odometer.usecase.ObserveOdometerSettingsUseCase
-import org.giste.odometer.domain.usecase.GetOdometerUseCase
-import org.giste.odometer.domain.usecase.IncrementPartialDistanceUseCase
-import org.giste.odometer.domain.usecase.ResetAllDistancesUseCase
-import org.giste.odometer.domain.usecase.ResetPartialDistanceUseCase
-import org.giste.odometer.domain.usecase.SetPartialDistanceUseCase
-import org.giste.roadbooknavigator.features.odometer.toOdometerLocation
 import org.giste.roadbooknavigator.features.settings.domain.usecase.ObserveAppSettingsUseCase
 import javax.inject.Inject
 
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
-    getOdometerUseCase: GetOdometerUseCase,
-    private val resetPartialDistanceUseCase: ResetPartialDistanceUseCase,
-    private val resetAllDistancesUseCase: ResetAllDistancesUseCase,
-    private val incrementPartialDistanceUseCase: IncrementPartialDistanceUseCase,
-    private val decrementPartialDistanceUseCase: DecrementPartialDistanceUseCase,
-    private val setPartialDistanceUseCase: SetPartialDistanceUseCase,
+    private val odometerController: OdometerController,
     observeAppSettingsUseCase: ObserveAppSettingsUseCase,
-    observeOdometerSettingsUseCase: ObserveOdometerSettingsUseCase,
     observeInputSettingsUseCase: ObserveInputSettingsUseCase,
-    locationProvider: LocationProvider,
     private val logger: Logger
 ) : ViewModel() {
 
     private val _showSetPartialDialog = MutableStateFlow(false)
     private val _showResetAllDialog = MutableStateFlow(false)
 
-    private val odometerSettingsFlow = observeOdometerSettingsUseCase()
     private val inputKeySettingsFlow = observeInputSettingsUseCase()
-    private val odometerLocationFlow = locationProvider.observeLocation()
-        .filterIsInstance<LocationEvent.LocationUpdated>()
-        .map { it.location.toOdometerLocation() }
 
     val uiState: StateFlow<DashboardUiState> = combine(
-        getOdometerUseCase(odometerSettingsFlow, odometerLocationFlow).onStart { emit(Odometer()) },
+        odometerController.odometer,
         _showSetPartialDialog,
         _showResetAllDialog,
         observeAppSettingsUseCase(),
-        odometerSettingsFlow,
         inputKeySettingsFlow
     ) { flows ->
         val odometer = flows[0] as Odometer
         val showPartialDialog = flows[1] as Boolean
         val showResetAllDialog = flows[2] as Boolean
-        val settings = flows[3] as org.giste.roadbooknavigator.features.settings.domain.AppSettings
-        val inputKeys = flows[5] as InputSettings
+        val settings = flows[3] as AppSettings
+        val inputKeys = flows[4] as InputSettings
 
         DashboardUiState(
             odometer = odometer,
@@ -118,39 +94,31 @@ class DashboardViewModel @Inject constructor(
         _showResetAllDialog.value = false
     }
 
+    fun getOdometerController(): OdometerController = odometerController
+
     fun resetPartialDistance() {
         logger.i("DashboardViewModel: Resetting partial distance")
-        viewModelScope.launch {
-            resetPartialDistanceUseCase()
-        }
+        odometerController.resetPartial()
     }
 
     fun resetAllDistances() {
         logger.i("DashboardViewModel: Resetting all distances")
-        viewModelScope.launch {
-            resetAllDistancesUseCase()
-        }
+        odometerController.resetAll()
     }
 
     fun incrementPartialDistance() {
         logger.d("DashboardViewModel: Incrementing partial distance")
-        viewModelScope.launch {
-            incrementPartialDistanceUseCase()
-        }
+        odometerController.increment()
     }
 
     fun decrementPartialDistance() {
         logger.d("DashboardViewModel: Decrementing partial distance")
-        viewModelScope.launch {
-            decrementPartialDistanceUseCase()
-        }
+        odometerController.decrement()
     }
 
     fun setPartialDistance(distance: Double) {
         logger.i("DashboardViewModel: Setting partial distance to %f", distance)
-        viewModelScope.launch {
-            setPartialDistanceUseCase(distance)
-        }
+        odometerController.setPartial(distance)
     }
 }
 

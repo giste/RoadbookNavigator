@@ -17,27 +17,23 @@
 
 package org.giste.roadbooknavigator.features.odometer
 
-import dagger.Binds
-import dagger.Module
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.map
+import org.giste.android.location.domain.LocationEvent
+import org.giste.android.location.domain.LocationProvider
 import org.giste.odometer.OdometerLocationProvider
-import org.giste.odometer.OdometerLogger
+import org.giste.odometer.domain.OdometerLocation
+import javax.inject.Inject
 import javax.inject.Singleton
 
-@Module
-@InstallIn(SingletonComponent::class)
-abstract class OdometerBridgeModule {
-
-    @Binds
-    @Singleton
-    internal abstract fun bindOdometerLogger(
-        impl: OdometerLoggerBridge
-    ): OdometerLogger
-
-    @Binds
-    @Singleton
-    internal abstract fun bindOdometerLocationProvider(
-        impl: OdometerLocationProviderBridge
-    ): OdometerLocationProvider
+@Singleton
+internal class OdometerLocationProviderBridge @Inject constructor(
+    private val locationProvider: LocationProvider
+) : OdometerLocationProvider {
+    override fun observeLocation(): Flow<OdometerLocation> {
+        return locationProvider.observeLocation()
+            .filterIsInstance<LocationEvent.LocationUpdated>()
+            .map { it.location.toOdometerLocation() }
+    }
 }

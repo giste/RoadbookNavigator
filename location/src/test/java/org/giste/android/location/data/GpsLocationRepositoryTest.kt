@@ -21,9 +21,12 @@ import android.content.Context
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
+import android.os.Looper
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkStatic
 import io.mockk.slot
+import io.mockk.unmockkStatic
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
@@ -31,7 +34,7 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.giste.android.location.domain.LocationEvent
 import org.giste.android.location.domain.LocationLogger
-import org.giste.android.location.domain.UserLocation
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -47,9 +50,16 @@ class GpsLocationRepositoryTest {
 
     @Before
     fun setup() {
+        mockkStatic(Looper::class)
+        every { Looper.getMainLooper() } returns mockk()
         every { context.getSystemService(Context.LOCATION_SERVICE) } returns locationManager
         every { locationManager.removeUpdates(any<LocationListener>()) } returns Unit
         gpsLocationRepository = GpsLocationRepository(context, logger)
+    }
+
+    @After
+    fun tearDown() {
+        unmockkStatic(Looper::class)
     }
 
     @Test
@@ -61,6 +71,7 @@ class GpsLocationRepositoryTest {
                 any<Long>(), 
                 any<Float>(), 
                 capture(listenerSlot),
+                any<Looper>()
             ) 
         } returns Unit
 
@@ -74,6 +85,7 @@ class GpsLocationRepositoryTest {
                 1000L, 
                 2f,
                 any<LocationListener>(),
+                any<Looper>()
             ) 
         }
 
@@ -91,6 +103,7 @@ class GpsLocationRepositoryTest {
                 any<Long>(), 
                 any<Float>(), 
                 capture(listenerSlot),
+                any<Looper>()
             )
         } returns Unit
 
@@ -131,7 +144,7 @@ class GpsLocationRepositoryTest {
     fun `should emit SignalLost when provider status is unavailable`() = runTest {
         val listenerSlot = slot<LocationListener>()
         every { 
-            locationManager.requestLocationUpdates(any<String>(), any<Long>(), any<Float>(), capture(listenerSlot))
+            locationManager.requestLocationUpdates(any<String>(), any<Long>(), any<Float>(), capture(listenerSlot), any<Looper>())
         } returns Unit
 
         val collectedEvents = mutableListOf<LocationEvent>()
@@ -151,7 +164,7 @@ class GpsLocationRepositoryTest {
     fun `should emit SignalRestored when provider status is available`() = runTest {
         val listenerSlot = slot<LocationListener>()
         every { 
-            locationManager.requestLocationUpdates(any<String>(), any<Long>(), any<Float>(), capture(listenerSlot))
+            locationManager.requestLocationUpdates(any<String>(), any<Long>(), any<Float>(), capture(listenerSlot), any<Looper>())
         } returns Unit
 
         val collectedEvents = mutableListOf<LocationEvent>()
@@ -171,7 +184,7 @@ class GpsLocationRepositoryTest {
     fun `should emit ProviderDisabled when provider is disabled`() = runTest {
         val listenerSlot = slot<LocationListener>()
         every { 
-            locationManager.requestLocationUpdates(any<String>(), any<Long>(), any<Float>(), capture(listenerSlot))
+            locationManager.requestLocationUpdates(any<String>(), any<Long>(), any<Float>(), capture(listenerSlot), any<Looper>())
         } returns Unit
 
         val collectedEvents = mutableListOf<LocationEvent>()
@@ -189,7 +202,7 @@ class GpsLocationRepositoryTest {
     fun `should emit SignalRestored when provider is enabled`() = runTest {
         val listenerSlot = slot<LocationListener>()
         every { 
-            locationManager.requestLocationUpdates(any<String>(), any<Long>(), any<Float>(), capture(listenerSlot))
+            locationManager.requestLocationUpdates(any<String>(), any<Long>(), any<Float>(), capture(listenerSlot), any<Looper>())
         } returns Unit
 
         val collectedEvents = mutableListOf<LocationEvent>()
@@ -206,7 +219,7 @@ class GpsLocationRepositoryTest {
     @Test
     fun `should emit Error when requestLocationUpdates throws`() = runTest {
         every { 
-            locationManager.requestLocationUpdates(any<String>(), any<Long>(), any<Float>(), any<LocationListener>())
+            locationManager.requestLocationUpdates(any<String>(), any<Long>(), any<Float>(), any<LocationListener>(), any<Looper>())
         } throws SecurityException("No permission")
 
         val collectedEvents = mutableListOf<LocationEvent>()
@@ -216,7 +229,7 @@ class GpsLocationRepositoryTest {
             gpsLocationRepository.getLocations(1000L, 0f).collect { 
                 collectedEvents.add(it) 
             }
-        } catch (e: SecurityException) {
+        } catch (_: SecurityException) {
             // Expected exception from close(e)
         }
 

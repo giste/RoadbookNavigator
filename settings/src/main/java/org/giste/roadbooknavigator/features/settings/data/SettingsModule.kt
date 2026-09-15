@@ -30,7 +30,7 @@ import dagger.hilt.components.SingletonComponent
 import org.giste.roadbooknavigator.features.settings.domain.odometer.OdometerSettingsRepository
 import org.giste.roadbooknavigator.features.settings.domain.location.LocationSettingsRepository
 import org.giste.roadbooknavigator.features.settings.domain.AppSettingsRepository
-import org.giste.odometer.domain.OdometerSettingsProvider
+import org.giste.odometer.OdometerSettingsProvider
 import org.giste.roadbook.RoadbookSettingsProvider
 import org.giste.roadbooknavigator.features.settings.domain.roadbook.RoadbookSettingsRepository
 import org.giste.roadbooknavigator.features.settings.domain.input.InputSettingsRepository

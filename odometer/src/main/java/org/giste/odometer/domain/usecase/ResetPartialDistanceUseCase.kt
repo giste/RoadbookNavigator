@@ -17,7 +17,7 @@
 
 package org.giste.odometer.domain.usecase
 
-import org.giste.odometer.domain.OdometerLogger
+import org.giste.odometer.OdometerLogger
 import org.giste.odometer.domain.OdometerRepository
 import javax.inject.Inject
 

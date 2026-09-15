@@ -18,8 +18,8 @@
 package org.giste.roadbooknavigator.features.settings.domain.odometer
 
 import kotlinx.coroutines.flow.Flow
+import org.giste.odometer.OdometerSettingsProvider
 import org.giste.odometer.domain.OdometerSettings
-import org.giste.odometer.domain.OdometerSettingsProvider
 
 /**
  * Interface to provide access to odometer-specific settings.

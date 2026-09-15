@@ -35,7 +35,7 @@ import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import org.giste.odometer.domain.OdometerLogger
+import org.giste.odometer.OdometerLogger
 import org.giste.roadbooknavigator.core.util.TimeProvider
 import org.junit.After
 import org.junit.Assert

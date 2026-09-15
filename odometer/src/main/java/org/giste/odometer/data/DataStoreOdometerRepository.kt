@@ -33,8 +33,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withContext
+import org.giste.odometer.OdometerLogger
 import org.giste.odometer.domain.Odometer
-import org.giste.odometer.domain.OdometerLogger
 import org.giste.odometer.domain.OdometerRepository
 import org.giste.roadbooknavigator.core.di.ApplicationScope
 import org.giste.roadbooknavigator.core.di.IoDispatcher

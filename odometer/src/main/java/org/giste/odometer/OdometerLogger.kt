@@ -15,17 +15,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.odometer.domain
-
-import kotlinx.coroutines.flow.Flow
+package org.giste.odometer
 
 /**
- * Interface that defines the settings required by the Odometer module.
- * This allows the module to be decoupled from the actual settings persistence.
+ * Logger interface for the odometer module to decouple it from specific logging implementations.
  */
-public interface OdometerSettingsProvider {
-    /**
-     * Observes odometer-related settings.
-     */
-    public fun getSettings(): Flow<OdometerSettings>
+public interface OdometerLogger {
+    public fun v(message: String, vararg args: Any?)
+    public fun d(message: String, vararg args: Any?)
+    public fun i(message: String, vararg args: Any?)
+    public fun w(message: String, vararg args: Any?)
+    public fun e(message: String, vararg args: Any?, throwable: Throwable? = null)
 }

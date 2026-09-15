@@ -18,8 +18,8 @@
 package org.giste.roadbooknavigator.features.settings.domain.odometer.usecase
 
 import kotlinx.coroutines.flow.Flow
+import org.giste.odometer.OdometerSettingsProvider
 import org.giste.odometer.domain.OdometerSettings
-import org.giste.odometer.domain.OdometerSettingsProvider
 import javax.inject.Inject
 
 /**

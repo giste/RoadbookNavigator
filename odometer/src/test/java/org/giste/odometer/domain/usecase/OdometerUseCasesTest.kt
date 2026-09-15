@@ -21,7 +21,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.giste.odometer.domain.OdometerLogger
+import org.giste.odometer.OdometerLogger
 import org.giste.odometer.domain.OdometerRepository
 import org.junit.Before
 import org.junit.Test

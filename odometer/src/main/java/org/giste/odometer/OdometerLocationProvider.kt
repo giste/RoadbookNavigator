@@ -15,15 +15,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.odometer.domain
+package org.giste.odometer
+
+import kotlinx.coroutines.flow.Flow
+import org.giste.odometer.domain.OdometerLocation
 
 /**
- * Logger interface for the odometer module to decouple it from specific logging implementations.
+ * Interface to provide location updates to the odometer module.
+ * This decouples the engine from any specific Location SDK.
  */
-public interface OdometerLogger {
-    public fun v(message: String, vararg args: Any?)
-    public fun d(message: String, vararg args: Any?)
-    public fun i(message: String, vararg args: Any?)
-    public fun w(message: String, vararg args: Any?)
-    public fun e(message: String, vararg args: Any?, throwable: Throwable? = null)
+public interface OdometerLocationProvider {
+    /**
+     * Observes high-accuracy location updates.
+     */
+    public fun observeLocation(): Flow<OdometerLocation>
 }

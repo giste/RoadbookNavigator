@@ -12,24 +12,21 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  See <https://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.odometer.domain.usecase
+package org.giste.odometer
 
-import org.giste.odometer.OdometerLogger
-import org.giste.odometer.domain.OdometerRepository
-import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
+import org.giste.odometer.domain.OdometerSettings
 
 /**
- * Use case to reset both total and partial odometer distances.
+ * Interface that defines the settings required by the Odometer module.
+ * This allows the module to be decoupled from the actual settings persistence.
  */
-public class ResetAllDistancesUseCase @Inject internal constructor(
-    private val repository: OdometerRepository,
-    private val logger: OdometerLogger
-) {
-    public suspend operator fun invoke() {
-        logger.d("ResetAllDistancesUseCase: Invoked")
-        repository.resetAllDistances()
-    }
+public interface OdometerSettingsProvider {
+    /**
+     * Observes odometer-related settings.
+     */
+    public fun getSettings(): Flow<OdometerSettings>
 }

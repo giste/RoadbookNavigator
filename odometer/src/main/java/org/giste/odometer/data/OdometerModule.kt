@@ -27,9 +27,21 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import org.giste.odometer.domain.OdometerRepository
 import javax.inject.Qualifier
 import javax.inject.Singleton
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+internal annotation class OdometerIoDispatcher
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+internal annotation class OdometerApplicationScope
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
@@ -48,6 +60,18 @@ internal abstract class OdometerModule {
     ): OdometerRepository
 
     internal companion object {
+        @Provides
+        @Singleton
+        @OdometerIoDispatcher
+        internal fun provideIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
+
+        @Provides
+        @Singleton
+        @OdometerApplicationScope
+        internal fun provideApplicationScope(
+            @OdometerIoDispatcher ioDispatcher: CoroutineDispatcher
+        ): CoroutineScope = CoroutineScope(SupervisorJob() + ioDispatcher)
+
         @Provides
         @Singleton
         @OdometerDataStoreQualifier

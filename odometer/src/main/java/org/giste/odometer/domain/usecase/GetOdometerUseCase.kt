@@ -23,10 +23,10 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.scan
+import org.giste.odometer.OdometerLogger
 import org.giste.odometer.domain.DistanceUtils
 import org.giste.odometer.domain.Odometer
 import org.giste.odometer.domain.OdometerLocation
-import org.giste.odometer.domain.OdometerLogger
 import org.giste.odometer.domain.OdometerRepository
 import org.giste.odometer.domain.OdometerSettings
 import javax.inject.Inject

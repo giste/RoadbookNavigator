@@ -35,7 +35,6 @@ import org.giste.odometer.data.DataStoreOdometerRepository
 import org.giste.odometer.domain.DistanceUtils
 import org.giste.odometer.domain.Odometer
 import org.giste.odometer.domain.OdometerLocation
-import org.giste.odometer.domain.OdometerLogger
 import org.giste.odometer.domain.OdometerSettings
 import org.giste.odometer.domain.usecase.GetOdometerUseCase
 import org.giste.roadbooknavigator.core.util.TimeProvider

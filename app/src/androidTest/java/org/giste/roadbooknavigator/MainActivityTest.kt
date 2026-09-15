@@ -38,7 +38,7 @@ import org.giste.roadbooknavigator.features.settings.domain.AppSettingsRepositor
 import org.giste.roadbooknavigator.features.settings.domain.input.InputSettingsRepository
 import org.giste.roadbooknavigator.features.settings.domain.input.InputSettings
 import org.giste.roadbook.RoadbookSettings
-import org.giste.odometer.domain.OdometerSettingsProvider
+import org.giste.odometer.OdometerSettingsProvider
 import org.giste.roadbook.RoadbookSettingsProvider
 import org.giste.roadbooknavigator.features.settings.domain.roadbook.RoadbookSettingsRepository
 import org.junit.Assert.assertEquals

@@ -18,7 +18,6 @@
 package org.giste.odometer
 
 import kotlinx.coroutines.flow.Flow
-import org.giste.odometer.domain.OdometerLocation
 
 /**
  * Interface to provide location updates to the odometer module.

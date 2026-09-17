@@ -24,11 +24,11 @@ import javax.inject.Inject
 /**
  * Use case to set the partial odometer distance to a specific value.
  */
-public class SetPartialDistanceUseCase @Inject internal constructor(
+internal class SetPartialDistanceUseCase @Inject internal constructor(
     private val repository: OdometerRepository,
     private val logger: OdometerLogger
 ) {
-    public suspend operator fun invoke(distance: Double) {
+    internal suspend operator fun invoke(distance: Double) {
         logger.d("SetPartialDistanceUseCase: Invoked with distance: %f", distance)
         repository.setPartialDistance(distance)
     }

@@ -17,6 +17,7 @@
 
 package org.giste.odometer.domain
 
+import org.giste.odometer.Odometer
 import org.junit.Assert
 import org.junit.Test
 

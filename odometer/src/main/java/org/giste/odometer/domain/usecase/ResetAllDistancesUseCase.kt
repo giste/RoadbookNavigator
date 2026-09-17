@@ -24,11 +24,11 @@ import javax.inject.Inject
 /**
  * Use case to reset both total and partial odometer distances.
  */
-public class ResetAllDistancesUseCase @Inject internal constructor(
+internal class ResetAllDistancesUseCase @Inject internal constructor(
     private val repository: OdometerRepository,
     private val logger: OdometerLogger
 ) {
-    public suspend operator fun invoke() {
+    internal suspend operator fun invoke() {
         logger.d("ResetAllDistancesUseCase: Invoked")
         repository.resetAllDistances()
     }

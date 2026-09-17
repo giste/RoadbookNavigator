@@ -17,6 +17,7 @@
 
 package org.giste.odometer.domain
 
+import org.giste.odometer.OdometerLocation
 import org.giste.odometer.OdometerLogger
 import javax.inject.Inject
 import kotlin.math.atan2

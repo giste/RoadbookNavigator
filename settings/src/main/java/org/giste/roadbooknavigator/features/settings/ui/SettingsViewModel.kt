@@ -35,7 +35,7 @@ import org.giste.roadbooknavigator.features.settings.domain.location.usecase.Upd
 import org.giste.roadbooknavigator.features.settings.domain.location.usecase.UpdateLocationPollingIntervalUseCase
 import org.giste.map.MapSettings
 import org.giste.map.MapSettingsProvider
-import org.giste.odometer.domain.OdometerSettings
+import org.giste.odometer.OdometerSettings
 import org.giste.roadbooknavigator.features.settings.domain.odometer.usecase.ObserveOdometerSettingsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.odometer.usecase.RestoreOdometerSettingsDefaultsUseCase
 import org.giste.roadbooknavigator.features.settings.domain.odometer.usecase.UpdateOdometerMinAccuracyUseCase

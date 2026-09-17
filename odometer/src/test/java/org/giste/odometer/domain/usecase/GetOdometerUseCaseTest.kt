@@ -29,10 +29,10 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.giste.odometer.OdometerLogger
 import org.giste.odometer.domain.DistanceUtils
-import org.giste.odometer.domain.Odometer
-import org.giste.odometer.domain.OdometerLocation
+import org.giste.odometer.Odometer
+import org.giste.odometer.OdometerLocation
 import org.giste.odometer.domain.OdometerRepository
-import org.giste.odometer.domain.OdometerSettings
+import org.giste.odometer.OdometerSettings
 import org.junit.Before
 import org.junit.Test
 

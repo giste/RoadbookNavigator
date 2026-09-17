@@ -18,7 +18,6 @@
 package org.giste.odometer
 
 import kotlinx.coroutines.flow.Flow
-import org.giste.odometer.domain.OdometerSettings
 
 /**
  * Interface that defines the settings required by the Odometer module.

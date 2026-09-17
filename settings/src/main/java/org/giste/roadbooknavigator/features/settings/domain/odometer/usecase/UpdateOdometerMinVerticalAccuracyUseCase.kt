@@ -19,7 +19,7 @@ package org.giste.roadbooknavigator.features.settings.domain.odometer.usecase
 
 import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.settings.domain.odometer.OdometerSettingsRepository
-import org.giste.odometer.domain.VerticalAccuracyThreshold
+import org.giste.odometer.VerticalAccuracyThreshold
 import javax.inject.Inject
 
 /**

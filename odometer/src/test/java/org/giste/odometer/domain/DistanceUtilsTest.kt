@@ -18,6 +18,7 @@
 package org.giste.odometer.domain
 
 import io.mockk.mockk
+import org.giste.odometer.OdometerLocation
 import org.giste.odometer.OdometerLogger
 import org.junit.Assert.assertEquals
 import org.junit.Before

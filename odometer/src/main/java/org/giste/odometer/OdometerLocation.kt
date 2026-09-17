@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.odometer.domain
+package org.giste.odometer
 
 /**
  * Generic representation of a location fix for the odometer engine.

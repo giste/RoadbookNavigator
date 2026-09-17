@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.map
 import org.giste.android.location.domain.LocationEvent
 import org.giste.android.location.domain.LocationProvider
 import org.giste.odometer.OdometerLocationProvider
-import org.giste.odometer.domain.OdometerLocation
+import org.giste.odometer.OdometerLocation
 import javax.inject.Inject
 import javax.inject.Singleton
 

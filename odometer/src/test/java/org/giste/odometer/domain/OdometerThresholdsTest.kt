@@ -17,6 +17,9 @@
 
 package org.giste.odometer.domain
 
+import org.giste.odometer.AccuracyThreshold
+import org.giste.odometer.SpeedThreshold
+import org.giste.odometer.VerticalAccuracyThreshold
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

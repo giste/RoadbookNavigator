@@ -18,7 +18,7 @@
 package org.giste.roadbooknavigator.features.odometer
 
 import org.giste.android.location.domain.UserLocation
-import org.giste.odometer.domain.OdometerLocation
+import org.giste.odometer.OdometerLocation
 
 /**
  * Maps [UserLocation] from the :location module to [OdometerLocation] for the :odometer engine.

@@ -24,7 +24,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.giste.odometer.data.OdometerApplicationScope
-import org.giste.odometer.domain.Odometer
 import org.giste.odometer.domain.usecase.DecrementPartialDistanceUseCase
 import org.giste.odometer.domain.usecase.GetOdometerUseCase
 import org.giste.odometer.domain.usecase.IncrementPartialDistanceUseCase

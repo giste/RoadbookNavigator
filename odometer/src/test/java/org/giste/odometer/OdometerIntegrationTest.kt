@@ -33,9 +33,6 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.giste.odometer.data.DataStoreOdometerRepository
 import org.giste.odometer.domain.DistanceUtils
-import org.giste.odometer.domain.Odometer
-import org.giste.odometer.domain.OdometerLocation
-import org.giste.odometer.domain.OdometerSettings
 import org.giste.odometer.domain.usecase.GetOdometerUseCase
 import org.giste.odometer.data.OdometerTimeProvider
 import org.junit.After

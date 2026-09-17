@@ -34,7 +34,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withContext
 import org.giste.odometer.OdometerLogger
-import org.giste.odometer.domain.Odometer
+import org.giste.odometer.Odometer
 import org.giste.odometer.domain.OdometerRepository
 
 import javax.inject.Inject

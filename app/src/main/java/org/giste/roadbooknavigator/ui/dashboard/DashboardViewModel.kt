@@ -27,7 +27,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.odometer.OdometerController
-import org.giste.odometer.domain.Odometer
+import org.giste.odometer.Odometer
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.input.InputSettings
 import org.giste.roadbooknavigator.features.settings.domain.input.usecase.ObserveInputSettingsUseCase

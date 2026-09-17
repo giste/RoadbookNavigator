@@ -108,10 +108,10 @@ import org.giste.map.MapManagementState
 import org.giste.map.compactMapDimensions
 import org.giste.map.expandedMapDimensions
 import org.giste.map.rememberMapManagementState
-import org.giste.odometer.domain.AccuracyThreshold
-import org.giste.odometer.domain.OdometerSettings
-import org.giste.odometer.domain.SpeedThreshold
-import org.giste.odometer.domain.VerticalAccuracyThreshold
+import org.giste.odometer.AccuracyThreshold
+import org.giste.odometer.OdometerSettings
+import org.giste.odometer.SpeedThreshold
+import org.giste.odometer.VerticalAccuracyThreshold
 import org.giste.roadbook.RoadbookSettings
 import org.giste.roadbook.ShortDistanceThreshold
 import org.giste.roadbooknavigator.features.settings.R

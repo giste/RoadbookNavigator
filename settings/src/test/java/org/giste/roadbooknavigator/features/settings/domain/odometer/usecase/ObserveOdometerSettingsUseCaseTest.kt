@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.giste.odometer.OdometerSettingsProvider
-import org.giste.odometer.domain.OdometerSettings
+import org.giste.odometer.OdometerSettings
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

@@ -25,10 +25,10 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.scan
 import org.giste.odometer.OdometerLogger
 import org.giste.odometer.domain.DistanceUtils
-import org.giste.odometer.domain.Odometer
-import org.giste.odometer.domain.OdometerLocation
+import org.giste.odometer.Odometer
+import org.giste.odometer.OdometerLocation
 import org.giste.odometer.domain.OdometerRepository
-import org.giste.odometer.domain.OdometerSettings
+import org.giste.odometer.OdometerSettings
 import javax.inject.Inject
 
 /**
@@ -40,12 +40,12 @@ import javax.inject.Inject
  * 3. Updates the persistent storage via the repository.
  * 4. Exposes the reactive odometer state.
  */
-public class GetOdometerUseCase @Inject internal constructor(
+internal class GetOdometerUseCase @Inject internal constructor(
     private val odometerRepository: OdometerRepository,
     private val distanceUtils: DistanceUtils,
     private val logger: OdometerLogger
 ) {
-    public operator fun invoke(
+    internal operator fun invoke(
         settingsFlow: Flow<OdometerSettings>,
         locationFlow: Flow<OdometerLocation>
     ): Flow<Odometer> {

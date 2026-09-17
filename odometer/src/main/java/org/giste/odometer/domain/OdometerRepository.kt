@@ -18,15 +18,16 @@
 package org.giste.odometer.domain
 
 import kotlinx.coroutines.flow.Flow
+import org.giste.odometer.Odometer
 
 /**
  * Interface to provide distance persistence (Single Source of Truth).
  */
-public interface OdometerRepository {
+internal interface OdometerRepository {
     /**
      * Flow of the current odometer state (total and partial distances).
      */
-    public val odometer: Flow<Odometer>
+    val odometer: Flow<Odometer>
 
     /**
      * Updates the persistent odometer by adding a delta distance to both total and partial.
@@ -34,25 +35,25 @@ public interface OdometerRepository {
      *
      * @param delta The distance to add in km.
      */
-    public suspend fun updateDistance(delta: Double)
+    suspend fun updateDistance(delta: Double)
 
     /**
      * Updates only the partial distance by adding a delta.
      */
-    public suspend fun updatePartialDistance(delta: Double)
+    suspend fun updatePartialDistance(delta: Double)
 
     /**
      * Resets the partial distance to zero in persistent storage.
      */
-    public suspend fun resetPartialDistance()
+    suspend fun resetPartialDistance()
 
     /**
      * Resets both total and partial distances to zero in persistent storage.
      */
-    public suspend fun resetAllDistances()
+    suspend fun resetAllDistances()
 
     /**
      * Sets the partial distance to a specific value.
      */
-    public suspend fun setPartialDistance(distance: Double)
+    suspend fun setPartialDistance(distance: Double)
 }

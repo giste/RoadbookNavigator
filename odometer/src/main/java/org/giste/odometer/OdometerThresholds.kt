@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.odometer.domain
+package org.giste.odometer
 
 /**
  * Value Object for speed threshold. Odometer will ignore updates if speed is lower than this.

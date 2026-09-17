@@ -27,7 +27,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import org.giste.odometer.domain.Odometer
 import org.giste.odometer.domain.usecase.DecrementPartialDistanceUseCase
 import org.giste.odometer.domain.usecase.GetOdometerUseCase
 import org.giste.odometer.domain.usecase.IncrementPartialDistanceUseCase

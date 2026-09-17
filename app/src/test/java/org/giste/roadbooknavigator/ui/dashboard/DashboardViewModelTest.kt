@@ -17,32 +17,20 @@
 
 package org.giste.roadbooknavigator.ui.dashboard
 
-import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import org.giste.android.location.domain.LocationProvider
 import org.giste.roadbooknavigator.core.util.Logger
-import org.giste.odometer.domain.Odometer
-import org.giste.odometer.domain.OdometerSettings
-import org.giste.odometer.domain.usecase.DecrementPartialDistanceUseCase
-import org.giste.odometer.domain.usecase.GetOdometerUseCase
-import org.giste.odometer.domain.usecase.IncrementPartialDistanceUseCase
-import org.giste.odometer.domain.usecase.ResetAllDistancesUseCase
-import org.giste.odometer.domain.usecase.ResetPartialDistanceUseCase
-import org.giste.odometer.domain.usecase.SetPartialDistanceUseCase
-import org.giste.roadbooknavigator.features.settings.domain.odometer.usecase.ObserveOdometerSettingsUseCase
+import org.giste.odometer.Odometer
+import org.giste.odometer.OdometerController
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.input.InputSettings
 import org.giste.roadbooknavigator.features.settings.domain.input.usecase.ObserveInputSettingsUseCase
@@ -56,21 +44,13 @@ import org.junit.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class DashboardViewModelTest {
 
-    private val getOdometerUseCase: GetOdometerUseCase = mockk()
-    private val resetPartialDistanceUseCase: ResetPartialDistanceUseCase = mockk()
-    private val resetAllDistancesUseCase: ResetAllDistancesUseCase = mockk()
-    private val incrementPartialDistanceUseCase: IncrementPartialDistanceUseCase = mockk()
-    private val decrementPartialDistanceUseCase: DecrementPartialDistanceUseCase = mockk()
-    private val setPartialDistanceUseCase: SetPartialDistanceUseCase = mockk()
+    private val odometerController: OdometerController = mockk(relaxed = true)
     private val observeAppSettingsUseCase: ObserveAppSettingsUseCase = mockk()
-    private val observeOdometerSettingsUseCase: ObserveOdometerSettingsUseCase = mockk()
     private val observeInputSettingsUseCase: ObserveInputSettingsUseCase = mockk()
-    private val locationProvider: LocationProvider = mockk()
     private val logger: Logger = mockk(relaxed = true)
 
     private val odometerFlow = MutableStateFlow(Odometer())
     private val settingsFlow = MutableStateFlow(AppSettings())
-    private val odometerSettingsFlow = MutableStateFlow(OdometerSettings())
     private val inputSettingsFlow = MutableStateFlow(InputSettings())
     private val testDispatcher = UnconfinedTestDispatcher()
 
@@ -79,23 +59,14 @@ class DashboardViewModelTest {
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
-        every { getOdometerUseCase(any(), any()) } returns odometerFlow
+        every { odometerController.odometer } returns odometerFlow
         every { observeAppSettingsUseCase() } returns settingsFlow
-        every { observeOdometerSettingsUseCase() } returns odometerSettingsFlow
         every { observeInputSettingsUseCase() } returns inputSettingsFlow
-        every { locationProvider.observeLocation() } returns flowOf()
 
         viewModel = DashboardViewModel(
-            getOdometerUseCase,
-            resetPartialDistanceUseCase,
-            resetAllDistancesUseCase,
-            incrementPartialDistanceUseCase,
-            decrementPartialDistanceUseCase,
-            setPartialDistanceUseCase,
+            odometerController,
             observeAppSettingsUseCase,
-            observeOdometerSettingsUseCase,
             observeInputSettingsUseCase,
-            locationProvider,
             logger
         )
     }
@@ -129,27 +100,21 @@ class DashboardViewModelTest {
     }
 
     @Test
-    fun `odometer actions should call respective use cases`() = runTest {
-        coEvery { resetPartialDistanceUseCase() } returns Unit
-        coEvery { resetAllDistancesUseCase() } returns Unit
-        coEvery { incrementPartialDistanceUseCase() } returns Unit
-        coEvery { decrementPartialDistanceUseCase() } returns Unit
-        coEvery { setPartialDistanceUseCase(any()) } returns Unit
-
+    fun `odometer actions should delegate to controller`() {
         viewModel.resetPartialDistance()
-        coVerify { resetPartialDistanceUseCase() }
+        verify { odometerController.resetPartial() }
 
         viewModel.resetAllDistances()
-        coVerify { resetAllDistancesUseCase() }
+        verify { odometerController.resetAll() }
 
         viewModel.incrementPartialDistance()
-        coVerify { incrementPartialDistanceUseCase() }
+        verify { odometerController.increment() }
 
         viewModel.decrementPartialDistance()
-        coVerify { decrementPartialDistanceUseCase() }
+        verify { odometerController.decrement() }
 
         viewModel.setPartialDistance(100.0)
-        coVerify { setPartialDistanceUseCase(100.0) }
+        verify { odometerController.setPartial(100.0) }
     }
 
     @Test

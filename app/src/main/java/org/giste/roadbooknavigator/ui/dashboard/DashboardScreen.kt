@@ -69,7 +69,7 @@ import org.giste.map.compactMapDimensions
 import org.giste.map.expandedMapDimensions
 import org.giste.map.rememberMapState
 import org.giste.odometer.OdometerController
-import org.giste.odometer.domain.Odometer
+import org.giste.odometer.Odometer
 import org.giste.roadbook.Roadbook
 import org.giste.roadbook.RoadbookEvent
 import org.giste.roadbook.RoadbookState

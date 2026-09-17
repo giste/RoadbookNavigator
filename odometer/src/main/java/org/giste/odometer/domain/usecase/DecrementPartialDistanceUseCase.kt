@@ -24,11 +24,11 @@ import javax.inject.Inject
 /**
  * Use case to decrement the partial distance by a fixed step (10 meters).
  */
-public class DecrementPartialDistanceUseCase @Inject internal constructor(
+internal class DecrementPartialDistanceUseCase @Inject internal constructor(
     private val repository: OdometerRepository,
     private val logger: OdometerLogger
 ) {
-    public suspend operator fun invoke() {
+    internal suspend operator fun invoke() {
         logger.d("DecrementPartialDistanceUseCase: Invoked")
         repository.updatePartialDistance(-10.0)
     }

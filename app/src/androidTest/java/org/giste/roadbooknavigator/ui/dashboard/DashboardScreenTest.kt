@@ -44,7 +44,7 @@ import org.giste.map.*
 import org.giste.odometer.OdometerController
 import org.giste.roadbook.*
 import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
-import org.giste.odometer.domain.Odometer
+import org.giste.odometer.Odometer
 import org.junit.Rule
 import org.junit.Test
 import java.util.Locale

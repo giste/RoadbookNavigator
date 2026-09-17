@@ -18,7 +18,7 @@
 package org.giste.android.location.data
 
 import android.util.Log
-import org.giste.android.location.domain.LocationLogger
+import org.giste.android.location.LocationLogger
 import javax.inject.Inject
 
 /**

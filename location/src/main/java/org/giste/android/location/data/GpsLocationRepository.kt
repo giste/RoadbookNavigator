@@ -27,10 +27,10 @@ import android.os.Looper
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import org.giste.android.location.domain.LocationEvent
-import org.giste.android.location.domain.LocationLogger
+import org.giste.android.location.LocationEvent
+import org.giste.android.location.LocationLogger
+import org.giste.android.location.UserLocation
 import org.giste.android.location.domain.LocationRepository
-import org.giste.android.location.domain.UserLocation
 
 /**
  * Implementation of [LocationRepository] using the Android Framework [LocationManager].

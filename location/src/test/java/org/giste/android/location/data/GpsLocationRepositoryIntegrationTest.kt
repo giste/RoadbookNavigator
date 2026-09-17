@@ -28,9 +28,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import org.giste.android.location.domain.LocationEvent
-import org.giste.android.location.domain.LocationLogger
-import org.giste.android.location.domain.UserLocation
+import org.giste.android.location.LocationEvent
+import org.giste.android.location.LocationLogger
+import org.giste.android.location.UserLocation
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before

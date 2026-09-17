@@ -15,17 +15,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.android.location.domain
-
-import kotlinx.coroutines.flow.Flow
+package org.giste.android.location
 
 /**
- * Interface to provide a stream of location events.
- * This allows features to respond to both data updates and engine status changes.
+ * Domain representation of a GPS location to decouple from Android Framework.
  */
-public interface LocationProvider {
-    /**
-     * Emits location events (updates, signal status, errors) as they occur.
-     */
-    public fun observeLocation(): Flow<LocationEvent>
-}
+public data class UserLocation(
+    public val latitude: Double,
+    public val longitude: Double,
+    public val altitude: Double,
+    public val accuracy: Float,
+    public val verticalAccuracy: Float? = null,
+    public val speed: Float, // in m/s
+    public val bearing: Float, // in degrees
+    public val time: Long
+)

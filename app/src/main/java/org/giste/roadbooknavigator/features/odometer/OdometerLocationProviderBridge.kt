@@ -20,8 +20,8 @@ package org.giste.roadbooknavigator.features.odometer
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.map
-import org.giste.android.location.domain.LocationEvent
-import org.giste.android.location.domain.LocationProvider
+import org.giste.android.location.LocationEvent
+import org.giste.android.location.LocationProvider
 import org.giste.odometer.OdometerLocationProvider
 import org.giste.odometer.OdometerLocation
 import javax.inject.Inject

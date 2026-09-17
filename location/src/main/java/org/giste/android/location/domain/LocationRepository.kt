@@ -18,6 +18,7 @@
 package org.giste.android.location.domain
 
 import kotlinx.coroutines.flow.Flow
+import org.giste.android.location.LocationEvent
 
 /**
  * Interface to provide location events.

@@ -21,29 +21,23 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import org.giste.android.location.data.AppLocationLogger
-import org.giste.android.location.domain.LocationLogger
-import org.giste.android.location.domain.LocationProvider
+import org.giste.android.location.LocationLogger
+import org.giste.android.location.LocationProvider
 import javax.inject.Singleton
 
-/**
- * Bridges the :location module's infrastructure to the app's concrete implementations.
- */
 @Module
 @InstallIn(SingletonComponent::class)
 internal abstract class LocationBridgeModule {
 
     @Binds
     @Singleton
-    @AppLocationLogger
-    internal abstract fun bindLocationLogger(
-        locationLoggerBridge: LocationLoggerBridge
+    abstract fun bindLocationLogger(
+        impl: LocationLoggerBridge
     ): LocationLogger
 
     @Binds
     @Singleton
-    internal abstract fun bindLocationProvider(
-        appLocationProvider: AppLocationProvider
+    abstract fun bindLocationProvider(
+        impl: AppLocationProvider
     ): LocationProvider
 }
-

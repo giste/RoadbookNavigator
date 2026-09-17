@@ -19,10 +19,10 @@ package org.giste.android.location.domain.usecase
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import org.giste.android.location.domain.LocationEvent
-import org.giste.android.location.domain.LocationLogger
+import org.giste.android.location.LocationEvent
+import org.giste.android.location.LocationLogger
+import org.giste.android.location.UserLocation
 import org.giste.android.location.domain.LocationRepository
-import org.giste.android.location.domain.UserLocation
 import javax.inject.Inject
 
 /**

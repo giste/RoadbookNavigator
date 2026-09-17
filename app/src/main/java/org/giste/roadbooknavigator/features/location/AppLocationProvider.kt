@@ -20,15 +20,15 @@ package org.giste.roadbooknavigator.features.location
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
-import org.giste.android.location.domain.LocationEvent
-import org.giste.android.location.domain.LocationProvider
+import org.giste.android.location.LocationEvent
+import org.giste.android.location.LocationProvider
 import org.giste.android.location.domain.usecase.ObserveLocationUseCase
 import org.giste.roadbooknavigator.features.settings.domain.location.usecase.ObserveLocationSettingsUseCase
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * App-level implementation of [org.giste.android.location.domain.LocationProvider] that combines the stateless
+ * App-level implementation of [LocationProvider] that combines the stateless
  * location engine with the app's persistent settings.
  */
 @Singleton

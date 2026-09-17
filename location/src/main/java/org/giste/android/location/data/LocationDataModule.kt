@@ -18,50 +18,35 @@
 package org.giste.android.location.data
 
 import android.content.Context
-import dagger.BindsOptionalOf
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import org.giste.android.location.domain.LocationClient
-import org.giste.android.location.domain.LocationLogger
+import org.giste.android.location.LocationLogger
 import org.giste.android.location.domain.LocationRepository
-import java.util.Optional
-import javax.inject.Qualifier
 import javax.inject.Singleton
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-public annotation class AppLocationLogger
 
 @Module
 @InstallIn(SingletonComponent::class)
 internal abstract class LocationDataModule {
 
-    @BindsOptionalOf
-    @AppLocationLogger
-    internal abstract fun optionalLocationLogger(): LocationLogger
+    @Binds
+    @Singleton
+    internal abstract fun bindLocationRepository(
+        impl: GpsLocationRepository
+    ): LocationRepository
 
     companion object {
         @Provides
         @Singleton
-        internal fun provideLocationLogger(
-            @AppLocationLogger optionalLogger: Optional<LocationLogger>,
-            androidLocationLogger: AndroidLocationLogger
-        ): LocationLogger = if (optionalLogger.isPresent) optionalLogger.get() else androidLocationLogger
-
-        @Provides
-        @Singleton
-        internal fun provideLocationClient(
+        internal fun provideGpsLocationRepository(
             @ApplicationContext context: Context,
             logger: LocationLogger
-        ): LocationClient = LocationClient.create(
+        ): GpsLocationRepository = GpsLocationRepository(
             context = context,
             logger = logger
         )
-
-        @Provides
-        internal fun provideLocationRepository(client: LocationClient): LocationRepository = client.locationRepository
     }
 }

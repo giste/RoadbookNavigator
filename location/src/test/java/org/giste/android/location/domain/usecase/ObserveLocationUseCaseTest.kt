@@ -23,8 +23,8 @@ import io.mockk.verify
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import org.giste.android.location.domain.LocationEvent
-import org.giste.android.location.domain.LocationLogger
+import org.giste.android.location.LocationEvent
+import org.giste.android.location.LocationLogger
 import org.giste.android.location.domain.LocationRepository
 import org.junit.Assert.assertTrue
 import org.junit.Test

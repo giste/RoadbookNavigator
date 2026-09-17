@@ -17,10 +17,12 @@
 
 package org.giste.roadbooknavigator.features.location
 
-import org.giste.android.location.domain.LocationLogger
+import org.giste.android.location.LocationLogger
 import org.giste.roadbooknavigator.core.util.Logger
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 internal class LocationLoggerBridge @Inject constructor(
     private val logger: Logger
 ) : LocationLogger {

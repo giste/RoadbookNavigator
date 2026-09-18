@@ -41,4 +41,9 @@
     <string name="map_download_notification_title">Downloading map</string>
     <string name="map_download_notification_content">Downloading %1$s…</string>
     <string name="map_download_notification_cancel">Cancel</string>
+
+    <!-- Common Actions Namespaced for Map Module -->
+    <string name="map_action_delete">Delete</string>
+    <string name="map_action_expand">Expand</string>
+    <string name="map_action_collapse">Collapse</string>
 </resources>

@@ -41,4 +41,9 @@
     <string name="map_download_notification_title">Descargando mapa</string>
     <string name="map_download_notification_content">Descargando %1$s…</string>
     <string name="map_download_notification_cancel">Cancelar</string>
+
+    <!-- Common Actions Namespaced for Map Module -->
+    <string name="map_action_delete">Borrar</string>
+    <string name="map_action_expand">Expandir</string>
+    <string name="map_action_collapse">Contraer</string>
 </resources>

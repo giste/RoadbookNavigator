@@ -69,7 +69,6 @@ import org.giste.map.domain.model.RemoteMapFile
 import org.giste.map.domain.model.RemoteMapFolder
 import org.giste.map.domain.model.DownloadedMapInfo
 import org.giste.map.domain.model.DownloadedMapStatus
-import org.giste.roadbooknavigator.core.R as CoreR
 
 @Composable
 internal fun MapManagementContent(
@@ -168,7 +167,7 @@ internal fun MapList(
                                 onCancelDownloadClick(info.status.remoteMapFile.url)
                             }
                         },
-                        deleteLabel = stringResource(CoreR.string.action_delete)
+                        deleteLabel = stringResource(R.string.map_action_delete)
                     )
                     HorizontalDivider(
                         modifier = Modifier
@@ -292,9 +291,9 @@ internal fun SectionHeader(
             Icon(
                 imageVector = if (isExpanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
                 contentDescription = if (isExpanded) {
-                    stringResource(CoreR.string.action_collapse)
+                    stringResource(R.string.map_action_collapse)
                 } else {
-                    stringResource(CoreR.string.action_expand)
+                    stringResource(R.string.map_action_expand)
                 },
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(LocalMapDimensions.current.actionIconSize),

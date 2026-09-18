@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.android.location
+package org.giste.location
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -25,8 +25,8 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.shareIn
-import org.giste.android.location.data.LocationApplicationScope
-import org.giste.android.location.domain.usecase.ObserveLocationUseCase
+import org.giste.location.data.LocationApplicationScope
+import org.giste.location.domain.ObserveLocationUseCase
 import javax.inject.Inject
 import javax.inject.Singleton
 

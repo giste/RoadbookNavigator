@@ -17,7 +17,7 @@
 
 package org.giste.roadbooknavigator.features.odometer
 
-import org.giste.android.location.UserLocation
+import org.giste.location.UserLocation
 import org.giste.odometer.OdometerLocation
 
 /**

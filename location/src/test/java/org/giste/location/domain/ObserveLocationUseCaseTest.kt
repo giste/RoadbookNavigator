@@ -12,10 +12,10 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  See the <https://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.android.location.domain.usecase
+package org.giste.location.domain
 
 import io.mockk.every
 import io.mockk.mockk
@@ -23,10 +23,9 @@ import io.mockk.verify
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import org.giste.android.location.LocationEvent
-import org.giste.android.location.LocationLogger
-import org.giste.android.location.domain.LocationRepository
-import org.junit.Assert.assertTrue
+import org.giste.location.LocationEvent
+import org.giste.location.LocationLogger
+import org.junit.Assert
 import org.junit.Test
 
 class ObserveLocationUseCaseTest {
@@ -42,7 +41,7 @@ class ObserveLocationUseCaseTest {
 
         val result = useCase(pollingInterval = 2000L, minDistance = 10f).first()
 
-        assertTrue(result is LocationEvent.LocationUpdated)
+        Assert.assertTrue(result is LocationEvent.LocationUpdated)
         verify { repository.getLocations(2000L, 10f) }
     }
 }

@@ -15,22 +15,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.android.location
-
-import kotlinx.coroutines.flow.Flow
+package org.giste.location
 
 /**
- * Interface that defines the configuration required by the location module.
- * This allows the module to be decoupled from the actual settings persistence.
+ * Domain representation of a GPS location to decouple from Android Framework.
  */
-public interface LocationSettingsProvider {
-    /**
-     * Polling interval for GPS updates in milliseconds.
-     */
-    public val pollingInterval: Flow<Long>
-
-    /**
-     * Minimum distance between GPS updates in meters.
-     */
-    public val minDistance: Flow<Float>
-}
+public data class UserLocation(
+    public val latitude: Double,
+    public val longitude: Double,
+    public val altitude: Double,
+    public val accuracy: Float,
+    public val verticalAccuracy: Float? = null,
+    public val speed: Float, // in m/s
+    public val bearing: Float, // in degrees
+    public val time: Long
+)

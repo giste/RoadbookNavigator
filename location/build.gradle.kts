@@ -25,7 +25,7 @@ plugins {
 }
 
 configure<LibraryExtension> {
-    namespace = "org.giste.android.location"
+    namespace = "org.giste.location"
     compileSdk = 37
 
     defaultConfig {

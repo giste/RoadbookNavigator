@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.android.location.data
+package org.giste.location.data
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -27,10 +27,10 @@ import android.os.Looper
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import org.giste.android.location.LocationEvent
-import org.giste.android.location.LocationLogger
-import org.giste.android.location.UserLocation
-import org.giste.android.location.domain.LocationRepository
+import org.giste.location.LocationEvent
+import org.giste.location.LocationLogger
+import org.giste.location.UserLocation
+import org.giste.location.domain.LocationRepository
 
 /**
  * Implementation of [LocationRepository] using the Android Framework [LocationManager].

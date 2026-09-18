@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.android.location
+package org.giste.location
 
 /**
  * Sealed class representing various GPS-related events.

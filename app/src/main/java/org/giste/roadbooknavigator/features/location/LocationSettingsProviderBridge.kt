@@ -19,7 +19,7 @@ package org.giste.roadbooknavigator.features.location
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import org.giste.android.location.LocationSettingsProvider
+import org.giste.location.LocationSettingsProvider
 import org.giste.roadbooknavigator.features.settings.domain.location.usecase.ObserveLocationSettingsUseCase
 import javax.inject.Inject
 import javax.inject.Singleton

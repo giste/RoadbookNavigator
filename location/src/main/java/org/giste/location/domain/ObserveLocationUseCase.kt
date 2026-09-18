@@ -15,14 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.android.location.domain.usecase
+package org.giste.location.domain
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import org.giste.android.location.LocationEvent
-import org.giste.android.location.LocationLogger
-import org.giste.android.location.UserLocation
-import org.giste.android.location.domain.LocationRepository
+import org.giste.location.LocationEvent
+import org.giste.location.LocationLogger
 import javax.inject.Inject
 
 /**

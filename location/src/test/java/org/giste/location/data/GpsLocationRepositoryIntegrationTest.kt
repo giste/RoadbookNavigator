@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.android.location.data
+package org.giste.location.data
 
 import android.Manifest
 import android.app.Application
@@ -28,9 +28,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import org.giste.android.location.LocationEvent
-import org.giste.android.location.LocationLogger
-import org.giste.android.location.UserLocation
+import org.giste.location.LocationEvent
+import org.giste.location.LocationLogger
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before

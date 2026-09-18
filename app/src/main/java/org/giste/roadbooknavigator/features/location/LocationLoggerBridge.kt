@@ -17,7 +17,7 @@
 
 package org.giste.roadbooknavigator.features.location
 
-import org.giste.android.location.LocationLogger
+import org.giste.location.LocationLogger
 import org.giste.roadbooknavigator.core.util.Logger
 import javax.inject.Inject
 import javax.inject.Singleton

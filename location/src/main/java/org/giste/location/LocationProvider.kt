@@ -15,18 +15,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.android.location
+package org.giste.location
+
+import kotlinx.coroutines.flow.Flow
 
 /**
- * A logging interface for the location module.
- * This decouples the module from any specific logging framework or other modules.
+ * Interface to provide a stream of location events.
+ * This allows features to respond to both data updates and engine status changes.
  */
-public interface LocationLogger {
-    public fun v(message: String, vararg args: Any?)
-    public fun d(message: String, vararg args: Any?)
-    public fun i(message: String, vararg args: Any?)
-    public fun w(message: String, vararg args: Any?)
-    public fun e(message: String, vararg args: Any?)
-    public fun e(t: Throwable, message: String, vararg args: Any?)
-    public fun withTag(tag: String): LocationLogger
+public interface LocationProvider {
+    /**
+     * Emits location events (updates, signal status, errors) as they occur.
+     */
+    public fun observeLocation(): Flow<LocationEvent>
 }

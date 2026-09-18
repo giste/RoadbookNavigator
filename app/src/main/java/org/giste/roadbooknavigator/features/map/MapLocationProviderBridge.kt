@@ -20,8 +20,8 @@ package org.giste.roadbooknavigator.features.map
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.map
-import org.giste.android.location.LocationEvent
-import org.giste.android.location.LocationProvider
+import org.giste.location.LocationEvent
+import org.giste.location.LocationProvider
 import org.giste.map.MapLocation
 import org.giste.map.MapLocationProvider
 import javax.inject.Inject

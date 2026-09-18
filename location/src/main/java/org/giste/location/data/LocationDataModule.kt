@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.android.location.data
+package org.giste.location.data
 
 import android.content.Context
 import dagger.Binds
@@ -28,10 +28,10 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import org.giste.android.location.LocationController
-import org.giste.android.location.LocationLogger
-import org.giste.android.location.LocationProvider
-import org.giste.android.location.domain.LocationRepository
+import org.giste.location.LocationController
+import org.giste.location.LocationLogger
+import org.giste.location.LocationProvider
+import org.giste.location.domain.LocationRepository
 import javax.inject.Qualifier
 import javax.inject.Singleton
 

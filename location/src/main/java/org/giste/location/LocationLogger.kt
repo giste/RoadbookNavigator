@@ -15,18 +15,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.android.location
+package org.giste.location
 
 /**
- * Domain representation of a GPS location to decouple from Android Framework.
+ * A logging interface for the location module.
+ * This decouples the module from any specific logging framework or other modules.
  */
-public data class UserLocation(
-    public val latitude: Double,
-    public val longitude: Double,
-    public val altitude: Double,
-    public val accuracy: Float,
-    public val verticalAccuracy: Float? = null,
-    public val speed: Float, // in m/s
-    public val bearing: Float, // in degrees
-    public val time: Long
-)
+public interface LocationLogger {
+    public fun v(message: String, vararg args: Any?)
+    public fun d(message: String, vararg args: Any?)
+    public fun i(message: String, vararg args: Any?)
+    public fun w(message: String, vararg args: Any?)
+    public fun e(message: String, vararg args: Any?)
+    public fun e(t: Throwable, message: String, vararg args: Any?)
+    public fun withTag(tag: String): LocationLogger
+}

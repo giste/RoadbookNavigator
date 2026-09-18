@@ -21,8 +21,8 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import org.giste.android.location.LocationLogger
-import org.giste.android.location.LocationSettingsProvider
+import org.giste.location.LocationLogger
+import org.giste.location.LocationSettingsProvider
 import javax.inject.Singleton
 
 @Module

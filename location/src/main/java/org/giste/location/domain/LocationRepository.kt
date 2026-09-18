@@ -15,17 +15,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.android.location
+package org.giste.location.domain
 
 import kotlinx.coroutines.flow.Flow
+import org.giste.location.LocationEvent
 
 /**
- * Interface to provide a stream of location events.
- * This allows features to respond to both data updates and engine status changes.
+ * Interface to provide location events.
  */
-public interface LocationProvider {
+internal interface LocationRepository {
     /**
-     * Emits location events (updates, signal status, errors) as they occur.
+     * Emits location events as they occur.
+     *
+     * @param pollingInterval Minimum time interval between updates in ms.
+     * @param minDistance Minimum distance between updates in meters.
      */
-    public fun observeLocation(): Flow<LocationEvent>
+    fun getLocations(
+        pollingInterval: Long = 1000L,
+        minDistance: Float = 0f
+    ): Flow<LocationEvent>
 }

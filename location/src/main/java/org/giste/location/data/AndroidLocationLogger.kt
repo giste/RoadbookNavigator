@@ -15,14 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.android.location.data
+package org.giste.location.data
 
 import android.util.Log
-import org.giste.android.location.LocationLogger
+import org.giste.location.LocationLogger
 import javax.inject.Inject
 
 /**
- * Default implementation of [LocationLogger] using [android.util.Log].
+ * Default implementation of [LocationLogger] using [Log].
  */
 internal class AndroidLocationLogger(
     private val tag: String

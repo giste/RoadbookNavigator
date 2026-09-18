@@ -15,29 +15,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.location
+package org.giste.android.location
 
-import dagger.Binds
-import dagger.Module
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
-import org.giste.android.location.LocationLogger
-import org.giste.android.location.LocationSettingsProvider
-import javax.inject.Singleton
+import kotlinx.coroutines.flow.Flow
 
-@Module
-@InstallIn(SingletonComponent::class)
-internal abstract class LocationBridgeModule {
+/**
+ * Interface that defines the configuration required by the location module.
+ * This allows the module to be decoupled from the actual settings persistence.
+ */
+public interface LocationSettingsProvider {
+    /**
+     * Polling interval for GPS updates in milliseconds.
+     */
+    public val pollingInterval: Flow<Long>
 
-    @Binds
-    @Singleton
-    abstract fun bindLocationLogger(
-        impl: LocationLoggerBridge
-    ): LocationLogger
-
-    @Binds
-    @Singleton
-    abstract fun bindLocationSettingsProvider(
-        impl: LocationSettingsProviderBridge
-    ): LocationSettingsProvider
+    /**
+     * Minimum distance between GPS updates in meters.
+     */
+    public val minDistance: Flow<Float>
 }

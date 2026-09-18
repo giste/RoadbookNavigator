@@ -28,12 +28,12 @@ import javax.inject.Inject
 /**
  * Use case to observe location events from the device.
  */
-public class ObserveLocationUseCase @Inject internal constructor(
+internal class ObserveLocationUseCase @Inject internal constructor(
     private val locationRepository: LocationRepository,
     private val logger: LocationLogger
 ) {
     @OptIn(ExperimentalCoroutinesApi::class)
-    public operator fun invoke(
+    operator fun invoke(
         pollingInterval: Long,
         minDistance: Float
     ): Flow<LocationEvent> {

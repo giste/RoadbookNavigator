@@ -24,9 +24,24 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import org.giste.android.location.LocationController
 import org.giste.android.location.LocationLogger
+import org.giste.android.location.LocationProvider
 import org.giste.android.location.domain.LocationRepository
+import javax.inject.Qualifier
 import javax.inject.Singleton
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+internal annotation class LocationIoDispatcher
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+internal annotation class LocationApplicationScope
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -38,7 +53,25 @@ internal abstract class LocationDataModule {
         impl: GpsLocationRepository
     ): LocationRepository
 
+    @Binds
+    @Singleton
+    internal abstract fun bindLocationProvider(
+        impl: LocationController
+    ): LocationProvider
+
     companion object {
+        @Provides
+        @Singleton
+        @LocationIoDispatcher
+        internal fun provideIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
+
+        @Provides
+        @Singleton
+        @LocationApplicationScope
+        internal fun provideApplicationScope(
+            @LocationIoDispatcher ioDispatcher: CoroutineDispatcher
+        ): CoroutineScope = CoroutineScope(SupervisorJob() + ioDispatcher)
+
         @Provides
         @Singleton
         internal fun provideGpsLocationRepository(

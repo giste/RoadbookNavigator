@@ -17,33 +17,19 @@
 
 package org.giste.roadbooknavigator.features.location
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flatMapLatest
-import org.giste.android.location.LocationEvent
-import org.giste.android.location.LocationProvider
-import org.giste.android.location.domain.usecase.ObserveLocationUseCase
+import kotlinx.coroutines.flow.map
+import org.giste.android.location.LocationSettingsProvider
 import org.giste.roadbooknavigator.features.settings.domain.location.usecase.ObserveLocationSettingsUseCase
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/**
- * App-level implementation of [LocationProvider] that combines the stateless
- * location engine with the app's persistent settings.
- */
 @Singleton
-internal class AppLocationProvider @Inject constructor(
-    private val observeLocationUseCase: ObserveLocationUseCase,
+internal class LocationSettingsProviderBridge @Inject constructor(
     private val observeLocationSettingsUseCase: ObserveLocationSettingsUseCase
-) : LocationProvider {
+) : LocationSettingsProvider {
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    override fun observeLocation(): Flow<LocationEvent> {
-        return observeLocationSettingsUseCase().flatMapLatest { settings ->
-            observeLocationUseCase(
-                pollingInterval = settings.pollingInterval,
-                minDistance = settings.minDistance
-            )
-        }
-    }
+    override val pollingInterval: Flow<Long> = observeLocationSettingsUseCase().map { it.pollingInterval }
+
+    override val minDistance: Flow<Float> = observeLocationSettingsUseCase().map { it.minDistance }
 }

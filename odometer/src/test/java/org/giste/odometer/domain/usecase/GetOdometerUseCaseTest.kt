@@ -33,6 +33,9 @@ import org.giste.odometer.Odometer
 import org.giste.odometer.OdometerLocation
 import org.giste.odometer.domain.OdometerRepository
 import org.giste.odometer.OdometerSettings
+import org.giste.odometer.SpeedThreshold
+import org.giste.odometer.AccuracyThreshold
+import org.giste.odometer.VerticalAccuracyThreshold
 import org.junit.Before
 import org.junit.Test
 
@@ -75,7 +78,7 @@ class GetOdometerUseCaseTest {
 
         val loc1 = createLocation(40.0, -3.0, verticalAccuracy = 5f)
         val loc2 = createLocation(40.1, -3.1, verticalAccuracy = 5f)
-        val expectedDistance = distanceUtils.calculateDistance(loc1, loc2, settings.minVerticalAccuracy)
+        val expectedDistance = distanceUtils.calculateDistance(loc1, loc2, settings.minVerticalAccuracy.meters)
 
         gpsFlow.emit(loc1)
         gpsFlow.emit(loc2)
@@ -87,7 +90,7 @@ class GetOdometerUseCaseTest {
     @Test
     fun `should ignore fixes with poor horizontal accuracy`() = runTest(testDispatcher) {
         val job = backgroundScope.launch { getOdometerUseCase(settingsFlow, gpsFlow).collect {} }
-        settingsFlow.emit(OdometerSettings(minAccuracy = 20f))
+        settingsFlow.emit(OdometerSettings(minAccuracy = AccuracyThreshold(20f)))
 
         gpsFlow.emit(createLocation(40.0, -3.0, accuracy = 10f))
         gpsFlow.emit(createLocation(40.1, -3.1, accuracy = 50f)) // Poor horizontal accuracy (> 20m)
@@ -99,14 +102,14 @@ class GetOdometerUseCaseTest {
     @Test
     fun `should resume calculation after a poor horizontal accuracy fix`() = runTest(testDispatcher) {
         val job = backgroundScope.launch { getOdometerUseCase(settingsFlow, gpsFlow).collect {} }
-        val settings = OdometerSettings(minAccuracy = 20f)
+        val settings = OdometerSettings(minAccuracy = AccuracyThreshold(20f))
         settingsFlow.emit(settings)
 
         val loc1 = createLocation(40.0, -3.0, accuracy = 10f) // Valid 1
         val loc2 = createLocation(40.1, -3.1, accuracy = 50f) // Ignored
         val loc3 = createLocation(40.2, -3.2, accuracy = 10f) // Valid 2
 
-        val expectedDistance = distanceUtils.calculateDistance(loc1, loc3, settings.minVerticalAccuracy)
+        val expectedDistance = distanceUtils.calculateDistance(loc1, loc3, settings.minVerticalAccuracy.meters)
 
         gpsFlow.emit(loc1)
         gpsFlow.emit(loc2)
@@ -120,7 +123,7 @@ class GetOdometerUseCaseTest {
     @Test
     fun `should use 3D distance when vertical accuracy is good`() = runTest(testDispatcher) {
         val job = backgroundScope.launch { getOdometerUseCase(settingsFlow, gpsFlow).collect {} }
-        val settings = OdometerSettings(minVerticalAccuracy = 10f)
+        val settings = OdometerSettings(minVerticalAccuracy = VerticalAccuracyThreshold(10f))
         settingsFlow.emit(settings)
 
         // Points with 100m altitude difference and good vertical accuracy
@@ -128,7 +131,7 @@ class GetOdometerUseCaseTest {
         val loc2 = createLocation(40.001, -3.0, altitude = 100.0, verticalAccuracy = 5f)
         
         // Distance should include the 100m climb
-        val expectedDistance = distanceUtils.calculateDistance(loc1, loc2, settings.minVerticalAccuracy)
+        val expectedDistance = distanceUtils.calculateDistance(loc1, loc2, settings.minVerticalAccuracy.meters)
 
         gpsFlow.emit(loc1)
         gpsFlow.emit(loc2)
@@ -140,7 +143,7 @@ class GetOdometerUseCaseTest {
     @Test
     fun `should fallback to 2D distance when vertical accuracy is poor`() = runTest(testDispatcher) {
         val job = backgroundScope.launch { getOdometerUseCase(settingsFlow, gpsFlow).collect {} }
-        val settings = OdometerSettings(minVerticalAccuracy = 10f)
+        val settings = OdometerSettings(minVerticalAccuracy = VerticalAccuracyThreshold(10f))
         settingsFlow.emit(settings)
 
         // Points with 100m altitude difference but one has poor vertical accuracy (50m > 10m threshold)
@@ -148,7 +151,7 @@ class GetOdometerUseCaseTest {
         val loc2 = createLocation(40.001, -3.0, altitude = 100.0, verticalAccuracy = 50f)
         
         // Expected distance should ignore altitude (2D)
-        val expectedDistance = distanceUtils.calculateDistance(loc1, loc2, settings.minVerticalAccuracy)
+        val expectedDistance = distanceUtils.calculateDistance(loc1, loc2, settings.minVerticalAccuracy.meters)
 
         gpsFlow.emit(loc1)
         gpsFlow.emit(loc2)
@@ -167,7 +170,7 @@ class GetOdometerUseCaseTest {
         val loc1 = createLocation(40.0, -3.0, altitude = 0.0, verticalAccuracy = null)
         val loc2 = createLocation(40.001, -3.0, altitude = 100.0, verticalAccuracy = null)
         
-        val expectedDistance = distanceUtils.calculateDistance(loc1, loc2, settings.minVerticalAccuracy)
+        val expectedDistance = distanceUtils.calculateDistance(loc1, loc2, settings.minVerticalAccuracy.meters)
 
         gpsFlow.emit(loc1)
         gpsFlow.emit(loc2)
@@ -179,7 +182,7 @@ class GetOdometerUseCaseTest {
     @Test
     fun `should ignore fixes when speed is below threshold`() = runTest(testDispatcher) {
         val job = backgroundScope.launch { getOdometerUseCase(settingsFlow, gpsFlow).collect {} }
-        settingsFlow.emit(OdometerSettings(speedThreshold = 1.0f))
+        settingsFlow.emit(OdometerSettings(speedThreshold = SpeedThreshold(1.0f)))
 
         val loc1 = createLocation(40.0, -3.0, speed = 0.5f)
         val loc2 = createLocation(40.1, -3.1, speed = 0.5f)
@@ -195,11 +198,11 @@ class GetOdometerUseCaseTest {
     fun `should react to setting changes dynamically`() = runTest(testDispatcher) {
         val job = backgroundScope.launch { getOdometerUseCase(settingsFlow, gpsFlow).collect {} }
         
-        // Start with high speed threshold (ignore movements)
-        settingsFlow.emit(OdometerSettings(speedThreshold = 20.0f))
+        // Start with high speed threshold (ignore movements if location speed is lower)
+        settingsFlow.emit(OdometerSettings(speedThreshold = SpeedThreshold(2.0f)))
         
-        val loc1 = createLocation(40.0, -3.0, speed = 10f)
-        val loc2 = createLocation(40.1, -3.1, speed = 10f)
+        val loc1 = createLocation(40.0, -3.0, speed = 1.0f)
+        val loc2 = createLocation(40.1, -3.1, speed = 1.0f)
         
         gpsFlow.emit(loc1)
         gpsFlow.emit(loc2)
@@ -207,13 +210,13 @@ class GetOdometerUseCaseTest {
         coVerify(exactly = 0) { odometerRepository.updateDistance(any()) }
         
         // Change to low speed threshold (accepting movements)
-        val settings = OdometerSettings(speedThreshold = 0.5f)
+        val settings = OdometerSettings(speedThreshold = SpeedThreshold(0.5f))
         settingsFlow.emit(settings)
         
         // Use a new point loc3. Since lastLocation is preserved across settings changes,
         // it should calculate distance between loc1 and loc3 (loc2 was valid but ignored for delta calculation)
-        val loc3 = createLocation(40.2, -3.2, speed = 10f)
-        val expectedDistance = distanceUtils.calculateDistance(loc1, loc3, settings.minVerticalAccuracy)
+        val loc3 = createLocation(40.2, -3.2, speed = 1.0f)
+        val expectedDistance = distanceUtils.calculateDistance(loc1, loc3, settings.minVerticalAccuracy.meters)
         
         gpsFlow.emit(loc3)
         

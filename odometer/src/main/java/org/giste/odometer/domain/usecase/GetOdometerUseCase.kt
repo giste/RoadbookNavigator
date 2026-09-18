@@ -80,11 +80,11 @@ internal class GetOdometerUseCase @Inject internal constructor(
         current: OdometerLocation,
         settings: OdometerSettings
     ): OdometerLocation? {
-        if (current.accuracy > settings.minAccuracy) {
+        if (current.accuracy > settings.minAccuracy.meters) {
             logger.v(
                 "GetOdometerUseCase: Location ignored (poor accuracy: %f > %f)",
                 current.accuracy,
-                settings.minAccuracy
+                settings.minAccuracy.meters
             )
             return lastValid
         }
@@ -99,11 +99,11 @@ internal class GetOdometerUseCase @Inject internal constructor(
         }
 
         // Ignore updates if the user is effectively stopped to avoid GPS jitter "drifting" the odometer
-        if (current.speed < settings.speedThreshold) {
+        if (current.speed < settings.speedThreshold.metersPerSecond) {
             logger.v(
                 "GetOdometerUseCase: Location ignored (speed %f < threshold %f)",
                 current.speed,
-                settings.speedThreshold
+                settings.speedThreshold.metersPerSecond
             )
             return lastValid
         }
@@ -111,7 +111,7 @@ internal class GetOdometerUseCase @Inject internal constructor(
         val delta = distanceUtils.calculateDistance(
             start = lastValid,
             end = current,
-            verticalAccuracyThreshold = settings.minVerticalAccuracy
+            verticalAccuracyThreshold = settings.minVerticalAccuracy.meters
         )
 
         if (delta > 0) {

@@ -429,10 +429,10 @@ fun AdvancedTab(
         SliderSettingItem(
             title = stringResource(R.string.settings_advanced_speed_threshold_title),
             helper = stringResource(R.string.settings_advanced_speed_threshold_helper),
-            value = odometerSettings.speedThreshold,
+            value = odometerSettings.speedThreshold.metersPerSecond,
             onValueChange = onOdometerSpeedThresholdChange,
             valueRange = SpeedThreshold.MIN..SpeedThreshold.MAX,
-            label = "${"%.1f".format(odometerSettings.speedThreshold)} m/s",
+            label = "${"%.1f".format(odometerSettings.speedThreshold.metersPerSecond)} m/s",
             stepSize = 0.1f,
             defaultValue = OdometerSettings.DEFAULT_SPEED_THRESHOLD,
             onRestore = { onOdometerSpeedThresholdChange(OdometerSettings.DEFAULT_SPEED_THRESHOLD) },
@@ -442,10 +442,10 @@ fun AdvancedTab(
         SliderSettingItem(
             title = stringResource(R.string.settings_advanced_min_accuracy_title),
             helper = stringResource(R.string.settings_advanced_min_accuracy_helper),
-            value = odometerSettings.minAccuracy,
+            value = odometerSettings.minAccuracy.meters,
             onValueChange = onOdometerMinAccuracyChange,
             valueRange = AccuracyThreshold.MIN..AccuracyThreshold.MAX,
-            label = "${"%.0f".format(odometerSettings.minAccuracy)} m",
+            label = "${"%.0f".format(odometerSettings.minAccuracy.meters)} m",
             stepSize = 5f,
             defaultValue = OdometerSettings.DEFAULT_MIN_ACCURACY,
             onRestore = { onOdometerMinAccuracyChange(OdometerSettings.DEFAULT_MIN_ACCURACY) },
@@ -455,10 +455,10 @@ fun AdvancedTab(
         SliderSettingItem(
             title = stringResource(R.string.settings_advanced_min_vertical_accuracy_title),
             helper = stringResource(R.string.settings_advanced_min_vertical_accuracy_helper),
-            value = odometerSettings.minVerticalAccuracy,
+            value = odometerSettings.minVerticalAccuracy.meters,
             onValueChange = onOdometerMinVerticalAccuracyChange,
             valueRange = VerticalAccuracyThreshold.MIN..VerticalAccuracyThreshold.MAX,
-            label = "${"%.0f".format(odometerSettings.minVerticalAccuracy)} m",
+            label = "${"%.0f".format(odometerSettings.minVerticalAccuracy.meters)} m",
             stepSize = 5f,
             defaultValue = OdometerSettings.DEFAULT_MIN_VERTICAL_ACCURACY,
             onRestore = { onOdometerMinVerticalAccuracyChange(OdometerSettings.DEFAULT_MIN_VERTICAL_ACCURACY) },
@@ -1304,7 +1304,7 @@ fun AdvancedTabPreview() {
     RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
         AdvancedTab(
             locationSettings = LocationSettings(pollingInterval = 1000L),
-            odometerSettings = OdometerSettings(speedThreshold = 1.0f),
+            odometerSettings = OdometerSettings(speedThreshold = SpeedThreshold(1.0f)),
             onOdometerSpeedThresholdChange = {},
             onOdometerMinAccuracyChange = {},
             onOdometerMinVerticalAccuracyChange = {},

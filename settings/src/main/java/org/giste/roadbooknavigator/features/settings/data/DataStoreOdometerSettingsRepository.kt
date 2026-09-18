@@ -24,7 +24,10 @@ import androidx.datastore.preferences.core.floatPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.giste.roadbooknavigator.core.util.Logger
+import org.giste.odometer.AccuracyThreshold
 import org.giste.odometer.OdometerSettings
+import org.giste.odometer.SpeedThreshold
+import org.giste.odometer.VerticalAccuracyThreshold
 import org.giste.roadbooknavigator.features.settings.domain.odometer.OdometerSettingsRepository
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -46,12 +49,15 @@ internal class DataStoreOdometerSettingsRepository @Inject constructor(
 
     override fun getSettings(): Flow<OdometerSettings> = dataStore.data.map { preferences ->
         OdometerSettings(
-            speedThreshold = preferences[Keys.SPEED_THRESHOLD]
-                ?: OdometerSettings.DEFAULT_SPEED_THRESHOLD,
-            minAccuracy = preferences[Keys.MIN_ACCURACY]
-                ?: OdometerSettings.DEFAULT_MIN_ACCURACY,
-            minVerticalAccuracy = preferences[Keys.MIN_VERTICAL_ACCURACY]
-                ?: OdometerSettings.DEFAULT_MIN_VERTICAL_ACCURACY,
+            speedThreshold = SpeedThreshold(
+                preferences[Keys.SPEED_THRESHOLD] ?: OdometerSettings.DEFAULT_SPEED_THRESHOLD
+            ),
+            minAccuracy = AccuracyThreshold(
+                preferences[Keys.MIN_ACCURACY] ?: OdometerSettings.DEFAULT_MIN_ACCURACY
+            ),
+            minVerticalAccuracy = VerticalAccuracyThreshold(
+                preferences[Keys.MIN_VERTICAL_ACCURACY] ?: OdometerSettings.DEFAULT_MIN_VERTICAL_ACCURACY
+            ),
         )
     }
 

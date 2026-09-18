@@ -60,9 +60,9 @@ class DataStoreOdometerSettingsRepositoryTest {
     @Test
     fun `initial settings should be default when no data exists`() = runTest {
         val settings = repository.getSettings().first()
-        assertEquals(OdometerSettings.DEFAULT_SPEED_THRESHOLD, settings.speedThreshold)
-        assertEquals(OdometerSettings.DEFAULT_MIN_ACCURACY, settings.minAccuracy)
-        assertEquals(OdometerSettings.DEFAULT_MIN_VERTICAL_ACCURACY, settings.minVerticalAccuracy)
+        assertEquals(OdometerSettings.DEFAULT_SPEED_THRESHOLD, settings.speedThreshold.metersPerSecond)
+        assertEquals(OdometerSettings.DEFAULT_MIN_ACCURACY, settings.minAccuracy.meters)
+        assertEquals(OdometerSettings.DEFAULT_MIN_VERTICAL_ACCURACY, settings.minVerticalAccuracy.meters)
     }
 
     @Test
@@ -71,12 +71,12 @@ class DataStoreOdometerSettingsRepositoryTest {
         repository.setSpeedThreshold(newValue)
         
         val settings = repository.getSettings().first()
-        assertEquals(newValue, settings.speedThreshold)
+        assertEquals(newValue, settings.speedThreshold.metersPerSecond)
 
         // Verify with new instance
         val newRepo = DataStoreOdometerSettingsRepository(dataStore, logger)
         val persisted = newRepo.getSettings().first()
-        assertEquals(newValue, persisted.speedThreshold)
+        assertEquals(newValue, persisted.speedThreshold.metersPerSecond)
     }
 
     @Test
@@ -85,7 +85,7 @@ class DataStoreOdometerSettingsRepositoryTest {
         repository.setMinAccuracy(newValue)
         
         val settings = repository.getSettings().first()
-        assertEquals(newValue, settings.minAccuracy)
+        assertEquals(newValue, settings.minAccuracy.meters)
     }
 
     @Test
@@ -94,7 +94,7 @@ class DataStoreOdometerSettingsRepositoryTest {
         repository.setMinVerticalAccuracy(newValue)
         
         val settings = repository.getSettings().first()
-        assertEquals(newValue, settings.minVerticalAccuracy)
+        assertEquals(newValue, settings.minVerticalAccuracy.meters)
     }
 
     @Test
@@ -109,8 +109,8 @@ class DataStoreOdometerSettingsRepositoryTest {
         
         // Then
         val settings = repository.getSettings().first()
-        assertEquals(OdometerSettings.DEFAULT_SPEED_THRESHOLD, settings.speedThreshold)
-        assertEquals(OdometerSettings.DEFAULT_MIN_ACCURACY, settings.minAccuracy)
-        assertEquals(OdometerSettings.DEFAULT_MIN_VERTICAL_ACCURACY, settings.minVerticalAccuracy)
+        assertEquals(OdometerSettings.DEFAULT_SPEED_THRESHOLD, settings.speedThreshold.metersPerSecond)
+        assertEquals(OdometerSettings.DEFAULT_MIN_ACCURACY, settings.minAccuracy.meters)
+        assertEquals(OdometerSettings.DEFAULT_MIN_VERTICAL_ACCURACY, settings.minVerticalAccuracy.meters)
     }
 }

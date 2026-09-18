@@ -29,7 +29,7 @@ import javax.inject.Inject
 /**
  * Bridge implementation of [MapLocationProvider] that redirects updates from the app's [LocationProvider].
  */
-class MapLocationProviderBridge @Inject constructor(
+internal class MapLocationProviderBridge @Inject constructor(
     private val locationProvider: LocationProvider
 ) : MapLocationProvider {
     override fun observeLocation(): Flow<MapLocation> = locationProvider.observeLocation()

@@ -24,9 +24,7 @@ import javax.inject.Inject
 /**
  * Bridge implementation of [MapLogger] that redirects to the app's [Logger].
  */
-class MapLoggerBridge @Inject constructor(
-    private val logger: Logger
-) : MapLogger {
+internal class MapLoggerBridge @Inject constructor(logger: Logger) : MapLogger {
     private val taggedLogger = logger.withTag("Map")
 
     override fun v(message: String, vararg args: Any?) {

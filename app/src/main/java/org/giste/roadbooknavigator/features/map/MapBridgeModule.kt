@@ -27,17 +27,17 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class MapBridgeModule {
+internal abstract class MapBridgeModule {
 
     @Binds
     @Singleton
-    abstract fun bindMapLogger(
+    internal abstract fun bindMapLogger(
         impl: MapLoggerBridge
     ): MapLogger
 
     @Binds
     @Singleton
-    abstract fun bindMapLocationProvider(
+    internal abstract fun bindMapLocationProvider(
         impl: MapLocationProviderBridge
     ): MapLocationProvider
 }

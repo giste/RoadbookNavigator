@@ -19,6 +19,7 @@ package org.giste.roadbooknavigator.features.location
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import org.giste.location.LocationSettings
 import org.giste.location.LocationSettingsProvider
 import org.giste.roadbooknavigator.features.settings.domain.location.usecase.ObserveLocationSettingsUseCase
 import javax.inject.Inject
@@ -28,6 +29,18 @@ import javax.inject.Singleton
 internal class LocationSettingsProviderBridge @Inject constructor(
     private val observeLocationSettingsUseCase: ObserveLocationSettingsUseCase
 ) : LocationSettingsProvider {
+
+    override val settings: Flow<LocationSettings> = observeLocationSettingsUseCase().map {
+        LocationSettings(
+            pollingInterval = it.pollingInterval,
+            minDistance = it.minDistance
+        )
+    }
+
+    override suspend fun updateSettings(settings: LocationSettings) {
+        // No-op or not implemented as this bridge is being deprecated
+        throw UnsupportedOperationException("Bridge does not support updates. Use native implementation.")
+    }
 
     override val pollingInterval: Flow<Long> = observeLocationSettingsUseCase().map { it.pollingInterval }
 

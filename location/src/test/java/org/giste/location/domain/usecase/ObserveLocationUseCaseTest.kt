@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.location.domain
+package org.giste.location.domain.usecase
 
 import io.mockk.every
 import io.mockk.mockk
@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.giste.location.LocationEvent
 import org.giste.location.LocationLogger
+import org.giste.location.domain.LocationRepository
 import org.junit.Assert
 import org.junit.Test
 

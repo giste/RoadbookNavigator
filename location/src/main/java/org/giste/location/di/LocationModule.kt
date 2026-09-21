@@ -15,9 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.location.data
+package org.giste.location.di
 
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -28,12 +31,18 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import org.giste.location.LocationController
 import org.giste.location.LocationLogger
 import org.giste.location.LocationProvider
+import org.giste.location.LocationSettingsProvider
+import org.giste.location.controller.LocationController
+import org.giste.location.data.DataStoreLocationSettingsRepository
+import org.giste.location.data.GpsLocationRepository
 import org.giste.location.domain.LocationRepository
+import org.giste.location.domain.LocationSettingsRepository
 import javax.inject.Qualifier
 import javax.inject.Singleton
+
+private val Context.locationSettingsDataStore: DataStore<Preferences> by preferencesDataStore(name = "org.giste.location.settings")
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
@@ -43,9 +52,13 @@ internal annotation class LocationIoDispatcher
 @Retention(AnnotationRetention.BINARY)
 internal annotation class LocationApplicationScope
 
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+internal annotation class LocationSettingsDataStore
+
 @Module
 @InstallIn(SingletonComponent::class)
-internal abstract class LocationDataModule {
+internal abstract class LocationModule {
 
     @Binds
     @Singleton
@@ -55,9 +68,21 @@ internal abstract class LocationDataModule {
 
     @Binds
     @Singleton
+    internal abstract fun bindLocationSettingsRepository(
+        impl: DataStoreLocationSettingsRepository
+    ): LocationSettingsRepository
+
+    @Binds
+    @Singleton
     internal abstract fun bindLocationProvider(
         impl: LocationController
     ): LocationProvider
+
+    @Binds
+    @Singleton
+    internal abstract fun bindLocationSettingsProvider(
+        impl: LocationController
+    ): LocationSettingsProvider
 
     companion object {
         @Provides
@@ -71,6 +96,13 @@ internal abstract class LocationDataModule {
         internal fun provideApplicationScope(
             @LocationIoDispatcher ioDispatcher: CoroutineDispatcher
         ): CoroutineScope = CoroutineScope(SupervisorJob() + ioDispatcher)
+
+        @Provides
+        @Singleton
+        @LocationSettingsDataStore
+        internal fun provideLocationSettingsDataStore(
+            @ApplicationContext context: Context
+        ): DataStore<Preferences> = context.locationSettingsDataStore
 
         @Provides
         @Singleton

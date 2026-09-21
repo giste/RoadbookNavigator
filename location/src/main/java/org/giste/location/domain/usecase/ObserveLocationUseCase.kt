@@ -15,12 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.location.domain
+package org.giste.location.domain.usecase
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import org.giste.location.LocationEvent
 import org.giste.location.LocationLogger
+import org.giste.location.domain.LocationRepository
 import javax.inject.Inject
 
 /**

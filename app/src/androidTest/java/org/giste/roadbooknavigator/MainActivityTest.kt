@@ -27,29 +27,27 @@ import dagger.hilt.android.testing.UninstallModules
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
-import org.giste.roadbooknavigator.features.settings.data.SettingsModule
-import org.giste.location.di.LocationModule
 import org.giste.location.LocationProvider
 import org.giste.location.LocationSettingsProvider
-import org.giste.location.LocationSettings as ModuleLocationSettings
+import org.giste.location.di.LocationModule
 import org.giste.odometer.OdometerSettings
+import org.giste.odometer.OdometerSettingsProvider
+import org.giste.roadbook.RoadbookSettings
+import org.giste.roadbook.RoadbookSettingsProvider
+import org.giste.roadbooknavigator.features.settings.data.SettingsModule
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
-import org.giste.roadbooknavigator.features.settings.domain.location.LocationSettings
-import org.giste.roadbooknavigator.features.settings.domain.odometer.OdometerSettingsRepository
-import org.giste.roadbooknavigator.features.settings.domain.location.LocationSettingsRepository
 import org.giste.roadbooknavigator.features.settings.domain.AppSettingsRepository
-import org.giste.roadbooknavigator.features.settings.domain.input.InputSettingsRepository
 import org.giste.roadbooknavigator.features.settings.domain.input.InputSettings
-import org.giste.roadbook.RoadbookSettings
-import org.giste.odometer.OdometerSettingsProvider
-import org.giste.roadbook.RoadbookSettingsProvider
+import org.giste.roadbooknavigator.features.settings.domain.input.InputSettingsRepository
+import org.giste.roadbooknavigator.features.settings.domain.odometer.OdometerSettingsRepository
 import org.giste.roadbooknavigator.features.settings.domain.roadbook.RoadbookSettingsRepository
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.giste.location.LocationSettings as ModuleLocationSettings
 
 @UninstallModules(SettingsModule::class, LocationModule::class)
 @HiltAndroidTest
@@ -64,10 +62,6 @@ class MainActivityTest {
 
     @BindValue
     val inputSettingsRepository: InputSettingsRepository = mockk(relaxed = true)
-
-    @BindValue
-    @Deprecated("Will be removed in Phase 4")
-    val locationSettingsRepository: LocationSettingsRepository = mockk(relaxed = true)
 
     @BindValue
     val locationSettingsProvider: LocationSettingsProvider = mockk(relaxed = true)
@@ -88,7 +82,6 @@ class MainActivityTest {
     val roadbookSettingsProvider: RoadbookSettingsProvider = roadbookSettingsRepository
 
     private val settingsFlow = MutableStateFlow(AppSettings())
-    private val locationSettingsFlow = MutableStateFlow(LocationSettings())
     private val moduleLocationSettingsFlow = MutableStateFlow(ModuleLocationSettings())
 
     @Before
@@ -96,7 +89,6 @@ class MainActivityTest {
         hiltRule.inject()
         every { appSettingsRepository.getSettings() } returns settingsFlow
         every { inputSettingsRepository.getInputSettings() } returns MutableStateFlow(InputSettings())
-        every { locationSettingsRepository.getLocationSettings() } returns locationSettingsFlow
         every { locationSettingsProvider.settings } returns moduleLocationSettingsFlow
         every { odometerSettingsRepository.getSettings() } returns MutableStateFlow(OdometerSettings())
         every { roadbookSettingsRepository.getSettings() } returns MutableStateFlow(RoadbookSettings())

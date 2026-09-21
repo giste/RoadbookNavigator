@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  See <https://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package org.giste.roadbooknavigator.features.settings.data
@@ -28,7 +28,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import org.giste.roadbooknavigator.features.settings.domain.odometer.OdometerSettingsRepository
-import org.giste.roadbooknavigator.features.settings.domain.location.LocationSettingsRepository
 import org.giste.roadbooknavigator.features.settings.domain.AppSettingsRepository
 import org.giste.odometer.OdometerSettingsProvider
 import org.giste.roadbook.RoadbookSettingsProvider
@@ -40,10 +39,6 @@ import javax.inject.Singleton
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 internal annotation class RoadbookSettingsDataStore
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-internal annotation class LocationSettingsDataStore
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
@@ -59,7 +54,6 @@ internal annotation class OdometerSettingsDataStore
 
 private val Context.settingsDataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 private val Context.inputKeySettingsDataStore: DataStore<Preferences> by preferencesDataStore(name = "input_settings")
-private val Context.locationSettingsDataStore: DataStore<Preferences> by preferencesDataStore(name = "location_settings")
 private val Context.odometerSettingsDataStore: DataStore<Preferences> by preferencesDataStore(name = "odometer_settings")
 private val Context.roadbookSettingsDataStore: DataStore<Preferences> by preferencesDataStore(name = "roadbook_settings")
 
@@ -78,12 +72,6 @@ abstract class SettingsModule {
     internal abstract fun bindInputKeySettingsRepository(
         impl: DataStoreInputSettingsRepository
     ): InputSettingsRepository
-
-    @Binds
-    @Singleton
-    internal abstract fun bindLocationSettingsRepository(
-        impl: DataStoreLocationSettingsRepository
-    ): LocationSettingsRepository
 
     @Binds
     @Singleton
@@ -121,12 +109,6 @@ abstract class SettingsModule {
         @InputKeySettingsDataStore
         internal fun provideInputKeySettingsDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
             context.inputKeySettingsDataStore
-
-        @Provides
-        @Singleton
-        @LocationSettingsDataStore
-        internal fun provideLocationSettingsDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
-            context.locationSettingsDataStore
 
         @Provides
         @Singleton

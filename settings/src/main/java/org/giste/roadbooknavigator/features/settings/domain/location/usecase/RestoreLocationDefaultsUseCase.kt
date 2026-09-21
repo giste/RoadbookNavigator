@@ -17,16 +17,16 @@
 
 package org.giste.roadbooknavigator.features.settings.domain.location.usecase
 
-import org.giste.roadbooknavigator.features.settings.domain.location.LocationSettingsRepository
+import org.giste.location.LocationSettingsProvider
 import javax.inject.Inject
 
 /**
  * Use case to restore location settings to their default values.
  */
 class RestoreLocationDefaultsUseCase @Inject constructor(
-    private val repository: LocationSettingsRepository
+    private val provider: LocationSettingsProvider
 ) {
     suspend operator fun invoke(): Result<Unit> = runCatching {
-        repository.restoreDefaults()
+        provider.restoreDefaults()
     }
 }

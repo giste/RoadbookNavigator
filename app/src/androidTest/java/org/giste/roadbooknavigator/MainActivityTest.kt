@@ -28,6 +28,10 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.giste.roadbooknavigator.features.settings.data.SettingsModule
+import org.giste.location.di.LocationModule
+import org.giste.location.LocationProvider
+import org.giste.location.LocationSettingsProvider
+import org.giste.location.LocationSettings as ModuleLocationSettings
 import org.giste.odometer.OdometerSettings
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
@@ -47,7 +51,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-@UninstallModules(SettingsModule::class)
+@UninstallModules(SettingsModule::class, LocationModule::class)
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class MainActivityTest {
@@ -62,7 +66,14 @@ class MainActivityTest {
     val inputSettingsRepository: InputSettingsRepository = mockk(relaxed = true)
 
     @BindValue
+    @Deprecated("Will be removed in Phase 4")
     val locationSettingsRepository: LocationSettingsRepository = mockk(relaxed = true)
+
+    @BindValue
+    val locationSettingsProvider: LocationSettingsProvider = mockk(relaxed = true)
+
+    @BindValue
+    val locationProvider: LocationProvider = mockk(relaxed = true)
 
     @BindValue
     val odometerSettingsRepository: OdometerSettingsRepository = mockk(relaxed = true)
@@ -78,6 +89,7 @@ class MainActivityTest {
 
     private val settingsFlow = MutableStateFlow(AppSettings())
     private val locationSettingsFlow = MutableStateFlow(LocationSettings())
+    private val moduleLocationSettingsFlow = MutableStateFlow(ModuleLocationSettings())
 
     @Before
     fun setup() {
@@ -85,6 +97,7 @@ class MainActivityTest {
         every { appSettingsRepository.getSettings() } returns settingsFlow
         every { inputSettingsRepository.getInputSettings() } returns MutableStateFlow(InputSettings())
         every { locationSettingsRepository.getLocationSettings() } returns locationSettingsFlow
+        every { locationSettingsProvider.settings } returns moduleLocationSettingsFlow
         every { odometerSettingsRepository.getSettings() } returns MutableStateFlow(OdometerSettings())
         every { roadbookSettingsRepository.getSettings() } returns MutableStateFlow(RoadbookSettings())
     }

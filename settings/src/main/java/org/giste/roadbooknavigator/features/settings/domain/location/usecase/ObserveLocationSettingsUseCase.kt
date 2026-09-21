@@ -18,15 +18,21 @@
 package org.giste.roadbooknavigator.features.settings.domain.location.usecase
 
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import org.giste.location.LocationSettingsProvider
 import org.giste.roadbooknavigator.features.settings.domain.location.LocationSettings
-import org.giste.roadbooknavigator.features.settings.domain.location.LocationSettingsRepository
 import javax.inject.Inject
 
 /**
  * Use case to observe location settings.
  */
 class ObserveLocationSettingsUseCase @Inject constructor(
-    private val repository: LocationSettingsRepository
+    private val provider: LocationSettingsProvider
 ) {
-    operator fun invoke(): Flow<LocationSettings> = repository.getLocationSettings()
+    operator fun invoke(): Flow<LocationSettings> = provider.settings.map {
+        LocationSettings(
+            pollingInterval = it.pollingInterval,
+            minDistance = it.minDistance
+        )
+    }
 }

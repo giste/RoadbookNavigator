@@ -19,25 +19,30 @@ package org.giste.roadbooknavigator.features.settings.domain.location.usecase
 
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import org.giste.roadbooknavigator.features.settings.domain.location.LocationSettingsRepository
+import org.giste.location.LocationSettingsProvider
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.giste.location.LocationSettings as ModuleLocationSettings
 
 class UpdateLocationMinDistanceUseCaseTest {
 
-    private val repository: LocationSettingsRepository = mockk()
-    private val useCase = UpdateLocationMinDistanceUseCase(repository)
+    private val provider: LocationSettingsProvider = mockk()
+    private val useCase = UpdateLocationMinDistanceUseCase(provider)
 
     @Test
-    fun `should call updateMinDistance on repository when valid`() = runTest {
-        coEvery { repository.updateMinDistance(any()) } returns Unit
+    fun `should call updateSettings on provider when valid`() = runTest {
+        val initialSettings = ModuleLocationSettings(pollingInterval = 500L, minDistance = 2f)
+        every { provider.settings } returns flowOf(initialSettings)
+        coEvery { provider.updateSettings(any()) } returns Unit
 
         val result = useCase(5.0f)
 
         assertTrue(result.isSuccess)
-        coVerify { repository.updateMinDistance(5.0f) }
+        coVerify { provider.updateSettings(initialSettings.copy(minDistance = 5.0f)) }
     }
 
     @Test

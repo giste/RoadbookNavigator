@@ -58,7 +58,7 @@ internal annotation class LocationSettingsDataStore
 
 @Module
 @InstallIn(SingletonComponent::class)
-internal abstract class LocationModule {
+public abstract class LocationModule {
 
     @Binds
     @Singleton
@@ -84,7 +84,7 @@ internal abstract class LocationModule {
         impl: LocationController
     ): LocationSettingsProvider
 
-    companion object {
+    public companion object {
         @Provides
         @Singleton
         @LocationIoDispatcher

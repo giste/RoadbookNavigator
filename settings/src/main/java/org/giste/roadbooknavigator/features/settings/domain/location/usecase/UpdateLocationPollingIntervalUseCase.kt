@@ -18,7 +18,8 @@
 package org.giste.roadbooknavigator.features.settings.domain.location.usecase
 
 import androidx.annotation.IntRange
-import org.giste.roadbooknavigator.features.settings.domain.location.LocationSettingsRepository
+import kotlinx.coroutines.flow.first
+import org.giste.location.LocationSettingsProvider
 import org.giste.roadbooknavigator.features.settings.domain.location.PollingIntervalThreshold
 import javax.inject.Inject
 
@@ -26,13 +27,14 @@ import javax.inject.Inject
  * Use case to update the location polling interval.
  */
 class UpdateLocationPollingIntervalUseCase @Inject constructor(
-    private val repository: LocationSettingsRepository
+    private val provider: LocationSettingsProvider
 ) {
     suspend operator fun invoke(
         @IntRange(from = PollingIntervalThreshold.MIN, to = PollingIntervalThreshold.MAX)
         interval: Long
     ): Result<Unit> = runCatching {
         PollingIntervalThreshold(interval)
-        repository.updatePollingInterval(interval)
+        val currentSettings = provider.settings.first()
+        provider.updateSettings(currentSettings.copy(pollingInterval = interval))
     }
 }

@@ -33,4 +33,9 @@ internal interface LocationSettingsRepository {
      * Updates the location settings.
      */
     suspend fun saveLocationSettings(settings: LocationSettings)
+
+    /**
+     * Restores the default location settings.
+     */
+    suspend fun restoreDefaults()
 }

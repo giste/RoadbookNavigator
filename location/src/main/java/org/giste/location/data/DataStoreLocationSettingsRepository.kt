@@ -58,4 +58,11 @@ internal class DataStoreLocationSettingsRepository @Inject constructor(
         }
         logger.d("DataStoreLocationSettingsRepository: Saved settings %s", settings)
     }
+
+    override suspend fun restoreDefaults() {
+        dataStore.edit { preferences ->
+            preferences.clear()
+        }
+        logger.d("DataStoreLocationSettingsRepository: Restored default settings")
+    }
 }

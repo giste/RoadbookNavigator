@@ -33,6 +33,7 @@ import org.giste.location.LocationSettingsProvider
 import org.giste.location.di.LocationApplicationScope
 import org.giste.location.domain.usecase.ObserveLocationSettingsUseCase
 import org.giste.location.domain.usecase.ObserveLocationUseCase
+import org.giste.location.domain.usecase.RestoreLocationSettingsUseCase
 import org.giste.location.domain.usecase.UpdateLocationSettingsUseCase
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -48,6 +49,7 @@ internal class LocationController @Inject constructor(
     observeLocationUseCase: ObserveLocationUseCase,
     observeLocationSettingsUseCase: ObserveLocationSettingsUseCase,
     private val updateLocationSettingsUseCase: UpdateLocationSettingsUseCase,
+    private val restoreLocationSettingsUseCase: RestoreLocationSettingsUseCase,
     @LocationApplicationScope private val scope: CoroutineScope,
     private val logger: LocationLogger
 ) : LocationProvider, LocationSettingsProvider {
@@ -82,6 +84,13 @@ internal class LocationController @Inject constructor(
      */
     override suspend fun updateSettings(settings: LocationSettings) {
         updateLocationSettingsUseCase(settings)
+    }
+
+    /**
+     * Restores the default location settings.
+     */
+    override suspend fun restoreDefaults() {
+        restoreLocationSettingsUseCase()
     }
 
     @Deprecated("Use settings flow instead")

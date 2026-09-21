@@ -35,6 +35,11 @@ public interface LocationSettingsProvider {
     public suspend fun updateSettings(settings: LocationSettings)
 
     /**
+     * Restores the default location settings.
+     */
+    public suspend fun restoreDefaults()
+
+    /**
      * Polling interval for GPS updates in milliseconds.
      */
     @Deprecated("Use settings flow instead", ReplaceWith("settings.map { it.pollingInterval }"))

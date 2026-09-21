@@ -15,23 +15,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.location
+package org.giste.location.domain.usecase
 
-import dagger.Binds
-import dagger.Module
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
-import org.giste.location.LocationLogger
-import org.giste.location.LocationSettingsProvider
-import javax.inject.Singleton
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.mockk
+import kotlinx.coroutines.test.runTest
+import org.giste.location.domain.LocationSettingsRepository
+import org.junit.Test
 
-@Module
-@InstallIn(SingletonComponent::class)
-internal abstract class LocationBridgeModule {
+class RestoreLocationSettingsUseCaseTest {
 
-    @Binds
-    @Singleton
-    abstract fun bindLocationLogger(
-        impl: LocationLoggerBridge
-    ): LocationLogger
+    private val repository: LocationSettingsRepository = mockk()
+    private val useCase = RestoreLocationSettingsUseCase(repository)
+
+    @Test
+    fun `should call repository restoreDefaults`() = runTest {
+        coEvery { repository.restoreDefaults() } returns Unit
+
+        useCase()
+
+        coVerify { repository.restoreDefaults() }
+    }
 }

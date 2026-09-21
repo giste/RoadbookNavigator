@@ -15,23 +15,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.location
+package org.giste.location.domain.usecase
 
-import dagger.Binds
-import dagger.Module
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
-import org.giste.location.LocationLogger
-import org.giste.location.LocationSettingsProvider
-import javax.inject.Singleton
+import org.giste.location.domain.LocationSettingsRepository
+import javax.inject.Inject
 
-@Module
-@InstallIn(SingletonComponent::class)
-internal abstract class LocationBridgeModule {
-
-    @Binds
-    @Singleton
-    abstract fun bindLocationLogger(
-        impl: LocationLoggerBridge
-    ): LocationLogger
+/**
+ * Use case to restore location settings to their default values.
+ */
+internal class RestoreLocationSettingsUseCase @Inject constructor(
+    private val repository: LocationSettingsRepository
+) {
+    suspend operator fun invoke() {
+        repository.restoreDefaults()
+    }
 }

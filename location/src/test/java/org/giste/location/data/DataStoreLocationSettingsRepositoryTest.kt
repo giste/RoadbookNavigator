@@ -83,4 +83,16 @@ internal class DataStoreLocationSettingsRepositoryTest {
         assertEquals(1000L, persistedSettings.pollingInterval)
         assertEquals(5.0f, persistedSettings.minDistance, 0.01f)
     }
+
+    @Test
+    fun `restoreDefaults resets to default values`() = runTest {
+        val newSettings = LocationSettings(pollingInterval = 1000L, minDistance = 5.0f)
+        repository.saveLocationSettings(newSettings)
+
+        repository.restoreDefaults()
+
+        val settings = repository.getLocationSettings().first()
+        assertEquals(LocationSettings.DEFAULT_POLLING_INTERVAL, settings.pollingInterval)
+        assertEquals(LocationSettings.DEFAULT_MIN_DISTANCE, settings.minDistance, 0.01f)
+    }
 }

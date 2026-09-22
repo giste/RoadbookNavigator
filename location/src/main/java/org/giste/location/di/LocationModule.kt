@@ -78,12 +78,6 @@ public abstract class LocationModule {
         impl: LocationController
     ): LocationProvider
 
-    @Binds
-    @Singleton
-    internal abstract fun bindLocationSettingsProvider(
-        impl: LocationController
-    ): LocationSettingsProvider
-
     public companion object {
         @Provides
         @Singleton

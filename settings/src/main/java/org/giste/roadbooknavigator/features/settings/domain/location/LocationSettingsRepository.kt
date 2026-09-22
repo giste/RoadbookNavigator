@@ -17,9 +17,20 @@
 
 package org.giste.roadbooknavigator.features.settings.domain.location
 
+import org.giste.location.LocationSettings
 import org.giste.location.LocationSettingsProvider
 
 /**
  * Interface to manage location settings persistence, bridging `:settings` and `:location`.
  */
-interface LocationSettingsRepository : LocationSettingsProvider
+interface LocationSettingsRepository : LocationSettingsProvider {
+    /**
+     * Updates the location settings.
+     */
+    suspend fun updateSettings(settings: LocationSettings)
+
+    /**
+     * Restores default location settings.
+     */
+    suspend fun restoreDefaults()
+}

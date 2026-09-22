@@ -15,18 +15,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.giste.roadbooknavigator.features.settings.domain.location.usecase
+package org.giste.roadbooknavigator.features.settings.domain.location
 
-import org.giste.roadbooknavigator.features.settings.domain.location.LocationSettingsRepository
-import javax.inject.Inject
+import org.giste.location.LocationSettingsProvider
 
 /**
- * Use case to restore location settings to their default values.
+ * Interface to manage location settings persistence, bridging `:settings` and `:location`.
  */
-class RestoreLocationDefaultsUseCase @Inject constructor(
-    private val repository: LocationSettingsRepository
-) {
-    suspend operator fun invoke(): Result<Unit> = runCatching {
-        repository.restoreDefaults()
-    }
-}
+interface LocationSettingsRepository : LocationSettingsProvider

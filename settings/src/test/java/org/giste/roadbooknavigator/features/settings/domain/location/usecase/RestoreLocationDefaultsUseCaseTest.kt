@@ -21,22 +21,22 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.giste.location.LocationSettingsProvider
+import org.giste.roadbooknavigator.features.settings.domain.location.LocationSettingsRepository
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class RestoreLocationDefaultsUseCaseTest {
 
-    private val provider: LocationSettingsProvider = mockk()
-    private val useCase = RestoreLocationDefaultsUseCase(provider)
+    private val repository: LocationSettingsRepository = mockk()
+    private val useCase = RestoreLocationDefaultsUseCase(repository)
 
     @Test
-    fun `should call restoreDefaults on provider`() = runTest {
-        coEvery { provider.restoreDefaults() } returns Unit
+    fun `should call restoreDefaults on repository`() = runTest {
+        coEvery { repository.restoreDefaults() } returns Unit
 
         val result = useCase()
 
         assertTrue(result.isSuccess)
-        coVerify { provider.restoreDefaults() }
+        coVerify { repository.restoreDefaults() }
     }
 }

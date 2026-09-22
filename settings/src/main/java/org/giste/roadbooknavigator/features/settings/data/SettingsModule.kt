@@ -27,12 +27,14 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import org.giste.roadbooknavigator.features.settings.domain.odometer.OdometerSettingsRepository
-import org.giste.roadbooknavigator.features.settings.domain.AppSettingsRepository
+import org.giste.location.LocationSettingsProvider
 import org.giste.odometer.OdometerSettingsProvider
 import org.giste.roadbook.RoadbookSettingsProvider
-import org.giste.roadbooknavigator.features.settings.domain.roadbook.RoadbookSettingsRepository
+import org.giste.roadbooknavigator.features.settings.domain.AppSettingsRepository
 import org.giste.roadbooknavigator.features.settings.domain.input.InputSettingsRepository
+import org.giste.roadbooknavigator.features.settings.domain.location.LocationSettingsRepository
+import org.giste.roadbooknavigator.features.settings.domain.odometer.OdometerSettingsRepository
+import org.giste.roadbooknavigator.features.settings.domain.roadbook.RoadbookSettingsRepository
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
@@ -52,10 +54,15 @@ internal annotation class InputKeySettingsDataStore
 @Retention(AnnotationRetention.BINARY)
 internal annotation class OdometerSettingsDataStore
 
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+internal annotation class LocationSettingsDataStore
+
 private val Context.settingsDataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 private val Context.inputKeySettingsDataStore: DataStore<Preferences> by preferencesDataStore(name = "input_settings")
 private val Context.odometerSettingsDataStore: DataStore<Preferences> by preferencesDataStore(name = "odometer_settings")
 private val Context.roadbookSettingsDataStore: DataStore<Preferences> by preferencesDataStore(name = "roadbook_settings")
+private val Context.locationSettingsDataStore: DataStore<Preferences> by preferencesDataStore(name = "location_settings")
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -87,6 +94,12 @@ abstract class SettingsModule {
 
     @Binds
     @Singleton
+    internal abstract fun bindLocationSettingsRepository(
+        impl: DataStoreLocationSettingsRepository
+    ): LocationSettingsRepository
+
+    @Binds
+    @Singleton
     internal abstract fun bindOdometerSettingsProvider(
         impl: DataStoreOdometerSettingsRepository
     ): OdometerSettingsProvider
@@ -96,6 +109,12 @@ abstract class SettingsModule {
     internal abstract fun bindRoadbookSettingsProvider(
         impl: DataStoreRoadbookSettingsRepository
     ): RoadbookSettingsProvider
+
+    @Binds
+    @Singleton
+    internal abstract fun bindLocationSettingsProvider(
+        impl: DataStoreLocationSettingsRepository
+    ): LocationSettingsProvider
 
     companion object {
         @Provides
@@ -121,5 +140,11 @@ abstract class SettingsModule {
         @RoadbookSettingsDataStore
         internal fun provideRoadbookSettingsDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
             context.roadbookSettingsDataStore
+
+        @Provides
+        @Singleton
+        @LocationSettingsDataStore
+        internal fun provideLocationSettingsDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
+            context.locationSettingsDataStore
     }
 }

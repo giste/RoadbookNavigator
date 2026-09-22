@@ -19,6 +19,8 @@ package org.giste.location
 
 import kotlinx.coroutines.flow.Flow
 
+import kotlinx.coroutines.flow.map
+
 /**
  * Interface that defines the configuration required by the location module.
  * This allows the module to be decoupled from the actual settings persistence.
@@ -44,10 +46,12 @@ public interface LocationSettingsProvider {
      */
     @Deprecated("Use settings flow instead", ReplaceWith("settings.map { it.pollingInterval }"))
     public val pollingInterval: Flow<Long>
+        get() = settings.map { it.pollingInterval }
 
     /**
      * Minimum distance between GPS updates in meters.
      */
     @Deprecated("Use settings flow instead", ReplaceWith("settings.map { it.minDistance }"))
     public val minDistance: Flow<Float>
+        get() = settings.map { it.minDistance }
 }

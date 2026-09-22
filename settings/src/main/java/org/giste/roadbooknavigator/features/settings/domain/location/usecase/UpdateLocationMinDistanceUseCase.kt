@@ -19,7 +19,7 @@ package org.giste.roadbooknavigator.features.settings.domain.location.usecase
 
 import androidx.annotation.FloatRange
 import kotlinx.coroutines.flow.first
-import org.giste.location.LocationSettingsProvider
+import org.giste.roadbooknavigator.features.settings.domain.location.LocationSettingsRepository
 import org.giste.roadbooknavigator.features.settings.domain.location.MinDistanceThreshold
 import javax.inject.Inject
 
@@ -27,14 +27,14 @@ import javax.inject.Inject
  * Use case to update the minimum distance between location updates.
  */
 class UpdateLocationMinDistanceUseCase @Inject constructor(
-    private val provider: LocationSettingsProvider
+    private val repository: LocationSettingsRepository
 ) {
     suspend operator fun invoke(
         @FloatRange(from = MinDistanceThreshold.MIN.toDouble(), to = MinDistanceThreshold.MAX.toDouble())
         distance: Float
     ): Result<Unit> = runCatching {
         MinDistanceThreshold(distance)
-        val currentSettings = provider.settings.first()
-        provider.updateSettings(currentSettings.copy(minDistance = distance))
+        val currentSettings = repository.settings.first()
+        repository.updateSettings(currentSettings.copy(minDistance = distance))
     }
 }

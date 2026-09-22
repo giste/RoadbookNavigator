@@ -22,21 +22,20 @@ import io.mockk.mockk
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import org.giste.location.LocationSettingsProvider
-import org.giste.roadbooknavigator.features.settings.domain.location.LocationSettings
+import org.giste.roadbooknavigator.features.settings.domain.location.LocationSettingsRepository
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.giste.location.LocationSettings as ModuleLocationSettings
 
 class ObserveLocationSettingsUseCaseTest {
 
-    private val provider: LocationSettingsProvider = mockk()
-    private val useCase = ObserveLocationSettingsUseCase(provider)
+    private val repository: LocationSettingsRepository = mockk()
+    private val useCase = ObserveLocationSettingsUseCase(repository)
 
     @Test
-    fun `should emit settings from provider`() = runTest {
+    fun `should emit settings from repository`() = runTest {
         val moduleSettings = ModuleLocationSettings(pollingInterval = 1000L, minDistance = 5f)
-        every { provider.settings } returns flowOf(moduleSettings)
+        every { repository.settings } returns flowOf(moduleSettings)
 
         val result = useCase().first()
 

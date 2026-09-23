@@ -22,7 +22,6 @@ import android.content.Context
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
-import android.os.Bundle
 import android.os.Looper
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -65,21 +64,9 @@ internal class GpsLocationRepository(
                 trySend(LocationEvent.LocationUpdated(location.toUserLocation()))
             }
 
-            @Deprecated("Deprecated in Java")
-            override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
-                logger.d("GpsLocationRepository: Status changed for %s: %d", provider, status)
-                // Note: TEMPORARY - simple mapping for demonstration. 
-                // status 0 = OUT_OF_SERVICE, 1 = TEMPORARILY_UNAVAILABLE, 2 = AVAILABLE
-                if (status < 2) {
-                    trySend(LocationEvent.SignalLost)
-                } else {
-                    trySend(LocationEvent.SignalRestored)
-                }
-            }
-
             override fun onProviderEnabled(provider: String) {
                 logger.i("GpsLocationRepository: Provider enabled: %s", provider)
-                trySend(LocationEvent.SignalRestored)
+                trySend(LocationEvent.ProviderEnabled)
             }
 
             override fun onProviderDisabled(provider: String) {

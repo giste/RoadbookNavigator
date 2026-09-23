@@ -29,14 +29,9 @@ public sealed class LocationEvent {
     public data class LocationUpdated(val location: UserLocation) : LocationEvent()
 
     /**
-     * Emitted when the GPS signal is lost.
+     * Emitted when the location provider is enabled (e.g., user turned on GPS).
      */
-    public data object SignalLost : LocationEvent()
-
-    /**
-     * Emitted when the GPS signal is restored after being lost.
-     */
-    public data object SignalRestored : LocationEvent()
+    public data object ProviderEnabled : LocationEvent()
 
     /**
      * Emitted when the location provider is disabled (e.g., user turned off GPS).

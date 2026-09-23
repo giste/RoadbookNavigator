@@ -141,46 +141,6 @@ class GpsLocationRepositoryTest {
     }
 
     @Test
-    fun `should emit SignalLost when provider status is unavailable`() = runTest {
-        val listenerSlot = slot<LocationListener>()
-        every { 
-            locationManager.requestLocationUpdates(any<String>(), any<Long>(), any<Float>(), capture(listenerSlot), any<Looper>())
-        } returns Unit
-
-        val collectedEvents = mutableListOf<LocationEvent>()
-        val job = launch(UnconfinedTestDispatcher()) {
-            gpsLocationRepository.getLocations(1000L, 0f).collect { collectedEvents.add(it) }
-        }
-
-        // status 1 = TEMPORARILY_UNAVAILABLE
-        @Suppress("DEPRECATION")
-        listenerSlot.captured.onStatusChanged(LocationManager.GPS_PROVIDER, 1, null)
-
-        assertTrue(collectedEvents.last() is LocationEvent.SignalLost)
-        job.cancel()
-    }
-
-    @Test
-    fun `should emit SignalRestored when provider status is available`() = runTest {
-        val listenerSlot = slot<LocationListener>()
-        every { 
-            locationManager.requestLocationUpdates(any<String>(), any<Long>(), any<Float>(), capture(listenerSlot), any<Looper>())
-        } returns Unit
-
-        val collectedEvents = mutableListOf<LocationEvent>()
-        val job = launch(UnconfinedTestDispatcher()) {
-            gpsLocationRepository.getLocations(1000L, 0f).collect { collectedEvents.add(it) }
-        }
-
-        // status 2 = AVAILABLE
-        @Suppress("DEPRECATION")
-        listenerSlot.captured.onStatusChanged(LocationManager.GPS_PROVIDER, 2, null)
-
-        assertTrue(collectedEvents.last() is LocationEvent.SignalRestored)
-        job.cancel()
-    }
-
-    @Test
     fun `should emit ProviderDisabled when provider is disabled`() = runTest {
         val listenerSlot = slot<LocationListener>()
         every { 
@@ -199,7 +159,7 @@ class GpsLocationRepositoryTest {
     }
 
     @Test
-    fun `should emit SignalRestored when provider is enabled`() = runTest {
+    fun `should emit ProviderEnabled when provider is enabled`() = runTest {
         val listenerSlot = slot<LocationListener>()
         every { 
             locationManager.requestLocationUpdates(any<String>(), any<Long>(), any<Float>(), capture(listenerSlot), any<Looper>())
@@ -212,7 +172,7 @@ class GpsLocationRepositoryTest {
 
         listenerSlot.captured.onProviderEnabled(LocationManager.GPS_PROVIDER)
 
-        assertTrue(collectedEvents.last() is LocationEvent.SignalRestored)
+        assertTrue(collectedEvents.last() is LocationEvent.ProviderEnabled)
         job.cancel()
     }
 
@@ -224,7 +184,6 @@ class GpsLocationRepositoryTest {
 
         val collectedEvents = mutableListOf<LocationEvent>()
         
-        // We expect the flow to throw the exception after emitting the Error event
         try {
             gpsLocationRepository.getLocations(1000L, 0f).collect { 
                 collectedEvents.add(it) 

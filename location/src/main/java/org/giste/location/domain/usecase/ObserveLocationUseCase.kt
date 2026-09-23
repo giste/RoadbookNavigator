@@ -22,12 +22,11 @@ import kotlinx.coroutines.flow.Flow
 import org.giste.location.LocationEvent
 import org.giste.location.LocationLogger
 import org.giste.location.domain.LocationRepository
-import javax.inject.Inject
 
 /**
  * Use case to observe location events from the device.
  */
-internal class ObserveLocationUseCase @Inject internal constructor(
+internal class ObserveLocationUseCase(
     private val locationRepository: LocationRepository,
     private val logger: LocationLogger
 ) {

@@ -19,17 +19,13 @@ package org.giste.location.data
 
 import android.util.Log
 import org.giste.location.LocationLogger
-import javax.inject.Inject
 
 /**
  * Default implementation of [LocationLogger] using [Log].
  */
 internal class AndroidLocationLogger(
-    private val tag: String
+    private val tag: String = "Location"
 ) : LocationLogger {
-
-    @Inject
-    constructor() : this("Location")
 
     override fun v(message: String, vararg args: Any?) {
         Log.v(tag, format(message, *args))

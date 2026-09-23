@@ -27,9 +27,7 @@ import dagger.hilt.android.testing.UninstallModules
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
-import org.giste.location.LocationProvider
 import org.giste.location.LocationSettingsProvider
-import org.giste.location.di.LocationModule
 import org.giste.odometer.OdometerSettings
 import org.giste.odometer.OdometerSettingsProvider
 import org.giste.roadbook.RoadbookSettings
@@ -40,6 +38,7 @@ import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.AppSettingsRepository
 import org.giste.roadbooknavigator.features.settings.domain.input.InputSettings
 import org.giste.roadbooknavigator.features.settings.domain.input.InputSettingsRepository
+import org.giste.roadbooknavigator.features.settings.domain.location.LocationSettingsRepository
 import org.giste.roadbooknavigator.features.settings.domain.odometer.OdometerSettingsRepository
 import org.giste.roadbooknavigator.features.settings.domain.roadbook.RoadbookSettingsRepository
 import org.junit.Assert.assertEquals
@@ -49,7 +48,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.giste.location.LocationSettings as ModuleLocationSettings
 
-@UninstallModules(SettingsModule::class, LocationModule::class)
+@UninstallModules(SettingsModule::class)
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class MainActivityTest {
@@ -64,10 +63,10 @@ class MainActivityTest {
     val inputSettingsRepository: InputSettingsRepository = mockk(relaxed = true)
 
     @BindValue
-    val locationSettingsProvider: LocationSettingsProvider = mockk(relaxed = true)
+    val locationSettingsRepository: LocationSettingsRepository = mockk(relaxed = true)
 
     @BindValue
-    val locationProvider: LocationProvider = mockk(relaxed = true)
+    val locationSettingsProvider: LocationSettingsProvider = locationSettingsRepository
 
     @BindValue
     val odometerSettingsRepository: OdometerSettingsRepository = mockk(relaxed = true)
@@ -89,7 +88,7 @@ class MainActivityTest {
         hiltRule.inject()
         every { appSettingsRepository.getSettings() } returns settingsFlow
         every { inputSettingsRepository.getInputSettings() } returns MutableStateFlow(InputSettings())
-        every { locationSettingsProvider.settings } returns moduleLocationSettingsFlow
+        every { locationSettingsRepository.settings } returns moduleLocationSettingsFlow
         every { odometerSettingsRepository.getSettings() } returns MutableStateFlow(OdometerSettings())
         every { roadbookSettingsRepository.getSettings() } returns MutableStateFlow(RoadbookSettings())
     }

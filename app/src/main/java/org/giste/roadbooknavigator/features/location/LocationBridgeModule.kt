@@ -17,11 +17,17 @@
 
 package org.giste.roadbooknavigator.features.location
 
+import android.content.Context
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import org.giste.location.LocationClient
 import org.giste.location.LocationLogger
+import org.giste.location.LocationProvider
+import org.giste.location.LocationSettingsProvider
 import javax.inject.Singleton
 
 @Module
@@ -33,4 +39,24 @@ internal abstract class LocationBridgeModule {
     abstract fun bindLocationLogger(
         impl: LocationLoggerBridge
     ): LocationLogger
+
+    companion object {
+        @Provides
+        @Singleton
+        fun provideLocationClient(
+            @ApplicationContext context: Context,
+            locationSettingsProvider: LocationSettingsProvider,
+            logger: LocationLogger
+        ): LocationClient = LocationClient(
+            context = context,
+            settings = locationSettingsProvider.settings,
+            logger = logger
+        )
+
+        @Provides
+        @Singleton
+        fun provideLocationProvider(
+            client: LocationClient
+        ): LocationProvider = client
+    }
 }

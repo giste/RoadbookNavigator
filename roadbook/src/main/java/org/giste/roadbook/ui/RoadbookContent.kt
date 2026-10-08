@@ -38,7 +38,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -53,6 +52,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.giste.roadbook.R
+import org.giste.roadbook.compactRoadbookDimensions
 import org.giste.roadbook.domain.model.Coordinates
 import org.giste.roadbook.domain.model.Distance
 import org.giste.roadbook.domain.model.Point
@@ -61,7 +61,6 @@ import org.giste.roadbook.domain.model.Route
 import org.giste.roadbook.domain.model.Track
 import org.giste.roadbook.domain.model.Waypoint
 import org.giste.roadbook.ui.theme.RoadbookTheme
-import org.giste.roadbook.compactRoadbookDimensions
 import java.io.InputStream
 
 @Composable
@@ -215,7 +214,6 @@ internal fun RoadbookList(
     }
 }
 
-@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Preview(
     name = "Empty State",
     device = "spec:width=1920px,height=1200px,dpi=280,orientation=portrait",
@@ -240,7 +238,6 @@ internal fun RoadbookSectionEmptyPreview() {
     }
 }
 
-@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Preview(
     name = "Success State",
     device = "spec:width=1920px,height=1200px,dpi=280,orientation=portrait",
@@ -296,7 +293,6 @@ internal fun RoadbookSectionSuccessPreview() {
     }
 }
 
-@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Preview(
     name = "Success State Dark",
     device = "spec:width=1920px,height=1200px,dpi=280,orientation=portrait",

@@ -17,7 +17,6 @@
 
 package org.giste.location.domain.usecase
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import org.giste.location.LocationEvent
 import org.giste.location.LocationLogger
@@ -30,7 +29,6 @@ internal class ObserveLocationUseCase(
     private val locationRepository: LocationRepository,
     private val logger: LocationLogger
 ) {
-    @OptIn(ExperimentalCoroutinesApi::class)
     operator fun invoke(
         pollingInterval: Long,
         minDistance: Float

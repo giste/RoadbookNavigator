@@ -23,14 +23,14 @@ import javax.inject.Singleton
 /**
  * Interface to provide the current time, allowing for easier testing of time-based logic.
  */
-public interface TimeProvider {
+interface TimeProvider {
     /**
      * Returns the current time in milliseconds.
      */
-    public fun currentTimeMillis(): Long
+    fun currentTimeMillis(): Long
 }
 
 @Singleton
-public class RealTimeProvider @Inject constructor() : TimeProvider {
+class RealTimeProvider @Inject constructor() : TimeProvider {
     override fun currentTimeMillis(): Long = System.currentTimeMillis()
 }

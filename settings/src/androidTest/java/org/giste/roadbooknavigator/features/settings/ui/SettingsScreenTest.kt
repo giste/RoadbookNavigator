@@ -105,7 +105,6 @@ class SettingsScreenTest {
         composeTestRule.onNodeWithText("Map Management Content").assertIsDisplayed()
     }
 
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     @Test
     fun themeSelection_triggersCallback() {
         var selectedTheme: AppTheme? = null
@@ -142,7 +141,6 @@ class SettingsScreenTest {
         assertTrue(selectedTheme == AppTheme.DARK)
     }
 
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     @Test
     fun backButtonClick_triggersCallback() {
         var backClicked = false
@@ -176,7 +174,6 @@ class SettingsScreenTest {
         assertTrue(backClicked)
     }
 
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     @Test
     fun restoreDefaultsButton_triggersCallback() {
         var restoreClicked = false
@@ -221,7 +218,6 @@ class SettingsScreenTest {
         assertTrue(restoreClicked)
     }
 
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     @Test
     fun orientationSelection_triggersCallback() {
         var selectedOrientation: AppOrientation? = null
@@ -258,7 +254,6 @@ class SettingsScreenTest {
         assertTrue(selectedOrientation == AppOrientation.HORIZONTAL)
     }
 
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     @Test
     fun fullScreenToggle_triggersCallback() {
         var fullScreenEnabled: Boolean? = null
@@ -294,7 +289,6 @@ class SettingsScreenTest {
         assertTrue(fullScreenEnabled == true)
     }
 
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     @Test
     fun shortDistanceSlider_triggersCallback() {
         var newValue: Long? = null
@@ -339,7 +333,6 @@ class SettingsScreenTest {
         assertTrue("Expected newValue to be > 100L but was $newValue", newValue != null && newValue > 100L)
     }
 
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     @Test
     fun pollingIntervalSlider_triggersCallback() {
         var newValue: Long? = null
@@ -382,7 +375,6 @@ class SettingsScreenTest {
         assertTrue("Expected newValue to be > 500L but was $newValue", newValue != null && newValue > 500L)
     }
 
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     @Test
     fun speedThresholdSlider_triggersCallback() {
         var newValue: Float? = null
@@ -425,7 +417,6 @@ class SettingsScreenTest {
         assertTrue("Expected newValue to be > 0.5f but was $newValue", newValue != null && newValue > 0.5f)
     }
 
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     @Test
     fun minAccuracySlider_triggersCallback() {
         var newValue: Float? = null
@@ -468,7 +459,6 @@ class SettingsScreenTest {
         assertTrue("Expected newValue to be > 10.0f but was $newValue", newValue != null && newValue > 10.0f)
     }
 
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     @Test
     fun minVerticalAccuracySlider_triggersCallback() {
         var newValue: Float? = null
@@ -511,7 +501,6 @@ class SettingsScreenTest {
         assertTrue("Expected newValue to be > 5.0f but was $newValue", newValue != null && newValue > 5.0f)
     }
 
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     @Test
     fun minDistanceSlider_triggersCallback() {
         var newValue: Float? = null
@@ -559,7 +548,6 @@ class SettingsScreenTest {
         assertTrue("Expected newValue to be > 1.0f but was $newValue", newValue != null && newValue > 1.0f)
     }
 
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     @Test
     fun activeTab_survivesConfigurationChange() {
         val restorationTester = StateRestorationTester(composeTestRule)
@@ -601,7 +589,6 @@ class SettingsScreenTest {
         composeTestRule.onNodeWithText(context.getString(R.string.settings_advanced_warning)).assertIsDisplayed()
     }
 
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     @Test
     fun remoteModelSelection_triggersCallback() {
         var selectedModel: RemoteModel? = null
@@ -990,7 +977,6 @@ class SettingsScreenTest {
         assertEquals(LocationSettings.DEFAULT_MIN_DISTANCE, restoredValue!!, 0.01f)
     }
 
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     @Test
     fun keyMapping_triggersDialog_whenModelIsCustom() {
         composeTestRule.setContent {
@@ -1033,7 +1019,6 @@ class SettingsScreenTest {
             .assertIsDisplayed()
     }
 
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     @Test
     fun keyMappings_areDisabled_whenModelIsNotCustom() {
         composeTestRule.setContent {

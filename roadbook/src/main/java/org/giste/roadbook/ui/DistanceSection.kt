@@ -34,7 +34,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.VerticalDivider
-import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,12 +43,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import org.giste.roadbook.compactRoadbookDimensions
 import org.giste.roadbook.domain.model.Coordinates
 import org.giste.roadbook.domain.model.Distance
 import org.giste.roadbook.domain.model.Waypoint
 import org.giste.roadbook.ui.components.RoadbookAutoSizeText
 import org.giste.roadbook.ui.theme.RoadbookTheme
-import org.giste.roadbook.compactRoadbookDimensions
 
 @Composable
 internal fun DistanceSection(
@@ -186,7 +185,6 @@ internal fun DistanceSection(
     }
 }
 
-@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Preview(showBackground = true, name = "Standard Waypoint")
 @Composable
 private fun DistanceSectionStandardPreview() {
@@ -212,7 +210,6 @@ private fun DistanceSectionStandardPreview() {
     }
 }
 
-@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Preview(showBackground = true, name = "Reset Waypoint")
 @Composable
 private fun DistanceSectionResetPreview() {
@@ -239,7 +236,6 @@ private fun DistanceSectionResetPreview() {
     }
 }
 
-@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Preview(showBackground = true, name = "Danger Medium")
 @Composable
 private fun DistanceSectionDangerPreview() {
@@ -266,7 +262,6 @@ private fun DistanceSectionDangerPreview() {
     }
 }
 
-@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Preview(showBackground = true, name = "Short Distance")
 @Composable
 private fun DistanceSectionShortDistancePreview() {
@@ -292,7 +287,6 @@ private fun DistanceSectionShortDistancePreview() {
     }
 }
 
-@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Preview(showBackground = true, name = "Reset + Danger Medium")
 @Composable
 private fun DistanceSectionResetDangerPreview() {
@@ -320,7 +314,6 @@ private fun DistanceSectionResetDangerPreview() {
     }
 }
 
-@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Preview(showBackground = true, name = "Large Distance Auto-size")
 @Composable
 private fun DistanceSectionLargeDistancePreview() {

@@ -53,7 +53,7 @@ class RoadbookLoggerBridge @Inject constructor(
     }
 
     override fun withTag(tag: String): RoadbookLogger {
-        // The app's Logger handles tagging internally or we could wrap it
+        // The app's Logger handles tagging internally, or we could wrap it
         return this
     }
 }

@@ -25,7 +25,7 @@ import javax.inject.Inject
  * Bridge implementation of [OdometerLogger] that redirects to the app's [Logger].
  */
 class OdometerLoggerBridge @Inject constructor(
-    private val logger: Logger
+    logger: Logger
 ) : OdometerLogger {
     private val taggedLogger = logger.withTag("Odometer")
 

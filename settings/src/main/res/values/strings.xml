@@ -55,7 +55,7 @@
     <string name="settings_advanced_min_accuracy_title">Min Horizontal Accuracy (m)</string>
     <string name="settings_advanced_min_accuracy_helper">Odometer will ignore updates with accuracy worse than this.</string>
     <string name="settings_advanced_min_vertical_accuracy_title">Min Vertical Accuracy (m)</string>
-    <string name="settings_advanced_min_vertical_accuracy_helper">3D distance will fallback to 2D if vertical accuracy is worse than this.</string>
+    <string name="settings_advanced_min_vertical_accuracy_helper">3D distance will fall back to 2D if vertical accuracy is worse than this.</string>
     <string name="settings_advanced_polling_interval_title">GPS Polling Interval (ms)</string>
     <string name="settings_advanced_polling_interval_helper">Minimum time between GPS updates.</string>
     <string name="settings_advanced_min_distance_title">GPS Min Distance (m)</string>

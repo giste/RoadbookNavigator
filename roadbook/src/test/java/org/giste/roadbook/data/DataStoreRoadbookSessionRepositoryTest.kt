@@ -85,7 +85,7 @@ class DataStoreRoadbookSessionRepositoryTest {
     @Test
     fun `scrollPosition should emit updates in real time`() = runTest {
         val positions = mutableListOf<RoadbookPosition>()
-        // Use backgroundScope so it's automatically cancelled, 
+        // Use backgroundScope so it's automatically canceled,
         // but we still want to verify the items.
         val job = backgroundScope.launch(testDispatcher) {
             repository.scrollPosition.toList(positions)

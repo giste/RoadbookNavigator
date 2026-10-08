@@ -26,7 +26,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -66,10 +65,10 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
-import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -97,14 +96,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import org.giste.roadbooknavigator.core.settings.domain.AppTheme
-import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
-import org.giste.roadbooknavigator.features.settings.domain.location.LocationSettings
-import org.giste.roadbooknavigator.features.settings.domain.location.MinDistanceThreshold
-import org.giste.roadbooknavigator.features.settings.domain.location.PollingIntervalThreshold
-import org.giste.map.MapSettings
 import org.giste.map.MapManagementScreen
 import org.giste.map.MapManagementState
+import org.giste.map.MapSettings
 import org.giste.map.compactMapDimensions
 import org.giste.map.expandedMapDimensions
 import org.giste.map.rememberMapManagementState
@@ -114,11 +108,16 @@ import org.giste.odometer.SpeedThreshold
 import org.giste.odometer.VerticalAccuracyThreshold
 import org.giste.roadbook.RoadbookSettings
 import org.giste.roadbook.ShortDistanceThreshold
+import org.giste.roadbooknavigator.core.settings.domain.AppTheme
+import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 import org.giste.roadbooknavigator.features.settings.R
 import org.giste.roadbooknavigator.features.settings.domain.AppOrientation
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.input.InputSettings
 import org.giste.roadbooknavigator.features.settings.domain.input.RemoteModel
+import org.giste.roadbooknavigator.features.settings.domain.location.LocationSettings
+import org.giste.roadbooknavigator.features.settings.domain.location.MinDistanceThreshold
+import org.giste.roadbooknavigator.features.settings.domain.location.PollingIntervalThreshold
 import kotlin.math.roundToInt
 import org.giste.roadbooknavigator.core.R as CoreR
 
@@ -883,7 +882,6 @@ fun SettingsSectionTitle(title: String) {
     )
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ThemeSelector(currentTheme: AppTheme, onThemeSelected: (AppTheme) -> Unit) {
     val options = listOf(

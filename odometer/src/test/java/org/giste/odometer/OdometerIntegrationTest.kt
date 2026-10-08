@@ -155,7 +155,7 @@ class OdometerIntegrationTest {
             val firstDistance = results.last().total
             Assert.assertTrue(firstDistance > 0)
 
-            // Change settings (e.g. higher speed threshold within MIN..MAX)
+            // Change settings (e.g. higher speed threshold within MIN...MAX)
             settingsFlow.emit(OdometerSettings(speedThreshold = SpeedThreshold(2.0f)))
 
             // Valid fix 3 but ignored due to speed threshold (0.1f < 2.0f)

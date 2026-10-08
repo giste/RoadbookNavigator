@@ -81,50 +81,67 @@ kotlin {
 }
 
 dependencies {
+    // Feature Modules
     implementation(project(":core"))
     implementation(project(":location"))
     implementation(project(":map"))
     implementation(project(":odometer"))
     implementation(project(":roadbook"))
     implementation(project(":settings"))
+
+    // AndroidX & Core
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.core.splashscreen)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+
+    // Compose
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.graphics)
+    implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.material3.windowsizeclass)
     implementation(libs.androidx.compose.material.icons.core)
     implementation(libs.androidx.compose.material.icons.extended)
-    implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.ui.graphics)
-    implementation(libs.androidx.compose.ui.tooling.preview)
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.core.splashscreen)
+
+    // Navigation
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.hilt.navigation.compose)
+
+    // WorkManager & DataStore
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.hilt.work)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.datastore)
     implementation(libs.androidx.datastore.preferences)
+
+    // Dependency Injection
     implementation(libs.hilt.android)
-    implementation(libs.hilt.navigation.compose)
-    implementation(libs.androidx.navigation.compose)
     ksp(libs.hilt.compiler)
-    kspTest(libs.hilt.compiler)
-    kspAndroidTest(libs.hilt.compiler)
-    testImplementation(libs.hilt.android.testing)
-    androidTestImplementation(libs.hilt.android.testing)
+    ksp(libs.androidx.hilt.compiler)
+
+    // Utilities & Serialization
+    implementation(libs.kotlinx.serialization.json)
     implementation(libs.timber)
+
+    // Unit Testing
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.robolectric)
     testImplementation(libs.androidx.test.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+
+    // Android Instrumentation Testing
+    androidTestImplementation(enforcedPlatform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.hilt.android.testing)
+    androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.espresso.intents)
-    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.lifecycle.runtime.testing)
     androidTestImplementation(libs.mockkAndroid)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
+
+    // Debug
     debugImplementation(libs.androidx.compose.ui.tooling)
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
 }

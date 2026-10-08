@@ -83,8 +83,8 @@ dependencies {
     implementation(libs.vtm)
     implementation(libs.vtm.themes)
     implementation(libs.vtm.android)
-    runtimeOnly("com.github.mapsforge.vtm:vtm-android:0.25.0:natives-arm64-v8a")
-    runtimeOnly("com.github.mapsforge.vtm:vtm-android:0.25.0:natives-x86_64")
+    runtimeOnly(variantOf(libs.vtm.android) { classifier("natives-arm64-v8a") })
+    runtimeOnly(variantOf(libs.vtm.android) { classifier("natives-x86_64") })
 
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging)

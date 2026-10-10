@@ -237,7 +237,6 @@ fun DashboardContent(
             uiState = uiState,
             roadbookState = roadbookState,
             mapState = mapState,
-            odometerController = odometerController,
             onSettingsClick = onSettingsClick,
             primaryOdometerSlot = primaryOdometerSlot,
             secondaryOdometerSlot = secondaryOdometerSlot,
@@ -276,7 +275,6 @@ fun MainContent(
     uiState: DashboardUiState,
     roadbookState: RoadbookState,
     mapState: MapState,
-    odometerController: OdometerController,
     onSettingsClick: () -> Unit,
     primaryOdometerSlot: @Composable (Modifier) -> Unit,
     secondaryOdometerSlot: @Composable (Modifier) -> Unit,
@@ -302,7 +300,6 @@ fun MainContent(
                     onSettingsClick = onSettingsClick,
                     roadbookState = roadbookState,
                     mapState = mapState,
-                    odometerController = odometerController,
                     primaryOdometerSlot = primaryOdometerSlot,
                     secondaryOdometerSlot = secondaryOdometerSlot,
                     roadbookSlot = roadbookSlot,
@@ -316,7 +313,6 @@ fun MainContent(
                     onSettingsClick = onSettingsClick,
                     roadbookState = roadbookState,
                     mapState = mapState,
-                    odometerController = odometerController,
                     primaryOdometerSlot = primaryOdometerSlot,
                     secondaryOdometerSlot = secondaryOdometerSlot,
                     roadbookSlot = roadbookSlot,
@@ -330,7 +326,6 @@ fun MainContent(
                     onSettingsClick = onSettingsClick,
                     roadbookState = roadbookState,
                     mapState = mapState,
-                    odometerController = odometerController,
                     primaryOdometerSlot = primaryOdometerSlot,
                     secondaryOdometerSlot = secondaryOdometerSlot,
                     roadbookSlot = roadbookSlot,
@@ -352,7 +347,6 @@ fun LandscapeLayout(
     onSettingsClick: () -> Unit,
     roadbookState: RoadbookState,
     mapState: MapState,
-    odometerController: OdometerController,
     primaryOdometerSlot: @Composable (Modifier) -> Unit,
     secondaryOdometerSlot: @Composable (Modifier) -> Unit,
     roadbookSlot: @Composable (RoadbookState, Modifier) -> Unit,
@@ -366,7 +360,6 @@ fun LandscapeLayout(
             secondaryOdometerSlot = secondaryOdometerSlot,
             onSettingsClick = onSettingsClick,
             mapState = mapState,
-            odometerController = odometerController,
             mapSlot = mapSlot,
             modifier = Modifier.weight(distanceSectionWeight)
         )
@@ -381,7 +374,6 @@ fun PortraitLayout(
     onSettingsClick: () -> Unit,
     roadbookState: RoadbookState,
     mapState: MapState,
-    odometerController: OdometerController,
     primaryOdometerSlot: @Composable (Modifier) -> Unit,
     secondaryOdometerSlot: @Composable (Modifier) -> Unit,
     roadbookSlot: @Composable (RoadbookState, Modifier) -> Unit,
@@ -394,7 +386,6 @@ fun PortraitLayout(
             secondaryOdometerSlot = secondaryOdometerSlot,
             onSettingsClick = onSettingsClick,
             mapState = mapState,
-            odometerController = odometerController,
             mapSlot = mapSlot,
             modifier = Modifier.weight(2f)
         )
@@ -410,7 +401,6 @@ fun LandscapeDistanceSection(
     secondaryOdometerSlot: @Composable (Modifier) -> Unit,
     onSettingsClick: () -> Unit,
     mapState: MapState,
-    odometerController: OdometerController,
     mapSlot: @Composable (MapState, Modifier) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -449,7 +439,6 @@ fun PortraitDistanceSection(
     secondaryOdometerSlot: @Composable (Modifier) -> Unit,
     onSettingsClick: () -> Unit,
     mapState: MapState,
-    odometerController: OdometerController,
     mapSlot: @Composable (MapState, Modifier) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -534,13 +523,11 @@ fun TabletLandPreview() {
             routeName = MutableStateFlow("Sample Route - Dakar Stage 1")
         )
         val mapState = MapState()
-        val odometerController = OdometerController(totalDistance = 2400.0, partialDistance = 1150.0)
         MainContent(
             windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(1097.dp, 686.dp)),
             uiState = sampleUiState,
             roadbookState = roadbookState,
             mapState = mapState,
-            odometerController = odometerController,
             onSettingsClick = {},
             primaryOdometerSlot = { modifier -> PartialDistance(distance = "999.99", modifier = modifier, onLongClick = {}) },
             secondaryOdometerSlot = { modifier -> TotalDistance("9,999.9", modifier) },
@@ -576,13 +563,11 @@ fun TabletPortPreview() {
             routeName = MutableStateFlow("Sample Route - Dakar Stage 1")
         )
         val mapState = MapState()
-        val odometerController = OdometerController(totalDistance = 2400.0, partialDistance = 1150.0)
         MainContent(
             windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(686.dp, 1097.dp)),
             uiState = sampleUiState,
             roadbookState = roadbookState,
             mapState = mapState,
-            odometerController = odometerController,
             onSettingsClick = {},
             primaryOdometerSlot = { modifier -> PartialDistance(distance = "999.99", modifier = modifier, onLongClick = {}) },
             secondaryOdometerSlot = { modifier -> TotalDistance("9,999.9", modifier) },
@@ -618,13 +603,11 @@ fun PhonePortPreview() {
             routeName = MutableStateFlow("Sample Route - Dakar Stage 1")
         )
         val mapState = MapState()
-        val odometerController = OdometerController(totalDistance = 2400.0, partialDistance = 1150.0)
         MainContent(
             windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp)),
             uiState = sampleUiState,
             roadbookState = roadbookState,
             mapState = mapState,
-            odometerController = odometerController,
             onSettingsClick = {},
             primaryOdometerSlot = { modifier -> PartialDistance(distance = "999.99", modifier = modifier, onLongClick = {}) },
             secondaryOdometerSlot = { modifier -> TotalDistance("9,999.9", modifier) },
@@ -660,13 +643,11 @@ fun PhoneLandPreview() {
             routeName = MutableStateFlow("Sample Route - Dakar Stage 1")
         )
         val mapState = MapState()
-        val odometerController = OdometerController(totalDistance = 2400.0, partialDistance = 1150.0)
         MainContent(
             windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(891.dp, 411.dp)),
             uiState = sampleUiState,
             roadbookState = roadbookState,
             mapState = mapState,
-            odometerController = odometerController,
             onSettingsClick = {},
             primaryOdometerSlot = { modifier -> PartialDistance(distance = "999.99", modifier = modifier, onLongClick = {}) },
             secondaryOdometerSlot = { modifier -> TotalDistance("9,999.9", modifier) },

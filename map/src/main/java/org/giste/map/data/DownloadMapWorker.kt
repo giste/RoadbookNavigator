@@ -43,7 +43,7 @@ internal class DownloadMapWorker @AssistedInject constructor(
     @Assisted appContext: Context,
     @Assisted workerParams: WorkerParameters,
     private val remoteDataSource: RemoteMapDataSource,
-    private val logger: MapLogger
+    private val logger: MapLogger,
 ) : CoroutineWorker(appContext, workerParams) {
 
     private val notificationManager =

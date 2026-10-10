@@ -25,14 +25,14 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
 
+private const val EARTH_RADIUS_METERS: Double = 6371000.0
+
 /**
  * Utility to calculate distances in a platform-independent way.
  */
 internal class DistanceUtils @Inject constructor(
     private val logger: OdometerLogger
 ) {
-    private val EARTH_RADIUS_METERS: Double = 6371000.0
-
     /**
      * Calculates the horizontal 2D distance between two points.
      */

@@ -33,6 +33,6 @@ enum class AppTheme {
     /** Material You dynamic colors based on user wallpaper (Android 12+). */
     DYNAMIC,
 
-    /** Specialized theme following FIA (Fédération Internationale de l'Automobile) visual standards. */
+    /** Specialized theme following FIA visual standards. */
     FIA
 }

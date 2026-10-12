@@ -166,7 +166,7 @@ internal class DataStoreOdometerRepository @Inject constructor(
             }
             lastSaveTime = timeProvider.currentTimeMillis()
         } catch (e: Exception) {
-            logger.e("DataStoreOdometerRepository: Error persisting state", throwable = e)
+            logger.e(e, "DataStoreOdometerRepository: Error persisting state")
         }
     }
 }

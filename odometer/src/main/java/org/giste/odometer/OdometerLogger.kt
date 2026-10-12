@@ -25,5 +25,7 @@ public interface OdometerLogger {
     public fun d(message: String, vararg args: Any?)
     public fun i(message: String, vararg args: Any?)
     public fun w(message: String, vararg args: Any?)
-    public fun e(message: String, vararg args: Any?, throwable: Throwable? = null)
+    public fun e(message: String, vararg args: Any?)
+    public fun e(t: Throwable, message: String, vararg args: Any?)
+    public fun withTag(tag: String): OdometerLogger
 }

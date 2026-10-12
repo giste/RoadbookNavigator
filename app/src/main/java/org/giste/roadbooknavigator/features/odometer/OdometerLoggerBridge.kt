@@ -17,39 +17,44 @@
 
 package org.giste.roadbooknavigator.features.odometer
 
-import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.odometer.OdometerLogger
+import org.giste.roadbooknavigator.core.util.Logger
 import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Bridge implementation of [OdometerLogger] that redirects to the app's [Logger].
  */
-class OdometerLoggerBridge @Inject constructor(
-    logger: Logger
+@Singleton
+internal class OdometerLoggerBridge @Inject constructor(
+    private val logger: Logger
 ) : OdometerLogger {
-    private val taggedLogger = logger.withTag("Odometer")
 
     override fun v(message: String, vararg args: Any?) {
-        taggedLogger.v(message, *args)
+        logger.v(message, *args)
     }
 
     override fun d(message: String, vararg args: Any?) {
-        taggedLogger.d(message, *args)
+        logger.d(message, *args)
     }
 
     override fun i(message: String, vararg args: Any?) {
-        taggedLogger.i(message, *args)
+        logger.i(message, *args)
     }
 
     override fun w(message: String, vararg args: Any?) {
-        taggedLogger.w(message, *args)
+        logger.w(message, *args)
     }
 
-    override fun e(message: String, vararg args: Any?, throwable: Throwable?) {
-        if (throwable != null) {
-            taggedLogger.e(throwable, message, *args)
-        } else {
-            taggedLogger.e(message, *args)
-        }
+    override fun e(message: String, vararg args: Any?) {
+        logger.e(message, *args)
+    }
+
+    override fun e(t: Throwable, message: String, vararg args: Any?) {
+        logger.e(t, message, *args)
+    }
+
+    override fun withTag(tag: String): OdometerLogger {
+        return OdometerLoggerBridge(logger.withTag(tag))
     }
 }

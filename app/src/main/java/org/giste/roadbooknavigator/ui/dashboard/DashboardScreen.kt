@@ -68,7 +68,6 @@ import org.giste.map.MapState
 import org.giste.map.compactMapDimensions
 import org.giste.map.expandedMapDimensions
 import org.giste.map.rememberMapState
-import org.giste.odometer.OdometerController
 import org.giste.odometer.Odometer
 import org.giste.roadbook.Roadbook
 import org.giste.roadbook.RoadbookEvent
@@ -88,7 +87,6 @@ fun DashboardScreen(
     viewModel: DashboardViewModel = hiltViewModel(),
     roadbookState: RoadbookState = rememberRoadbookState(),
     mapState: MapState = rememberMapState(),
-    odometerController: OdometerController = hiltViewModel<DashboardViewModel>().getOdometerController(),
     primaryOdometerSlot: @Composable (DashboardUiState, Modifier) -> Unit = { uiState, modifier ->
         val configuration = LocalConfiguration.current
         val locale = if (configuration.locales.size() > 0) configuration.locales[0] else LocalLocale.current.platformLocale
@@ -155,14 +153,17 @@ fun DashboardScreen(
         uiState = uiState,
         roadbookState = roadbookState,
         mapState = mapState,
-        odometerController = odometerController,
         primaryOdometerSlot = { modifier -> primaryOdometerSlot(uiState, modifier) },
         secondaryOdometerSlot = { modifier -> secondaryOdometerSlot(uiState, modifier) },
         roadbookSlot = roadbookSlot,
         mapSlot = mapSlot,
-        onSetPartialDistance = { odometerController.setPartial(it) },
-        onHideSetPartialDialog = { viewModel.hideSetPartialDialog() },
-        onHideResetAllDialog = { viewModel.hideResetAllDialog() },
+        onIncrementPartial = viewModel::incrementPartialDistance,
+        onDecrementPartial = viewModel::decrementPartialDistance,
+        onResetPartial = viewModel::resetPartialDistance,
+        onResetAll = viewModel::resetAllDistances,
+        onSetPartialDistance = viewModel::setPartialDistance,
+        onHideSetPartialDialog = viewModel::hideSetPartialDialog,
+        onHideResetAllDialog = viewModel::hideResetAllDialog,
         landscapeDistanceSectionWeight = uiState.landscapeDistanceSectionWeight
     )
 }
@@ -174,15 +175,18 @@ fun DashboardContent(
     uiState: DashboardUiState,
     roadbookState: RoadbookState,
     mapState: MapState,
-    odometerController: OdometerController,
     primaryOdometerSlot: @Composable (Modifier) -> Unit,
     secondaryOdometerSlot: @Composable (Modifier) -> Unit,
     roadbookSlot: @Composable (RoadbookState, Modifier) -> Unit,
     mapSlot: @Composable (MapState, Modifier) -> Unit,
-    onSetPartialDistance: (Double) -> Unit,
-    onHideSetPartialDialog: () -> Unit,
-    onHideResetAllDialog: () -> Unit,
-    landscapeDistanceSectionWeight: Float,
+    onIncrementPartial: () -> Unit = {},
+    onDecrementPartial: () -> Unit = {},
+    onResetPartial: () -> Unit = {},
+    onResetAll: () -> Unit = {},
+    onSetPartialDistance: (Double) -> Unit = {},
+    onHideSetPartialDialog: () -> Unit = {},
+    onHideResetAllDialog: () -> Unit = {},
+    landscapeDistanceSectionWeight: Float = 0.3f,
 ) {
     val focusRequester = remember { FocusRequester() }
 
@@ -197,17 +201,17 @@ fun DashboardContent(
                     val keyCode = event.key.nativeKeyCode
                     when {
                         uiState.increasePartialKeys.contains(keyCode) -> {
-                            odometerController.increment()
+                            onIncrementPartial()
                             true
                         }
 
                         uiState.decreasePartialKeys.contains(keyCode) -> {
-                            odometerController.decrement()
+                            onDecrementPartial()
                             true
                         }
 
                         uiState.resetPartialKeys.contains(keyCode) -> {
-                            odometerController.resetPartial()
+                            onResetPartial()
                             true
                         }
 
@@ -261,7 +265,7 @@ fun DashboardContent(
                 windowSizeClass = windowSizeClass,
                 onDismiss = onHideResetAllDialog,
                 onConfirm = {
-                    odometerController.resetAll()
+                    onResetAll()
                     onHideResetAllDialog()
                 }
             )

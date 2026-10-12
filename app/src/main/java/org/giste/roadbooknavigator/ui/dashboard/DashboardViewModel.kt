@@ -94,8 +94,6 @@ class DashboardViewModel @Inject constructor(
         _showResetAllDialog.value = false
     }
 
-    fun getOdometerController(): OdometerController = odometerController
-
     fun resetPartialDistance() {
         logger.i("DashboardViewModel: Resetting partial distance")
         odometerController.resetPartial()

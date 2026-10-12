@@ -16,7 +16,6 @@
  */
 
 package org.giste.roadbooknavigator.ui.dashboard
-
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
@@ -39,11 +38,13 @@ import androidx.test.platform.app.InstrumentationRegistry
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import org.giste.map.*
-import org.giste.roadbook.*
-import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
+import org.giste.map.MapState
 import org.giste.odometer.Odometer
+import org.giste.roadbook.RoadbookEvent
+import org.giste.roadbook.RoadbookState
+import org.giste.roadbooknavigator.core.ui.theme.RoadbookNavigatorTheme
 import org.junit.Rule
 import org.junit.Test
 import java.util.Locale
@@ -499,5 +500,61 @@ class DashboardScreenTest {
             )
         )
         verify { onScrollDown() }
+    }
+
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+    @Test
+    fun routeImportedEvent_resetsAllDistances() {
+        val viewModel: DashboardViewModel = mockk(relaxed = true)
+        val eventsFlow = MutableSharedFlow<RoadbookEvent>(replay = 1)
+        val roadbookState = RoadbookState(events = eventsFlow)
+        val mapState = MapState()
+        val windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp))
+        every { viewModel.uiState } returns MutableStateFlow(DashboardUiState())
+
+        eventsFlow.tryEmit(RoadbookEvent.RouteImported)
+        composeTestRule.setContent {
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                DashboardScreen(
+                    windowSizeClass = windowSizeClass,
+                    onSettingsClick = {},
+                    viewModel = viewModel,
+                    roadbookState = roadbookState,
+                    mapState = mapState,
+                    roadbookSlot = { _, modifier -> RoadbookStub(modifier) },
+                    mapSlot = { _, modifier -> Box(modifier) }
+                )
+            }
+        }
+
+        verify(timeout = 1000) { viewModel.resetAllDistances() }
+    }
+
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+    @Test
+    fun distanceSectionLongPressedEvent_setsPartialDistance() {
+        val viewModel: DashboardViewModel = mockk(relaxed = true)
+        val eventsFlow = MutableSharedFlow<RoadbookEvent>(replay = 1)
+        val roadbookState = RoadbookState(events = eventsFlow)
+        val mapState = MapState()
+        val windowSizeClass = WindowSizeClass.calculateFromSize(DpSize(411.dp, 891.dp))
+        every { viewModel.uiState } returns MutableStateFlow(DashboardUiState())
+
+        eventsFlow.tryEmit(RoadbookEvent.DistanceSectionLongPressed(1500.0))
+        composeTestRule.setContent {
+            RoadbookNavigatorTheme(windowSizeClass = windowSizeClass) {
+                DashboardScreen(
+                    windowSizeClass = windowSizeClass,
+                    onSettingsClick = {},
+                    viewModel = viewModel,
+                    roadbookState = roadbookState,
+                    mapState = mapState,
+                    roadbookSlot = { _, modifier -> RoadbookStub(modifier) },
+                    mapSlot = { _, modifier -> Box(modifier) }
+                )
+            }
+        }
+
+        verify(timeout = 1000) { viewModel.setPartialDistance(1500.0) }
     }
 }

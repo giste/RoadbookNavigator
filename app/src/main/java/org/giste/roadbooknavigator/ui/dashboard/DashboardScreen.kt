@@ -141,7 +141,7 @@ fun DashboardScreen(
                 }
 
                 RoadbookEvent.RouteImported -> {
-                    // Handled internally by Roadbook module or can be handled here if needed
+                    viewModel.resetAllDistances()
                 }
             }
         }

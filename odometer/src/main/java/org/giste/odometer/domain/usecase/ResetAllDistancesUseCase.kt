@@ -12,19 +12,18 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  See <https://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package org.giste.odometer.domain.usecase
 
 import org.giste.odometer.OdometerLogger
 import org.giste.odometer.domain.OdometerRepository
-import javax.inject.Inject
 
 /**
  * Use case to reset both total and partial odometer distances.
  */
-internal class ResetAllDistancesUseCase @Inject internal constructor(
+internal class ResetAllDistancesUseCase(
     private val repository: OdometerRepository,
     private val logger: OdometerLogger
 ) {

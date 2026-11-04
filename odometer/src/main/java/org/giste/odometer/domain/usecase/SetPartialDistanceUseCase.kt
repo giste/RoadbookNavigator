@@ -19,12 +19,11 @@ package org.giste.odometer.domain.usecase
 
 import org.giste.odometer.OdometerLogger
 import org.giste.odometer.domain.OdometerRepository
-import javax.inject.Inject
 
 /**
  * Use case to set the partial odometer distance to a specific value.
  */
-internal class SetPartialDistanceUseCase @Inject internal constructor(
+internal class SetPartialDistanceUseCase(
     private val repository: OdometerRepository,
     private val logger: OdometerLogger
 ) {

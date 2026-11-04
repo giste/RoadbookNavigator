@@ -12,14 +12,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  See <https://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package org.giste.odometer.domain
 
 import org.giste.odometer.OdometerLocation
 import org.giste.odometer.OdometerLogger
-import javax.inject.Inject
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
@@ -30,7 +29,7 @@ private const val EARTH_RADIUS_METERS: Double = 6371000.0
 /**
  * Utility to calculate distances in a platform-independent way.
  */
-internal class DistanceUtils @Inject constructor(
+internal class DistanceUtils(
     private val logger: OdometerLogger
 ) {
     /**
@@ -48,6 +47,7 @@ internal class DistanceUtils @Inject constructor(
         val a = sin(dLat / 2) * sin(dLat / 2) +
                 cos(lat1) * cos(lat2) *
                 sin(dLon / 2) * sin(dLon / 2)
+
         val c = 2 * atan2(sqrt(a), sqrt(1 - a))
 
         return EARTH_RADIUS_METERS * c

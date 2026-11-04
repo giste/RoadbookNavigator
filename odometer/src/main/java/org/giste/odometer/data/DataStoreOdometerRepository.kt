@@ -17,10 +17,12 @@
 
 package org.giste.odometer.data
 
+import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -33,12 +35,11 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withContext
-import org.giste.odometer.OdometerLogger
 import org.giste.odometer.Odometer
+import org.giste.odometer.OdometerLogger
 import org.giste.odometer.domain.OdometerRepository
 
-import javax.inject.Inject
-import javax.inject.Singleton
+internal val Context.odometerDataStore: DataStore<Preferences> by preferencesDataStore(name = "odometer_state")
 
 /**
  * Buffered implementation of [OdometerRepository] using DataStore for persistence.
@@ -46,12 +47,11 @@ import javax.inject.Singleton
  * It maintains an in-memory state for low-latency updates by combining persisted data
  * with a buffer of pending changes, persisting to disk only when thresholds are reached.
  */
-@Singleton
-internal class DataStoreOdometerRepository @Inject constructor(
-    @param:OdometerDataStoreQualifier private val dataStore: DataStore<Preferences>,
+internal class DataStoreOdometerRepository(
+    private val dataStore: DataStore<Preferences>,
     private val logger: OdometerLogger,
-    @OdometerIoDispatcher private val ioDispatcher: CoroutineDispatcher,
-    @OdometerApplicationScope private val scope: CoroutineScope,
+    private val ioDispatcher: CoroutineDispatcher,
+    private val scope: CoroutineScope,
     private val timeProvider: OdometerTimeProvider
 ) : OdometerRepository {
 
@@ -116,10 +116,6 @@ internal class DataStoreOdometerRepository @Inject constructor(
     override suspend fun resetPartialDistance() {
         withContext(ioDispatcher) {
             logger.i("DataStoreOdometerRepository: Resetting partial distance")
-            // We want the final partial to be 0.
-            // odometer.value.partial = persisted.partial + pending.partial
-            // To make it 0, we set pending.partial = -persisted.partial
-            // However, it's easier to just flush a hardcoded 0 to disk.
             persist(targetPartial = 0.0)
         }
     }
@@ -142,7 +138,6 @@ internal class DataStoreOdometerRepository @Inject constructor(
         targetTotal: Double? = null,
         targetPartial: Double? = null
     ) {
-        // We MUST read the latest persisted values and current pending buffer to correctly subtract
         val currentPersisted = persistedOdometer.first()
         val currentPending = _pendingDeltas.value
 
@@ -150,14 +145,13 @@ internal class DataStoreOdometerRepository @Inject constructor(
         val toSavePartial = targetPartial ?: (currentPersisted.partial + currentPending.partial)
 
         logger.v("DataStoreOdometerRepository: Persisting to DataStore: total=%f, partial=%f", toSaveTotal, toSavePartial)
-        
+
         try {
             dataStore.edit { prefs ->
                 prefs[TOTAL_DISTANCE_KEY] = toSaveTotal
                 prefs[PARTIAL_DISTANCE_KEY] = toSavePartial
             }
-            
-            // Adjust pending deltas: remove the amounts we just successfully wrote to disk
+
             _pendingDeltas.update { latestPending ->
                 Odometer(
                     total = if (targetTotal != null) 0.0 else (latestPending.total - currentPending.total).coerceAtLeast(0.0),

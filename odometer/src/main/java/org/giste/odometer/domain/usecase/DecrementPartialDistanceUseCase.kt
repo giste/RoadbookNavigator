@@ -19,12 +19,11 @@ package org.giste.odometer.domain.usecase
 
 import org.giste.odometer.OdometerLogger
 import org.giste.odometer.domain.OdometerRepository
-import javax.inject.Inject
 
 /**
  * Use case to decrement the partial distance by a fixed step (10 meters).
  */
-internal class DecrementPartialDistanceUseCase @Inject internal constructor(
+internal class DecrementPartialDistanceUseCase(
     private val repository: OdometerRepository,
     private val logger: OdometerLogger
 ) {

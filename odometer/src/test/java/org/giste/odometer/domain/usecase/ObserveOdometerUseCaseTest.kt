@@ -40,7 +40,7 @@ import org.junit.Before
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class GetOdometerUseCaseTest {
+class ObserveOdometerUseCaseTest {
 
     private val odometerRepository: OdometerRepository = mockk()
     private val logger: OdometerLogger = mockk(relaxed = true)
@@ -49,19 +49,19 @@ class GetOdometerUseCaseTest {
     private val settingsFlow = MutableSharedFlow<OdometerSettings>()
     private val testDispatcher = UnconfinedTestDispatcher()
     
-    private lateinit var getOdometerUseCase: GetOdometerUseCase
+    private lateinit var observeOdometerUseCase: ObserveOdometerUseCase
 
     @Before
     fun setup() {
         every { odometerRepository.odometer } returns flowOf(Odometer(0.0, 0.0))
         coEvery { odometerRepository.updateDistance(any()) } returns Unit
         
-        getOdometerUseCase = GetOdometerUseCase(odometerRepository, distanceUtils, logger)
+        observeOdometerUseCase = ObserveOdometerUseCase(odometerRepository, distanceUtils, logger)
     }
 
     @Test
     fun `should ignore first location fix and not update repository`() = runTest(testDispatcher) {
-        val job = backgroundScope.launch { getOdometerUseCase(settingsFlow, gpsFlow).collect {} }
+        val job = backgroundScope.launch { observeOdometerUseCase(settingsFlow, gpsFlow).collect {} }
         settingsFlow.emit(OdometerSettings())
 
         gpsFlow.emit(createLocation(40.0, -3.0))
@@ -72,7 +72,7 @@ class GetOdometerUseCaseTest {
 
     @Test
     fun `should calculate distance between two valid fixes and update repository`() = runTest(testDispatcher) {
-        val job = backgroundScope.launch { getOdometerUseCase(settingsFlow, gpsFlow).collect {} }
+        val job = backgroundScope.launch { observeOdometerUseCase(settingsFlow, gpsFlow).collect {} }
         val settings = OdometerSettings()
         settingsFlow.emit(settings)
 
@@ -89,7 +89,7 @@ class GetOdometerUseCaseTest {
 
     @Test
     fun `should ignore fixes with poor horizontal accuracy`() = runTest(testDispatcher) {
-        val job = backgroundScope.launch { getOdometerUseCase(settingsFlow, gpsFlow).collect {} }
+        val job = backgroundScope.launch { observeOdometerUseCase(settingsFlow, gpsFlow).collect {} }
         settingsFlow.emit(OdometerSettings(minAccuracy = AccuracyThreshold(20f)))
 
         gpsFlow.emit(createLocation(40.0, -3.0, accuracy = 10f))
@@ -101,7 +101,7 @@ class GetOdometerUseCaseTest {
 
     @Test
     fun `should resume calculation after a poor horizontal accuracy fix`() = runTest(testDispatcher) {
-        val job = backgroundScope.launch { getOdometerUseCase(settingsFlow, gpsFlow).collect {} }
+        val job = backgroundScope.launch { observeOdometerUseCase(settingsFlow, gpsFlow).collect {} }
         val settings = OdometerSettings(minAccuracy = AccuracyThreshold(20f))
         settingsFlow.emit(settings)
 
@@ -122,7 +122,7 @@ class GetOdometerUseCaseTest {
 
     @Test
     fun `should use 3D distance when vertical accuracy is good`() = runTest(testDispatcher) {
-        val job = backgroundScope.launch { getOdometerUseCase(settingsFlow, gpsFlow).collect {} }
+        val job = backgroundScope.launch { observeOdometerUseCase(settingsFlow, gpsFlow).collect {} }
         val settings = OdometerSettings(minVerticalAccuracy = VerticalAccuracyThreshold(10f))
         settingsFlow.emit(settings)
 
@@ -142,7 +142,7 @@ class GetOdometerUseCaseTest {
 
     @Test
     fun `should fallback to 2D distance when vertical accuracy is poor`() = runTest(testDispatcher) {
-        val job = backgroundScope.launch { getOdometerUseCase(settingsFlow, gpsFlow).collect {} }
+        val job = backgroundScope.launch { observeOdometerUseCase(settingsFlow, gpsFlow).collect {} }
         val settings = OdometerSettings(minVerticalAccuracy = VerticalAccuracyThreshold(10f))
         settingsFlow.emit(settings)
 
@@ -162,7 +162,7 @@ class GetOdometerUseCaseTest {
 
     @Test
     fun `should fallback to 2D distance when vertical accuracy is missing`() = runTest(testDispatcher) {
-        val job = backgroundScope.launch { getOdometerUseCase(settingsFlow, gpsFlow).collect {} }
+        val job = backgroundScope.launch { observeOdometerUseCase(settingsFlow, gpsFlow).collect {} }
         val settings = OdometerSettings()
         settingsFlow.emit(settings)
 
@@ -181,7 +181,7 @@ class GetOdometerUseCaseTest {
 
     @Test
     fun `should ignore fixes when speed is below threshold`() = runTest(testDispatcher) {
-        val job = backgroundScope.launch { getOdometerUseCase(settingsFlow, gpsFlow).collect {} }
+        val job = backgroundScope.launch { observeOdometerUseCase(settingsFlow, gpsFlow).collect {} }
         settingsFlow.emit(OdometerSettings(speedThreshold = SpeedThreshold(1.0f)))
 
         val loc1 = createLocation(40.0, -3.0, speed = 0.5f)
@@ -196,7 +196,7 @@ class GetOdometerUseCaseTest {
 
     @Test
     fun `should react to setting changes dynamically`() = runTest(testDispatcher) {
-        val job = backgroundScope.launch { getOdometerUseCase(settingsFlow, gpsFlow).collect {} }
+        val job = backgroundScope.launch { observeOdometerUseCase(settingsFlow, gpsFlow).collect {} }
         
         // Start with high speed threshold (ignore movements if location speed is lower)
         settingsFlow.emit(OdometerSettings(speedThreshold = SpeedThreshold(2.0f)))

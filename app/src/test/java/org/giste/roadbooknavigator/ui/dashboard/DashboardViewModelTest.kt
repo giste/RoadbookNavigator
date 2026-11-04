@@ -28,9 +28,9 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.odometer.Odometer
-import org.giste.odometer.OdometerController
+import org.giste.odometer.OdometerProvider
+import org.giste.roadbooknavigator.core.util.Logger
 import org.giste.roadbooknavigator.features.settings.domain.AppSettings
 import org.giste.roadbooknavigator.features.settings.domain.input.InputSettings
 import org.giste.roadbooknavigator.features.settings.domain.input.usecase.ObserveInputSettingsUseCase
@@ -44,7 +44,7 @@ import org.junit.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class DashboardViewModelTest {
 
-    private val odometerController: OdometerController = mockk(relaxed = true)
+    private val odometerProvider: OdometerProvider = mockk(relaxed = true)
     private val observeAppSettingsUseCase: ObserveAppSettingsUseCase = mockk()
     private val observeInputSettingsUseCase: ObserveInputSettingsUseCase = mockk()
     private val logger: Logger = mockk(relaxed = true)
@@ -59,12 +59,12 @@ class DashboardViewModelTest {
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
-        every { odometerController.odometer } returns odometerFlow
+        every { odometerProvider.odometer } returns odometerFlow
         every { observeAppSettingsUseCase() } returns settingsFlow
         every { observeInputSettingsUseCase() } returns inputSettingsFlow
 
         viewModel = DashboardViewModel(
-            odometerController,
+            odometerProvider,
             observeAppSettingsUseCase,
             observeInputSettingsUseCase,
             logger
@@ -100,21 +100,21 @@ class DashboardViewModelTest {
     }
 
     @Test
-    fun `odometer actions should delegate to controller`() {
+    fun `odometer actions should delegate to provider`() {
         viewModel.resetPartialDistance()
-        verify { odometerController.resetPartial() }
+        verify { odometerProvider.resetPartial() }
 
         viewModel.resetAllDistances()
-        verify { odometerController.resetAll() }
+        verify { odometerProvider.resetAll() }
 
         viewModel.incrementPartialDistance()
-        verify { odometerController.increment() }
+        verify { odometerProvider.increment() }
 
         viewModel.decrementPartialDistance()
-        verify { odometerController.decrement() }
+        verify { odometerProvider.decrement() }
 
         viewModel.setPartialDistance(100.0)
-        verify { odometerController.setPartial(100.0) }
+        verify { odometerProvider.setPartial(100.0) }
     }
 
     @Test

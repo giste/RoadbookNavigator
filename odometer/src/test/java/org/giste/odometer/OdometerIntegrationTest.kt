@@ -33,7 +33,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.giste.odometer.data.DataStoreOdometerRepository
 import org.giste.odometer.domain.DistanceUtils
-import org.giste.odometer.domain.usecase.GetOdometerUseCase
+import org.giste.odometer.domain.usecase.ObserveOdometerUseCase
 import org.giste.odometer.data.OdometerTimeProvider
 import org.junit.After
 import org.junit.Assert
@@ -61,7 +61,7 @@ class OdometerIntegrationTest {
     private val gpsFlow = MutableSharedFlow<OdometerLocation>()
     private val settingsFlow = MutableSharedFlow<OdometerSettings>()
 
-    private lateinit var getOdometerUseCase: GetOdometerUseCase
+    private lateinit var observeOdometerUseCase: ObserveOdometerUseCase
 
     @Before
     fun setup() {
@@ -78,7 +78,7 @@ class OdometerIntegrationTest {
             timeProvider = timeProvider
         )
 
-        getOdometerUseCase = GetOdometerUseCase(odometerRepository, distanceUtils, logger)
+        observeOdometerUseCase = ObserveOdometerUseCase(odometerRepository, distanceUtils, logger)
     }
 
     @After
@@ -96,7 +96,7 @@ class OdometerIntegrationTest {
             // Start observing odometer
             val results = mutableListOf<Odometer>()
             val job = backgroundScope.launch {
-                getOdometerUseCase(settingsFlow, gpsFlow).collect { results.add(it) }
+                observeOdometerUseCase(settingsFlow, gpsFlow).collect { results.add(it) }
             }
 
             // 1. Setup settings
@@ -141,7 +141,7 @@ class OdometerIntegrationTest {
         runTest(testDispatcher) {
             val results = mutableListOf<Odometer>()
             val job = backgroundScope.launch {
-                getOdometerUseCase(settingsFlow, gpsFlow).collect { results.add(it) }
+                observeOdometerUseCase(settingsFlow, gpsFlow).collect { results.add(it) }
             }
 
             // Valid fix 1

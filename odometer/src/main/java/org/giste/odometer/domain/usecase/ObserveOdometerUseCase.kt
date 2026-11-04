@@ -29,18 +29,7 @@ import org.giste.odometer.Odometer
 import org.giste.odometer.OdometerLocation
 import org.giste.odometer.domain.OdometerRepository
 import org.giste.odometer.OdometerSettings
-import javax.inject.Inject
-
-/**
- * Use case to observe and update the odometer.
- *
- * It acts as the business engine:
- * 1. Observes the GPS stream and settings.
- * 2. Calculates distance deltas between high-accuracy fixes using reactive state.
- * 3. Updates the persistent storage via the repository.
- * 4. Exposes the reactive odometer state.
- */
-internal class GetOdometerUseCase @Inject internal constructor(
+internal class ObserveOdometerUseCase(
     private val odometerRepository: OdometerRepository,
     private val distanceUtils: DistanceUtils,
     private val logger: OdometerLogger

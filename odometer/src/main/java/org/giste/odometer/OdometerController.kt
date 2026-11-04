@@ -17,21 +17,27 @@
 
 package org.giste.odometer
 
+import android.content.Context
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import org.giste.odometer.data.OdometerApplicationScope
+import org.giste.odometer.data.AndroidOdometerLogger
+import org.giste.odometer.data.DataStoreOdometerRepository
+import org.giste.odometer.data.RealOdometerTimeProvider
+import org.giste.odometer.data.odometerDataStore
+import org.giste.odometer.domain.DistanceUtils
+import org.giste.odometer.domain.OdometerRepository
 import org.giste.odometer.domain.usecase.DecrementPartialDistanceUseCase
-import org.giste.odometer.domain.usecase.GetOdometerUseCase
+import org.giste.odometer.domain.usecase.ObserveOdometerUseCase
 import org.giste.odometer.domain.usecase.IncrementPartialDistanceUseCase
 import org.giste.odometer.domain.usecase.ResetAllDistancesUseCase
 import org.giste.odometer.domain.usecase.ResetPartialDistanceUseCase
 import org.giste.odometer.domain.usecase.SetPartialDistanceUseCase
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Headless business logic controller for the Odometer module.
@@ -39,106 +45,107 @@ import javax.inject.Singleton
  * This class coordinates the calculation engine, persistence, and external providers
  * to expose an atomic reactive state of the odometer.
  *
- * It is infrastructure-agnostic and does not depend on any UI framework.
+ * It is completely framework-agnostic and does not depend on any UI or DI framework.
+ *
+ * @param context Application context used for DataStore persistence.
+ * @param locationProvider Provider stream for location updates.
+ * @param settingsProvider Provider stream for odometer settings.
+ * @param logger Optional logger implementation for odometer events.
+ * @param ioDispatcher Dispatcher for asynchronous persistence and calculations.
+ * @param scope Coroutine scope for running async operations.
  */
-@Singleton
-public class OdometerController internal constructor(
+public class OdometerController public constructor(
+    context: Context,
+    locationProvider: OdometerLocationProvider,
+    settingsProvider: OdometerSettingsProvider,
+    logger: OdometerLogger = AndroidOdometerLogger("OdometerController"),
+    ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
+    private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + ioDispatcher)
+) : OdometerProvider {
+
+    private val repository: OdometerRepository = DataStoreOdometerRepository(
+        dataStore = context.applicationContext.odometerDataStore,
+        logger = logger,
+        ioDispatcher = ioDispatcher,
+        scope = scope,
+        timeProvider = RealOdometerTimeProvider()
+    )
+
+    private val observeOdometerUseCase: ObserveOdometerUseCase = ObserveOdometerUseCase(
+        odometerRepository = repository,
+        distanceUtils = DistanceUtils(logger),
+        logger = logger
+    )
+
+    private val resetPartialDistanceUseCase: ResetPartialDistanceUseCase = ResetPartialDistanceUseCase(
+        repository = repository,
+        logger = logger
+    )
+
+    private val resetAllDistancesUseCase: ResetAllDistancesUseCase = ResetAllDistancesUseCase(
+        repository = repository,
+        logger = logger
+    )
+
+    private val incrementPartialDistanceUseCase: IncrementPartialDistanceUseCase = IncrementPartialDistanceUseCase(
+        repository = repository,
+        logger = logger
+    )
+
+    private val decrementPartialDistanceUseCase: DecrementPartialDistanceUseCase = DecrementPartialDistanceUseCase(
+        repository = repository,
+        logger = logger
+    )
+
+    private val setPartialDistanceUseCase: SetPartialDistanceUseCase = SetPartialDistanceUseCase(
+        repository = repository,
+        logger = logger
+    )
+
     /**
      * Atomic reactive state of the odometer.
      */
-    public val odometer: StateFlow<Odometer>,
-    internal val internals: InternalData
-) {
-    internal class InternalData(
-        val onResetPartial: () -> Unit,
-        val onResetAll: () -> Unit,
-        val onSetPartial: (Double) -> Unit,
-        val onIncrement: () -> Unit,
-        val onDecrement: () -> Unit
-    )
-
-    @Inject internal constructor(
-        getOdometerUseCase: GetOdometerUseCase,
-        resetPartialDistanceUseCase: ResetPartialDistanceUseCase,
-        resetAllDistancesUseCase: ResetAllDistancesUseCase,
-        incrementPartialDistanceUseCase: IncrementPartialDistanceUseCase,
-        decrementPartialDistanceUseCase: DecrementPartialDistanceUseCase,
-        setPartialDistanceUseCase: SetPartialDistanceUseCase,
-        locationProvider: OdometerLocationProvider,
-        settingsProvider: OdometerSettingsProvider,
-        @OdometerApplicationScope scope: CoroutineScope
-    ) : this(
-        odometer = getOdometerUseCase(
-            settingsFlow = settingsProvider.getSettings(),
-            locationFlow = locationProvider.observeLocation()
-        ).stateIn(
-            scope = scope,
-            started = SharingStarted.Eagerly,
-            initialValue = Odometer()
-        ),
-        internals = InternalData(
-            onResetPartial = { scope.launch { resetPartialDistanceUseCase() } },
-            onResetAll = { scope.launch { resetAllDistancesUseCase() } },
-            onSetPartial = { distance -> scope.launch { setPartialDistanceUseCase(distance) } },
-            onIncrement = { scope.launch { incrementPartialDistanceUseCase() } },
-            onDecrement = { scope.launch { decrementPartialDistanceUseCase() } }
-        )
+    override val odometer: StateFlow<Odometer> = observeOdometerUseCase(
+        settingsFlow = settingsProvider.getSettings(),
+        locationFlow = locationProvider.observeLocation()
+    ).stateIn(
+        scope = scope,
+        started = SharingStarted.Eagerly,
+        initialValue = Odometer()
     )
 
     /**
      * Resets the partial distance to zero.
      */
-    public fun resetPartial() {
-        internals.onResetPartial()
+    override fun resetPartial() {
+        scope.launch { resetPartialDistanceUseCase() }
     }
 
     /**
      * Resets both total and partial distances to zero.
      */
-    public fun resetAll() {
-        internals.onResetAll()
+    override fun resetAll() {
+        scope.launch { resetAllDistancesUseCase() }
     }
 
     /**
      * Sets the partial distance to a specific value (in meters).
      */
-    public fun setPartial(distance: Double) {
-        internals.onSetPartial(distance)
+    override fun setPartial(distance: Double) {
+        scope.launch { setPartialDistanceUseCase(distance) }
     }
 
     /**
      * Manually increments the partial distance by a small step.
      */
-    public fun increment() {
-        internals.onIncrement()
+    override fun increment() {
+        scope.launch { incrementPartialDistanceUseCase() }
     }
 
     /**
      * Manually decrements the partial distance by a small step.
      */
-    public fun decrement() {
-        internals.onDecrement()
+    override fun decrement() {
+        scope.launch { decrementPartialDistanceUseCase() }
     }
 }
-
-/**
- * Factory function to create an [OdometerController] for previews or testing.
- */
-public fun OdometerController(
-    totalDistance: Double = 0.0,
-    partialDistance: Double = 0.0,
-    onResetPartial: () -> Unit = {},
-    onResetAll: () -> Unit = {},
-    onSetPartial: (Double) -> Unit = {},
-    onIncrement: () -> Unit = {},
-    onDecrement: () -> Unit = {}
-): OdometerController = OdometerController(
-    odometer = MutableStateFlow(Odometer(totalDistance, partialDistance)),
-    internals = OdometerController.InternalData(
-        onResetPartial = onResetPartial,
-        onResetAll = onResetAll,
-        onSetPartial = onSetPartial,
-        onIncrement = onIncrement,
-        onDecrement = onDecrement
-    )
-)

@@ -17,10 +17,6 @@
 
 package org.giste.odometer.data
 
-import javax.inject.Inject
-import javax.inject.Singleton
-
-@Singleton
-internal class RealOdometerTimeProvider @Inject constructor() : OdometerTimeProvider {
+internal class RealOdometerTimeProvider : OdometerTimeProvider {
     override fun currentTimeMillis(): Long = System.currentTimeMillis()
 }

@@ -17,12 +17,18 @@
 
 package org.giste.roadbooknavigator.features.odometer
 
+import android.content.Context
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import org.giste.odometer.OdometerController
 import org.giste.odometer.OdometerLocationProvider
 import org.giste.odometer.OdometerLogger
+import org.giste.odometer.OdometerProvider
+import org.giste.odometer.OdometerSettingsProvider
 import javax.inject.Singleton
 
 @Module
@@ -40,4 +46,20 @@ abstract class OdometerBridgeModule {
     internal abstract fun bindOdometerLocationProvider(
         impl: OdometerLocationProviderBridge
     ): OdometerLocationProvider
+
+    companion object {
+        @Provides
+        @Singleton
+        internal fun provideOdometerProvider(
+            @ApplicationContext context: Context,
+            locationProvider: OdometerLocationProvider,
+            settingsProvider: OdometerSettingsProvider,
+            logger: OdometerLogger
+        ): OdometerProvider = OdometerController(
+            context = context,
+            locationProvider = locationProvider,
+            settingsProvider = settingsProvider,
+            logger = logger
+        )
+    }
 }

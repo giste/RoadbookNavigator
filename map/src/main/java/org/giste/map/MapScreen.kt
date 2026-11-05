@@ -48,7 +48,7 @@ public fun MapScreen(
     modifier: Modifier = Modifier,
     dimensions: MapDimensions = compactMapDimensions,
 ) {
-    val uiState by state.internals.uiState.collectAsStateWithLifecycle()
+    val uiState by state.uiState.collectAsStateWithLifecycle()
 
     MapContent(
         uiState = uiState,

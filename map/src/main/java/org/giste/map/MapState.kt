@@ -29,17 +29,10 @@ import org.giste.map.ui.MapViewModel
  */
 @Stable
 public class MapState internal constructor(
-    // Grouped internal implementation details to keep the constructor manageable.
-    internal val internals: InternalData
+    internal val uiState: StateFlow<MapUiState>
 ) {
-    internal class InternalData(
-        val uiState: StateFlow<MapUiState>
-    )
-
     internal constructor(viewModel: MapViewModel) : this(
-        internals = InternalData(
-            uiState = viewModel.uiState
-        )
+        uiState = viewModel.uiState
     )
 }
 
@@ -47,7 +40,5 @@ public class MapState internal constructor(
  * Factory function to create a [MapState] for previews or testing.
  */
 public fun MapState(): MapState = MapState(
-    internals = MapState.InternalData(
-        uiState = MutableStateFlow(MapUiState())
-    )
+    uiState = MutableStateFlow(MapUiState())
 )

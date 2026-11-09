@@ -1,0 +1,98 @@
+/*
+ * Copyright (C) 2026 Giste
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package dev.giste.map.di
+
+import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
+import dagger.Binds
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import okhttp3.OkHttpClient
+import dev.giste.map.MapSettingsProvider
+import dev.giste.map.data.JsoupRemoteMapDataSource
+import dev.giste.map.data.RemoteMapDataSource
+import dev.giste.map.data.DataStoreMapSettingsRepository
+import dev.giste.map.data.LocalFileMapRepository
+import dev.giste.map.domain.RealMapSettingsProvider
+import dev.giste.map.domain.repository.MapRepository
+import dev.giste.map.domain.repository.MapSettingsRepository
+import javax.inject.Qualifier
+import javax.inject.Singleton
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+internal annotation class MapSettingsDataStore
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+internal annotation class MapIoDispatcher
+
+private val Context.mapSettingsDataStore: DataStore<Preferences> by preferencesDataStore(name = "dev.giste.map.settings")
+
+@Module
+@InstallIn(SingletonComponent::class)
+internal abstract class MapModule {
+
+    @Binds
+    @Singleton
+    abstract fun bindMapSettingsRepository(
+        dataStoreMapSettingsRepository: DataStoreMapSettingsRepository
+    ): MapSettingsRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindMapRepository(
+        localFileMapRepository: LocalFileMapRepository
+    ): MapRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindRemoteMapDataSource(
+        jsoupRemoteMapDataSource: JsoupRemoteMapDataSource
+    ): RemoteMapDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindMapSettingsProvider(
+        realMapSettingsProvider: RealMapSettingsProvider
+    ): MapSettingsProvider
+
+    companion object {
+        @Provides
+        @Singleton
+        fun provideOkHttpClient(): OkHttpClient = OkHttpClient.Builder().build()
+
+        @Provides
+        @Singleton
+        @MapSettingsDataStore
+        internal fun provideMapSettingsDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
+            context.mapSettingsDataStore
+
+        @Provides
+        @Singleton
+        @MapIoDispatcher
+        internal fun provideIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
+    }
+}

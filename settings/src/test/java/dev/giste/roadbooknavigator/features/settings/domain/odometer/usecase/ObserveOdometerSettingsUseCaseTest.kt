@@ -1,0 +1,47 @@
+/*
+ * Copyright (C) 2026 Giste
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package dev.giste.roadbooknavigator.features.settings.domain.odometer.usecase
+
+import io.mockk.every
+import io.mockk.mockk
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.runTest
+import dev.giste.odometer.OdometerSettingsProvider
+import dev.giste.odometer.OdometerSettings
+import org.junit.Assert.assertEquals
+import org.junit.Test
+
+class ObserveOdometerSettingsUseCaseTest {
+
+    private val provider: OdometerSettingsProvider = mockk()
+    private val useCase = ObserveOdometerSettingsUseCase(provider)
+
+    @Test
+    fun `invoke should return odometer settings flow from provider`() = runTest {
+        // Given
+        val settings = OdometerSettings()
+        every { provider.getSettings() } returns flowOf(settings)
+
+        // When
+        val result = useCase().first()
+
+        // Then
+        assertEquals(settings, result)
+    }
+}

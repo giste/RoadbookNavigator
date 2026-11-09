@@ -28,7 +28,7 @@ plugins {
 }
 
 configure<ApplicationExtension> {
-    namespace = "org.giste.roadbooknavigator"
+    namespace = "dev.giste.roadbooknavigator"
     compileSdk = 37
 
     val keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -47,13 +47,13 @@ configure<ApplicationExtension> {
     }
 
     defaultConfig {
-        applicationId = "org.giste.roadbooknavigator"
+        applicationId = "dev.giste.roadbooknavigator"
         minSdk = 33
         targetSdk = 37
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "org.giste.roadbooknavigator.HiltTestRunner"
+        testInstrumentationRunner = "dev.giste.roadbooknavigator.HiltTestRunner"
     }
 
     buildTypes {

@@ -1,0 +1,331 @@
+/*
+ * Copyright (C) 2026 Giste
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package dev.giste.roadbooknavigator.features.settings.ui
+
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
+import io.mockk.mockk
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
+import dev.giste.roadbooknavigator.core.settings.domain.AppTheme
+import dev.giste.roadbooknavigator.core.util.Logger
+import dev.giste.roadbooknavigator.features.settings.domain.location.LocationSettings
+import dev.giste.roadbooknavigator.features.settings.domain.location.usecase.ObserveLocationSettingsUseCase
+import dev.giste.roadbooknavigator.features.settings.domain.location.usecase.RestoreLocationDefaultsUseCase
+import dev.giste.roadbooknavigator.features.settings.domain.location.usecase.UpdateLocationMinDistanceUseCase
+import dev.giste.roadbooknavigator.features.settings.domain.location.usecase.UpdateLocationPollingIntervalUseCase
+import dev.giste.map.MapSettings
+import dev.giste.map.MapSettingsProvider
+import dev.giste.odometer.OdometerSettings
+import dev.giste.roadbooknavigator.features.settings.domain.odometer.usecase.ObserveOdometerSettingsUseCase
+import dev.giste.roadbooknavigator.features.settings.domain.odometer.usecase.RestoreOdometerSettingsDefaultsUseCase
+import dev.giste.roadbooknavigator.features.settings.domain.odometer.usecase.UpdateOdometerMinAccuracyUseCase
+import dev.giste.roadbooknavigator.features.settings.domain.odometer.usecase.UpdateOdometerMinVerticalAccuracyUseCase
+import dev.giste.roadbooknavigator.features.settings.domain.odometer.usecase.UpdateOdometerSpeedThresholdUseCase
+import dev.giste.roadbook.RoadbookSettings
+import dev.giste.roadbook.RoadbookSettingsProvider
+import dev.giste.roadbooknavigator.features.settings.domain.AppOrientation
+import dev.giste.roadbooknavigator.features.settings.domain.AppSettings
+import dev.giste.roadbooknavigator.features.settings.domain.input.InputSettings
+import dev.giste.roadbooknavigator.features.settings.domain.input.RemoteModel
+import dev.giste.roadbooknavigator.features.settings.domain.input.usecase.ObserveInputSettingsUseCase
+import dev.giste.roadbooknavigator.features.settings.domain.input.usecase.SelectRemoteModelUseCase
+import dev.giste.roadbooknavigator.features.settings.domain.input.usecase.UpdateOdometerKeysUseCase
+import dev.giste.roadbooknavigator.features.settings.domain.input.usecase.UpdateRoadbookKeysUseCase
+import dev.giste.roadbooknavigator.features.settings.domain.roadbook.usecase.SaveRoadbookSettingsUseCase
+import dev.giste.roadbooknavigator.features.settings.domain.usecase.ObserveAppSettingsUseCase
+import dev.giste.roadbooknavigator.features.settings.domain.usecase.UpdateFullScreenUseCase
+import dev.giste.roadbooknavigator.features.settings.domain.usecase.UpdateLandscapeDistanceSectionWeightUseCase
+import dev.giste.roadbooknavigator.features.settings.domain.usecase.UpdateOrientationUseCase
+import dev.giste.roadbooknavigator.features.settings.domain.usecase.UpdateThemeUseCase
+import org.junit.After
+import org.junit.Assert.assertTrue
+import org.junit.Before
+import org.junit.Test
+
+@OptIn(ExperimentalCoroutinesApi::class)
+class SettingsViewModelTest {
+
+    private val testDispatcher = StandardTestDispatcher()
+
+    private val observeAppSettingsUseCase: ObserveAppSettingsUseCase = mockk()
+    private val observeInputSettingsUseCase: ObserveInputSettingsUseCase = mockk()
+    private val observeLocationSettingsUseCase: ObserveLocationSettingsUseCase = mockk()
+    private val observeOdometerSettingsUseCase: ObserveOdometerSettingsUseCase = mockk()
+    private val mapSettingsProvider: MapSettingsProvider = mockk()
+    private val roadbookSettingsProvider: RoadbookSettingsProvider = mockk()
+    private val updateThemeUseCase: UpdateThemeUseCase = mockk()
+    private val updateOrientationUseCase: UpdateOrientationUseCase = mockk()
+    private val updateFullScreenUseCase: UpdateFullScreenUseCase = mockk()
+    private val saveRoadbookSettingsUseCase: SaveRoadbookSettingsUseCase = mockk()
+    private val updateOdometerSpeedThresholdUseCase: UpdateOdometerSpeedThresholdUseCase = mockk()
+    private val updateOdometerMinAccuracyUseCase: UpdateOdometerMinAccuracyUseCase = mockk()
+    private val updateOdometerMinVerticalAccuracyUseCase: UpdateOdometerMinVerticalAccuracyUseCase = mockk()
+    private val restoreOdometerSettingsDefaultsUseCase: RestoreOdometerSettingsDefaultsUseCase = mockk()
+    private val updateLocationPollingIntervalUseCase: UpdateLocationPollingIntervalUseCase = mockk()
+    private val updateLocationMinDistanceUseCase: UpdateLocationMinDistanceUseCase = mockk()
+    private val restoreLocationDefaultsUseCase: RestoreLocationDefaultsUseCase = mockk()
+    private val selectRemoteModelUseCase: SelectRemoteModelUseCase = mockk()
+    private val updateRoadbookKeysUseCase: UpdateRoadbookKeysUseCase = mockk()
+    private val updateOdometerKeysUseCase: UpdateOdometerKeysUseCase = mockk()
+    private val updateLandscapeDistanceSectionWeightUseCase: UpdateLandscapeDistanceSectionWeightUseCase = mockk()
+    private val logger: Logger = mockk(relaxed = true)
+
+    private lateinit var viewModel: SettingsViewModel
+
+    @Before
+    fun setup() {
+        Dispatchers.setMain(testDispatcher)
+
+        every { observeAppSettingsUseCase() } returns flowOf(AppSettings())
+        every { observeInputSettingsUseCase() } returns flowOf(InputSettings())
+        every { observeLocationSettingsUseCase() } returns flowOf(LocationSettings())
+        every { observeOdometerSettingsUseCase() } returns flowOf(OdometerSettings())
+        every { mapSettingsProvider.observeSettings() } returns flowOf(MapSettings())
+        every { roadbookSettingsProvider.getSettings() } returns flowOf(RoadbookSettings())
+
+        viewModel = SettingsViewModel(
+            observeAppSettingsUseCase = observeAppSettingsUseCase,
+            observeInputSettingsUseCase = observeInputSettingsUseCase,
+            observeLocationSettingsUseCase = observeLocationSettingsUseCase,
+            observeOdometerSettingsUseCase = observeOdometerSettingsUseCase,
+            mapSettingsProvider = mapSettingsProvider,
+            roadbookSettingsProvider = roadbookSettingsProvider,
+            updateThemeUseCase = updateThemeUseCase,
+            updateOrientationUseCase = updateOrientationUseCase,
+            updateFullScreenUseCase = updateFullScreenUseCase,
+            saveRoadbookSettingsUseCase = saveRoadbookSettingsUseCase,
+            updateOdometerSpeedThresholdUseCase = updateOdometerSpeedThresholdUseCase,
+            updateOdometerMinAccuracyUseCase = updateOdometerMinAccuracyUseCase,
+            updateOdometerMinVerticalAccuracyUseCase = updateOdometerMinVerticalAccuracyUseCase,
+            restoreOdometerSettingsDefaultsUseCase = restoreOdometerSettingsDefaultsUseCase,
+            updateLocationPollingIntervalUseCase = updateLocationPollingIntervalUseCase,
+            updateLocationMinDistanceUseCase = updateLocationMinDistanceUseCase,
+            restoreLocationDefaultsUseCase = restoreLocationDefaultsUseCase,
+            selectRemoteModelUseCase = selectRemoteModelUseCase,
+            updateRoadbookKeysUseCase = updateRoadbookKeysUseCase,
+            updateOdometerKeysUseCase = updateOdometerKeysUseCase,
+            updateLandscapeDistanceSectionWeightUseCase = updateLandscapeDistanceSectionWeightUseCase,
+            logger = logger
+        )
+    }
+
+    @After
+    fun tearDown() {
+        Dispatchers.resetMain()
+    }
+
+    @Test
+    fun `initial state is Loading then Success`() = runTest {
+        val results = mutableListOf<SettingsUiState>()
+        val job = backgroundScope.launch {
+            viewModel.uiState.collect { results.add(it) }
+        }
+        
+        advanceUntilIdle()
+        
+        assertTrue(results.any { it is SettingsUiState.Success })
+        job.cancel()
+    }
+
+    @Test
+    fun `setTheme calls use case`() = runTest {
+        val theme = AppTheme.DARK
+        coEvery { updateThemeUseCase(theme) } returns Result.success(Unit)
+
+        viewModel.setTheme(theme)
+        advanceUntilIdle()
+
+        coVerify { updateThemeUseCase(theme) }
+    }
+
+    @Test
+    fun `setOrientation calls use case`() = runTest {
+        val orientation = AppOrientation.HORIZONTAL
+        coEvery { updateOrientationUseCase(orientation) } returns Result.success(Unit)
+
+        viewModel.setOrientation(orientation)
+        advanceUntilIdle()
+
+        coVerify { updateOrientationUseCase(orientation) }
+    }
+
+    @Test
+    fun `setFullScreen calls use case`() = runTest {
+        coEvery { updateFullScreenUseCase(true) } returns Result.success(Unit)
+
+        viewModel.setFullScreen(true)
+        advanceUntilIdle()
+
+        coVerify { updateFullScreenUseCase(true) }
+    }
+
+    @Test
+    fun `setShortDistanceThreshold calls use case`() = runTest {
+        val threshold = 500L
+        coEvery { saveRoadbookSettingsUseCase(threshold) } returns Unit
+
+        viewModel.setShortDistanceThreshold(threshold)
+        advanceUntilIdle()
+
+        coVerify { saveRoadbookSettingsUseCase(threshold) }
+    }
+
+    @Test
+    fun `setOdometerSpeedThreshold calls use case`() = runTest {
+        val threshold = 1.0f
+        coEvery { updateOdometerSpeedThresholdUseCase(threshold) } returns Result.success(Unit)
+
+        viewModel.setOdometerSpeedThreshold(threshold)
+        advanceUntilIdle()
+
+        coVerify { updateOdometerSpeedThresholdUseCase(threshold) }
+    }
+
+    @Test
+    fun `setOdometerMinAccuracy calls use case`() = runTest {
+        val accuracy = 10.0f
+        coEvery { updateOdometerMinAccuracyUseCase(accuracy) } returns Result.success(Unit)
+
+        viewModel.setOdometerMinAccuracy(accuracy)
+        advanceUntilIdle()
+
+        coVerify { updateOdometerMinAccuracyUseCase(accuracy) }
+    }
+
+    @Test
+    fun `setOdometerMinVerticalAccuracy calls use case`() = runTest {
+        val accuracy = 5.0f
+        coEvery { updateOdometerMinVerticalAccuracyUseCase(accuracy) } returns Result.success(Unit)
+
+        viewModel.setOdometerMinVerticalAccuracy(accuracy)
+        advanceUntilIdle()
+
+        coVerify { updateOdometerMinVerticalAccuracyUseCase(accuracy) }
+    }
+
+    @Test
+    fun `setLocationPollingInterval calls use case`() = runTest {
+        val interval = 2000L
+        coEvery { updateLocationPollingIntervalUseCase(interval) } returns Result.success(Unit)
+
+        viewModel.setLocationPollingInterval(interval)
+        advanceUntilIdle()
+
+        coVerify { updateLocationPollingIntervalUseCase(interval) }
+    }
+
+    @Test
+    fun `setLocationMinDistance calls use case`() = runTest {
+        val distance = 5.0f
+        coEvery { updateLocationMinDistanceUseCase(distance) } returns Result.success(Unit)
+
+        viewModel.setLocationMinDistance(distance)
+        advanceUntilIdle()
+
+        coVerify { updateLocationMinDistanceUseCase(distance) }
+    }
+
+    @Test
+    fun `restoreOdometerDefaults calls use cases`() = runTest {
+        coEvery { restoreOdometerSettingsDefaultsUseCase() } returns Result.success(Unit)
+        coEvery { restoreLocationDefaultsUseCase() } returns Result.success(Unit)
+
+        viewModel.restoreOdometerDefaults()
+        advanceUntilIdle()
+
+        coVerify { restoreOdometerSettingsDefaultsUseCase() }
+        coVerify { restoreLocationDefaultsUseCase() }
+    }
+
+    @Test
+    fun `setRemoteModel updates keys via unified use case`() = runTest {
+        coEvery { selectRemoteModelUseCase(any()) } returns Result.success(Unit)
+
+        viewModel.setRemoteModel(RemoteModel.DND2)
+        advanceUntilIdle()
+
+        coVerify { selectRemoteModelUseCase(RemoteModel.DND2) }
+    }
+
+    @Test
+    fun `setOdometerKeys calls use case`() = runTest {
+        val inc = listOf(1)
+        val dec = listOf(2)
+        val res = listOf(3)
+        coEvery { updateOdometerKeysUseCase(inc, dec, res) } returns Result.success(Unit)
+
+        viewModel.setOdometerKeys(inc, dec, res)
+        advanceUntilIdle()
+
+        coVerify { updateOdometerKeysUseCase(inc, dec, res) }
+    }
+
+    @Test
+    fun `setRoadbookKeys calls use case`() = runTest {
+        val up = listOf(1)
+        val down = listOf(2)
+        coEvery { updateRoadbookKeysUseCase(up, down) } returns Result.success(Unit)
+
+        viewModel.setRoadbookKeys(up, down)
+        advanceUntilIdle()
+
+        coVerify { updateRoadbookKeysUseCase(up, down) }
+    }
+
+    @Test
+    fun `setMapInitialZoom calls provider`() = runTest {
+        val zoom = 15
+        coEvery { mapSettingsProvider.saveSettings(any()) } returns Unit
+
+        viewModel.setMapInitialZoom(zoom)
+        advanceUntilIdle()
+
+        coVerify { mapSettingsProvider.saveSettings(match { it.initialZoom == zoom }) }
+    }
+
+    @Test
+    fun `setMapInitialTilt calls provider`() = runTest {
+        val tilt = 45f
+        coEvery { mapSettingsProvider.saveSettings(any()) } returns Unit
+
+        viewModel.setMapInitialTilt(tilt)
+        advanceUntilIdle()
+
+        coVerify { mapSettingsProvider.saveSettings(match { it.initialTilt == tilt }) }
+    }
+
+    @Test
+    fun `setLandscapeDistanceSectionWeight calls use case`() = runTest {
+        val weight = 0.5f
+        coEvery { updateLandscapeDistanceSectionWeightUseCase(weight) } returns Result.success(Unit)
+
+        viewModel.setLandscapeDistanceSectionWeight(weight)
+        advanceUntilIdle()
+
+        coVerify { updateLandscapeDistanceSectionWeightUseCase(weight) }
+    }
+}

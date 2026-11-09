@@ -9,7 +9,7 @@
 ## 2. Package Structure & API Boundary
 Modules must follow a strict separation between their **Public API** and **Internal Implementation**:
 
-### Root Package (`org.giste.<module>`) - The Public API
+### Root Package (`dev.giste.<module>`) - The Public API
 Only the following items are allowed in the root package and must be `public`:
 - **Entry Points**: Main Composables (e.g., `MapScreen`) that handle DI/ViewModel wiring.
 - **Provider Interfaces**: Logical gateways that group internal logic (e.g., `MapSettingsProvider`).
@@ -19,9 +19,9 @@ Only the following items are allowed in the root package and must be `public`:
 
 ### Sub-packages - The Internal Implementation
 All other code must be marked as `internal` and reside in sub-packages:
-- `org.giste.<module>.domain.usecase`: Internal business logic.
-- `org.giste.<module>.data`: Internal repository and datasource implementations.
-- `org.giste.<module>.ui`: Stateless content composables and internal ViewModels.
+- `dev.giste.<module>.domain.usecase`: Internal business logic.
+- `dev.giste.<module>.data`: Internal repository and datasource implementations.
+- `dev.giste.<module>.ui`: Stateless content composables and internal ViewModels.
 
 ## 3. Communication & Decoupling
 - **ViewModels**:
@@ -30,7 +30,7 @@ All other code must be marked as `internal` and reside in sub-packages:
 - **Dependency Inversion**: If a module needs a service (like Location), it must define its own `Provider` interface. The host app is responsible for providing a `Bridge` implementation via Hilt.
 - **Namespacing**: To prevent collisions in a library context:
     - **Resources**: All resource IDs must be prefixed with the module name (e.g., `map_title`).
-    - **Persistence**: DataStore, Database, and File paths must be unique (e.g., `org.giste.map.settings`).
+    - **Persistence**: DataStore, Database, and File paths must be unique (e.g., `dev.giste.map.settings`).
     - **WorkManager**: Background task tags must be namespaced.
 
 ## 4. UI Styling

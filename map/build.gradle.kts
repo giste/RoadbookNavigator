@@ -26,7 +26,7 @@ plugins {
 }
 
 configure<LibraryExtension> {
-    namespace = "org.giste.map"
+    namespace = "dev.giste.map"
     compileSdk = 37
 
     defaultConfig {

@@ -24,7 +24,7 @@
             android:name="androidx.activity.ComponentActivity"
             android:exported="true" />
         <activity
-            android:name="org.giste.roadbooknavigator.core.test.HiltTestActivity"
+            android:name="dev.giste.roadbooknavigator.core.test.HiltTestActivity"
             android:exported="true" />
     </application>
 </manifest>

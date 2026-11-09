@@ -6,7 +6,7 @@
 }
 
 # Preserve the library's package name for stack traces and logging
--keepnames public class org.giste.odometer.** { *; }
+-keepnames public class dev.giste.odometer.** { *; }
 
 # DataStore and related serialization
--keepclassmembers class org.giste.odometer.domain.** { *; }
+-keepclassmembers class dev.giste.odometer.domain.** { *; }

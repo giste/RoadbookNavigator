@@ -25,7 +25,7 @@ plugins {
 }
 
 configure<LibraryExtension> {
-    namespace = "org.giste.location"
+    namespace = "dev.giste.location"
     compileSdk = 37
 
     defaultConfig {

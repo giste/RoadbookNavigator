@@ -1,0 +1,48 @@
+/*
+ * Copyright (C) 2026 Giste
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package dev.giste.location.domain.usecase
+
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.runTest
+import dev.giste.location.LocationEvent
+import dev.giste.location.LocationLogger
+import dev.giste.location.domain.LocationRepository
+import org.junit.Assert
+import org.junit.Test
+
+class ObserveLocationUseCaseTest {
+
+    private val repository: LocationRepository = mockk()
+    private val logger: LocationLogger = mockk(relaxed = true)
+    private val useCase = ObserveLocationUseCase(repository, logger)
+
+    @Test
+    fun `should call repository getLocations with parameters`() = runTest {
+        val expectedEvent = LocationEvent.LocationUpdated(mockk(relaxed = true))
+        every { repository.getLocations(any(), any()) } returns flowOf(expectedEvent)
+
+        val result = useCase(pollingInterval = 2000L, minDistance = 10f).first()
+
+        Assert.assertTrue(result is LocationEvent.LocationUpdated)
+        verify { repository.getLocations(2000L, 10f) }
+    }
+}

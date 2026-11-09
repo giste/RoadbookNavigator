@@ -23,7 +23,7 @@ plugins {
 }
 
 configure<LibraryExtension> {
-    namespace = "org.giste.odometer"
+    namespace = "dev.giste.odometer"
     compileSdk = 37
 
     defaultConfig {
